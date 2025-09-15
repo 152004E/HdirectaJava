@@ -1,4 +1,4 @@
 package com.exe.Huerta_directa.Entity;
 
-public class User {
+public class TB_user {
 }
