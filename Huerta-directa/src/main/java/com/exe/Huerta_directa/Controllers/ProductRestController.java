@@ -18,26 +18,26 @@ public class ProductRestController {
 
     @GetMapping
     public List<ProductDTO> listarProducts() {
-        return productService.getAllProducts();
+        return productService.listarProducts();
     }
 
     @GetMapping("/{id}")
     public ProductDTO obtenerProductPorId(@PathVariable Long id) {
-        return productService.getProductById(id);
+        return productService.obtenerProductPorId(id);
     }
 
     @PostMapping
     public ProductDTO crearProduct(@RequestBody ProductDTO productDTO) {
-        return productService.saveProduct(productDTO);
+        return productService.crearProduct(productDTO);
     }
 
     @PutMapping("/{id}")
     public ProductDTO actualizarProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        return productService.updateProduct(id, productDTO);
+        return productService.actualizarProduct(id, productDTO);
     }
 
     @DeleteMapping("/{id}")
     public void eliminarProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.eliminarProductPorId(id);
     }
 }
