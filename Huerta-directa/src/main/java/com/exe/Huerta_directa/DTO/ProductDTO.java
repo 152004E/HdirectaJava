@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -15,10 +16,10 @@ public class ProductDTO {
 
     private Long idProduct;
     private String nameProduct;
-    private Double price;
+    private BigDecimal price;
     private String category;
     private String image_product;
-    private String unidadMedida;
+    private String unit;
     private LocalDate publicationDate;
     private String descriptionProduct;
 }

@@ -2,6 +2,9 @@ package com.exe.Huerta_directa.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Table (name = "products")
 @Data
+@Getter @Setter
 public class Product {
 
     @Id
