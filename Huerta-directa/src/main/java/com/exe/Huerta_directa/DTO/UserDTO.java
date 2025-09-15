@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class UserDTO {
-    // ✅ Getters y setters
+
     private Long id;
     private String nombres;
     private String apellidos;
@@ -13,10 +13,10 @@ public class UserDTO {
     private String rol;
     private boolean activo;
 
-    // ✅ Constructor vacío
+
     public UserDTO() {}
 
-    // ✅ Constructor con parámetros
+
     public UserDTO(Long id, String nombres, String apellidos, String email, String rol, boolean activo) {
         this.id = id;
         this.nombres = nombres;
