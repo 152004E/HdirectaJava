@@ -1,4 +1,14 @@
 package com.exe.Huerta_directa.Repository;
 
-public interface UserRepository {
+import com.exe.Huerta_directa.Entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findByname(String name);
+
+    User findByemail(String email);
+
 }
