@@ -1,5 +1,23 @@
 package com.exe.Huerta_directa.DTO;
 
+<<<<<<< HEAD
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class UserDTO {
+
+    private Long id;
+    private String name;
+    private String email;
+    private String password;
+    private String role;
+=======
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,5 +55,6 @@ public class UserDTO {
     public void setRol(String rol) { this.rol = rol; }
 
     public void setActivo(boolean activo) { this.activo = activo; }
+>>>>>>> e44d7f96021bf8309de5014e87248e31679a61ab
 }
 
