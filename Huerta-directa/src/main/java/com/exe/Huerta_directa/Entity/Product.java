@@ -21,7 +21,7 @@ public class Product {
     private Long idProduct;
 
     @Column (name = "name_product", nullable = false, length = 50)
-    private String nameProduct;
+    private String nameProduct = "sin nombre";
 
     @Column (name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
@@ -30,16 +30,16 @@ public class Product {
     private String category;
 
     @Column (name = "image_product", nullable = false, length = 250)
-    private String image_product;
+    private String imageProduct = "sin nombre";
 
     @Column (name = "unit", nullable = false, length = 250)
-    private String unit;
+    private String unit = "Campo no rellenado";
 
     @Column (name = "publication_date", nullable = false)
-    private LocalDate publicationDate;
+    private LocalDate publicationDate =  LocalDate.now();
 
     @Lob
     @Column (name = "description_product", nullable = false)
-    private String descriptionProduct;
+    private String descriptionProduct = "sin descripcion";
 
 }

@@ -18,7 +18,7 @@ public class ProductDTO {
     private String nameProduct;
     private BigDecimal price;
     private String category;
-    private String image_product;
+    private String imageProduct;
     private String unit;
     private LocalDate publicationDate;
     private String descriptionProduct;
