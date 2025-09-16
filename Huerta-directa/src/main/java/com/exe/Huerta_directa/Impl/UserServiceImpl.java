@@ -1,7 +1,7 @@
 package com.exe.Huerta_directa.Impl;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Entity.User;
+
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import org.springframework.stereotype.Service;
