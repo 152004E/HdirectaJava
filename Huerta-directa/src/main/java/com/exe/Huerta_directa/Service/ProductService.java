@@ -1,7 +1,6 @@
 package com.exe.Huerta_directa.Service;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
-import com.exe.Huerta_directa.Entity.Product;
 
 import java.util.List;
 

@@ -33,6 +33,7 @@ coverage/
 # IDE / Editor settings
 .vscode/
 .idea/
+*.iml
 *.swp
 *.swo
 
@@ -40,3 +41,19 @@ coverage/
 .cache/
 .next/
 *.tsbuildinf
+
+# ===== JAVA / MAVEN =====
+# Compiled class files
+*.class
+
+# Maven target directory
+target/
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Maven wrapper
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
