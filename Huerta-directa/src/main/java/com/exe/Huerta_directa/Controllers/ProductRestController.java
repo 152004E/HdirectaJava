@@ -40,5 +40,6 @@ public class ProductRestController {
     public void eliminarProduct(@PathVariable Long id) {
         productService.eliminarProductPorId(id);
     }
+    
 }
  

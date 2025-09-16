@@ -7,18 +7,14 @@
     <link rel="stylesheet" href="/css/darkindex.css" />
     <link rel="stylesheet" href="/css/stylePrincipal.css" />
 
-    <link
-      rel="icon"
-      type="image/png"
-      href="/Huerta-directa/src/main/resources/templates/login/login/logo.png"
-    />
+    <link rel="icon" type="image/png" href="/css/images/logo_huerta.png" />
     <!--link para el slider y css del slider-->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
 
-    <link rel="stylesheet" href="slider.css" />
+    <link rel="stylesheet" href="/css/slider.css" />
     <!--agregacion para los iconos-->
     <link
       rel="stylesheet"
@@ -87,9 +83,7 @@
           </ul>
         </nav>
         <div class="agragar_producto">
-          <a
-            class="Producto btn-2"
-            href="./Agreagar_producto/Agregar_producto.html"
+          <a class="Producto btn-2" th:href="@{/agregar_producto}"
             >Agregar <br />
             Producto</a
           >
@@ -278,7 +272,7 @@
       </div>
     </section>
 
-    <?php include '../controllers/productos_pagina.php'; ?>
+    <!-- <?php include '../controllers/productos_pagina.php'; ?>
 
     <main class="products container1" id="lista-1">
       <h2 data-aos="zoom-in">Productos destacados</h2>
@@ -310,6 +304,74 @@
           </div>
         </div>
         <?php endforeach; ?>
+      </div>
+    </main> -->
+    <main class="products container1" id="lista-1">
+      <h2 data-aos="zoom-in">Productos destacados</h2>
+
+      <div class="products-container">
+        <!-- Producto 1 -->
+        <div data-aos="zoom-in" data-aos-delay="100">
+          <div class="product">
+            <img src="/uploads/tomate.png" alt="Imagen de Tomates" />
+            <div class="product-txt">
+              <h3>Tomates frescos</h3>
+              <p class="precio">$3.500</p>
+              <div class="btnProducto">
+                <a href="#" class="agregar-carrito btn-2">Agregar</a>
+                <a
+                  href="#"
+                  class="btn-2"
+                  data-aos="fade-right"
+                  data-aos-delay="400"
+                  >Info</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Producto 2 -->
+        <div data-aos="zoom-in" data-aos-delay="200">
+          <div class="product">
+            <img src="/uploads/lechuga.png" alt="Imagen de Lechuga" />
+            <div class="product-txt">
+              <h3>Lechuga orgánica</h3>
+              <p class="precio">$2.000</p>
+              <div class="btnProducto">
+                <a href="#" class="agregar-carrito btn-2">Agregar</a>
+                <a
+                  href="#"
+                  class="btn-2"
+                  data-aos="fade-right"
+                  data-aos-delay="400"
+                  >Info</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Producto 3 -->
+        <div data-aos="zoom-in" data-aos-delay="300">
+          <div class="product">
+            <img src="/uploads/papa.png" alt="Imagen de Papas" />
+            <div class="product-txt">
+              <h3>Papas criollas</h3>
+              <p class="precio">$4.800</p>
+              <div class="btnProducto">
+                <a href="#" class="agregar-carrito btn-2">Agregar</a>
+                <a
+                  href="#"
+                  class="btn-2"
+                  data-aos="fade-right"
+                  data-aos-delay="400"
+                  >Info</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -513,7 +575,7 @@
       </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="/JS/script.js"></script>
     <!-- scrit para animaciones al scrollear -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
