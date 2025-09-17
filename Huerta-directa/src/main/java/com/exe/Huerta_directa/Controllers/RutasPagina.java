@@ -21,6 +21,11 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "login/LogIn";
     }
+    @GetMapping("/Dashboardd")
+    public String mostrarDashBoard() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "DashBoard/DashBoardd";
+    }
 
 
 }

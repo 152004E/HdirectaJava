@@ -43,12 +43,10 @@
               <a href="">Log in ▾</a>
               <ul class="dropdown-menu">
                 <li>
-                  <a th:href="@{/LogIn}"
-                    >📲 Iniciar Sesion</a
-                  >
+                  <a th:href="@{/LogIn}">📲 Iniciar Sesion</a>
                 </li>
                 <li>
-                  <a href="../views/DashBoard/Dashboardd.php">📲 Dashboard</a>
+                  <a th:href="@{/Dashboardd}">📲 Dashboard</a>
                 </li>
               </ul>
             </li>
@@ -82,8 +80,8 @@
             <li><a href="#lista-1">Productos</a></li>
           </ul>
         </nav>
-        <div class="agragar_producto" >
-          <a class="Producto btn-2 " th:href="@{/agregar_producto}"
+        <div class="agragar_producto">
+          <a class="Producto btn-2" th:href="@{/agregar_producto}"
             >Agregar <br />
             Producto</a
           >
@@ -313,7 +311,10 @@
         <!-- Producto 1 -->
         <div data-aos="zoom-in" data-aos-delay="100">
           <div class="product">
-            <img src="/images/ImagenesPruebas/Arvejas.jpg" alt="Imagen de Tomates" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Tomates"
+            />
             <div class="product-txt">
               <h3>Tomates frescos</h3>
               <p class="precio">$3.500</p>
@@ -334,7 +335,10 @@
         <!-- Producto 2 -->
         <div data-aos="zoom-in" data-aos-delay="200">
           <div class="product">
-            <img src="/images/ImagenesPruebas/Arvejas.jpg" alt="Imagen de Lechuga" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Lechuga"
+            />
             <div class="product-txt">
               <h3>Lechuga orgánica</h3>
               <p class="precio">$2.000</p>
@@ -355,7 +359,10 @@
         <!-- Producto 3 -->
         <div data-aos="zoom-in" data-aos-delay="300">
           <div class="product">
-            <img src="/images/ImagenesPruebas/Arvejas.jpg" alt="Imagen de Papas" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Papas"
+            />
             <div class="product-txt">
               <h3>Papas criollas</h3>
               <p class="precio">$4.800</p>
