@@ -8,7 +8,7 @@ public class RutaProductoController {
 
     @GetMapping("/agregar_producto")
     public String mostrarFormulario() {
-        // Spring va a buscar: src/main/resources/templates/Agregar_producto/index.html
-        return "Agregar_producto/index";
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "Agreagar_producto/Agregar_producto";
     }
 }
