@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/darkindex.css" />
     <link rel="stylesheet" href="/css/stylePrincipal.css" />
 
-    <link rel="icon" type="image/png" href="/css/images/logo_huerta.png" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
     <!--link para el slider y css del slider-->
     <link
       rel="stylesheet"
@@ -43,12 +43,10 @@
               <a href="">Log in ▾</a>
               <ul class="dropdown-menu">
                 <li>
-                  <a href="../views/login/login/Log in.html "
-                    >📲 Iniciar Sesion</a
-                  >
+                  <a th:href="@{/LogIn}">📲 Iniciar Sesion</a>
                 </li>
                 <li>
-                  <a href="../views/DashBoard/Dashboardd.php">📲 Dashboard</a>
+                  <a th:href="@{/Dashboardd}">📲 Dashboard</a>
                 </li>
               </ul>
             </li>
@@ -313,7 +311,10 @@
         <!-- Producto 1 -->
         <div data-aos="zoom-in" data-aos-delay="100">
           <div class="product">
-            <img src="/uploads/tomate.png" alt="Imagen de Tomates" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Tomates"
+            />
             <div class="product-txt">
               <h3>Tomates frescos</h3>
               <p class="precio">$3.500</p>
@@ -334,7 +335,10 @@
         <!-- Producto 2 -->
         <div data-aos="zoom-in" data-aos-delay="200">
           <div class="product">
-            <img src="/uploads/lechuga.png" alt="Imagen de Lechuga" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Lechuga"
+            />
             <div class="product-txt">
               <h3>Lechuga orgánica</h3>
               <p class="precio">$2.000</p>
@@ -355,7 +359,10 @@
         <!-- Producto 3 -->
         <div data-aos="zoom-in" data-aos-delay="300">
           <div class="product">
-            <img src="/uploads/papa.png" alt="Imagen de Papas" />
+            <img
+              src="/images/ImagenesPruebas/Arvejas.jpg"
+              alt="Imagen de Papas"
+            />
             <div class="product-txt">
               <h3>Papas criollas</h3>
               <p class="precio">$4.800</p>
