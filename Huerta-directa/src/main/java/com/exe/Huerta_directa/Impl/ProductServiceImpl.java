@@ -97,7 +97,6 @@ public class ProductServiceImpl implements ProductService {
         product.setDescriptionProduct(productDTO.getDescriptionProduct());
         product.setPublicationDate(productDTO.getPublicationDate());
 
-        // Asignar el usuario si viene en el DTO
         if (productDTO.getUserId() != null) {
             User user = userRepository.findById(productDTO.getUserId())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + productDTO.getUserId()));
@@ -110,8 +109,12 @@ public class ProductServiceImpl implements ProductService {
     //Actualizar Entity con datos del DTO
     private void actualizarDatosProducto(Product product, ProductDTO productDTO) {
         product.setNameProduct(productDTO.getNameProduct());
-        product.setCategory(productDTO.getCategory());
         product.setPrice(productDTO.getPrice());
+        product.setCategory(productDTO.getCategory());
+        product.setImageProduct(productDTO.getImageProduct());
+        product.setUnit(productDTO.getUnit());
+        product.setDescriptionProduct(productDTO.getDescriptionProduct());
+        product.setPublicationDate(productDTO.getPublicationDate());
 
         if (productDTO.getUserId() != null) {
             User user = userRepository.findById(productDTO.getUserId())
