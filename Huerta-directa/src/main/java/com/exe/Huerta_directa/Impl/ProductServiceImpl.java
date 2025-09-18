@@ -2,7 +2,9 @@ package com.exe.Huerta_directa.Impl;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.Product;
+import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.ProductRepository;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import org.springframework.stereotype.Service;
 
@@ -13,96 +15,109 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    // Inyección por constructor
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
-    // Listar todos los productos
     @Override
     public List<ProductDTO> listarProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(this::mapToDTO)
+                .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
-    // Obtener producto por ID
     @Override
     public ProductDTO obtenerProductPorId(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id " + productId));
-        return mapToDTO(product);
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productId));
+        return convertirADTO(product);
     }
 
-    // Crear producto
     @Override
     public ProductDTO crearProduct(ProductDTO productDTO) {
-        Product product = mapToEntity(productDTO);
-        Product guardado = productRepository.save(product);
-        return mapToDTO(guardado);
+        Product product = convertirAEntity(productDTO);
+        Product nuevoProduct = productRepository.save(product);
+        return convertirADTO(nuevoProduct);
     }
 
-    // Actualizar producto
     @Override
     public ProductDTO actualizarProduct(Long productId, ProductDTO productDTO) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id " + productId));
+        Product productExistente = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productId));
 
+        actualizarDatosProducto(productExistente, productDTO);
+        Product productActualizado = productRepository.save(productExistente);
+        return convertirADTO(productActualizado);
+    }
+
+    @Override
+    public void eliminarProductPorId(Long productId) {
+        if (!productRepository.existsById(productId)) {
+            throw new RuntimeException("Producto no encontrado con id: " + productId);
+        } else {
+            productRepository.deleteById(productId);
+        }
+    }
+
+    //Convertir Entity a DTO
+    private ProductDTO convertirADTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setIdProduct(product.getIdProduct());
+        productDTO.setNameProduct(product.getNameProduct());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setCategory(product.getCategory());
+        productDTO.setImageProduct(product.getImageProduct());
+        productDTO.setUnit(product.getUnit());
+        productDTO.setDescriptionProduct(product.getDescriptionProduct());
+        productDTO.setPublicationDate(product.getPublicationDate());
+
+        // Asignar el id del usuario si existe
+        if (product.getUser() != null) {
+            productDTO.setUserId(product.getUser().getId());
+        } else {
+            productDTO.setUserId(null);
+        }
+
+        return productDTO;
+    }
+
+    //Convertir DTO a Entity
+    private Product convertirAEntity(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setIdProduct(productDTO.getIdProduct());
+        product.setNameProduct(productDTO.getNameProduct());
+        product.setPrice(productDTO.getPrice());
+        product.setCategory(productDTO.getCategory());
+        product.setImageProduct(productDTO.getImageProduct());
+        product.setUnit(productDTO.getUnit());
+        product.setDescriptionProduct(productDTO.getDescriptionProduct());
+        product.setPublicationDate(productDTO.getPublicationDate());
+
+        // Asignar el usuario si viene en el DTO
+        if (productDTO.getUserId() != null) {
+            User user = userRepository.findById(productDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + productDTO.getUserId()));
+            product.setUser(user);
+        }
+
+        return product;
+    }
+
+    //Actualizar Entity con datos del DTO
+    private void actualizarDatosProducto(Product product, ProductDTO productDTO) {
         product.setNameProduct(productDTO.getNameProduct());
         product.setCategory(productDTO.getCategory());
         product.setPrice(productDTO.getPrice());
 
-        Product actualizado = productRepository.save(product);
-        return mapToDTO(actualizado);
-    }
-
-    // Eliminar producto
-    @Override
-    public void eliminarProductPorId(Long productId) {
-        productRepository.deleteById(productId);
-    }
-
-    // Métodos extra: buscar por nombre
-    public ProductDTO buscarPorNombre(String nameProduct) {
-        Product product = productRepository.findBynameProduct(nameProduct);
-        if (product == null) {
-            throw new RuntimeException("Producto no encontrado con nombre " + nameProduct);
+        if (productDTO.getUserId() != null) {
+            User user = userRepository.findById(productDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + productDTO.getUserId()));
+            product.setUser(user);
         }
-        return mapToDTO(product);
     }
 
-    // Métodos extra: buscar por categoría
-    public ProductDTO buscarPorCategoria(String category) {
-        Product product = productRepository.findBycategory(category);
-        if (product == null) {
-            throw new RuntimeException("Producto no encontrado en la categoría " + category);
-        }
-        return mapToDTO(product);
-    }
-
-    // Conversión Entidad - DTO
-    private ProductDTO mapToDTO(Product product) {
-        return new ProductDTO(
-                product.getIdProduct(),
-                product.getNameProduct(),
-                product.getPrice(),
-                product.getCategory(),
-                product.getImageProduct(),
-                product.getUnit(),
-                product.getPublicationDate(),
-                product.getDescriptionProduct()
-        );
-    }
-
-    // Conversión DTO - Entidad
-    private Product mapToEntity(ProductDTO dto) {
-        Product product = new Product();
-        product.setIdProduct(dto.getIdProduct());
-        product.setNameProduct(dto.getNameProduct());
-        product.setCategory(dto.getCategory());
-        product.setPrice(dto.getPrice());
-        return product;
-    }
 }

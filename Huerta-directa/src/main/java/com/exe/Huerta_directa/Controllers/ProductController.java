@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService productService;
@@ -30,19 +31,21 @@ public class ProductController {
         return new ResponseEntity<>(productService.obtenerProductPorId(productId), HttpStatus.OK);
     }
 
-
+    //Metodo para crear un nuevo producto
     @PostMapping
     public ResponseEntity<ProductDTO> crearProduct(@RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.crearProduct(productDTO), HttpStatus.CREATED);
     }
 
+    //Metodo para actualizar un producto
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDTO> actualizarProduct(@PathVariable ("productId") Long productId, @RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.actualizarProduct(productId, productDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-   public ResponseEntity<Void> eliminarProductPorId(@PathVariable ("id") Long productId) {
+    //Metodo para eliminar un producto por su id
+    @DeleteMapping("/{productId}")
+   public ResponseEntity<Void> eliminarProductPorId(@PathVariable ("productId") Long productId) {
         productService.eliminarProductPorId(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

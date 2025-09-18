@@ -22,6 +22,7 @@ public class ProductDTO {
     private String unit;
     private LocalDate publicationDate;
     private String descriptionProduct;
+    private Long userId;
 }
 
 

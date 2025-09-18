@@ -7,7 +7,7 @@ import com.exe.Huerta_directa.Repository.RoleRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +17,15 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
 
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository; 
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public List<UserDTO> listarUsers() {
@@ -65,7 +69,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    
 
     //Convertir Entity a DTO
     private UserDTO convertirADTO(User user) {
@@ -77,10 +80,11 @@ public class UserServiceImpl implements UserService {
 
         //Si la persona tiene un rol asignado, se convierte a DTO
         if (user.getRole() != null) {
-            userDTO.setIdRole(user.getRole().getName());
-        }else{
-            userDTO.setIdRole(null);
+            userDTO.setIdRole(user.getRole().getIdRole());
+        } else {
+            userDTO.setIdRole(null); // O cualquier valor por defecto que consideres apropiado
         }
+
 
         return userDTO;
     }
@@ -93,17 +97,18 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
 
-        //Si el DTO tiene un rol asignado, buscar el rol existente en la base de datos
-        if (userDTO.getIdRole() != null && !userDTO.getIdRole().isEmpty()) {
-            Role role = roleRepository.findByName(userDTO.getIdRole());
-            if (role != null) {
-                user.setRole(role);
-            }
-            // Si el rol no existe, podrías lanzar una excepción o log del error
+        // ✅ aquí buscamos el rol
+        if (userDTO.getIdRole() != null) {
+            Role role = roleRepository.findById(userDTO.getIdRole())
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
+            user.setRole(role);
+        } else {
+            throw new RuntimeException("El idRole no puede ser nulo");
         }
 
         return user;
     }
+
 
     //Actualizar Entity con datos del DTO
     private void actualizarDatosPersona(User user, UserDTO userDTO) {
@@ -112,14 +117,12 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDTO.getPassword());
 
         // Si el DTO tiene un rol asignado, buscar el rol existente en la base de datos
-        if (userDTO.getIdRole() != null && !userDTO.getIdRole().isEmpty()) {
-            Role role = roleRepository.findByName(userDTO.getIdRole());
-            if (role != null) {
-                user.setRole(role);
-            }
-            // Si el rol no existe, podrías lanzar una excepción o log del error
+        if (userDTO.getIdRole() != null) {
+            Role role = roleRepository.findById(userDTO.getIdRole())
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
+            user.setRole(role);
         } else {
-            user.setRole(null); // O mantener el rol actual, según la lógica de negocio
+            throw new RuntimeException("El idRole no puede ser nulo");
         }
     }
 
