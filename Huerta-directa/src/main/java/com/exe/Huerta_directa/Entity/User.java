@@ -3,6 +3,8 @@ package com.exe.Huerta_directa.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Set;
+
 
 @Entity
 @Table (name = "users")
@@ -26,5 +28,8 @@ public class User {
     @ManyToOne
     @JoinColumn (name = "role_id", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products;
 
 }

@@ -2,7 +2,6 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +12,20 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     // Aquí irían los endpoints para manejar las solicitudes HTTP relacionadas con producto
     @GetMapping
     public  ResponseEntity<List<ProductDTO>> listarProducts() {
-        List<ProductDTO> listarProducts = productService.listarProducts();
         return new ResponseEntity<>(productService.listarProducts(), HttpStatus.OK);
     }
 
     //Metodo para obtener un producto por su id
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> obtenerProductPorId(@PathVariable Long productId){
         return new ResponseEntity<>(productService.obtenerProductPorId(productId), HttpStatus.OK);
     }
@@ -35,8 +36,8 @@ public class ProductController {
         return new ResponseEntity<>(productService.crearProduct(productDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> actualizarProduct(@PathVariable ("id") Long productId, @RequestBody ProductDTO productDTO) {
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> actualizarProduct(@PathVariable ("productId") Long productId, @RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.actualizarProduct(productId, productDTO), HttpStatus.OK);
     }
 

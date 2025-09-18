@@ -42,4 +42,8 @@ public class Product {
     @Column (name = "description_product", nullable = false)
     private String descriptionProduct = "sin descripcion";
 
+    @ManyToOne
+    @JoinColumn (name = "user_id", nullable = false)
+    private User user;
+
 }
