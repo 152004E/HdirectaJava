@@ -20,7 +20,7 @@ public class RutasPagina {
     public String info() {
         return "index"; // busca templates/index.html
     }
-    @GetMapping("/agregar_producto")
+    @GetMapping("/agregar_producto") 
     public String mostrarFormulario() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Agreagar_producto/Agregar_producto";
@@ -30,6 +30,21 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "login/LogIn";
     }
+    @GetMapping("/error404")
+    public String mostrarerror404() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "Errores/error404";
+    }
+    @GetMapping("/landing")
+    public String mostrarLanding() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "pagina_principal/landing";
+    }
+    // @GetMapping("/InicioIndex")
+    // public String mostrarInicio() {
+    //     // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+    //     return "index";
+    // }
 
     @GetMapping("/Dashboardd")
     public String mostrarDashBoard(Model model) {
