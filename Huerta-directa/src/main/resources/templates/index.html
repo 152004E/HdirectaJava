@@ -70,11 +70,11 @@
               <ul class="dropdown-menu">
                 <li><a th:href="@{/landing}">🔗 Unete</a></li>
                 <li>
-                  <a href="Quienes_somos/quienes_somos.html"
+                  <a th:href="@{/Quienes_somos}"
                     >🔎 Quienes somos</a
                   >
                 </li>
-                <li><a href="Errores/error500.html">🎛️ Contactanos</a></li>
+                <li><a th:href="@{/error500}">🎛️ Contactanos</a></li>
               </ul>
             </li>
             <li><a href="#lista-1">Productos</a></li>
@@ -127,7 +127,7 @@
             alimentos 100% naturales, sin intermediarios y al mejor precio.
             ¡Comer sano y apoyar al campo nunca fue tan fácil!
           </p>
-          <a href="../views/Quienes_somos/quienes_somos.html" class="btn-1"
+          <a th:href="@{/Quienes_somos}"class="btn-1"
             >Informacion</a
           >
         </div>

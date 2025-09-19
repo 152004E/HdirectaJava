@@ -35,10 +35,20 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error404";
     }
+    @GetMapping("/error500")
+    public String mostrarerror500() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "Errores/error500";
+    }
     @GetMapping("/landing")
     public String mostrarLanding() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "pagina_principal/landing";
+    }
+    @GetMapping("/Quienes_somos")
+    public String mostrarQuienes_somos() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "Quienes_somos/quienes_somos";
     }
     // @GetMapping("/InicioIndex")
     // public String mostrarInicio() {
