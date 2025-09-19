@@ -54,6 +54,9 @@ img {
   margin-bottom: 55px;
   font-size: 40px;
 }
+.TituloCategoria{
+  margin-top: 100px;
+}
 
 .products-container {
   display: grid;

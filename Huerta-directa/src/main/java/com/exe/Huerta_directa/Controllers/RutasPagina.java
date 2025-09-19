@@ -50,6 +50,11 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Quienes_somos/quienes_somos";
     }
+    @GetMapping("/Frutas")
+    public String mostrarFrutas() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "ProductosCategorias/Frutas";
+    }
     // @GetMapping("/InicioIndex")
     // public String mostrarInicio() {
     //     // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html

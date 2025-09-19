@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <!-- Fragmento Navbar -->
+  <div th:fragment="navPagina">
+    <div class="navbar-wrapper">
+      <div class="menu container">
+        <a href="#" class="logo">Huerta directa</a>
+        <input type="checkbox" id="menu" />
+
+        <nav class="navbar">
+          <ul>
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/#categorias}">Categorias</a></li>
+            <li><a th:href="@{/quienes_somos}">Quienes somos</a></li>
+            <li><a th:href="@{/#lista-1}">Productos</a></li>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
