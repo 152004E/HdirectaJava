@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class ProductController {
 
     // Crear producto con imagen
     @PostMapping("/create")
-    public ResponseEntity<ProductDTO> crearProductConImagen(
+    public RedirectView crearProductConImagen(
             @RequestParam("nombre") String nameProduct,
             @RequestParam("precio") Double price,
             @RequestParam("unidad") String unit,
@@ -53,9 +54,6 @@ public class ProductController {
                         .orElse("");
                 nombreImagen = UUID.randomUUID() + extension;
                 File destino = new File(uploadDir, nombreImagen);
-                System.out.println("Upload path: " + uploadPath);
-                System.out.println("Nombre imagen: " + nombreImagen);
-                System.out.println("Destino: " + destino.getAbsolutePath());
                 imageFile.transferTo(destino);
             }
 
@@ -71,18 +69,24 @@ public class ProductController {
 
             ProductDTO creado = productService.crearProduct(productDTO);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+            // Condicional para redirigir
+            if (creado != null && creado.getIdProduct() != null) {
+                // Registro exitoso -> Dashboard
+                return new RedirectView("/Dashboardd");
+            } else {
+                // Falló el registro -> volver al formulario
+                return new RedirectView("/agregar_producto");
+            }
 
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            // En caso de error -> volver al formulario
+            return new RedirectView("/agregar_producto");
         }
     }
+
+
+
 
 
     // Aquí irían los endpoints para manejar las solicitudes HTTP relacionadas con producto
