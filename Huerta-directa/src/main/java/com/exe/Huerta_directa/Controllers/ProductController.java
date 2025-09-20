@@ -89,6 +89,7 @@ public class ProductController {
 
 
 
+
     // Aquí irían los endpoints para manejar las solicitudes HTTP relacionadas con producto
     @GetMapping
     public  ResponseEntity<List<ProductDTO>> listarProducts() {

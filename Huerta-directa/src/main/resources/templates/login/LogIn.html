@@ -17,10 +17,9 @@
       <div class="form-container sign-up">
         <!-- This is first from -->
         <form
-          action="http://localhost:8085/api/users/register"
-          method="post"
-          onsubmit="return validarRegistro()"
-        >
+          th:action="@{/api/users/register}"
+          method="post">
+          <!--onsubmit="return validarRegistro()"-->
           <h1>Crear cuenta</h1>
           <img class="H-logo" src="/images/logo.png" alt="logo" width="100" />
 
@@ -28,7 +27,7 @@
             <label>Nombre de usuario</label>
             <input
               type="text"
-              name="Nombre_usuario"
+              name="name"
               placeholder="Ejemplo: Santiago Puentes"
             />
           </div>

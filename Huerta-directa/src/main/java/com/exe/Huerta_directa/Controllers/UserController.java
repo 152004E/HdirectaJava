@@ -6,12 +6,14 @@ import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping ("/api/users")
 @CrossOrigin("*")
 public class UserController {
@@ -38,10 +40,11 @@ public class UserController {
 
     //Metodo para crear un nuevo usuario
     @PostMapping("/register")
-    public RedirectView registrarUser(
-            @RequestParam("Nombre_usuario") String name,
+    public String registrarUser(
+            @RequestParam("name") String name,
             @RequestParam("email") String email,
-            @RequestParam("password") String password){
+            @RequestParam("password") String password,
+            Model model){
 
         try {
             UserDTO userDTO = new UserDTO();
@@ -54,15 +57,17 @@ public class UserController {
             //Condicional para redirigir segun el resultado del registro
             if (registrado != null && registrado.getId() != null){
                 //Si el registro es exitoso, redirigir a la pagina de inicio
-                return new RedirectView("/");
+                model.addAttribute("Mensaje", "Usuario registrado exitosamente");
+                return "redirect:/index";
             } else {
                 //Si el registro falla, redirigir a la pagina de registro con un mensaje de error
-                return new RedirectView("/LogIn");
+                model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
+                return "redirect:/LogIn";
             }
         } catch (RuntimeException e) {
             //Si el usuario falla en registrarse, redirigir a la pagina de registro con un mensaje de error
-             System.out.println("Error al registrar usuario: " + e.getMessage());
-             return new RedirectView("/LogIn");
+             model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
+             return "redirect:/LogIn";
         }
     }
 
