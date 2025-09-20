@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
 
-        // ✅ aquí buscamos el rol
+        // aquí buscamos el rol
         if (userDTO.getIdRole() != null) {
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
