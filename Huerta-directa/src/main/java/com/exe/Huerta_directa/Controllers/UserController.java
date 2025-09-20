@@ -36,6 +36,11 @@ public class UserController {
         return new ResponseEntity<>(userService.obtenerUserPorId(userId), HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO){
+        return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
+    }
+
     //Metodo para crear un nuevo usuario
     @PostMapping("/register")
     public RedirectView registrarUser(

@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO crearUser(UserDTO userDTO) {
+    public UserDTO crearUser (UserDTO userDTO) {
         User user = convertirAEntity(userDTO);
         User nuevoUser = userRepository.save(user);
         return convertirADTO(nuevoUser);
