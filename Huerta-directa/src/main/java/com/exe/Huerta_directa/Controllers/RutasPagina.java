@@ -27,9 +27,9 @@ public class RutasPagina {
     }
     @GetMapping("/LogIn")
     public String mostrarLogin() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
-        return "login/LogIn";
+        return "login/logIn";
     }
+    
     @GetMapping("/error404")
     public String mostrarerror404() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
@@ -67,5 +67,6 @@ public class RutasPagina {
         model.addAttribute("productos", productos);
         return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
     }
+   
 
 }
