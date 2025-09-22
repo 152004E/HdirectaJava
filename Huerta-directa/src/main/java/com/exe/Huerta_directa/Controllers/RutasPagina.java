@@ -73,12 +73,12 @@ public class RutasPagina {
 
     @GetMapping("/CarnesYl")
     public String mostrarCarnesYl() {
-        return "ProductosCategorias/CarnesYl";
+        return "ProductosCategorias/CarnesYProteinas";
     }
 
     @GetMapping("/Cereales")
     public String mostrarCereales() {
-        return "ProductosCategorias/Cereales";
+        return "ProductosCategorias/CerealesYGranos";
     }
 
     @GetMapping("/Lacteos")
