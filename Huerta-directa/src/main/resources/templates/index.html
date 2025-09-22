@@ -70,9 +70,7 @@
               <ul class="dropdown-menu">
                 <li><a th:href="@{/landing}">🔗 Unete</a></li>
                 <li>
-                  <a th:href="@{/Quienes_somos}"
-                    >🔎 Quienes somos</a
-                  >
+                  <a th:href="@{/Quienes_somos}">🔎 Quienes somos</a>
                 </li>
                 <li><a th:href="@{/error500}">🎛️ Contactanos</a></li>
               </ul>
@@ -127,9 +125,7 @@
             alimentos 100% naturales, sin intermediarios y al mejor precio.
             ¡Comer sano y apoyar al campo nunca fue tan fácil!
           </p>
-          <a th:href="@{/Quienes_somos}"class="btn-1"
-            >Informacion</a
-          >
+          <a th:href="@{/Quienes_somos}" class="btn-1">Informacion</a>
         </div>
         <!--  <div class="header-img">
          <img class="imagen-hover" src="images/rigth.png" alt="" />
@@ -402,12 +398,7 @@
           <!--primer categoria de productos-->
 
           <a th:href="@{/Frutas}">
-            <article
-              class="category"
-              data-aos="zoom-in"
-              data-aos-delay="100"
-              
-            >
+            <article class="category" data-aos="zoom-in" data-aos-delay="100">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-apple-whole"></i
               ></span>
@@ -416,7 +407,7 @@
           </a>
           <!--Segunda categoria de productos-->
 
-          <a href="ProductosCategorias/VerdurasYHortalizas.php">
+          <a th:href="@{/VerdurasYHortalizas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="200">
               <span class="category__icon green"
                 ><i class="fa-solid fa-carrot"></i
@@ -427,7 +418,7 @@
 
           <!--tercera categoria de productos-->
 
-          <a href="ProductosCategorias/Lacteos.php">
+          <a th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="300">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-cow"></i
@@ -437,7 +428,7 @@
           </a>
           <!--Cuarta categoria de productos-->
 
-          <a href="ProductosCategorias/CarnesYProteinas.php">
+          <a th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="100">
               <span class="category__icon green"
                 ><i class="fa-solid fa-drumstick-bite"></i
@@ -447,7 +438,7 @@
           </a>
           <!--Quinto categoria de productos-->
 
-          <a href="ProductosCategorias/CerealesYGranos.php">
+          <a  th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="200">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-bowl-food"></i
@@ -457,7 +448,7 @@
           </a>
           <!--Sexta categoria de productos-->
 
-          <a href="ProductosCategorias/Organicos.php">
+          <a  th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="300">
               <span class="category__icon green"
                 ><i class="fa-solid fa-cookie"></i
@@ -467,7 +458,7 @@
           </a>
           <!--Setmima categoria de productos-->
 
-          <a href="ProductosCategorias/MielYDerivados.php">
+          <a  th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="100">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-plate-wheat"></i
@@ -477,7 +468,7 @@
           </a>
           <!--Octava categoria de productos-->
 
-          <a href="ProductosCategorias/BebidasNaturales.php">
+          <a  th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="200">
               <span class="category__icon green"
                 ><i class="fa-solid fa-glass-water"></i
@@ -488,7 +479,7 @@
 
           <!--Novena categoria de productos-->
 
-          <a href="ProductosCategorias/CajasMixtas.php">
+          <a  th:href="@{/Frutas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="300">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-box-open"></i
@@ -499,8 +490,8 @@
         </div>
       </div>
     </section>
-
-    <footer
+    <div th:replace="fragments/footer :: footer"></div>
+    <!-- <footer
       class="footer1"
       style="background-color: #8bc34a; padding: 40px 0; color: white"
     >
@@ -580,7 +571,7 @@
           </ul>
         </div>
       </div>
-    </footer>
+    </footer> -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="/JS/script.js"></script>
     <!-- scrit para animaciones al scrollear -->

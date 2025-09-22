@@ -9,56 +9,106 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-
 @Controller
 public class RutasPagina {
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping({"/", "/index"})
+    @GetMapping({ "/", "/index" })
     public String info() {
         return "index"; // busca templates/index.html
     }
-    @GetMapping("/agregar_producto") 
+
+    @GetMapping("/agregar_producto")
     public String mostrarFormulario() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Agreagar_producto/Agregar_producto";
     }
+
     @GetMapping("/LogIn")
     public String mostrarLogin() {
         return "login/logIn";
     }
-    
+
     @GetMapping("/error404")
     public String mostrarerror404() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error404";
     }
+
     @GetMapping("/error500")
     public String mostrarerror500() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error500";
     }
+
     @GetMapping("/landing")
     public String mostrarLanding() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "pagina_principal/landing";
     }
+
     @GetMapping("/Quienes_somos")
     public String mostrarQuienes_somos() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Quienes_somos/quienes_somos";
     }
+
     @GetMapping("/Frutas")
     public String mostrarFrutas() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "ProductosCategorias/Frutas";
     }
+
+    @GetMapping("/BebidasNaturales")
+    public String mostrarBebidasNaturales() {
+        return "ProductosCategorias/BebidasNaturales";
+    }
+
+    @GetMapping("/CajasMixtas")
+    public String mostrarCajasMixtas() {
+        return "ProductosCategorias/CajasMixtas";
+    }
+
+    @GetMapping("/CarnesYl")
+    public String mostrarCarnesYl() {
+        return "ProductosCategorias/CarnesYl";
+    }
+
+    @GetMapping("/Cereales")
+    public String mostrarCereales() {
+        return "ProductosCategorias/Cereales";
+    }
+
+    @GetMapping("/Lacteos")
+    public String mostrarLacteos() {
+        return "ProductosCategorias/Lacteos";
+    }
+
+    @GetMapping("/legumbresSecas")
+    public String mostrarLegumbresSecas() {
+        return "ProductosCategorias/legumbresSecas";
+    }
+
+    @GetMapping("/MielYDerivados")
+    public String mostrarMielYDerivados() {
+        return "ProductosCategorias/MielYDerivados";
+    }
+
+    @GetMapping("/Organicos")
+    public String mostrarOrganicos() {
+        return "ProductosCategorias/Organicos";
+    }
+
+    @GetMapping("/VerdurasYHortalizas")
+    public String mostrarVerdurasYHortalizas() {
+        return "ProductosCategorias/VerdurasYHortalizas";
+    }
     // @GetMapping("/InicioIndex")
     // public String mostrarInicio() {
-    //     // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
-    //     return "index";
+    // // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+    // return "index";
     // }
 
     @GetMapping("/Dashboardd")
@@ -67,6 +117,5 @@ public class RutasPagina {
         model.addAttribute("productos", productos);
         return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
     }
-   
 
 }
