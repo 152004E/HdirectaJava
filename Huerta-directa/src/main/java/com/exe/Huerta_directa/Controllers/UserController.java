@@ -43,7 +43,7 @@ public class UserController {
         return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
     }
 
-    //Metodo para crear un nuevo usuario
+    /*Metodo para crear un nuevo usuario
     @PostMapping("/register")
     public String registrarUser(
             @RequestParam("name") String name,
@@ -74,7 +74,7 @@ public class UserController {
              model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
              return "redirect:/LogIn";
         }
-    }
+    }*/
 
 
     //Metodo para actualizar un usuario
