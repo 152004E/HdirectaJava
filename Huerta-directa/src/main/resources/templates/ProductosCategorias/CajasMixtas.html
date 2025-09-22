@@ -5,49 +5,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categoria Cajas Mixtas o Combos | Huerta directa</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="../style.css">
-  <link
-     rel="icon"
-     type="image/png"
-     href="../login/login/logo_huerta.png" />
 
+  <link rel="stylesheet" href="/CSS/stylePrincipal.css" />
+  <link rel="stylesheet" href="/CSS/darkindex.css" />
+  <link rel="stylesheet" href="/CSS/styleCategorias.css" />
+  <link rel="stylesheet" href="/CSS/landing.css" />
+
+  <!--agregacion para los iconos-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!--  Animacion al hacer scroll -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Link para el font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined">
+
+  <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 </head>
 
 <body>
-  <?php
-  include_once(__DIR__ . '/../../models/productos.php');
-  $producto = new productos();
-  $productos = $producto->ConsultaEspecifica('category', 'cajas-combos');
-  ?>
+  <div th:replace="fragments/navPagina :: navPagina"></div>
+  <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
 
-
-<div class="menu container1">
-<?php include '../modelosFront/navPagina.php'; ?>
-<?php include '../modelosFront/carritoProducto.php'; ?>
-</div>
   <main class="products container1" id="lista-1">
-    <h2 class="productosCatePhp" data-aos="zoom-in">Cajas Mixtas o Combos</h2>
+    <h2 class="TituloCategoria" data-aos="zoom-in">Cajas Mixtas o Combos</h2>
 
     <div class="products-container">
-      <?php foreach ($productos as $producto): ?>
-        <div class="product-content" data-aos="zoom-in" data-aos-delay="100">
-          <div class="product">
-            <img src="../../uploads/<?php echo $producto['image_product']; ?>" alt="Imagen de <?php echo htmlspecialchars($producto['name_product']) ?>" />
-            <div class="product-txt">
-              <h3><?php echo htmlspecialchars($producto['name_product']) ?></h3>
-              <p class="precio"><?php echo number_format($producto['price'], 0, ',', '.') ?></p>
-             <div class="btnProducto">
-                 <a href="#" class="agregar-carrito btn-2" data-id="1" data-aos="fade-right" data-aos-delay="400">Agregar</a>
-                 <a href="#" class="btn-2" data-aos="fade-right" data-aos-delay="400">Info</a>
-               </div>
+      <!-- Producto de ejemplo -->
+      <div data-aos="zoom-in" data-aos-delay="100">
+        <div class="product">
+          <img
+            src="/images/ImagenesPruebas/Arvejas.jpg"
+            alt="Imagen de Producto"
+          />
+          <div class="product-txt">
+            <h3>Nombre del producto</h3>
+            <p class="precio">$0.000</p>
+            <div class="btnProducto">
+              <a href="#" class="agregar-carrito btn-2">Agregar</a>
+              <a href="#" class="btn-2" data-aos="fade-right" data-aos-delay="400">Info</a>
             </div>
           </div>
         </div>
-      <?php endforeach; ?>
+      </div>
     </div>
   </main>
-  <?php include '../modelosFront/footer.php'; ?>
+
+  <div th:replace="fragments/footer :: footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <!-- script para animaciones al scrollear -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 1000, // duración en ms
+      offset: 100, // cuándo se empieza a activar
+      once: true // solo una vez por scroll
+    });
+  </script>
+  <script src="/JS/script.js" defer></script>
 </body>
 
 </html>
