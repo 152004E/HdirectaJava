@@ -90,32 +90,8 @@
 
         <!--carrito-->
       </div>
-      <div class="header-content container1">
-        <div class="header-txt">
-          <h1>Frutas y verduras</h1>
-          <p>
-            En Huerta Directa, te conectamos con productos campesinos frescos y
-            de calidad, cosechados directamente por manos locales. Disfruta de
-            alimentos 100% naturales, sin intermediarios y al mejor precio.
-            ¡Comer sano y apoyar al campo nunca fue tan fácil!
-          </p>
-          <a th:href="@{/Quienes_somos}" class="btn-1">Informacion</a>
-        </div>
-        <!--  <div class="header-img">
-         <img class="imagen-hover" src="images/rigth.png" alt="" />
-       </div>  -->
-
-        <div class="header-img">
-          <div class="imagen-hover-container">
-            <img class="front" src="images/rigth.png" alt="imagen original" />
-            <img
-              class="back"
-              src="images/ImagenHover-modified.png"
-              alt="imagen al hacer hover"
-            />
-          </div>
-        </div>
-      </div>
+      <div th:replace="fragments/header-context :: header-content"></div>
+     
     </header>
     <section th:replace="fragments/informacion :: information"></section>
 
