@@ -540,6 +540,79 @@ input {
   color: white;
   border-radius: 0.4rem;
 }
+
+    .footer_container {
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #8bc34a !important;
+      padding: 40px 0;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      text-align: left;
+      gap: 10px;
+      padding: 0 16px;
+    }
+
+    /* Todas las columnas usan la misma clase */
+    .content_footer {
+      flex: 1 1 220px; /* crece/encoge, base 220px */
+      min-width: 200px;
+      margin: 10px;
+    }
+
+    .footer1 h4 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .footer1 ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer1 li {
+      margin: 6px 0;
+    }
+
+    /* Los links heredan el color del footer y tienen transición */
+    .footer1 a {
+      color: inherit;             /* hereda blanco del footer */
+      text-decoration: none;
+      display: inline-block;
+      padding: 4px 0;
+      transition: color 0.25s ease, transform 0.18s ease;
+    }
+
+    /* Hover y focus claros y accesibles */
+    .footer1 a:hover,
+    .footer1 a:focus {
+      color: #192a0b;
+      transform: translateX(4px);
+      text-decoration: underline;
+      outline: none;
+    }
+
+    /* Pequeño ajuste en móviles */
+    @media (max-width: 768px) {
+      .footer_container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .content_footer {
+        margin: 16px 0;
+      }
+    }
 @media (max-width: 991px) {
   .menu {
     padding: 30px;
