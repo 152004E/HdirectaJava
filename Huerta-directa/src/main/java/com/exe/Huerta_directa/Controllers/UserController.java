@@ -4,11 +4,14 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.util.List;
@@ -90,6 +93,22 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
    }
+
+
+   //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
+
+    @PostMapping("/register")
+    public String seveUserView(
+            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+            BindingResult result,
+            RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            return "users/login"; // Si hay errores, volver al formulario de registro
+        }
+        userService.crearUser(userDTO);
+        redirect.addFlashAttribute("success", "Usuario creado");
+        return "redirect:/index";
+    }
 
 
 
