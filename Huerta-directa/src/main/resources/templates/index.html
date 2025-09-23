@@ -84,37 +84,11 @@
             Producto</a
           >
         </div>
-        <div class="ajustar">
-          <ul class="ajustaCarrito">
-            <li class="submenu carrito-container">
-              <img
-                class="enlace"
-                id="icono-carrito"
-                src="images/car.svg"
-                alt="carrito de compra"
-              />
-              <div id="carrito" class="dropdown-carrito">
-                <table id="lista-carrito">
-                  <thead>
-                    <tr>
-                      <th>Imagen</th>
-                      <th>Nombre</th>
-                      <th>Precio</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-                <a href="#" id="vaciar-carrito" class="btn-2">Vaciar carrito</a>
-                <a href="#" id="miBoton" class="btn-2">Ir a pagar</a>
-              </div>
-            </li>
-          </ul>
-          <div class="theme-toggler">
-            <span class="material-symbols-outlined active">light_mode</span>
-            <span class="material-symbols-outlined">dark_mode</span>
-          </div>
-        </div>
+
+        <!--carrito-->
+        <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
+
+        <!--carrito-->
       </div>
       <div class="header-content container1">
         <div class="header-txt">
@@ -143,108 +117,10 @@
         </div>
       </div>
     </header>
-    <section class="information container1">
-      <div class="information-content">
-        <div class="information-1">
-          <img src="images/i1.svg" alt="" />
-          <h3>Venta directa</h3>
-          <p>Del campo a tu mesa, sin intermediarios.</p>
-        </div>
-        <div class="information-1">
-          <img src="images/i2.svg" alt="" />
-          <h3>Pagos seguros</h3>
-          <p>Compra fácil y con confianza.</p>
-        </div>
-        <div class="information-1">
-          <img src="images/i3.svg" alt="" />
-          <h3>Entrega a domicilio</h3>
-          <p>Recibe fresco y rápido.</p>
-        </div>
-      </div>
-    </section>
+    <section th:replace="fragments/informacion :: information"></section>
 
     <section th:replace="fragments/oferts :: ofertas"></section>
     <section th:replace="fragments/slider-section :: slider-section"></section>
-
-    <!-- 
-    <section class="slider-section">
-     
-      <div class="slider">
-        <div class="container1">
-          <div class="wrapper">
-            <div class="myslider swiper">
-              <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                  <div class="item">
-                    <div class="image object-cover">
-                      <img src="images/1.png" alt="" />
-                    </div>
-                    <div class="text-content flexcol">
-                      <h4>Frutas Premium</h4>
-                      <h2>
-                        <span>Del campo a tu casa</span><br /><strong
-                          >Las más frescas del mercado</strong
-                        >
-                      </h2>
-                      <a href="#" class="primary-button">Ver Mas</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="item">
-                    <div class="image object-cover">
-                      <img src="images/pr4.png" alt="" />
-                    </div>
-                    <div class="text-content flexcol">
-                      <h4>Fruta Fresca</h4>
-                      <h2>
-                        <span>Recién Cosechada</span><br /><strong
-                          >Productos de calidad</strong
-                        >
-                      </h2>
-                      <a href="#" class="primary-button">Ver Más</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="item">
-                    <div class="image object-cover">
-                      <img src="images/pr5.png" alt="" />
-                    </div>
-                    <div class="text-content flexcol">
-                      <h4>Frutas seleccionadas</h4>
-                      <h2>
-                        <span>La mejor cosecha</span><br /><strong
-                          >Agro Colombiano
-                        </strong>
-                      </h2>
-                      <a href="#" class="primary-button">Ver Más</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="swiper-slide">
-                  <div class="item">
-                    <div class="image object-cover">
-                      <img src="images/pr6.png" alt="" />
-                    </div>
-                    <div class="text-content flexcol">
-                      <h4>100% con amor</h4>
-                      <h2>
-                        <span>De la mejor calidad</span><br /><strong
-                          >De la huerta, Directo a tu casa</strong
-                        >
-                      </h2>
-                      <a href="#" class="primary-button">Ver Más</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-pagination"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
 
     <!-- <?php include '../controllers/productos_pagina.php'; ?>
 
