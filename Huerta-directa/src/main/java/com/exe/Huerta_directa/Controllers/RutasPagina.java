@@ -17,7 +17,12 @@ public class RutasPagina {
     private ProductService productService;
 
     @GetMapping({ "/", "/index" })
-    public String info() {
+    public String mostrarIndex(Model model) {
+        //agragar productos al main
+        List<ProductDTO> productos = productService.listarProducts();
+        System.out.println("Productos obtenidos: " + productos); 
+        model.addAttribute("pruductos", productos);
+
         return "index"; // busca templates/index.html
     }
 
