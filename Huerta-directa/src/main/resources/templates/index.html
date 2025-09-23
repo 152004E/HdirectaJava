@@ -163,32 +163,12 @@
       </div>
     </section>
 
-    <!--ofertas section-->
-    <section class="oferts container1">
-      <div class="ofert">
-        <img src="images/f1.png" alt="" />
-        <h3>oferta</h3>
-        <p>Premium</p>
-      </div>
-      <div class="ofert">
-        <img src="images/f2.png" alt="" />
-        <h3>oferta</h3>
-        <p>Premium</p>
-      </div>
-      <div class="ofert">
-        <img src="images/f3.png" alt="" />
-        <h3>oferta</h3>
-        <p>Premium</p>
-      </div>
-      <div class="ofert">
-        <img src="images/f4.png" alt="" />
-        <h3>oferta</h3>
-        <p>Premium</p>
-      </div>
-    </section>
+    <section th:replace="fragments/oferts :: ofertas"></section>
+    <section th:replace="fragments/slider-section :: slider-section"></section>
 
+    <!-- 
     <section class="slider-section">
-      <!-- carrusel-jesus,santiago -->
+     
       <div class="slider">
         <div class="container1">
           <div class="wrapper">
@@ -264,7 +244,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- <?php include '../controllers/productos_pagina.php'; ?>
 
@@ -438,7 +418,7 @@
           </a>
           <!--Quinto categoria de productos-->
 
-          <a  th:href="@{/Cereales}">
+          <a th:href="@{/Cereales}">
             <article class="category" data-aos="zoom-in" data-aos-delay="200">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-bowl-food"></i
@@ -448,7 +428,7 @@
           </a>
           <!--Sexta categoria de productos-->
 
-          <a  th:href="@{/Organicos}">
+          <a th:href="@{/Organicos}">
             <article class="category" data-aos="zoom-in" data-aos-delay="300">
               <span class="category__icon green"
                 ><i class="fa-solid fa-cookie"></i
@@ -458,7 +438,7 @@
           </a>
           <!--Setmima categoria de productos-->
 
-          <a  th:href="@{/MielYDerivados}">
+          <a th:href="@{/MielYDerivados}">
             <article class="category" data-aos="zoom-in" data-aos-delay="100">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-plate-wheat"></i
@@ -468,7 +448,7 @@
           </a>
           <!--Octava categoria de productos-->
 
-          <a  th:href="@{/BebidasNaturales}">
+          <a th:href="@{/BebidasNaturales}">
             <article class="category" data-aos="zoom-in" data-aos-delay="200">
               <span class="category__icon green"
                 ><i class="fa-solid fa-glass-water"></i
@@ -479,7 +459,7 @@
 
           <!--Novena categoria de productos-->
 
-          <a  th:href="@{/CajasMixtas}">
+          <a th:href="@{/CajasMixtas}">
             <article class="category" data-aos="zoom-in" data-aos-delay="300">
               <span class="category__icon green2"
                 ><i class="fa-solid fa-box-open"></i

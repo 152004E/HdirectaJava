@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/CSS/darkindex.css" />
     <link rel="stylesheet" href="/CSS/styleCategorias.css" />
     <link rel="stylesheet" href="/CSS/landing.css" />
+    <link rel="stylesheet" href="/CSS/Footer.css" />
 
     <!--agregacion para los iconos-->
     <link
@@ -27,6 +28,7 @@
   </head>
 
   <body>
+    <div class="layout-container">
     <div th:replace="fragments/navPagina :: navPagina"></div>
     <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
 
@@ -61,7 +63,7 @@
     </main>
 
     <div th:replace="fragments/footer :: footer"></div>
-
+</div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- scrit para animaciones al scrollear -->
