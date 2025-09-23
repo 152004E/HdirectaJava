@@ -18,7 +18,8 @@
         <!-- This is first from -->
         <form
           th:action="@{/api/users/register}"
-          method="post">
+          th:object="${userDTO}"
+          th:method="post">
           <!--onsubmit="return validarRegistro()"-->
           <h1>Crear cuenta</h1>
           <img class="H-logo" src="/images/logo.png" alt="logo" width="100" />
@@ -27,7 +28,7 @@
             <label>Nombre de usuario</label>
             <input
               type="text"
-              name="name"
+              th:field="*{name}"
               placeholder="Ejemplo: Santiago Puentes"
             />
           </div>
@@ -37,7 +38,7 @@
               <input
                 id="correoRegistr"
                 type="email"
-                name="email"
+                th:field="*{email}"
                 placeholder="Ingrese su correo electronico"
                 required
               />
@@ -45,7 +46,12 @@
 
             <div class="from-group">
               <label>Ingrese su contraseña</label>
-              <input type="password" id="passwordRegistro" name="password" placeholder="Contraseña" required />
+              <input type="password"
+                     id="passwordRegistro"
+                     th:field="*{password}"
+                     placeholder="Contraseña"
+                     required
+              />
             </div>
           </div>
 

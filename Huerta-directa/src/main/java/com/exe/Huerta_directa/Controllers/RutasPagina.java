@@ -1,6 +1,7 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,10 @@ public class RutasPagina {
         return "Agreagar_producto/Agregar_producto";
     }
 
-    @GetMapping("/LogIn")
-    public String mostrarLogin() {
-        return "login/logIn";
+    @GetMapping("/login")
+    public String mostrarLogin(Model model) {
+        model.addAttribute("userDTO", new UserDTO());
+        return "login/login";
     }
 
     @GetMapping("/error404")
