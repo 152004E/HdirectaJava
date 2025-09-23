@@ -89,21 +89,36 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
-    //Convertir DTO a Entity
+
+    // Convertir DTO a Entity
     private User convertirAEntity(UserDTO userDTO) {
         User user = new User();
-        user.setId(userDTO.getId());
+        // Comentamos esta línea para que la base de datos genere el ID automáticamente
+        // y evitemos el error de duplicidad.
+        // user.setId(userDTO.getId());
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
 
-        // aquí buscamos el rol
+        // Aquí buscamos el rol.
         if (userDTO.getIdRole() != null) {
+            // Si el DTO tiene un rol asignado (idRole no es nulo), buscamos ese rol
+            // específico en la base de datos.
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
-            user.setRole(role);
+            user.setRole(role); // Asignamos el rol encontrado al usuario.
         } else {
-            throw new RuntimeException("El idRole no puede ser nulo");
+            // --- INICIO DE LA MODIFICACIÓN PARA ROL POR DEFECTO ---
+            // Si el DTO no tiene un rol asignado (idRole es nulo), buscamos el rol por
+            // defecto con ID 2 ('Cliente').
+            // Este rol se asignará automáticamente a los nuevos usuarios si no se
+            // especifica uno.
+            Role defaultRole = roleRepository.findById(2L) // Buscamos el rol con ID 2. Usamos 2L para indicar que es un
+                    // Long.
+                    .orElseThrow(() -> new RuntimeException(
+                            "Rol por defecto con ID 2 ('cliente') no encontrado. Por favor, asegúrate de que exista en la base de datos."));
+            user.setRole(defaultRole); // Asignamos el rol por defecto encontrado al usuario.
+            // --- FIN DE LA MODIFICACIÓN ---
         }
 
         return user;
