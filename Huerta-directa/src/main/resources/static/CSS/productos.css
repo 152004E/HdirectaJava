@@ -1,0 +1,75 @@
+.detalle-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.galeria {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.imagen-principal img {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.thumbnails {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.thumbnails img {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.info h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.precio {
+  font-size: 1.6rem;
+  color: #2d8a34; /* Verde de tu paleta */
+  margin-bottom: 1rem;
+}
+
+.precio .descuento {
+  color: #ff5722;
+  font-size: 1rem;
+  margin-left: 10px;
+}
+
+.compra-box {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.compra-box .btn-1 {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.compra-box .btn-2 {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.extra-info {
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  color: #555;
+}
