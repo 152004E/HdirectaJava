@@ -20,7 +20,7 @@ public class RutasPagina {
     public String mostrarIndex(Model model) {
         //agragar productos al main
         List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos); 
+        System.out.println("Productos obtenidos: " + productos);
         model.addAttribute("productos", productos);
 
         return "index"; // busca templates/index.html
@@ -125,4 +125,10 @@ public class RutasPagina {
         return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
     }
 
+    @GetMapping("DashboardAdmin")
+    public String mostrarDashboardAdmin(Model model) {
+        List<ProductDTO> productos = productService.listarProducts();
+        model.addAttribute("productos", productos);
+        return "Dashboard_Admin/DashboardAdmin"; // templates/DashBoard/DashboardAdmin.html
+    }
 }
