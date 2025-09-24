@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${producto.nameProduct}">Detalle del producto</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/productos.css}">
+</head>
+<body>
+  <!-- heaDEER -->
+  <div th:replace="fragments/header-context :: header-content"></div>
+
+  <main class="container1 detalle-producto">
+    <div class="detalle-grid">
+      
+      <!-- columna izquierda --> 
+      <div class="galeria">
+        <!-- imagen principal -->
+        <div class="imagen-principal">
+          <img th:src="@{'/images/productos/' + ${producto.imageProduct}}" 
+               th:alt="${producto.nameProduct}">
+        </div>
+
+        <!-- thumb nail por si depues queremos poner varias imagenes sss -->
+        <div class="thumbnails">
+          <img th:src="@{'/images/productos/' + ${producto.imageProduct}}" alt="thumb">
+          <img th:src="@{'/images/productos/' + ${producto.imageProduct}}" alt="thumb">
+          <img th:src="@{'/images/productos/' + ${producto.imageProduct}}" alt="thumb">
+        </div>
+      </div>
+
+      <!-- colmuna derecha -->
+      <div class="info">
+        <h2 th:text="${producto.nameProduct}">Nombre del producto</h2>
+
+        <div class="precio">
+          <span class="actual" th:text="'$ ' + ${producto.price}">Precio</span>
+          <span class="descuento">20% OFF</span>
+        </div>
+
+        <p class="descripcion" th:text="${producto.descriptionProduct}">
+          Descripción breve del producto.
+        </p>
+
+        <!-- caja -->
+        <div class="compra-box">
+          <p class="stock">Stock disponible</p>
+          <p class="cantidad">Cantidad: <strong>1 unidad</strong></p>
+
+          <form th:action="@{/carrito/agregar}" method="post">
+            <input type="hidden" name="productId" th:value="${producto.idProduct}" />
+            <button type="submit" class="btn-1">Comprar ahora</button>
+          </form>
+          <a th:href="@{/carrito}" class="btn-2">Agregar al carrito</a>
+
+          <div class="extra-info">
+            <p>Envío gratis a tu ciudad</p>
+            <p>Devolución gratis dentro de 30 días</p>
+            <p>Compra protegida por Huerta Directa</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  
+  <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
