@@ -110,5 +110,19 @@ public class UserController {
     }
 
 
+    @PostMapping("/login")
+    public String loginUser(
+            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+            BindingResult result,
+            RedirectAttributes redirect) {
+        if (result.hasErrors()) {
+            return "users/login"; // Si hay errores, volver al formulario de registro
+        }
+        // Lógica de autenticación aquí (verificar credenciales, etc.)
+        redirect.addFlashAttribute("success", "Inicio de sesión exitoso");
+        return "redirect:/index"; // Redirigir a la página principal después del inicio de
+
+
+    }
 
 }

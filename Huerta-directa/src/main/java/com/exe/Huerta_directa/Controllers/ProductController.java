@@ -74,7 +74,7 @@ public class ProductController {
             // Condicional para redirigir
             if (creado != null && creado.getIdProduct() != null) {
                 // Registro exitoso -> Dashboard
-                return new RedirectView("/Dashboardd");
+                return new RedirectView("/index");
             } else {
                 // Falló el registro -> volver al formulario
                 return new RedirectView("/agregar_producto");
