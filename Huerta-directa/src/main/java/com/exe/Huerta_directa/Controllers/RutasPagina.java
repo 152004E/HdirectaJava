@@ -21,7 +21,7 @@ public class RutasPagina {
         //agragar productos al main
         List<ProductDTO> productos = productService.listarProducts();
         System.out.println("Productos obtenidos: " + productos); 
-        model.addAttribute("pruductos", productos);
+        model.addAttribute("productos", productos);
 
         return "index"; // busca templates/index.html
     }
