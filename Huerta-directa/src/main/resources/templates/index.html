@@ -145,8 +145,9 @@
         >
           <div class="product">
             <img
-              src="/images/ImagenesPruebas/Arvejas.jpg"
-              alt="Imagen de Tomates"
+              th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+              alt="Imagen de [[${producto.nameProduct}]]"
+              width="150"
             />
             <div class="product-txt">
               <h3 th:text="${producto.nameProduct}"></h3>

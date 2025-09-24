@@ -40,11 +40,12 @@ public class ProductController {
             @RequestParam("categoria-producto") String category,
             @RequestParam("image_product") MultipartFile imageFile,
             @RequestParam("descripcion") String descriptionProduct,
-            @RequestParam("userId") Long userId
-    ) {
+            @RequestParam("userId") Long userId) {
         try {
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
+            // Crear carpeta /productos dentro de C:/HuertaUploads
+            File uploadDir = new File(uploadPath, "productos");
+            if (!uploadDir.exists())
+                uploadDir.mkdirs();
 
             String nombreImagen = "default.png";
             if (imageFile != null && !imageFile.isEmpty()) {
@@ -53,6 +54,7 @@ public class ProductController {
                         .map(f -> f.substring(imageFile.getOriginalFilename().lastIndexOf(".")))
                         .orElse("");
                 nombreImagen = UUID.randomUUID() + extension;
+
                 File destino = new File(uploadDir, nombreImagen);
                 imageFile.transferTo(destino);
             }
@@ -85,44 +87,42 @@ public class ProductController {
         }
     }
 
-
-
-
-
-
-    // Aquí irían los endpoints para manejar las solicitudes HTTP relacionadas con producto
+    // Aquí irían los endpoints para manejar las solicitudes HTTP relacionadas con
+    // producto
     @GetMapping
-    public  ResponseEntity<List<ProductDTO>> listarProducts() {
+    public ResponseEntity<List<ProductDTO>> listarProducts() {
         return new ResponseEntity<>(productService.listarProducts(), HttpStatus.OK);
     }
 
-    //Metodo para obtener un producto por su id
+    // Metodo para obtener un producto por su id
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductDTO> obtenerProductPorId(@PathVariable Long productId){
+    public ResponseEntity<ProductDTO> obtenerProductPorId(@PathVariable Long productId) {
         return new ResponseEntity<>(productService.obtenerProductPorId(productId), HttpStatus.OK);
     }
 
     /*
-    //Metodo para crear un nuevo producto
-    @PostMapping
-    public ResponseEntity<ProductDTO> crearProduct(@RequestBody ProductDTO productDTO) {
-        return new ResponseEntity<>(productService.crearProduct(productDTO), HttpStatus.CREATED);
-    }
-    */
+     * //Metodo para crear un nuevo producto
+     * 
+     * @PostMapping
+     * public ResponseEntity<ProductDTO> crearProduct(@RequestBody ProductDTO
+     * productDTO) {
+     * return new ResponseEntity<>(productService.crearProduct(productDTO),
+     * HttpStatus.CREATED);
+     * }
+     */
 
-
-    //Metodo para actualizar un producto
+    // Metodo para actualizar un producto
     @PutMapping("/{productId}")
-    public ResponseEntity<ProductDTO> actualizarProduct(@PathVariable ("productId") Long productId, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> actualizarProduct(@PathVariable("productId") Long productId,
+            @RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.actualizarProduct(productId, productDTO), HttpStatus.OK);
     }
 
-    //Metodo para eliminar un producto por su id
+    // Metodo para eliminar un producto por su id
     @DeleteMapping("/{productId}")
-   public ResponseEntity<Void> eliminarProductPorId(@PathVariable ("productId") Long productId) {
+    public ResponseEntity<Void> eliminarProductPorId(@PathVariable("productId") Long productId) {
         productService.eliminarProductPorId(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   }
-    
+    }
+
 }
- 
