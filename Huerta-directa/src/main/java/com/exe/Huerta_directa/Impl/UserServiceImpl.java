@@ -92,9 +92,8 @@ public class UserServiceImpl implements UserService {
         headerRow.createCell(0).setCellValue("ID");
         headerRow.createCell(1).setCellValue("Name");
         headerRow.createCell(2).setCellValue("Email");
+        headerRow.createCell(3).setCellValue("Password");
         headerRow.createCell(3).setCellValue("Role");
-
-
     }
 
 
