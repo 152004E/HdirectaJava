@@ -8,8 +8,16 @@ import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 
 
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,6 +76,31 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(userId);
         }
     }
+
+    //Metodo para exportar a excel
+    public void  exporUserstToExcel(OutputStream outputStream)  throws IOException {
+
+        //Un nuevo libro de excel
+        Workbook workbook = new XSSFWorkbook();
+
+        //Una nueva hoja en el libro
+        Sheet sheet = workbook.createSheet("Users");
+
+        //Crear la fila de encabezado
+        Row headerRow = sheet.createRow(0);
+
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Name");
+        headerRow.createCell(2).setCellValue("Email");
+        headerRow.createCell(3).setCellValue("Role");
+
+
+    }
+
+
+
+
+
 
 
     //Convertir Entity a DTO
