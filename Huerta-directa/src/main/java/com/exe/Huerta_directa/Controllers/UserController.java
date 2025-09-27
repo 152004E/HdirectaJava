@@ -4,6 +4,7 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -22,7 +26,7 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService, ProductService productService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -93,6 +97,56 @@ public class UserController {
 
    }
 
+   //Metodo para exportar a excel todos los usuarios
+   // Endpoint para exportar usuarios a Excel
+   @GetMapping("/export/excel")
+   public void exportUsersToExcel(HttpServletResponse response) throws IOException {
+       try {
+           // Configurar la respuesta HTTP para descarga de archivo Excel
+           response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+           // Generar nombre de archivo con timestamp
+           String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+           String filename = "users_" + timestamp + ".xlsx";
+
+           // Configurar header para descarga
+           response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+           response.setHeader("Cache-Control", "no-cache");
+
+           // CAMBIO: Llamar al método correcto (con el typo original)
+           userService.exporUserstToExcel(response.getOutputStream());
+
+           // Limpiar el buffer
+           response.getOutputStream().flush();
+
+       } catch (Exception e) {
+           // En caso de error, devolver un error HTTP 500
+           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+           response.getWriter().write("Error al generar el archivo Excel: " + e.getMessage());
+       }
+   }
+
+    // Endpoint de prueba
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Controller funcionando correctamente!");
+    }
+
+    // Endpoint para contar usuarios
+    @GetMapping("/count")
+    public ResponseEntity<String> getUserCount() {
+        try {
+            List<UserDTO> users = userService.listarUsers();
+            return ResponseEntity.ok("Total de usuarios encontrados: " + users.size());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al contar usuarios: " + e.getMessage());
+        }
+    }
+
+
+
+    /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
 
