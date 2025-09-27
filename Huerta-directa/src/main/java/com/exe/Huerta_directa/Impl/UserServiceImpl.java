@@ -8,7 +8,11 @@ import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 
 
-
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,6 +37,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+    }
+
+    //Metodo para obtener todos los usuarios en reporte excel
+    public  List<User> obtenerTodos(){
+        return userRepository.findAll();
     }
 
     @Override
@@ -76,56 +85,6 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(userId);
         }
     }
-
-    //Metodo para exportar a excel
-    public void  exporUserstToExcel(OutputStream outputStream)  throws IOException {
-
-        //Un nuevo libro de excel
-        Workbook workbook = new XSSFWorkbook();
-
-        //Una nueva hoja en el libro
-        Sheet sheet = workbook.createSheet("Users");
-
-        //Crear la fila de encabezado
-        Row headerRow = sheet.createRow(0);
-
-        headerRow.createCell(0).setCellValue("ID");
-        headerRow.createCell(1).setCellValue("Name");
-        headerRow.createCell(2).setCellValue("Email");
-        headerRow.createCell(3).setCellValue("Role");
-
-    // Llenar las filas con datos de usuarios
-    int rowNum = 1; // Empezamos desde la fila 1 (la 0 es el encabezado)
-    List<User> users = userRepository.findAll();
-    for (User user : users) {
-        Row row = sheet.createRow(rowNum++);
-        
-        row.createCell(0).setCellValue(user.getId());
-        row.createCell(1).setCellValue(user.getName());
-        row.createCell(2).setCellValue(user.getEmail());
-        
-        // Verificar si el usuario tiene un rol asignado
-        if (user.getRole() != null) {
-            row.createCell(3).setCellValue(user.getRole().getName());
-        } else {
-            row.createCell(3).setCellValue("Sin rol");
-        }
-    }
-    
-    // Autoajustar el ancho de las columnas
-    for (int i = 0; i < 4; i++) {
-        sheet.autoSizeColumn(i);
-    }
-    
-    try {
-        // Escribir el libro al OutputStream
-        workbook.write(outputStream);
-    } finally {
-        // Cerrar el workbook para liberar recursos
-        workbook.close();
-    }
-
-}
 
 
     //Convertir Entity a DTO
@@ -197,6 +156,99 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new RuntimeException("El idRole no puede ser nulo");
         }
+    }
+
+
+    //Metodo para exportar a excel
+    public void  exporUserstToExcel(OutputStream outputStream)  throws IOException {
+
+        //Un nuevo libro de excel
+        Workbook workbook = new XSSFWorkbook();
+
+        //Una nueva hoja en el libro
+        Sheet sheet = workbook.createSheet("Users");
+
+        //Crear la fila de encabezado
+        Row headerRow = sheet.createRow(0);
+
+        headerRow.createCell(0).setCellValue("User ID");
+        headerRow.createCell(1).setCellValue("Name");
+        headerRow.createCell(2).setCellValue("Email");
+        headerRow.createCell(3).setCellValue("Password");
+        headerRow.createCell(3).setCellValue("Role");
+
+        //Obtener todos los usuarios
+        List<User> users = obtenerTodos();
+        int rowNum = 1;
+        for (User user : users) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(user.getId());
+            row.createCell(1).setCellValue(user.getName());
+            row.createCell(2).setCellValue(user.getEmail());
+            row.createCell(3).setCellValue(user.getPassword());
+
+            // Si el usuario tiene un rol asignado, obtener el nombre del rol; de lo contrario, dejarlo vacío
+            String roleName = (user.getRole() != null) ? user.getRole().getName() : "No Role Assigned";
+            row.createCell(4).setCellValue(roleName);
+
+        }
+
+        //Ajustamos el tamaño de las columnas automaticamente
+        for (int i = 0; i < 5; i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        //Escribimos el libro en el OutputStream proporcionado
+        workbook.write(outputStream);
+        workbook.close();
+    }
+
+
+    //Metodo para exportar a pdf
+    public void exportarUsersToPDF(OutputStream outputStream) throws IOException {
+        // Crear documento pdf
+        Document document = new Document();
+
+        //Asociar el documento al OutputStream(flujo de salida)
+        PdfWriter.getInstance(document, outputStream);
+
+        //Abrir el documento para empexar a escribir
+        document.open();
+
+        //Aqui agrego el titulo del documento
+        document.add(new Paragraph("Lista de usuarios"));
+        document.add(new Paragraph(" ")); // Agregar una línea en blanco para separar el título del contenido
+
+        //Creamos una tabla para mostrar los datos
+        PdfPTable table = new PdfPTable(5); // 5 columnas: ID, Name, Email, Password, Role
+
+        //Agregamos los encabezados de la tabla
+        table.addCell("User ID");
+        table.addCell("Name");
+        table.addCell("Email");
+        table.addCell("Password");
+        table.addCell("Role");
+
+        //Obtener todos los usuarios
+        List<User> users = obtenerTodos();
+        int rowNum = 1;
+        for (User user : users) {
+            table.addCell(String.valueOf(user.getId()));
+            table.addCell(user.getName());
+            table.addCell(user.getEmail());
+            table.addCell(user.getPassword());
+
+            // Si el usuario tiene un rol asignado, obtener el nombre del rol; de lo contrario, dejarlo vacío
+            String role = (user.getRole() != null) ? user.getRole().getName() : "No Role";
+            table.addCell(role);
+        }
+
+        //Agregar la tabla al documento
+        document.add(table);
+
+        //Cerrar el documento
+        document.close();
+
     }
 
 }
