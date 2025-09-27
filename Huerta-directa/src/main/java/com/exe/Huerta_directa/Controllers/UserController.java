@@ -103,7 +103,9 @@ public class UserController {
 
    }
     /*
-    //Se comento por si acasooo
+
+     /*
+    //Se comento por si acasoooo
    //Metodo para exportar a excel todos los usuarios
    // Endpoint para exportar usuarios a Excel
    @GetMapping("/export/excel")
@@ -153,7 +155,7 @@ public class UserController {
     */
 
     // Método para exportar usuarios a Excel
-    @GetMapping("/usuario/exportExcel")
+    @GetMapping("/exportExcel")
     public ResponseEntity<InputStreamResource> exportarExcel() throws IOException {
         // Creamos el flujo de salida en memoria (Array de bytes)
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -168,7 +170,7 @@ public class UserController {
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
         // Indicamos al navegador que es un archivo adjunto con un nombre específico
-        headers.setContentDispositionFormData("attachment", "usuarios.xlsx");
+        headers.setContentDispositionFormData("attachment", "Usuarios.xlsx");
 
         // Creamos y devolvemos la respuesta con el archivo Excel en el cuerpo
         // Creamos un inputStream a partir del array de bytes
@@ -178,6 +180,8 @@ public class UserController {
                 HttpStatus.OK
         );
     }
+
+
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
