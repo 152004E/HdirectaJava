@@ -186,14 +186,11 @@ public class UserServiceImpl implements UserService {
             row.createCell(1).setCellValue(user.getName());
             row.createCell(2).setCellValue(user.getEmail());
             row.createCell(3).setCellValue(user.getPassword());
-            row.createCell(4).setCellValue(user.getRole().getIdRole());
 
-            /*
-            //Dejo este comentado, para probarlo despues haber si sirve
             // Si el usuario tiene un rol asignado, obtener el nombre del rol; de lo contrario, dejarlo vacío
             String roleName = (user.getRole() != null) ? user.getRole().getName() : "No Role Assigned";
             row.createCell(4).setCellValue(roleName);
-            */
+
         }
 
         //Ajustamos el tamaño de las columnas automaticamente
@@ -231,6 +228,26 @@ public class UserServiceImpl implements UserService {
         table.addCell("Email");
         table.addCell("Password");
         table.addCell("Role");
+
+        //Obtener todos los usuarios
+        List<User> users = obtenerTodos();
+        int rowNum = 1;
+        for (User user : users) {
+            table.addCell(String.valueOf(user.getId()));
+            table.addCell(user.getName());
+            table.addCell(user.getEmail());
+            table.addCell(user.getPassword());
+
+            // Si el usuario tiene un rol asignado, obtener el nombre del rol; de lo contrario, dejarlo vacío
+            String role = (user.getRole() != null) ? user.getRole().getName() : "No Role";
+            table.addCell(role);
+        }
+
+        //Agregar la tabla al documento
+        document.add(table);
+
+        //Cerrar el documento
+        document.close();
 
     }
 
