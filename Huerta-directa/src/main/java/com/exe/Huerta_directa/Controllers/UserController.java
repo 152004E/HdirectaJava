@@ -188,9 +188,9 @@ public class UserController {
             // Configurar la respuesta HTTP para descarga de archivo PDF
             response.setContentType("application/pdf");
 
-            // Generar nombre de archivo con timestamp
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String filename = "users_" + timestamp + ".pdf";
+            // Generar nombre de archivo con timestamp, por si acaso
+            // String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String filename = "Usuarios" + /*timestamp+ */ ".pdf";
 
             // Configurar header para descarga
             response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
