@@ -2,11 +2,15 @@ package com.exe.Huerta_directa.Controllers;
 
 
 import com.exe.Huerta_directa.DTO.UserDTO;
+import com.exe.Huerta_directa.Impl.UserServiceImpl;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -96,7 +102,8 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
    }
-
+    /*
+    //Se comento por si acasooo
    //Metodo para exportar a excel todos los usuarios
    // Endpoint para exportar usuarios a Excel
    @GetMapping("/export/excel")
@@ -143,8 +150,34 @@ public class UserController {
                     .body("Error al contar usuarios: " + e.getMessage());
         }
     }
+    */
 
+    // Método para exportar usuarios a Excel
+    @GetMapping("/usuario/exportExcel")
+    public ResponseEntity<InputStreamResource> exportarExcel() throws IOException {
+        // Creamos el flujo de salida en memoria (Array de bytes)
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        // Llamamos al servicio para exportar los usuarios a Excel
+        ((UserServiceImpl) userService).exporUserstToExcel(outputStream);
+
+        // Configuramos la respuesta HTTP con el archivo Excel
+        HttpHeaders headers = new HttpHeaders();
+
+        // Definimos el tipo de contenido y las cabeceras para la descarga
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+        // Indicamos al navegador que es un archivo adjunto con un nombre específico
+        headers.setContentDispositionFormData("attachment", "usuarios.xlsx");
+
+        // Creamos y devolvemos la respuesta con el archivo Excel en el cuerpo
+        // Creamos un inputStream a partir del array de bytes
+        return new ResponseEntity<>(
+                new InputStreamResource(new ByteArrayInputStream(outputStream.toByteArray())),
+                headers,
+                HttpStatus.OK
+        );
+    }
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
