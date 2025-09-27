@@ -20,4 +20,5 @@ public interface UserService {
 
     void exporUserstToExcel(OutputStream outputStream) throws IOException;
 
+    void exportUsersToPdf(OutputStream outputStream) throws IOException;
 }

@@ -2,7 +2,6 @@ package com.exe.Huerta_directa.Controllers;
 
 
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -125,6 +124,35 @@ public class UserController {
            response.getWriter().write("Error al generar el archivo Excel: " + e.getMessage());
        }
    }
+
+
+   // Endpoint para exportar usuarios a PDF
+    @GetMapping("/export/pdf")
+    public void exportUsersToPdf(HttpServletResponse response) throws IOException {
+        try {
+            // Configurar la respuesta HTTP para descarga de archivo PDF
+            response.setContentType("application/pdf");
+            
+            // Generar nombre de archivo con timestamp
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String filename = "users_" + timestamp + ".pdf";
+            
+            // Configurar header para descarga
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            response.setHeader("Cache-Control", "no-cache");
+            
+            // Llamar al método de exportación del service
+            userService.exportUsersToPdf(response.getOutputStream());
+            
+            // Limpiar el buffer
+            response.getOutputStream().flush();
+            
+        } catch (Exception e) {
+            // En caso de error, devolver un error HTTP 500
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
+        }
+    }
 
     // Endpoint de prueba
     @GetMapping("/test")
