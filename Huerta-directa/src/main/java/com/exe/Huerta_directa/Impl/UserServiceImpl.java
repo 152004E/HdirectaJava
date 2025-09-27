@@ -203,22 +203,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // MÉTODO PARA EXPORTAR A PDF (Mejorado significativamente)
+    // MÉTODO PARA EXPORTAR A PDF 
     @Override
     public void exportUsersToPdf(OutputStream outputStream) throws IOException {
         Document document = new Document();
 
         try {
-            // Asociar el documento al OutputStream
+
             PdfWriter.getInstance(document, outputStream);
 
             // Abrir el documento para empezar a escribir
             document.open();
 
-            // ==================== ENCABEZADO MEJORADO ====================
-            
             // Título principal con estilo
-            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, Color.BLUE);
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, Color.GREEN.darker());
             Paragraph title = new Paragraph("HUERTA DIRECTA", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
@@ -241,7 +239,6 @@ public class UserServiceImpl implements UserService {
             reportInfo.setSpacingAfter(20);
             document.add(reportInfo);
 
-            // ==================== TABLA MEJORADA ====================
             
             if (users.isEmpty()) {
                 // Si no hay usuarios
@@ -343,7 +340,7 @@ public class UserServiceImpl implements UserService {
     // MÉTODO AUXILIAR: Agregar encabezado de tabla con estilo
     private void addTableHeader(PdfPTable table, String headerTitle, Font font) {
         PdfPCell header = new PdfPCell();
-        header.setBackgroundColor(new Color(63, 81, 181)); // Color azul
+        header.setBackgroundColor(new Color(67, 160, 71)); 
         header.setBorderWidth(1);
         header.setPhrase(new Phrase(headerTitle, font));
         header.setHorizontalAlignment(Element.ALIGN_CENTER);
