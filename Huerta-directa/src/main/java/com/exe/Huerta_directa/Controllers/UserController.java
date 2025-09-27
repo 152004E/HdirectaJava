@@ -5,7 +5,6 @@ import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -94,11 +92,6 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
    }
-
-
-
-
-   //Metodo para el implement de Pdf
 
 
    //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
