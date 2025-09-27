@@ -94,13 +94,38 @@ public class UserServiceImpl implements UserService {
         headerRow.createCell(2).setCellValue("Email");
         headerRow.createCell(3).setCellValue("Role");
 
-
+    // Llenar las filas con datos de usuarios
+    int rowNum = 1; // Empezamos desde la fila 1 (la 0 es el encabezado)
+    List<User> users = userRepository.findAll();
+    for (User user : users) {
+        Row row = sheet.createRow(rowNum++);
+        
+        row.createCell(0).setCellValue(user.getId());
+        row.createCell(1).setCellValue(user.getName());
+        row.createCell(2).setCellValue(user.getEmail());
+        
+        // Verificar si el usuario tiene un rol asignado
+        if (user.getRole() != null) {
+            row.createCell(3).setCellValue(user.getRole().getName());
+        } else {
+            row.createCell(3).setCellValue("Sin rol");
+        }
+    }
+    
+    // Autoajustar el ancho de las columnas
+    for (int i = 0; i < 4; i++) {
+        sheet.autoSizeColumn(i);
+    }
+    
+    try {
+        // Escribir el libro al OutputStream
+        workbook.write(outputStream);
+    } finally {
+        // Cerrar el workbook para liberar recursos
+        workbook.close();
     }
 
-
-
-
-
+}
 
 
     //Convertir Entity a DTO

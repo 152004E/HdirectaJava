@@ -1,10 +1,13 @@
 package com.exe.Huerta_directa.Controllers;
 
-
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
+
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,103 +15,151 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Controller
-@RequestMapping ("/api/users")
+@RestController  // ← CAMBIO: RestController en lugar de Controller
+@RequestMapping("/api/users")
 @CrossOrigin("*")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     public UserController(UserService userService, ProductService productService) {
         this.userService = userService;
     }
 
-    //Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con usuario
+    // =====================================================
+    // ENDPOINTS PARA API REST (JSON)
+    // =====================================================
 
-    //Metodo para listar todos los usuarios
-    @GetMapping
-    public  ResponseEntity<List<UserDTO>> listarUsers() {
-        return new ResponseEntity<>(userService.listarUsers(), HttpStatus.OK);
-    }
-
-    //Metodo para obtener un usuario por su id
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> obtenerUserPorId(@PathVariable Long userId){
-        return new ResponseEntity<>(userService.obtenerUserPorId(userId), HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO){
-        return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
-    }
-
-    /*Metodo para crear un nuevo usuario
-    @PostMapping("/register")
-    public String registrarUser(
-            @RequestParam("name") String name,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            Model model){
-
+    // Endpoint para exportar usuarios a Excel
+    @GetMapping("/export/excel")
+    public void exportUsersToExcel(HttpServletResponse response) throws IOException {
         try {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setName(name);
-            userDTO.setEmail(email);
-            userDTO.setPassword(password);
-
-            UserDTO registrado = userService.crearUser(userDTO);
-
-            //Condicional para redirigir segun el resultado del registro
-            if (registrado != null && registrado.getId() != null){
-                //Si el registro es exitoso, redirigir a la pagina de inicio
-                model.addAttribute("Mensaje", "Usuario registrado exitosamente");
-                return "redirect:/index";
-            } else {
-                //Si el registro falla, redirigir a la pagina de registro con un mensaje de error
-                model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
-                return "redirect:/LogIn";
-            }
-        } catch (RuntimeException e) {
-            //Si el usuario falla en registrarse, redirigir a la pagina de registro con un mensaje de error
-             model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
-             return "redirect:/LogIn";
+            // Configurar la respuesta HTTP para descarga de archivo Excel
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            
+            // Generar nombre de archivo con timestamp
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+            String filename = "users_" + timestamp + ".xlsx";
+            
+            // Configurar header para descarga
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            response.setHeader("Cache-Control", "no-cache");
+            
+            // CAMBIO: Llamar al método correcto (con el typo original)
+            userService.exporUserstToExcel(response.getOutputStream());
+            
+            // Limpiar el buffer
+            response.getOutputStream().flush();
+            
+        } catch (Exception e) {
+            // En caso de error, devolver un error HTTP 500
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error al generar el archivo Excel: " + e.getMessage());
         }
-    }*/
-
-
-    //Metodo para actualizar un usuario
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> actualizarUser(@PathVariable ("userId") Long userId, @RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.actualizarUser(userId, userDTO), HttpStatus.OK);
     }
 
-    //Metodo para eliminar un usuario por su id
+    // Endpoint de prueba
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Controller funcionando correctamente!");
+    }
+
+    // Endpoint para contar usuarios
+    @GetMapping("/count")
+    public ResponseEntity<String> getUserCount() {
+        try {
+            List<UserDTO> users = userService.listarUsers();
+            return ResponseEntity.ok("Total de usuarios encontrados: " + users.size());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al contar usuarios: " + e.getMessage());
+        }
+    }
+
+    // Método para listar todos los usuarios
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> listarUsers() {
+        try {
+            List<UserDTO> users = userService.listarUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // Método para obtener un usuario por su id
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> obtenerUserPorId(@PathVariable Long userId) {
+        try {
+            UserDTO user = userService.obtenerUserPorId(userId);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Método para crear un nuevo usuario
+    @PostMapping
+    public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO) {
+        try {
+            UserDTO newUser = userService.crearUser(userDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    // Método para actualizar un usuario
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDTO> actualizarUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDTO) {
+        try {
+            UserDTO updatedUser = userService.actualizarUser(userId, userDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Método para eliminar un usuario por su id
     @DeleteMapping("/{userId}")
-   public ResponseEntity<Void> eliminarUserPorId(@PathVariable ("userId") Long userId) {
-        userService.eliminarUserPorId(userId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> eliminarUserPorId(@PathVariable("userId") Long userId) {
+        try {
+            userService.eliminarUserPorId(userId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
 
-   }
+// =====================================================
+// CONTROLLER SEPARADO PARA VISTAS WEB (si lo necesitas)
+// =====================================================
+@Controller  // ← Controller normal para vistas
+@RequestMapping("/web/users")  // ← Ruta diferente para evitar conflictos
+class UserWebController {
 
-
-   //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/register")
-    public String seveUserView(
+    public String saveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
             BindingResult result,
             RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            return "users/login"; // Si hay errores, volver al formulario de registro
+            return "users/login";
         }
         userService.crearUser(userDTO);
         redirect.addFlashAttribute("success", "Usuario creado");
         return "redirect:/index";
     }
-
 
     @PostMapping("/login")
     public String loginUser(
@@ -116,13 +167,10 @@ public class UserController {
             BindingResult result,
             RedirectAttributes redirect) {
         if (result.hasErrors()) {
-            return "users/login"; // Si hay errores, volver al formulario de registro
+            return "users/login";
         }
-        // Lógica de autenticación aquí (verificar credenciales, etc.)
+        // Lógica de autenticación aquí
         redirect.addFlashAttribute("success", "Inicio de sesión exitoso");
-        return "redirect:/index"; // Redirigir a la página principal después del inicio de
-
-
+        return "redirect:/index";
     }
-
 }

@@ -2,6 +2,8 @@ package com.exe.Huerta_directa.Service;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface UserService {
@@ -15,5 +17,7 @@ public interface UserService {
     UserDTO actualizarUser(Long userId, UserDTO userDTO);
 
     void eliminarUserPorId(Long userId);
+
+    void exporUserstToExcel(OutputStream outputStream) throws IOException;
 
 }
