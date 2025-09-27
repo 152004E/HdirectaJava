@@ -22,5 +22,5 @@ public class ProductViewController {
         }
         model.addAttribute("producto", producto);
         return "Productos/product_detail";
-    }
+    }''
 }

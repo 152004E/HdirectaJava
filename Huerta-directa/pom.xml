@@ -79,7 +79,31 @@
             <artifactId>modelmapper</artifactId>
             <version>3.2.0</version>
         </dependency>
-	</dependencies>
+        <!--
+			Dependencia para Apache POI.
+			Esta biblioteca permite crear y manipular archivos de Microsoft Office,
+			en este caso, la usaremos para generar archivos de Excel (.xlsx).
+			'poi-ooxml' es el artefacto específico para el formato OpenXML (xlsx, docx, etc.).
+		-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!--
+            Dependencia para OpenPDF.
+            Esta es una biblioteca de código abierto para crear y manipular archivos PDF.
+            Es un fork de la popular biblioteca iText.
+        -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.30</version>
+        </dependency>
+
+
+    </dependencies>
 
 	<build>
 		<plugins>
