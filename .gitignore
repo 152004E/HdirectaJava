@@ -57,3 +57,7 @@ target/
 # Maven wrapper
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot application config
+src/main/resources/application.properties
+src/main/resources/application.yml
