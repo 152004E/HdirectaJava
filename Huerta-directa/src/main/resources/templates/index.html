@@ -56,7 +56,7 @@
                 <li>
                   <a th:href="@{/error404}">🚚 Entrega a domicilio</a>
                 </li>
-                <li> 
+                <li>
                   <a th:href="@{/error404}">📦 Venta al por mayor</a>
                 </li>
                 <li>
@@ -97,40 +97,6 @@
     <section th:replace="fragments/oferts :: ofertas"></section>
     <section th:replace="fragments/slider-section :: slider-section"></section>
 
-    <!-- <?php include '../controllers/productos_pagina.php'; ?>
-
-    <main class="products container1" id="lista-1">
-      <h2 data-aos="zoom-in">Productos destacados</h2>
-
-      <div class="products-container">
-        <?php foreach ($productos as $producto): ?>
-        <div data-aos="zoom-in" data-aos-delay="100">
-          <div class="product">
-            <img
-              src="../uploads/<?php echo $producto['image_product']; ?>"
-              alt="Imagen de <?php echo htmlspecialchars($producto['name_product']) ?>"
-            />
-            <div class="product-txt">
-              <h3><?php echo htmlspecialchars($producto['name_product']) ?></h3>
-              <p class="precio">
-                <?php echo number_format($producto['price'], 0, ',', '.') ?>
-              </p>
-              <div class="btnProducto">
-                <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                <a
-                  href="#"
-                  class="btn-2"
-                  data-aos="fade-right"
-                  data-aos-delay="400"
-                  >Info</a
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-        <?php endforeach; ?>
-      </div>
-    </main> -->
     <main class="products container1" id="lista-1">
       <h2 data-aos="zoom-in">Productos destacados</h2>
 
