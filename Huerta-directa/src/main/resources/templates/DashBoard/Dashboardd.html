@@ -234,6 +234,7 @@ $producto->ObtenerTodos(); // } // // ?> // -->
                     <th>Precio</th>
                     <th>Unidad</th>
                     <th>Descripción</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -243,6 +244,14 @@ $producto->ObtenerTodos(); // } // // ?> // -->
                     <td th:text="${producto.price}"></td>
                     <td th:text="${producto.unit}"></td>
                     <td th:text="${producto.descriptionProduct}"></td>
+                    <td>
+                        <button type="button" class="btn-actualizar" th:onclick="'actualizarProducto('  ')'">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button type="button" class="btn-eliminar" th:onclick="'eliminarProducto(' ')'">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

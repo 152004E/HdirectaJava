@@ -364,12 +364,63 @@ main table tbody tr:last-child td {
   border: none;
 }
 
+/* Estilos para los botones de acción en la tabla */
+.btn-actualizar,
+.btn-eliminar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0.2rem;
+  text-transform: none;
+  font-family: inherit;
+}
+
+.btn-actualizar {
+  background-color: #004d00 ;
+  color: white;
+}
+
+.btn-actualizar:hover {
+  background-color: #8dc84b;
+  transform: translateY(-1px);
+}
+
+.btn-eliminar {
+  background-color: #dc2626;
+  color: white;
+}
+
+.btn-eliminar:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.btn-actualizar .material-symbols-outlined,
+.btn-eliminar .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+/* Ajustar el ancho de la columna de acciones */
+table th:last-child,
+table td:last-child {
+  width: 180px;
+  min-width: 180px;
+}
+
 main .recent-orders a {
   text-align: center;
   display: block;
   margin: 1rem auto;
   color: #8dc84b;
 }
+
 /*Barra de busqueda*/
 
 .busqueda-filtros {
