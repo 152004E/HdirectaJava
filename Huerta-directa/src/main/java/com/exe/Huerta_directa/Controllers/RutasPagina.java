@@ -18,7 +18,7 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
-        //agragar productos al main
+        // agragar productos al main
         List<ProductDTO> productos = productService.listarProducts();
         System.out.println("Productos obtenidos: " + productos);
         model.addAttribute("productos", productos);
@@ -63,53 +63,70 @@ public class RutasPagina {
     }
 
     @GetMapping("/Frutas")
-    public String mostrarFrutas() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+    public String mostrarFrutas(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("frutas");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/Frutas";
     }
 
     @GetMapping("/BebidasNaturales")
-    public String mostrarBebidasNaturales() {
+    public String mostrarBebidasNaturales(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/BebidasNaturales";
     }
 
     @GetMapping("/CajasMixtas")
-    public String mostrarCajasMixtas() {
+    public String mostrarCajasMixtas(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("cajas-combos");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/CajasMixtas";
     }
 
     @GetMapping("/CarnesYl")
-    public String mostrarCarnesYl() {
+    public String mostrarCarnesYl(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/CarnesYProteinas";
     }
 
     @GetMapping("/Cereales")
-    public String mostrarCereales() {
+    public String mostrarCereales(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/CerealesYGranos";
     }
 
     @GetMapping("/Lacteos")
-    public String mostrarLacteos() {
+    public String mostrarLacteos(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/Lacteos";
     }
 
     @GetMapping("/legumbresSecas")
-    public String mostrarLegumbresSecas() {
+    public String mostrarLegumbresSecas(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/legumbresSecas";
     }
 
     @GetMapping("/MielYDerivados")
-    public String mostrarMielYDerivados() {
+    public String mostrarMielYDerivados(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/MielYDerivados";
     }
 
     @GetMapping("/Organicos")
-    public String mostrarOrganicos() {
+    public String mostrarOrganicos(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/Organicos";
     }
 
     @GetMapping("/VerdurasYHortalizas")
-    public String mostrarVerdurasYHortalizas() {
+    public String mostrarVerdurasYHortalizas(Model model) {
         return "ProductosCategorias/VerdurasYHortalizas";
     }
     // @GetMapping("/InicioIndex")
@@ -118,12 +135,12 @@ public class RutasPagina {
     // return "index";
     // }
 
-    @GetMapping("/Dashboardd")
-    public String mostrarDashBoard(Model model) {
-        List<ProductDTO> productos = productService.listarProducts();
-        model.addAttribute("productos", productos);
-        return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
-    }
+    // @GetMapping("/Dashboardd")
+    // public String mostrarDashBoard(Model model) {
+    // List<ProductDTO> productos = productService.listarProducts();
+    // model.addAttribute("productos", productos);
+    // return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
+    // }
 
     @GetMapping("DashboardAdmin")
     public String mostrarDashboardAdmin(Model model) {

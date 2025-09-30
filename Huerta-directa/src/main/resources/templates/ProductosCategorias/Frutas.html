@@ -35,96 +35,21 @@
         <h2 class="TituloCategoria" data-aos="zoom-in">Frutas</h2>
 
         <div class="products-container">
-          <!-- Producto 1 -->
-          <div data-aos="zoom-in" data-aos-delay="100">
+          <div th:each="producto : ${productos}" data-aos="zoom-in">
             <div class="product">
               <img
-                src="/images/ImagenesPruebas/Arvejas.jpg"
-                alt="Imagen de Tomates"
+                th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                th:alt="${producto.nameProduct}"
               />
               <div class="product-txt">
-                <h3>Tomates frescos</h3>
-                <p class="precio">$3.500</p>
+                <h3 th:text="${producto.nameProduct}"></h3>
+                <p
+                  class="precio"
+                  th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
+                ></p>
                 <div class="btnProducto">
                   <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                  <a
-                    href="#"
-                    class="btn-2"
-                    data-aos="fade-right"
-                    data-aos-delay="400"
-                    >Info</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Producto 2 -->
-          <div data-aos="zoom-in" data-aos-delay="200">
-            <div class="product">
-              <img
-                src="/images/ImagenesPruebas/Arvejas.jpg"
-                alt="Imagen de Lechuga"
-              />
-              <div class="product-txt">
-                <h3>Lechuga orgánica</h3>
-                <p class="precio">$2.000</p>
-                <div class="btnProducto">
-                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                  <a
-                    href="#"
-                    class="btn-2"
-                    data-aos="fade-right"
-                    data-aos-delay="400"
-                    >Info</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Producto 2 -->
-          <div data-aos="zoom-in" data-aos-delay="200">
-            <div class="product">
-              <img
-                src="/images/ImagenesPruebas/Arvejas.jpg"
-                alt="Imagen de Lechuga"
-              />
-              <div class="product-txt">
-                <h3>Lechuga orgánica</h3>
-                <p class="precio">$2.000</p>
-                <div class="btnProducto">
-                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                  <a
-                    href="#"
-                    class="btn-2"
-                    data-aos="fade-right"
-                    data-aos-delay="400"
-                    >Info</a
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Producto 3 -->
-          <div data-aos="zoom-in" data-aos-delay="300">
-            <div class="product">
-              <img
-                src="/images/ImagenesPruebas/Arvejas.jpg"
-                alt="Imagen de Papas"
-              />
-              <div class="product-txt">
-                <h3>Papas criollas</h3>
-                <p class="precio">$4.800</p>
-                <div class="btnProducto">
-                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                  <a
-                    href="#"
-                    class="btn-2"
-                    data-aos="fade-right"
-                    data-aos-delay="400"
-                    >Info</a
-                  >
+                  <a href="#" class="btn-2">Info</a>
                 </div>
               </div>
             </div>

@@ -3,7 +3,6 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Impl.UserServiceImpl;
-import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,8 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 
 @Controller
