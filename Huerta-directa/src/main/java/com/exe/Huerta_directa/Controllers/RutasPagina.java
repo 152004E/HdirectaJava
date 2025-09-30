@@ -85,21 +85,21 @@ public class RutasPagina {
 
     @GetMapping("/CarnesYl")
     public String mostrarCarnesYl(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("carnes-proteinas");
         model.addAttribute("productos", productos);
         return "ProductosCategorias/CarnesYProteinas";
     }
 
     @GetMapping("/Cereales")
     public String mostrarCereales(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("cereales-granos");
         model.addAttribute("productos", productos);
         return "ProductosCategorias/CerealesYGranos";
     }
 
     @GetMapping("/Lacteos")
     public String mostrarLacteos(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
         return "ProductosCategorias/Lacteos";
     }
@@ -113,34 +113,24 @@ public class RutasPagina {
 
     @GetMapping("/MielYDerivados")
     public String mostrarMielYDerivados(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("miel-derivados");
         model.addAttribute("productos", productos);
         return "ProductosCategorias/MielYDerivados";
     }
 
     @GetMapping("/Organicos")
     public String mostrarOrganicos(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("productos-organicos");
         model.addAttribute("productos", productos);
         return "ProductosCategorias/Organicos";
     }
 
     @GetMapping("/VerdurasYHortalizas")
     public String mostrarVerdurasYHortalizas(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("verduras-hortalizas");
+        model.addAttribute("productos", productos);
         return "ProductosCategorias/VerdurasYHortalizas";
     }
-    // @GetMapping("/InicioIndex")
-    // public String mostrarInicio() {
-    // // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
-    // return "index";
-    // }
-
-    // @GetMapping("/Dashboardd")
-    // public String mostrarDashBoard(Model model) {
-    // List<ProductDTO> productos = productService.listarProducts();
-    // model.addAttribute("productos", productos);
-    // return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
-    // }
 
     @GetMapping("DashboardAdmin")
     public String mostrarDashboardAdmin(Model model) {

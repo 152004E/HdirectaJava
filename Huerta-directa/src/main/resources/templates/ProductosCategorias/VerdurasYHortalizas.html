@@ -37,28 +37,25 @@
 
       <div class="products-container">
         <!-- Producto 1 -->
-        <div data-aos="zoom-in" data-aos-delay="100">
-          <div class="product">
-            <img
-              src="/images/ImagenesPruebas/Arvejas.jpg"
-              alt="Imagen de Tomates"
-            />
-            <div class="product-txt">
-              <h3>Tomates frescos</h3>
-              <p class="precio">$3.500</p>
-              <div class="btnProducto">
-                <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                <a
-                  href="#"
-                  class="btn-2"
-                  data-aos="fade-right"
-                  data-aos-delay="400"
-                  >Info</a
-                >
+        <div th:each="producto : ${productos}" data-aos="zoom-in">
+            <div class="product">
+              <img
+                th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                th:alt="${producto.nameProduct}"
+              />
+              <div class="product-txt">
+                <h3 th:text="${producto.nameProduct}"></h3>
+                <p
+                  class="precio"
+                  th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
+                ></p>
+                <div class="btnProducto">
+                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
+                  <a href="#" class="btn-2">Info</a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
       </div>
     </main>
 
