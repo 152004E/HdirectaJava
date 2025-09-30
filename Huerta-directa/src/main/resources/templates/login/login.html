@@ -16,6 +16,7 @@
     <div class="container" id="container">
       <div class="form-container sign-up">
         <!-- This is first from -->
+        <!-- Crear una cuenta -->
         <form
           th:action="@{/api/users/register}"
           th:object="${userDTO}"
@@ -51,7 +52,11 @@
                      th:field="*{password}"
                      placeholder="Contraseña"
                      required
+                     
               />
+              <div>
+                  hola
+              </div>
             </div>
           </div>
 
@@ -60,11 +65,13 @@
       </div>
       <div class="form-container sign-in">
         <!-- This is second form-->
+        <!-- Iniciar sesion-->
+
         <form
                 th:action="@{/api/users/loginUser}"
                 th:object="${userDTO}"
                 th:method="post">
-        >
+    
           <h1 class="iniciar_sesion">Iniciar Sesion</h1>
           <img src="/images/logo.png" alt="logo" width="100" />
           <span>Usa tu correo y contraseña</span>
