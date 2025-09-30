@@ -64,7 +64,21 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    // Convertir Entity a DTO
+     @Override
+    public List<ProductDTO> buscarPorNombre(String nombre) {
+        return productRepository.findByNameProductContainingIgnoreCase(nombre).stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> buscarPorCategoria(String categoria) {
+        return productRepository.findByCategoryIgnoreCase(categoria).stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    //Convertir Entity a DTO
     private ProductDTO convertirADTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setIdProduct(product.getIdProduct());

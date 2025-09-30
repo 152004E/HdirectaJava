@@ -79,3 +79,49 @@ function cerrarFiltro() {
     // Aquí puedes agregar código para limpiar los inputs si lo deseas
 }
 */
+
+
+// Función para actualizar producto
+function actualizarProducto(id) {
+    // Redirigir a la página de edición con el ID del producto
+    window.location.href = `/editar_producto/${id}`;
+}
+
+// Función para eliminar producto
+function eliminarProducto(id) {
+    // Mostrar confirmación antes de eliminar
+    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+        // Realizar petición DELETE al controlador
+        fetch(`/api/productos/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Producto eliminado exitosamente');
+                // Recargar la página para actualizar la tabla
+                window.location.reload();
+            } else {
+                alert('Error al eliminar el producto');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar el producto');
+        });
+    }
+}
+
+// Alternativa: Eliminar mediante formulario (si prefieres POST en lugar de DELETE)
+function eliminarProductoForm(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+        // Crear un formulario dinámicamente
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/eliminar_producto/${id}`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}

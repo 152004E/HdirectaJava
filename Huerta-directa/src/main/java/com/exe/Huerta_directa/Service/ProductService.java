@@ -17,4 +17,8 @@ public interface ProductService {
     List<ProductDTO> listarProductsPorCategoria(String categoria);
 
     void eliminarProductPorId(Long productId);
+
+    List<ProductDTO> buscarPorNombre(String nombre);
+    
+    List<ProductDTO> buscarPorCategoria(String categoria);
 }
