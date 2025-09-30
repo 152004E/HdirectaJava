@@ -7,6 +7,7 @@ import com.exe.Huerta_directa.Repository.ProductRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    //Convertir Entity a DTO
+    // Convertir Entity a DTO
     private ProductDTO convertirADTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setIdProduct(product.getIdProduct());
@@ -85,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
-    //Convertir DTO a Entity
+    // Convertir DTO a Entity
     private Product convertirAEntity(ProductDTO productDTO) {
         Product product = new Product();
         product.setIdProduct(productDTO.getIdProduct());
@@ -106,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    //Actualizar Entity con datos del DTO
+    // Actualizar Entity con datos del DTO
     private void actualizarDatosProducto(Product product, ProductDTO productDTO) {
         product.setNameProduct(productDTO.getNameProduct());
         product.setPrice(productDTO.getPrice());
@@ -121,6 +122,15 @@ public class ProductServiceImpl implements ProductService {
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + productDTO.getUserId()));
             product.setUser(user);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true) 
+    public List<ProductDTO> listarProductsPorCategoria(String categoria) {
+        return productRepository.findByCategoryIgnoreCase(categoria)
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
     }
 
 }

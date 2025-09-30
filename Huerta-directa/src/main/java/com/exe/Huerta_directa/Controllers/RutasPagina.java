@@ -18,7 +18,7 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
-        //agragar productos al main
+        // agragar productos al main
         List<ProductDTO> productos = productService.listarProducts();
         System.out.println("Productos obtenidos: " + productos);
         model.addAttribute("productos", productos);
@@ -63,8 +63,10 @@ public class RutasPagina {
     }
 
     @GetMapping("/Frutas")
-    public String mostrarFrutas() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+    public String mostrarFrutas(Model model) {
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("frutas");
+        model.addAttribute("productos", productos);
+        System.out.println("Productos en categoría Frutas: " + productos.size());
         return "ProductosCategorias/Frutas";
     }
 
