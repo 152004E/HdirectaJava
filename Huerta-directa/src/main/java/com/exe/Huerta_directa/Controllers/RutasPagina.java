@@ -118,12 +118,12 @@ public class RutasPagina {
     // return "index";
     // }
 
-    @GetMapping("/Dashboardd")
-    public String mostrarDashBoard(Model model) {
-        List<ProductDTO> productos = productService.listarProducts();
-        model.addAttribute("productos", productos);
-        return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
-    }
+    //@GetMapping("/Dashboardd")
+    //public String mostrarDashBoard(Model model) {
+    // List<ProductDTO> productos = productService.listarProducts();
+    //    model.addAttribute("productos", productos);
+    //    return "DashBoard/DashBoardd"; // templates/DashBoard/DashBoardd.html
+    //}
 
     @GetMapping("DashboardAdmin")
     public String mostrarDashboardAdmin(Model model) {

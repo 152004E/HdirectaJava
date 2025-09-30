@@ -15,4 +15,8 @@ public interface ProductService {
     ProductDTO actualizarProduct(Long productId, ProductDTO productDTO);
 
     void eliminarProductPorId(Long productId);
+
+    List<ProductDTO> buscarPorNombre(String nombre);
+    
+    List<ProductDTO> buscarPorCategoria(String categoria);
 }
