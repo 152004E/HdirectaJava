@@ -2,7 +2,9 @@ package com.exe.Huerta_directa.Controllers;
 
 
 import com.exe.Huerta_directa.DTO.UserDTO;
+import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Impl.UserServiceImpl;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,8 +33,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -232,36 +237,28 @@ public class UserController {
 
 
     @PostMapping("/loginUser")
-    public String loginUser(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-            BindingResult result,
-            RedirectAttributes redirect) {
+    public String loginUser(@RequestParam String email,
+                        @RequestParam String password,
+                        Model model,
+                        HttpSession session) {
 
-        if (result.hasErrors()) {
-            redirect.addFlashAttribute("error", "Error en los datos del formulario");
-            return "redirect:/login"; // Vuelve al formulario de login
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null || !user.getPassword().equals(password)) {
+            model.addAttribute("error", "Correo o contraseña incorrectos");
+            model.addAttribute("userDTO", new UserDTO()); // importante para no romper el form
+            return "login/login";
         }
 
-        // Buscar el usuario por email
-        UserDTO userExistente = userService.autenticarUsuario(userDTO.getEmail(), userDTO.getPassword());
+        // Guarda al usuario en sesión (opcional)
+        session.setAttribute("user", user);
 
-        if (userExistente == null) {
-            redirect.addFlashAttribute("error", "Correo no registrado");
-            return "redirect:/login";
+        // Redirige según el rol
+        if (user.getRole().getIdRole() == 1) {
+            return "redirect:/DashboardAdmin";
+        } else {
+            return "redirect:/index";
         }
-
-        /*Validar contraseña
-        if (userExistente.getPassword() == null ||
-                !userExistente.getPassword().equals(userDTO.getPassword())) {
-            redirect.addFlashAttribute("error", "Correo o contraseña incorrectos");
-            return "redirect:/login";
-        }
-        */
-
-        // Si todo está bien, redirige a la página principal
-        redirect.addFlashAttribute("success", "Inicio de sesión exitoso");
-        redirect.addFlashAttribute("usuarioActivo", userExistente.getName());
-        return "redirect:/index";
     }
 
 

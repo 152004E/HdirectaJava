@@ -260,3 +260,17 @@ section {
   background-position: 70px 50px;
   background-position: right center;
 }
+
+/* Alerta correo o contraseña inconrrecta del login */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 13px;
+}
