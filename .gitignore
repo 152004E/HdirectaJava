@@ -58,6 +58,6 @@ target/
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
 
-# Spring Boot application config
-src/main/resources/application.properties
-src/main/resources/application.yml
+# Spring Boot application config (ruta exacta)
+Huerta-directa/src/main/resources/application.properties
+Huerta-directa/src/main/resources/application.yml
