@@ -35,21 +35,25 @@
         <h2 class="TituloCategoria" data-aos="zoom-in">Frutas</h2>
 
         <div class="products-container">
-           <div th:each="producto : ${productos}" data-aos="zoom-in">
-        <div class="product">
-          <img th:src="@{'/images/productos/' + ${producto.imageProduct}}" 
-               th:alt="${producto.nameProduct}" />
-          <div class="product-txt">
-            <h3 th:text="${producto.nameProduct}"></h3>
-            <p class="precio"
-               th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"></p>
-            <div class="btnProducto">
-              <a href="#" class="agregar-carrito btn-2">Agregar</a>
-              <a href="#" class="btn-2">Info</a>
+          <div th:each="producto : ${productos}" data-aos="zoom-in">
+            <div class="product">
+              <img
+                th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                th:alt="${producto.nameProduct}"
+              />
+              <div class="product-txt">
+                <h3 th:text="${producto.nameProduct}"></h3>
+                <p
+                  class="precio"
+                  th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
+                ></p>
+                <div class="btnProducto">
+                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
+                  <a href="#" class="btn-2">Info</a>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
         </div>
       </main>
       <div th:replace="fragments/footer :: footer"></div>
