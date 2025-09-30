@@ -6,6 +6,7 @@ import com.exe.Huerta_directa.Impl.UserServiceImpl;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -232,19 +233,38 @@ public class UserController {
     }
 
 
-    @PostMapping("/login")
+    @PostMapping("/loginUser")
     public String loginUser(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
             BindingResult result,
             RedirectAttributes redirect) {
+
         if (result.hasErrors()) {
-            return "users/login"; // Si hay errores, volver al formulario de registro
+            redirect.addFlashAttribute("error", "Error en los datos del formulario");
+            return "redirect:/login"; // Vuelve al formulario de login
         }
-        // Lógica de autenticación aquí (verificar credenciales, etc.)
+
+        // Buscar el usuario por email
+        UserDTO userExistente = userService.autenticarUsuario(userDTO.getEmail(), userDTO.getPassword());
+
+        if (userExistente == null) {
+            redirect.addFlashAttribute("error", "Correo no registrado");
+            return "redirect:/login";
+        }
+
+        /*Validar contraseña
+        if (userExistente.getPassword() == null ||
+                !userExistente.getPassword().equals(userDTO.getPassword())) {
+            redirect.addFlashAttribute("error", "Correo o contraseña incorrectos");
+            return "redirect:/login";
+        }
+        */
+
+        // Si todo está bien, redirige a la página principal
         redirect.addFlashAttribute("success", "Inicio de sesión exitoso");
-        return "redirect:/index"; // Redirigir a la página principal después del inicio de
-
-
+        redirect.addFlashAttribute("usuarioActivo", userExistente.getName());
+        return "redirect:/index";
     }
+
 
 }

@@ -89,6 +89,36 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    //Metodo para login
+    @Override
+    public UserDTO autenticarUsuario(String email, String password) {
+        // Buscar usuario por email
+        User user = userRepository.findByemail(email)
+                .orElseThrow(() -> new RuntimeException("Correo no registrado."));
+
+        // Verificar la contraseña
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Contraseña incorrecta.");
+        }
+
+        // Convertir a DTO y devolver
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPassword(null); // nunca devolvemos la contraseña
+        dto.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+
+        return dto;
+    }
+
+
+    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Convertir Entity a DTO
     private UserDTO convertirADTO(User user) {
         UserDTO userDTO = new UserDTO();

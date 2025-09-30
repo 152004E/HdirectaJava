@@ -61,9 +61,9 @@
       <div class="form-container sign-in">
         <!-- This is second form-->
         <form
-          action="../../../controllers/Login_usuario.php"
-          method="post"
-          onsubmit="return validarCorreo('correoRegistro')"
+                th:action="@{/api/users/loginUser}"
+                th:object="${userDTO}"
+                th:method="post">
         >
           <h1 class="iniciar_sesion">Iniciar Sesion</h1>
           <img src="/images/logo.png" alt="logo" width="100" />
@@ -74,7 +74,7 @@
             <input
               id="correoRegistro"
               type="email"
-              name="email"
+              th:field="*{email}"
               placeholder="Ingrese su correo electronico"
               required
             />
@@ -84,7 +84,7 @@
             <label>Ingrese su contraseña</label>
             <input
               type="password"
-              name="password_user"
+              th:field="*{password}"
               placeholder="ingrese su contraseña"
               required
             />

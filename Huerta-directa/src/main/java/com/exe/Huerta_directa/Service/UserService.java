@@ -21,4 +21,7 @@ public interface UserService {
     void exporUserstToExcel(OutputStream outputStream) throws IOException;
 
     void exportUsersToPdf(OutputStream outputStream) throws IOException;
+
+    //método para login
+    UserDTO autenticarUsuario(String email, String password);
 }
