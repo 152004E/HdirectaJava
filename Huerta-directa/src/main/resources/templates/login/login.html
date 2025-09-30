@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="/CSS/styleLogIn.css" />
     <title>login Huerta Directa</title>
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+
+    <!--Google icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+    />
   </head>
 
   <body>
@@ -20,43 +26,53 @@
         <form
           th:action="@{/api/users/register}"
           th:object="${userDTO}"
-          th:method="post">
+          th:method="post"
+        >
           <!--onsubmit="return validarRegistro()"-->
           <h1>Crear cuenta</h1>
           <img class="H-logo" src="/images/logo.png" alt="logo" width="100" />
 
           <div class="from-group">
             <label>Nombre de usuario</label>
-            <input
-              type="text"
-              th:field="*{name}"
-              placeholder="Ejemplo: Santiago Puentes"
-            />
+            <div class="ContainerIcons">
+              <div class="icons">
+                <span class="material-symbols-outlined"> person </span>
+              </div>
+              
+              <input
+                type="text"
+                th:field="*{name}"
+                placeholder="Ejemplo: Santiago Puentes"
+              />
+            </div>
           </div>
           <div class="correo-contraseña">
             <div class="from-group">
               <label>Ingrese su correo electronico</label>
+              <div class="ContainerIcons">
+              <div class="icons">
+                <span class="material-symbols-outlined"> mail </span>
+              </div>
+              
               <input
                 id="correoRegistr"
                 type="email"
                 th:field="*{email}"
-                placeholder="Ingrese su correo electronico"
+                placeholder="Ej: tunombre@correo.com"
                 required
               />
+            </div>
             </div>
 
             <div class="from-group">
               <label>Ingrese su contraseña</label>
-              <input type="password"
-                     id="passwordRegistro"
-                     th:field="*{password}"
-                     placeholder="Contraseña"
-                     required
-                     
+              <input
+                type="password"
+                id="passwordRegistro"
+                th:field="*{password}"
+                placeholder="Contraseña"
+                required
               />
-              <div>
-                  hola
-              </div>
             </div>
           </div>
 
@@ -67,39 +83,50 @@
         <!-- This is second form-->
         <!-- Iniciar sesion-->
 
-        <form
-                th:action="@{/api/users/loginUser}"
-                th:method="post">
+        <form th:action="@{/api/users/loginUser}" th:method="post">
+          <h1 class="iniciar_sesion">Iniciar Sesión</h1>
 
-          <h1 class="iniciar_sesion">Iniciar Sesion</h1>
-
-            <!-- 🔥 Mensaje de error si las credenciales son incorrectas -->
-            <div th:if="${error}" class="alert alert-danger">
-                <p th:text="${error}"></p>
-            </div>
+          <!-- 🔥 Mensaje de error si las credenciales son incorrectas -->
+          <div th:if="${error}" class="alert alert-danger">
+            <p th:text="${error}"></p>
+          </div>
 
           <img src="/images/logo.png" alt="logo" width="100" />
           <span>Usa tu correo y contraseña</span>
 
           <div class="from-group">
             <label>Ingrese su correo electronico</label>
-            <input
-              id="correoRegistro"
-              type="email"
-              name="email"
-              placeholder="Ingrese su correo electronico"
-              required
-            />
+            <div class="ContainerIcons">
+              <div class="icons">
+                <span class="material-symbols-outlined"> mail </span>
+              </div>
+              <input
+                id="correoRegistro"
+                type="email"
+                name="email"
+                placeholder="Ej: tunombre@correo.com"
+                required
+              />
+            </div>
+            
           </div>
 
           <div class="from-group">
             <label>Ingrese su contraseña</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="ingrese su contraseña"
-              required
-            />
+            <div class="cotainerOjo">
+              <div class="icons">
+                <span class="material-symbols-outlined"> lock_person </span>
+              </div>
+              <input
+                type="password"
+                name="password"
+                placeholder="ingrese su contraseña"
+                required
+              />
+              <div class="ojo">
+                <span class="material-symbols-outlined passwordIcon">visibility</span>
+              </div>
+            </div>
           </div>
 
           <a class="forget" href="#">Olvidaste tu contraseña?</a>
@@ -111,10 +138,10 @@
           <div class="toggle-panel toggle-left">
             <h1>Bienvenido de vuelta!</h1>
             <p>Usa tu informacion para ingresar</p>
-            <button class="hidden btn-1" id="login">Iniciar Sesion</button>
+            <button class="hidden btn-1" id="login">Iniciar Sesión</button>
           </div>
           <div class="toggle-panel toggle-right">
-            <h1>Hola!</h1>
+            <h1>¡Hola!</h1>
             <p>Registrate con tu informacion para ingresar</p>
             <button class="hidden btn-1" id="register">Registrar</button>
           </div>

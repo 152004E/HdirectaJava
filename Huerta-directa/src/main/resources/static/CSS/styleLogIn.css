@@ -38,7 +38,7 @@ body {
 
 .from-group label {
   font-weight: 400;
-  padding-left: 15px;
+
   margin: 10px 0px;
 }
 
@@ -96,6 +96,7 @@ body {
 
 .container form {
   background-color: #fff;
+  width: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,18 +106,20 @@ body {
 }
 
 .container input {
-  padding: 9px 90px;
-  width: 90%;
-  padding-left: 15px;
+  padding: 9px 35px;
+  width: 100%;
+
   margin: 5px 0px;
   border: 2px solid #8dc84b;
-  border-radius: 30px;
+  border-radius: 15px;
   outline: none;
   font-size: 16px;
   color: #333128;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 input::placeholder {
+  width: 100%;
+
   color: #888;
   font-size: 16px;
   font-style: italic;
@@ -263,14 +266,60 @@ section {
 
 /* Alerta correo o contraseña inconrrecta del login */
 .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 500;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 13px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 13px;
+}
+
+/*  icons*/
+.material-symbols-outlined {
+  margin-top: 5px;
+  color: #888;
+  font-family: "Material Symbols Outlined" !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px !important; /* puedes ajustar el tamaño */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  transition: all 0.5s;
+}
+.ContainerIcons {
+  display: flex;
+  align-items: center;
+  min-width: 320px;
+  position: relative;
+}
+.cotainerOjo {
+  display: flex;
+  align-items: center;
+  min-width: 320px;
+  position: relative;
+}
+.ojo {
+  position: absolute;
+  right: 20px;
+}
+
+.icons {
+  position: absolute;
+  left: 8px;
+}
+
+.passwordIcon:hover {
+  cursor: pointer;
+  color: #333128;
 }
