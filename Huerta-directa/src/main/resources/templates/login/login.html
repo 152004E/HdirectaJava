@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -69,10 +69,15 @@
 
         <form
                 th:action="@{/api/users/loginUser}"
-                th:object="${userDTO}"
                 th:method="post">
-    
+
           <h1 class="iniciar_sesion">Iniciar Sesion</h1>
+
+            <!-- 🔥 Mensaje de error si las credenciales son incorrectas -->
+            <div th:if="${error}" class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+
           <img src="/images/logo.png" alt="logo" width="100" />
           <span>Usa tu correo y contraseña</span>
 
@@ -81,7 +86,7 @@
             <input
               id="correoRegistro"
               type="email"
-              th:field="*{email}"
+              name="email"
               placeholder="Ingrese su correo electronico"
               required
             />
@@ -91,7 +96,7 @@
             <label>Ingrese su contraseña</label>
             <input
               type="password"
-              th:field="*{password}"
+              name="password"
               placeholder="ingrese su contraseña"
               required
             />

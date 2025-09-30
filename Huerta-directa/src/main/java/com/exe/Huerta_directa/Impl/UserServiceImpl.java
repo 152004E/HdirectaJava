@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO autenticarUsuario(String email, String password) {
         // Buscar usuario por email
-        User user = userRepository.findByemail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Correo no registrado."));
 
         // Verificar la contraseña

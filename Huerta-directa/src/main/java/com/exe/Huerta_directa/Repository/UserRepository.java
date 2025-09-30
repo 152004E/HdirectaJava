@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByname(String name);
 
-    Optional<User> findByemail(String email);
+    Optional<User> findByEmail(String email);
 
     @Query("SELECT p FROM Product p JOIN FETCH p.user")
     List<Product> findAllProductsWithUser();
