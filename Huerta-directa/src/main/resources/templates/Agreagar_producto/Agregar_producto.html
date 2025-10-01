@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agrega tu producto || Huerta directa</title>
-    <link rel="icon" type="image/png" href="../login/login/logo.png" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 
     <!-- instalacion de las fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,6 +26,11 @@
       integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
       crossorigin="anonymous"
     />
+    <!--Google icons-->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+    />
   </head>
   <body>
     <!--congigurar los links-->
@@ -33,13 +38,13 @@
     <div
       class="container1 d-flex align-items-center justify-content-center gap-5"
     >
-        <form class="input-box categoria-form border p-4 border-2 rounded-5 px-5"
-              action="http://localhost:8085/api/products/create"
-              method="POST"
-              enctype="multipart/form-data"
-        >
-
-            <input type="hidden" name="userId" value="1" />
+      <form
+        class="input-box categoria-form border p-4 border-2 rounded-5 px-5"
+        action="http://localhost:8085/api/products/create"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="userId" value="1" />
 
         <div class="titulo d-flex align-items-center justify-content-center">
           <h2 class="text-uppercase">Registro de Producto</h2>
@@ -50,7 +55,7 @@
 
         <div class="nombre-producto d-flex">
           <label class="" for="nombre">Nombre del producto:</label><br />
-          <input type="text" id="nombre" name="nombre" required uppercase/>
+          <input type="text" id="nombre" name="nombre" required uppercase />
         </div>
 
         <span class="border border-1"></span>
@@ -84,7 +89,7 @@
             </select>
           </div>
           <br />
-          
+
           <span class="border border-1"></span>
 
           <div class="cotegoria-producto">
@@ -157,14 +162,21 @@
         <div
           class="container-button d-flex align-items-center justify-content-center gap-3"
         >
-          <button type="submit" class="btn-2">Agregar</button>
-          <button type="button" id="btn-visualizar" class="btn-2">
+          <button type="submit" class="btn-2 botonIcon">
+            Agregar
+            <span class="material-symbols-outlined"> arrow_forward </span>
+          </button>
+          <button type="button" id="btn-visualizar" class="btn-2 botonIcon icono">
             Visualizar
+            <span id="passwordOjo" class="material-symbols-outlined"
+              >visibility</span
+            >
           </button>
           <a
-            class="btn-2 d-flex justify-content-center align-items-center"
+            class="btn-2 d-flex justify-content-center align-items-center botonIcon"
             th:href="@{/}"
-            >volver</a
+            >volver
+            <span class="material-symbols-outlined flecha"> arrow_back </span></a
           >
         </div>
       </form>
@@ -173,7 +185,12 @@
           <!--<span class="cerrar" id="cerrarModal">&times;</span>-->
           <div class="product">
             <h3>Vista previa</h3>
-            <img id="prev-imagen" class="imagenAgregarProducto" src="../images/ImgenAgregarProducto1.png" alt="Vista previa" />
+            <img
+              id="prev-imagen"
+              class="imagenAgregarProducto"
+              src="../images/ImgenAgregarProducto1.png"
+              alt="Vista previa"
+            />
             <div class="product-txt">
               <h3 id="prev-nombre">Nombre del producto</h3>
               <br />
@@ -227,13 +244,16 @@
       btnVisualizar.addEventListener("click", () => {
         // Llenar los datos
         prevNombre.textContent = nombre.value || "Nombre del producto";
-        prevPrecio.textContent = precio.value ? `Precio: $${precio.value}` : "Precio: $0.00";
+        prevPrecio.textContent = precio.value
+          ? `Precio: $${precio.value}`
+          : "Precio: $0.00";
         prevUnidad.textContent =
           "Medida: " + (unidad.options[unidad.selectedIndex].text || "—");
         prevCategoria.textContent =
           "Categoría: " +
           (categoria.options[categoria.selectedIndex].text || "—");
-        prevDescripcion.textContent = "Descripción: " + (descripcion.value || "Descripción del producto");
+        prevDescripcion.textContent =
+          "Descripción: " + (descripcion.value || "Descripción del producto");
 
         const file = imagen.files[0];
         if (file) {

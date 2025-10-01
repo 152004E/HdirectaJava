@@ -159,3 +159,35 @@ input::placeholder {
     transform: scale(1);
   }
 }
+
+.botonIcon{
+  position: relative;
+}
+/*  icons*/
+.material-symbols-outlined {
+  top: 20;
+  right: 10px;
+  position: absolute;
+  color: #ffffff;
+  font-family: "Material Symbols Outlined" !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 25px !important; /* puedes ajustar el tamaño */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  transition: all 0.5s;
+}
+.flecha{
+  top: 7px;
+  left: 10px;
+}
+
+.icono{
+  
+}

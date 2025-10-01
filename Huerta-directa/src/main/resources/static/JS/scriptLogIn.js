@@ -5,12 +5,14 @@ const passwordOjo = document.getElementById("passwordOjo");
 const passwordInput = document.getElementById("passwordInput");
 const passwordOjoOff = document.getElementById("passwordOjoOff");
 
-
-
 // Para crear cuenta
-const passwordOjoCrearCuenta = document.getElementById("passwordOjoCrearCuenta");
+const passwordOjoCrearCuenta = document.getElementById(
+  "passwordOjoCrearCuenta"
+);
 const passwordRegistro = document.getElementById("passwordRegistro");
-const passwordOjoOffCrearCuenta = document.getElementById("passwordOjoOffCrearCuenta");
+const passwordOjoOffCrearCuenta = document.getElementById(
+  "passwordOjoOffCrearCuenta"
+);
 
 passwordOjoOffCrearCuenta.style.display = "none";
 
@@ -31,7 +33,6 @@ passwordOjoOffCrearCuenta.addEventListener("click", () => {
   passwordOjoOffCrearCuenta.style.display = "none";
   ojo.style.marginTop = "5px";
 });
-
 
 const ojo = document.getElementById("ojo");
 
