@@ -60,4 +60,4 @@ target/
 
 # Spring Boot application config (ruta exacta)
 Huerta-directa/src/main/resources/application.properties
-Huerta-directa/src/main/resources/application.yml
+Huerta-directa/src/main/resources/application.ymlHuerta-directa/src/main/resources/application.properties
