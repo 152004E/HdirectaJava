@@ -4,6 +4,35 @@ const loginBtn = document.getElementById("login");
 const passwordOjo = document.getElementById("passwordOjo");
 const passwordInput = document.getElementById("passwordInput");
 const passwordOjoOff = document.getElementById("passwordOjoOff");
+
+
+
+// Para crear cuenta
+const passwordOjoCrearCuenta = document.getElementById("passwordOjoCrearCuenta");
+const passwordRegistro = document.getElementById("passwordRegistro");
+const passwordOjoOffCrearCuenta = document.getElementById("passwordOjoOffCrearCuenta");
+
+passwordOjoOffCrearCuenta.style.display = "none";
+
+// evento para mostrar contraseña
+passwordOjoCrearCuenta.addEventListener("click", () => {
+  passwordRegistro.setAttribute("type", "text");
+
+  passwordOjoCrearCuenta.style.display = "none";
+  passwordOjoOffCrearCuenta.style.display = "inline";
+  ojo.style.marginTop = "5px";
+});
+
+// evento para ocultar contraseña
+passwordOjoOffCrearCuenta.addEventListener("click", () => {
+  passwordRegistro.setAttribute("type", "password");
+
+  passwordOjoCrearCuenta.style.display = "inline";
+  passwordOjoOffCrearCuenta.style.display = "none";
+  ojo.style.marginTop = "5px";
+});
+
+
 const ojo = document.getElementById("ojo");
 
 // al inicio mostramos solo el ojo abierto
@@ -12,7 +41,6 @@ passwordOjoOff.style.display = "none";
 // evento para mostrar contraseña
 passwordOjo.addEventListener("click", () => {
   passwordInput.setAttribute("type", "text");
-  console.log("ver");
 
   passwordOjo.style.display = "none";
   passwordOjoOff.style.display = "inline";
@@ -22,7 +50,6 @@ passwordOjo.addEventListener("click", () => {
 // evento para ocultar contraseña
 passwordOjoOff.addEventListener("click", () => {
   passwordInput.setAttribute("type", "password");
-  console.log("no ver");
 
   passwordOjo.style.display = "inline";
   passwordOjoOff.style.display = "none";

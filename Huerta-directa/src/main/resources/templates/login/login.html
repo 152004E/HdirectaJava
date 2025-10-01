@@ -66,13 +66,31 @@
 
             <div class="from-group">
               <label>Ingrese su contraseña</label>
-              <input
-                type="password"
-                id="passwordRegistro"
-                th:field="*{password}"
-                placeholder="Contraseña"
-                required
-              />
+              <div class="cotainerOjo">
+                <div class="icons">
+                  <span class="material-symbols-outlined"> lock_person </span>
+                </div>
+                <input
+                  type="password"
+                  id="passwordRegistro"
+                  th:field="*{password}"
+                  placeholder="Contraseña"
+                  required
+                />
+
+                <div id="ojo" class="ojo">
+                  <span
+                    id="passwordOjoCrearCuenta"
+                    class="material-symbols-outlined passwordIcon"
+                    >visibility</span
+                  >
+                  <span
+                    id="passwordOjoOffCrearCuenta"
+                    class="material-symbols-outlined passwordIconVisibility_off"
+                    >visibility_off</span
+                  >
+                </div>
+              </div>
             </div>
           </div>
 
@@ -116,7 +134,8 @@
               <div class="icons">
                 <span class="material-symbols-outlined"> lock_person </span>
               </div>
-              <input id="passwordInput"
+              <input
+                id="passwordInput"
                 type="password"
                 name="password"
                 placeholder="ingrese su contraseña"
@@ -128,9 +147,11 @@
                   class="material-symbols-outlined passwordIcon"
                   >visibility</span
                 >
-                 <span 
-                 id="passwordOjoOff"
-                 class="material-symbols-outlined passwordIconVisibility_off">visibility_off</span>
+                <span
+                  id="passwordOjoOff"
+                  class="material-symbols-outlined passwordIconVisibility_off"
+                  >visibility_off</span
+                >
               </div>
             </div>
           </div>
