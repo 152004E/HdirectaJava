@@ -251,7 +251,7 @@ main .insights > div {
     padding: 1.8rem;
     border-radius: 2rem;
     margin-top: 1rem;
-    box-shadow: 0 2rem 3rem rgba(193, 232, 255, 0.829);
+    box-shadow: 0 1rem 2rem rgba(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -423,16 +423,14 @@ main .recent-orders a {
     width: 135px;
     padding: 11px 5px;
     border-radius: 5px;
-    background-color: #1A374D;
+    background-color: rgba(27, 34, 159, 0.93);
     color: white;
     font-size: 15px;
     letter-spacing: 1px;
     transition: all 0.7s;
     font-weight: bold;
 }
-select:hover {
-    background-color: #0b1587ec;
-}
+
 
 .categoriaSelect {
     position: relative;
@@ -600,7 +598,7 @@ main .export-links hr {
     background: white;
     padding: 1.8rem;
     border-radius: 2rem;
-    box-shadow: 0 2rem 3rem rgb(75, 148, 185);
+    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -632,7 +630,7 @@ main .export-links hr {
     margin-bottom: 0.7rem;
     padding: 1.4rem 1.8rem;
     border-radius: 1.2rem;
-    box-shadow: 0 2rem 3rem rgb(110, 153, 180);
+    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -663,7 +661,7 @@ main .export-links hr {
 .right .sales-analytics .add-client {
     background-color: transparent;
     border: 2px dashed #000000;
-    box-shadow: 0 2rem 3rem rgb(144, 162, 165);
+    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
     color: #6d757c;
     display: flex;
     align-items: center;
@@ -795,7 +793,7 @@ body.dark-theme .insights > div {
 
 body.dark-theme .insights > div:hover {
     transform: translateY(-4px);
-    box-shadow: 0 0 12px rgba(111, 255, 87, 0.2);
+    box-shadow: 0 0 12px rgba(56, 61, 147, 0.93);
 }
 
 body.dark-theme .insights .middle .progress .number {
@@ -824,20 +822,22 @@ body.dark-theme .btn,
 body.dark-theme button,
 body.dark-theme .consultar-btn,
 body.dark-theme .CategoriaS {
-    background-color: #8dc84b !important;
+    background-color: rgba(27, 34, 159, 0.93) !important;
     color: #ffffff;
     border: none;
 }
 
+/*
 body.dark-theme .btn:hover,
 body.dark-theme button:hover,
 body.dark-theme .consultar-btn:hover,
 body.dark-theme .CategoriaS:hover {
     opacity: 0.85;
     cursor: pointer;
-    background-color: #004d00 !important;
+    background-color: rgba(46, 48, 110, 0.93) !important;
 }
-
+*/
 body.dark-theme .export-links a {
     color: #8dc84b !important;
 }
+
