@@ -63,7 +63,7 @@ registerBtn.addEventListener("click", () => {
 loginBtn.addEventListener("click", () => {
   container.classList.remove("active");
 });
-console.log("js");
+
 function validarCorreo(idCorreo) {
   const correo = document.getElementById(idCorreo).value;
   const patronEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

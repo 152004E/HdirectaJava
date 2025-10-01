@@ -293,7 +293,7 @@ section {
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-  -webkit-font-feature-settings: "liga";
+  
   -webkit-font-smoothing: antialiased;
   transition: all 0.5s;
 }
