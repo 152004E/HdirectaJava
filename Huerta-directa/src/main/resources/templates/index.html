@@ -27,6 +27,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
     />
+    <!--Google icons-->
   </head>
 
   <body>
@@ -110,20 +111,46 @@
           data-aos-delay="100"
         >
           <div class="product">
+            <span class="material-symbols-outlined IconProducto">
+              favorite
+            </span>
+
             <img
               th:src="@{'/images/productos/' + ${producto.imageProduct}}"
               alt="Imagen de [[${producto.nameProduct}]]"
               width="150"
             />
+            <div class="borderImgNombre"></div>
+
             <div class="product-txt">
               <h3 th:text="${producto.nameProduct}"></h3>
-              <p
-                class="precio"
-                th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
-              ></p>
+              <div class="ContainerNombreIcon">
+                <div class="precioPais">
+                  <p
+                    class="precio"
+                    th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
+                  ></p>
+                  <p class="PaisMoneda">/ COP</p>
+                </div>
+                <div class="hijoContainerNombreIcon">
+                  <span class="material-symbols-outlined start"> star </span>
+                  <p class="puntuacion"><span class="calificacion">4.5</span> (40)</p>
+                </div>
+              </div>
+
               <div class="btnProducto">
-                <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                <a th:href="@{/producto/{id}}" class="btn-2">Info</a>
+                <a href="#" class="agregar-carrito btn-2 botonIcono"
+                  ><span class="material-symbols-outlined iconAgregar">
+                    add_shopping_cart
+                  </span>
+                  Agregar</a
+                >
+                <a th:href="@{/producto/{id}}" class="btn-2 botonIcono btnInfo"
+                  >Info
+                  <span class="material-symbols-outlined infoIcon">
+                    info
+                  </span></a
+                >
               </div>
             </div>
           </div>
