@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Categoria Cajas Mixtas o Combos | Huerta directa</title>
 
-    <link rel="stylesheet" href="/CSS/stylePrincipal.css" />
-    <link rel="stylesheet" href="/CSS/darkindex.css" />
     <link rel="stylesheet" href="/CSS/styleCategorias.css" />
     <link rel="stylesheet" href="/CSS/landing.css" />
     <link rel="stylesheet" href="/CSS/Footer.css" />
+    <link rel="stylesheet" href="/CSS/darkindex.css" />
+    <link rel="stylesheet" href="/CSS/stylePrincipal.css" />
 
     <!--agregacion para los iconos-->
     <link
@@ -41,22 +41,51 @@
           <!-- Producto de ejemplo -->
           <div th:each="producto : ${productos}" data-aos="zoom-in">
             <div class="product">
-              <img
-                th:src="@{'/images/productos/' + ${producto.imageProduct}}"
-                th:alt="${producto.nameProduct}"
-              />
-              <div class="product-txt">
-                <h3 th:text="${producto.nameProduct}"></h3>
-                <p
-                  class="precio"
-                  th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
-                ></p>
-                <div class="btnProducto">
-                  <a href="#" class="agregar-carrito btn-2">Agregar</a>
-                  <a href="#" class="btn-2">Info</a>
-                </div>  
-              </div>
-            </div>
+  <!-- Icono favorito -->
+  <span class="material-symbols-outlined IconProducto">favorite</span>
+
+  <!-- Imagen del producto -->
+  <img
+    th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+    th:alt="${producto.nameProduct}"
+    width="150"
+  />
+  <div class="borderImgNombre"></div>
+
+  <div class="product-txt">
+    <!-- Nombre del producto -->
+    <h3 th:text="${producto.nameProduct}"></h3>
+
+    <!-- Precio + rating -->
+    <div class="ContainerNombreIcon">
+      <div class="precioPais">
+        <p
+          class="precio"
+          th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
+        ></p>
+        <p class="PaisMoneda">/ COP</p>
+      </div>
+      <div class="hijoContainerNombreIcon">
+        <span class="material-symbols-outlined start">star</span>
+        <p class="puntuacion">
+          <span class="calificacion">4.5</span> (40)
+        </p>
+      </div>
+    </div>
+
+    <!-- Botones con iconos -->
+    <div class="btnProducto">
+      <a href="#" class="agregar-carrito btn-2 botonIcono">
+        <span class="material-symbols-outlined iconAgregar">add_shopping_cart</span>
+        Agregar
+      </a>
+      <a href="#" class="btn-2 botonIcono btnInfo">
+        Info
+        <span class="material-symbols-outlined infoIcon">info</span>
+      </a>
+    </div>
+  </div>
+</div>
           </div>
         </div>
       </main>

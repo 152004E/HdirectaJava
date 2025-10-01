@@ -420,7 +420,7 @@ h3 {
   align-items: center;
   justify-content: center;
 }
-.precio{
+.precio {
   margin-right: 5px !important;
 }
 .borderImgNombre {
@@ -436,6 +436,7 @@ h3 {
   font-size: 20px !important;
 }
 .product h3 {
+  margin-top: 5px !important;
   color: #8dc84b;
 }
 .product p {
@@ -482,16 +483,16 @@ h3 {
   align-items: center;
   padding: 8px 15px !important;
 }
-.btnInfo{
+.btnInfo {
   background: #bbbbbb;
 }
-.PaisMoneda{
+.PaisMoneda {
   color: #bbbbbb !important;
 }
-.puntuacion{
+.puntuacion {
   color: #bbbbbb !important;
 }
-.calificacion{
+.calificacion {
   color: #3b3b3b !important;
 }
 .info-icon {
@@ -813,6 +814,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 5px !important;
 }
 
 .categories__right {
