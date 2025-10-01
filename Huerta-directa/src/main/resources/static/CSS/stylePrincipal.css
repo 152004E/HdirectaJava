@@ -371,6 +371,7 @@ h3 {
 }*/
 
 .product {
+  background: #ffffff;
   border-radius: 15px;
   text-align: start;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -383,6 +384,7 @@ h3 {
   justify-content: space-between;
   min-height: 100px; /* Ajusta según altura deseada */
   position: relative;
+
 }
 .product img {
   border-radius: 5px;
