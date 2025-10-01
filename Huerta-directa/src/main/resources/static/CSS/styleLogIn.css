@@ -318,8 +318,19 @@ section {
   position: absolute;
   left: 8px;
 }
-
+.passwordIcon{
+  display: none ;
+}
 .passwordIcon:hover {
   cursor: pointer;
   color: #333128;
+}
+
+.passwordIconVisibility_off{
+ display: none ;
+}
+.passwordIconVisibility_off:hover{
+  cursor: pointer;
+  color: #333128;
+ 
 }
