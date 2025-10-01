@@ -781,7 +781,7 @@ body.dark-theme {
   --color-dark: #121212;
   --color-dark-variant: #1d1d1f;
   --color-light: rgba(255, 255, 255, 0.05);
-  --color-accent: rgba(27, 34, 159, 0.93);
+  --color-accent: rgba(75, 141, 21, 0.93);
   --color-sidebar: #1b1b1d;
   --color-card: #2a2a2e;
   --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.6);

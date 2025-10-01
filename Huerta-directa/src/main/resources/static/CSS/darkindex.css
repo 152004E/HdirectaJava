@@ -60,7 +60,7 @@ body.dark-theme {
   --color-dark: #1e1e1e;
   --color-dark-variant: #1e1e1e;
   --color-light: rgba(0, 0, 0, 0);
-  --color-accent: rgba(104, 107, 187, 0.93);
+  --color-accent: rgb(141, 200, 75);
   --color-sidebar: #1e1e1e;
   --color-card: #000000;
   --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.6);

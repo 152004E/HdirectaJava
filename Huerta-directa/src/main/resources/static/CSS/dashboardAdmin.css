@@ -89,15 +89,15 @@ b {
 }
 
 .primary {
-    color: #1A374D;
-}
-
-.danger {
     color: #004d00;
 }
 
+.danger {
+    color: #8dc84b;
+}
+
 .success {
-    color: #1A374D;
+    color: #004d00;
 }
 
 .warning {
@@ -177,7 +177,7 @@ aside .sidebar a:last-child {
 
 aside .sidebar a.active {
     background: #ddfacc;
-    color: #004d00;
+    color: #8dc84b;
     margin-left: 0;
 }
 
@@ -185,17 +185,17 @@ aside .sidebar a.active:before {
     content: "";
     width: 6px;
     height: 100%;
-    background: #004d00;
+    background: #8dc84b;
 }
 
 aside .sidebar a.active span {
-    color: #004d00;
+    color: #8dc84b;
     margin-left: 1rem;
 }
 
 aside .sidebar a:hover {
     background: #ddfacc;
-    color: #004d00;
+    color: #8dc84b;
     transition: all 0.3s ease;
     margin-left: 0;
 }
@@ -208,11 +208,11 @@ aside .sidebar a:hover::before {
     content: "";
     width: 5px;
     height: 100%;
-    background: #004d00;
+    background: #8dc84b;
 }
 
 aside .sidebar .message-count {
-    background: #1A374D;
+    background: #004d00;
     color: #fff;
     padding: 5px 10px;
     font-size: 11px;
@@ -251,7 +251,7 @@ main .insights > div {
     padding: 1.8rem;
     border-radius: 2rem;
     margin-top: 1rem;
-    box-shadow: 0 1rem 2rem rgba(132, 139, 200, 0.18);
+    box-shadow: 0 2rem 3rem rgba(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -260,8 +260,7 @@ main .insights > div:hover {
 }
 
 main .insights > div span {
-    background: #0036a3;
-;
+    background: #8dc84b;
     padding: 0.5rem;
     border-radius: 50%;
     color: #fff;
@@ -293,7 +292,7 @@ main .insights svg {
 
 main .insights svg circle {
     fill: none;
-    stroke: #1A374D;
+    stroke: #004d00;
     stroke-width: 14;
     stroke-linecap: round;
     transform: translate(5px, 5px);
@@ -357,8 +356,7 @@ main .recent-orders table:hover {
 
 main table tbody td {
     height: 2.8rem;
-    border: 1px solid rgba(100, 110, 185, 0.18);
-    border-radius: 10px; /* o el valor que quieras */
+    border-radius: 1px solid rgba(132, 139, 200, 0.18);
     color: black;
 }
 
@@ -366,12 +364,63 @@ main table tbody tr:last-child td {
     border: none;
 }
 
+/* Estilos para los botones de acción en la tabla */
+.btn-actualizar,
+.btn-eliminar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0.2rem;
+    text-transform: none;
+    font-family: inherit;
+}
+
+.btn-actualizar {
+    background-color: #004d00 ;
+    color: white;
+}
+
+.btn-actualizar:hover {
+    background-color: #8dc84b;
+    transform: translateY(-1px);
+}
+
+.btn-eliminar {
+    background-color: #dc2626;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background-color: #b91c1c;
+    transform: translateY(-1px);
+}
+
+.btn-actualizar .material-symbols-outlined,
+.btn-eliminar .material-symbols-outlined {
+    font-size: 1rem;
+}
+
+/* Ajustar el ancho de la columna de acciones */
+table th:last-child,
+table td:last-child {
+    width: 180px;
+    min-width: 180px;
+}
+
 main .recent-orders a {
     text-align: center;
     display: block;
     margin: 1rem auto;
-    color: #004d00;
+    color: #8dc84b;
 }
+
 /*Barra de busqueda*/
 
 .busqueda-filtros {
@@ -396,7 +445,7 @@ main .recent-orders a {
 }
 
 .BuscarProInp{
-    border: #1A374D 2px solid;
+    border: #8DC84B 2px solid;
     flex: 1;
     padding: 10px;
     border-radius: 7px;
@@ -405,8 +454,8 @@ main .recent-orders a {
 
 }
 .BuscarProInp:focus {
-    border: 2px solid #1A374D; /* borde visible al hacer focus */
-    box-shadow: 0 0 3px rgba(63, 90, 133, 0.9); /* opcional: sombra sutil */
+    border: 2px solid #8DC84B; /* borde visible al hacer focus */
+    box-shadow: 0 0 3px rgba(56, 142, 60, 0.9); /* opcional: sombra sutil */
 }
 
 .filtros {
@@ -423,14 +472,16 @@ main .recent-orders a {
     width: 135px;
     padding: 11px 5px;
     border-radius: 5px;
-    background-color: rgba(27, 34, 159, 0.93);
+    background-color: #8dc84b;
     color: white;
     font-size: 15px;
     letter-spacing: 1px;
     transition: all 0.7s;
     font-weight: bold;
 }
-
+select:hover {
+    background-color: #8dc84b;
+}
 
 .categoriaSelect {
     position: relative;
@@ -442,7 +493,7 @@ main .recent-orders a {
 .CategoriaS {
     width: 190px;
     padding: 10px 35px 10px 15px; /* Espacio para el ícono a la derecha */
-    background-color: #22445e;
+    background-color: #8cc63f;
     color: white;
     border: none;
     border-radius: 8px;
@@ -477,7 +528,7 @@ main .recent-orders a {
     padding: 8px 5px;
     height: 40px;
     border-radius: 5px;
-    background-color: #1A374D;
+    background-color: #8dc84b;
     color: white !important;
     border: none;
     font-weight: bold;
@@ -489,7 +540,7 @@ main .recent-orders a {
 
 .consultar-btn:hover {
     transform: scale(1.06);
-    background-color: #1A374D;
+    background-color: #388e3c;
 }
 
 .icono_search {
@@ -549,12 +600,12 @@ main .export-links hr {
 
 .theme-toggler:hover {
     color: white;
-    background-color: #233d06 !important;
+    background-color: #496826 !important;
     transform: scale(1.05);
 }
 
 .right .theme-toggler {
-    background: rgba(139, 142, 166, 0.563);
+    background: rgba(132, 139, 200, 0.18);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -598,7 +649,7 @@ main .export-links hr {
     background: white;
     padding: 1.8rem;
     border-radius: 2rem;
-    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
+    box-shadow: 0 2rem 3rem rgba(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -630,7 +681,7 @@ main .export-links hr {
     margin-bottom: 0.7rem;
     padding: 1.4rem 1.8rem;
     border-radius: 1.2rem;
-    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
+    box-shadow: 0 2rem 3rem rgba(132, 139, 200, 0.18);
     transition: all 300ms ease;
 }
 
@@ -650,19 +701,18 @@ main .export-links hr {
     padding: 0.6rem;
     color: white;
     border-radius: 50%;
-    background: #0036a3;
+    background: #8dc84b;
     display: flex;
 }
 
 .right .sales-analytics .item.offline .icon {
-    background: #1A374D;
+    background: #004d00;
 }
 
 .right .sales-analytics .add-client {
     background-color: transparent;
-    border: 2px dashed #000000;
-    box-shadow: 0 1rem 2rem rgb(132, 139, 200, 0.18);
-    color: #6d757c;
+    border: 2px dashed #004d00;
+    color: #004d00;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -731,7 +781,7 @@ body.dark-theme {
     --color-dark: #121212;
     --color-dark-variant: #1d1d1f;
     --color-light: rgba(255, 255, 255, 0.05);
-    --color-accent: #6fff57;
+    --color-accent: rgba(75, 141, 21, 0.93);
     --color-sidebar: #1b1b1d;
     --color-card: #2a2a2e;
     --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.6);
@@ -793,7 +843,7 @@ body.dark-theme .insights > div {
 
 body.dark-theme .insights > div:hover {
     transform: translateY(-4px);
-    box-shadow: 0 0 12px rgba(56, 61, 147, 0.93);
+    box-shadow: 0 0 12px rgba(111, 255, 87, 0.2);
 }
 
 body.dark-theme .insights .middle .progress .number {
@@ -822,22 +872,20 @@ body.dark-theme .btn,
 body.dark-theme button,
 body.dark-theme .consultar-btn,
 body.dark-theme .CategoriaS {
-    background-color: rgba(27, 34, 159, 0.93) !important;
+    background-color: #8dc84b !important;
     color: #ffffff;
     border: none;
 }
 
-/*
 body.dark-theme .btn:hover,
 body.dark-theme button:hover,
 body.dark-theme .consultar-btn:hover,
 body.dark-theme .CategoriaS:hover {
     opacity: 0.85;
     cursor: pointer;
-    background-color: rgba(46, 48, 110, 0.93) !important;
+    background-color: #004d00 !important;
 }
-*/
+
 body.dark-theme .export-links a {
     color: #8dc84b !important;
 }
-
