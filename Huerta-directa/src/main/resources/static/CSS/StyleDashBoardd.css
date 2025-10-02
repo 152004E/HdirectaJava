@@ -751,7 +751,7 @@ main .export-links hr {
 }
 
 .export-btn-excel {
-  background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+  background: #8dc84b;
   color: white;
 }
 
@@ -767,7 +767,7 @@ main .export-links hr {
 
 /* Total de productos */
 .total-productos {
-  background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+  background: #8dc84b;
   color: white;
   padding: 15px;
   border-radius: 10px;
@@ -1138,7 +1138,7 @@ body.dark-theme .BuscarProInp::placeholder {
 
 /* Dark theme para total productos */
 body.dark-theme .total-productos {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #8dc84b;
   color: white;
 }
 
