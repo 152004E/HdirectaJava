@@ -32,302 +32,281 @@ $producto->ObtenerTodos(); // } // // ?> // -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
   </head>
-
-  <body>
+<body>
     <div class="container">
-      <aside>
-        <div class="top">
-          <div class="logo">
-            <img src="/images/logo_huerta.png" alt="Logo" />
-            <h2>Huerta<span class="danger">Directa</span></h2>
-          </div>
-          <div class="close" id="close-btn">
-            <span class="material-symbols-outlined">close</span>
-          </div>
-        </div>
-
-        <div class="sidebar">
-            <a th:href="@{/Dashboardd}">
-            <span class="material-symbols-outlined">dashboard</span>
-            <h3>Dashboard</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">person</span>
-            <h3>Clientes</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">receipt_long</span>
-            <h3>Ordenes</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">finance_mode</span>
-            <h3>Reportes</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">mail</span>
-            <h3>Mensajes</h3>
-          </a>
-            <a th:href="@{/agregar_producto}">
-            <span class="material-symbols-outlined">inventory</span>
-            <h3>Agregar Producto</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">report</span>
-            <h3>Novedades</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">settings</span>
-            <h3>Configuracion</h3>
-          </a>
-            <!--
-          <a href="../Consulta_usuarios/Consulta_usuario.php">
-            <span class="material-symbols-outlined">add</span>
-            <h3>Consultar Usuario</h3>
-          </a>
-          -->
-            <a th:href="@{/index}">
-            <span class="material-symbols-outlined">logout</span>
-            <h3>Volver al Inicio</h3>
-          </a>
-        </div>
-      </aside>
-      <!-- fin del asside -->
-      <main>
-        <h1>Dashboard</h1>
-
-        <div class="date">
-          <input type="date" />
-        </div>
-
-        <div class="insights">
-          <div class="sales">
-            <span class="material-symbols-outlined">analytics</span>
-            <div class="middle">
-              <div class="left">
-                <h3>Ventas</h3>
-                <h1>$25,000</h1>
-              </div>
-              <div class="progress">
-                <svg>
-                  <circle cx="38" cy="38" r="36"></circle>
-                </svg>
-                <div class="number">
-                  <p>81%</p>
+        <aside>
+            <div class="top">
+                <div class="logo">
+                    <img src="/images/logo_huerta.png" alt="Logo"/>
+                    <h2>Huerta<span class="danger">Directa</span></h2>
                 </div>
-              </div>
+                <div class="close" id="close-btn">
+                    <span class="material-symbols-outlined">close</span>
+                </div>
             </div>
-            <small class="text-muted">Ultimas 24 horas</small>
-          </div>
-          <!---FIN DE VENTAS--->
-          <div class="expenses">
-            <span class="material-symbols-outlined">bar_chart</span>
-            <div class="middle">
-              <div class="left">
-                <h3>Gastos</h3>
-                <h1>$15,567</h1>
-              </div>
-              <div class="progress">
-                <svg>
-                  <circle cx="38" cy="38" r="36"></circle>
-                </svg>
-                <div class="number">
-                  <p>62%</p>
-                </div>
-              </div>
+
+            <div class="sidebar">
+                <a th:href="@{/Dashboardd}" class="active">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a th:href="@{/consulta_usuarios}">
+                    <span class="material-symbols-outlined">person</span>
+                    <h3>Consultar Usuarios</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    <h3>Ordenes</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">finance_mode</span>
+                    <h3>Reportes</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">mail</span>
+                    <h3>Mensajes</h3>
+                </a>
+                <a th:href="@{/agregar_producto}">
+                    <span class="material-symbols-outlined">inventory</span>
+                    <h3>Agregar Producto</h3>
+                </a>
+                <a href="#">
+                    <span class="material-symbols-outlined">settings</span>
+                    <h3>Configuracion</h3>
+                </a>
+                <a th:href="@{/index}">
+                    <span class="material-symbols-outlined">logout</span>
+                    <h3>Volver al Inicio</h3>
+                </a>
             </div>
-            <small class="text-muted">Ultimas 24 horas</small>
-          </div>
-          <!---FIN DE GASTOS--->
-          <div class="income">
-            <span class="material-symbols-outlined">stacked_line_chart</span>
-            <div class="middle">
-              <div class="left">
-                <h3>Ingresos</h3>
-                <h1>$10,240</h1>
-              </div>
-              <div class="progress">
-                <svg>
-                  <circle cx="38" cy="38" r="36"></circle>
-                </svg>
-                <div class="number">
-                  <p>31%</p>
-                </div>
-              </div>
+        </aside>
+
+        <main>
+            <h1>Dashboard</h1>
+
+            <div class="date">
+                <input type="date"/>
             </div>
-            <small class="text-muted">Ultimas 24 horas</small>
-          </div>
-          <!---FIN DE INGRESOS--->
-        </div>
-        <!---------- fin de insights ------------->
 
-        <div class="recent-orders">
-            <h2>Ordenes recientes</h2>
+            <!-- Mensajes de éxito/error -->
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
 
-            <!--barra de busqueda-->
-            <form class="busqueda-filtros" method="GET" action="/Dashboardd">
-                <!-- Barra de búsqueda larga -->
-                <div class="barra-busqueda">
-                    <input
-                        class="BuscarProInp"
-                        type="text"
-                        name="buscar"
-                        placeholder="Buscar producto..."
-                        th:value="${param.buscar}"
-                    />
-                </div>
-
-                <!-- Selects y botón -->
-                <div class="filtros">
-                    <div class="categoriaSelect">
-                        <select class="CategoriaS" id="categoria" name="categoria">
-                            <option>Por categoría</option>
-                            <option value="frutas">Frutas</option>
-                            <option value="verduras-hortalizas">Verduras y Hortalizas</option>
-                            <option value="lacteos">Lácteos</option>
-                            <option value="carnes-proteinas">Carnes y Proteínas</option>
-                            <option value="cereales-granos">Cereales y Granos</option>
-                            <option value="legumbres-secas">Legumbres Secas</option>
-                            <option value="productos-organicos">Productos Orgánicos</option>
-                            <option value="hierbas-especias">Hierbas y Especias</option>
-                            <option value="miel-derivados">Miel y Derivados</option>
-                            <option value="procesados-artesanales">ProductosArtesanales</option>
-                            <option value="bebidas-naturales">Bebidas Naturales</option>
-                            <option value="plantas-semillas">Plantas y Semillas</option>
-                            <option value="cajas-combos">Cajas Mixtas o Combos</option>
-                        </select>
-                        <div class="icon-container">
-                            <i class="fa-solid fa-caret-down"></i>
+            <div class="insights">
+                <div class="sales">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Ventas</h3>
+                            <h1>$25,000</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="number">
+                                <p>81%</p>
+                            </div>
                         </div>
                     </div>
+                    <small class="text-muted">Ultimas 24 horas</small>
+                </div>
 
-                    <!-- Botón de consultar -->
-                    <div class="ContainerButton">
-                        <button type="submit" class="consultar-btn">
-                            Consultar
-                            <span class="material-symbols-outlined icono_search">search</span>
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-secundary consultar-btn"
-                            onclick="window.location.href='/Dashboardd'"
-                        >
-                            Ver Todos
-                            <span class="material-symbols-outlined icono_search">view_list</span>
-                        </button>
+                <div class="expenses">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Gastos</h3>
+                            <h1>$15,567</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="number">
+                                <p>62%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="text-muted">Ultimas 24 horas</small>
+                </div>
+
+                <div class="income">
+                    <span class="material-symbols-outlined">stacked_line_chart</span>
+                    <div class="middle">
+                        <div class="left">
+                            <h3>Ingresos</h3>
+                            <h1>$10,240</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="number">
+                                <p>31%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <small class="text-muted">Ultimas 24 horas</small>
+                </div>
+            </div>
+
+            <div class="recent-orders">
+                <h2>Gestión de Productos</h2>
+
+                <!-- Total de productos -->
+                <div class="total-productos" th:if="${totalProductos != null}">
+                    <i class="fas fa-box"></i> 
+                    Total de Productos: <span th:text="${totalProductos}"></span>
+                </div>
+
+                <!-- Barra de búsqueda y filtros -->
+                <form class="busqueda-filtros" method="GET" action="/Dashboardd">
+                    <div class="barra-busqueda">
+                        <input class="BuscarProInp" type="text" name="buscar" 
+                               placeholder="Buscar producto..." 
+                               th:value="${buscarActivo}"/>
+                    </div>
+
+                    <div class="filtros">
+                        <div class="categoriaSelect">
+                            <select class="CategoriaS" id="categoria" name="categoria">
+                                <option value="">Por categoría</option>
+                                <option value="frutas" th:selected="${categoriaActiva == 'frutas'}">Frutas</option>
+                                <option value="verduras-hortalizas" th:selected="${categoriaActiva == 'verduras-hortalizas'}">Verduras y Hortalizas</option>
+                                <option value="lacteos" th:selected="${categoriaActiva == 'lacteos'}">Lácteos</option>
+                                <option value="carnes-proteinas" th:selected="${categoriaActiva == 'carnes-proteinas'}">Carnes y Proteínas</option>
+                                <option value="cereales-granos" th:selected="${categoriaActiva == 'cereales-granos'}">Cereales y Granos</option>
+                                <option value="legumbres-secas" th:selected="${categoriaActiva == 'legumbres-secas'}">Legumbres Secas</option>
+                                <option value="productos-organicos" th:selected="${categoriaActiva == 'productos-organicos'}">Productos Orgánicos</option>
+                                <option value="hierbas-especias" th:selected="${categoriaActiva == 'hierbas-especias'}">Hierbas y Especias</option>
+                                <option value="miel-derivados" th:selected="${categoriaActiva == 'miel-derivados'}">Miel y Derivados</option>
+                                <option value="procesados-artesanales" th:selected="${categoriaActiva == 'procesados-artesanales'}">Procesados Artesanales</option>
+                                <option value="bebidas-naturales" th:selected="${categoriaActiva == 'bebidas-naturales'}">Bebidas Naturales</option>
+                                <option value="plantas-semillas" th:selected="${categoriaActiva == 'plantas-semillas'}">Plantas y Semillas</option>
+                                <option value="cajas-combos" th:selected="${categoriaActiva == 'cajas-combos'}">Cajas Mixtas o Combos</option>
+                            </select>
+                            <div class="icon-container">
+                                <i class="fa-solid fa-caret-down"></i>
+                            </div>
+                        </div>
+
+                        <div class="ContainerButton">
+                            <button type="submit" class="consultar-btn">
+                                Consultar
+                                <span class="material-symbols-outlined icono_search">search</span>
+                            </button>
+                            <a href="/Dashboardd" class="consultar-btn" style="text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                                Ver Todos
+                                <span class="material-symbols-outlined icono_search">view_list</span>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                
+
+                <!-- Tabla de productos -->
+                <table border="1" cellpadding="10" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Unidad</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${productos == null || productos.isEmpty()}">
+                            <td colspan="7" style="text-align: center;">
+                                <i class="fas fa-info-circle"></i> No se encontraron productos
+                            </td>
+                        </tr>
+                        <tr th:each="producto : ${productos}">
+                            <td th:text="${producto.idProduct}"></td>
+                            <td th:text="${producto.nameProduct}"></td>
+                            <td th:text="${producto.category}"></td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"></td>
+                            <td th:text="${producto.unit}"></td>
+                            <td th:text="${#strings.length(producto.descriptionProduct) > 50 ? #strings.substring(producto.descriptionProduct, 0, 50) + '...' : producto.descriptionProduct}"></td>
+                            <td>
+                                <button type="button" class="btn-actualizar" 
+                                        th:onclick="'actualizarProducto(' + ${producto.idProduct} + ')'">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button type="button" class="btn-eliminar" 
+                                        th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Botones de exportación -->
+                <div class="export-buttons">
+                    <button class="export-btn export-btn-excel" onclick="exportarExcel()">
+                        <i class="fas fa-file-excel"></i> Exportar a Excel
+                    </button>
+                    <button class="export-btn export-btn-pdf" onclick="exportarPDF()">
+                        <i class="fas fa-file-pdf"></i> Exportar a PDF
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <div class="right">
+            <div class="top">
+                <div class="theme-toggler">
+                    <span class="material-symbols-outlined active">light_mode</span>
+                    <span class="material-symbols-outlined">dark_mode</span>
+                </div>
+                <div class="profile">
+                    <div class="info">
+                        <p>Ey, <b>Admin</b></p>
+                        <small class="text-muted">Administrador</small>
+                    </div>
+                    <div class="profile-photo">
+                        <img src="/images/logo_huerta.png" alt=""/>
                     </div>
                 </div>
-            </form>
+            </div>
 
-            <table border="1" cellpadding="10" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Unidad</th>
-                        <th>Descripción</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="producto : ${productos}">
-                        <td th:text="${producto.nameProduct}"></td>
-                        <td th:text="${producto.category}"></td>
-                        <td th:text="${producto.price}"></td>
-                        <td th:text="${producto.unit}"></td>
-                        <td th:text="${producto.descriptionProduct}"></td>
-                        <td>
-                            <button type="button" class="btn-actualizar" 
-                                    th:onclick="'actualizarProducto(' + ${producto.idProduct} + ')'">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button type="button" class="btn-eliminar" 
-                                    th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-         <!--
-          <div class="export-links">
-              <a href="../../controllers/Reportes/reportexls_productos.php?buscar=<?= urlencode($_POST['buscar'] ?? '') ?>&categoria=<?= urlencode($_POST['categoria'] ?? '') ?>">Exportar a Excel</a>
+            <div class="recent-updates">
+                <h2>Actualizaciones</h2>
+                <div class="updates">
+                    <div class="update">
+                        <div class="message">
+                            <p><b>Sistema</b> funcionando correctamente</p>
+                            <small class="text-muted">Hace 1 hora</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-              <hr>
-              <a href="../../controllers/Reportes/reportepdf_productos.php?buscar=<?= urlencode($_POST['buscar'] ?? '') ?>&categoria=<?= urlencode($_POST['categoria'] ?? '') ?>">Exportar a Pdf</a>
-          </div>
-          -->
-      </main>
-      <!--FIN DEL MAIN 😜😝🤤-->
-
-
-      <div class="right">
-        <div class="top">
-          <div class="theme-toggler">
-            <span class="material-symbols-outlined active">light_mode</span>
-            <span class="material-symbols-outlined">dark_mode</span>
-          </div>
-          <div class="profile">
-            <div class="info">
-              <p>Ey, <b>Pachito</b></p>
-              <small class="text-muted">Vendedor</small>
-            </div>
-            <div class="profile-photo">
-              <img src="imagesDashBoard/Santiago.png" alt="" />
-            </div>
-          </div>
-        </div>
-        <!--FIN DEL TOP-->
-        <div class="recent-updates">
-          <h2>Actualizaciones</h2>
-          <div class="updates">
-            <div class="update">
-              <div class="profile-photo">
-                <img src="imagesDashBoard/Emerson.png" alt="" />
-              </div>
-              <div class="message">
-                <p><b>Emerson</b> recibio su orden de una yuca</p>
-                <small class="text-muted">Hace 4 horas</small>
-              </div>
-            </div>
-            <div class="update">
-              <div class="profile-photo">
-                <img src="imagesDashBoard/Jesus.png" alt="" />
-              </div>
-              <div class="message">
-                <p><b>Jesus</b> recibio su orden de una manzana</p>
-                <small class="text-muted">Hace 6 horas</small>
-              </div>
-            </div>
-            <div class="update">
-              <div class="profile-photo">
-                <img src="imagesDashBoard/Yeferson.png" alt="" />
-              </div>
-              <div class="message">
-                <p><b>Yeferson</b> recibio su orden de suero costeño</p>
-                <small class="text-muted">Hace 9 horas</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--FIN DE LAS ACTUALIZACIONES MY BROTA-->
-        <div class="sales-analytics">
-          <h2>Analiticas</h2>
-          <div class="item online">
-            <div class="icon">
-              <span class="material-symbols-outlined">shopping_cart</span>
-            </div>
-            <div class="right">
-              <div class="info">
-                <h3>ORDENES</h3>
-                <small class="text-muted">Ultimas 24 horas</small>
-              </div>
-              <h5 class="success">+39%</h5>
-              <h3>3849</h3>
-            </div>
-          </div>
-          <div class="item offline">
+            <div class="sales-analytics">
+                <h2>Analiticas</h2>
+                <div class="item online">
+                    <div class="icon">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>ORDENES</h3>
+                            <small class="text-muted">Ultimas 24 horas</small>
+                        </div>
+                        <h5 class="success">+39%</h5>
+                        <h3>3849</h3>
+                    </div>
+                </div>
+                          <div class="item offline">
             <div class="icon">
               <span class="material-symbols-outlined">local_mall</span>
             </div>
@@ -362,37 +341,45 @@ $producto->ObtenerTodos(); // } // // ?> // -->
             <span class="material-symbols-outlined">add</span>
             <h3>Añadir administrador</h3>
           </a> -->
+            </div>
         </div>
-      </div>
     </div>
+
     <script src="/JS/dashboar.js"></script>
     <script>
-    function actualizarProducto(id) {
-        window.location.href = `/editar_producto/${id}`;
-    }
-
-    function eliminarProducto(id) {
-        if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-            fetch(`/api/products/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok || response.status === 204) {
-                    alert('Producto eliminado exitosamente');
-                    window.location.reload();
-                } else {
-                    alert('Error al eliminar el producto');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar el producto');
-            });
+        function actualizarProducto(id) {
+            window.location.href = `/editar_producto/${id}`;
         }
-    }
-</script>
-  </body>
+
+        function eliminarProducto(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/eliminar_producto/${id}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function exportarExcel() {
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = `/exportar_productos_excel?${params.toString()}`;
+        }
+
+        function exportarPDF() {
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = `/exportar_productos_pdf?${params.toString()}`;
+        }
+
+        // Ocultar alertas después de 5 segundos
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
 </html>

@@ -24,16 +24,21 @@ public class DashboardController {
                           @RequestParam(required = false) String categoria) {
         List<ProductDTO> productos;
         
-        if (buscar != null && !buscar.isEmpty()) {
-            productos = productService.buscarPorNombre(buscar);
+        // Lógica de filtrado mejorada
+        if (buscar != null && !buscar.trim().isEmpty()) {
+            productos = productService.buscarPorNombre(buscar.trim());
+            model.addAttribute("buscarActivo", buscar);
         } else if (categoria != null && !categoria.isEmpty() && !categoria.equals("Por categoría")) {
             productos = productService.buscarPorCategoria(categoria);
+            model.addAttribute("categoriaActiva", categoria);
         } else {
             productos = productService.listarProducts();
         }
         
         model.addAttribute("productos", productos);
-        return "DashBoard/Dashboardd";  // <-- CAMBIADO: Carpeta/Archivo
+        model.addAttribute("totalProductos", productos.size());
+        
+        return "DashBoard/Dashboardd";
     }
 
     @GetMapping("/editar_producto/{id}")
@@ -41,22 +46,47 @@ public class DashboardController {
         try {
             ProductDTO producto = productService.obtenerProductPorId(id);
             model.addAttribute("producto", producto);
-            return "DashBoard/editar_producto";  // <-- CAMBIADO
+            return "DashBoard/editar_producto";
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
+            redirectAttributes.addFlashAttribute("error", "Producto no encontrado: " + e.getMessage());
             return "redirect:/Dashboardd";
         }
     }
 
     @PostMapping("/actualizar_producto/{id}")
     public String actualizarProducto(@PathVariable Long id, 
-                                    @ModelAttribute ProductDTO producto,
+                                    @ModelAttribute ProductDTO productoDTO,
                                     RedirectAttributes redirectAttributes) {
         try {
-            productService.actualizarProduct(id, producto);
-            redirectAttributes.addFlashAttribute("success", "Producto actualizado exitosamente");
+            // Asegurarse de que el ID esté establecido
+            productoDTO.setIdProduct(id);
+            
+            // Obtener el producto actual para mantener campos que no se editan
+            ProductDTO productoActual = productService.obtenerProductPorId(id);
+            
+            // Mantener la imagen si no se cambió
+            if (productoDTO.getImageProduct() == null || productoDTO.getImageProduct().isEmpty()) {
+                productoDTO.setImageProduct(productoActual.getImageProduct());
+            }
+            
+            // Mantener la fecha de publicación
+            if (productoDTO.getPublicationDate() == null) {
+                productoDTO.setPublicationDate(productoActual.getPublicationDate());
+            }
+            
+            // Mantener el userId
+            if (productoDTO.getUserId() == null) {
+                productoDTO.setUserId(productoActual.getUserId());
+            }
+            
+            // Actualizar el producto
+            ProductDTO productoActualizado = productService.actualizarProduct(id, productoDTO);
+            
+            redirectAttributes.addFlashAttribute("success", 
+                "Producto '" + productoActualizado.getNameProduct() + "' actualizado exitosamente");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar el producto");
+            redirectAttributes.addFlashAttribute("error", 
+                "Error al actualizar el producto: " + e.getMessage());
         }
         return "redirect:/Dashboardd";
     }
@@ -64,10 +94,13 @@ public class DashboardController {
     @PostMapping("/eliminar_producto/{id}")
     public String eliminarProductoPost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            ProductDTO producto = productService.obtenerProductPorId(id);
             productService.eliminarProductPorId(id);
-            redirectAttributes.addFlashAttribute("success", "Producto eliminado exitosamente");
+            redirectAttributes.addFlashAttribute("success", 
+                "Producto '" + producto.getNameProduct() + "' eliminado exitosamente");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el producto");
+            redirectAttributes.addFlashAttribute("error", 
+                "Error al eliminar el producto: " + e.getMessage());
         }
         return "redirect:/Dashboardd";
     }

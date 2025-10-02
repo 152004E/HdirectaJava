@@ -3,6 +3,7 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
+import com.exe.Huerta_directa.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,20 +16,20 @@ public class RutasPagina {
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private UserService userService;
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
-        // agragar productos al main
         List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos);
+        System.out.println("Productos obtenidos: " + productos.size());
         model.addAttribute("productos", productos);
-
-        return "index"; // busca templates/index.html
+        return "index";
     }
 
     @GetMapping("/agregar_producto")
     public String mostrarFormulario() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Agreagar_producto/Agregar_producto";
     }
 
@@ -40,25 +41,21 @@ public class RutasPagina {
 
     @GetMapping("/error404")
     public String mostrarerror404() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error404";
     }
 
     @GetMapping("/error500")
     public String mostrarerror500() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error500";
     }
 
     @GetMapping("/landing")
     public String mostrarLanding() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "pagina_principal/landing";
     }
 
     @GetMapping("/Quienes_somos")
     public String mostrarQuienes_somos() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Quienes_somos/quienes_somos";
     }
 
@@ -66,6 +63,7 @@ public class RutasPagina {
     public String mostrarFrutas(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("frutas");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Frutas");
         return "ProductosCategorias/Frutas";
     }
 
@@ -73,6 +71,7 @@ public class RutasPagina {
     public String mostrarBebidasNaturales(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Bebidas Naturales");
         return "ProductosCategorias/BebidasNaturales";
     }
 
@@ -80,6 +79,7 @@ public class RutasPagina {
     public String mostrarCajasMixtas(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("cajas-combos");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Cajas Mixtas");
         return "ProductosCategorias/CajasMixtas";
     }
 
@@ -87,6 +87,7 @@ public class RutasPagina {
     public String mostrarCarnesYl(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("carnes-proteinas");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Carnes y Proteínas");
         return "ProductosCategorias/CarnesYProteinas";
     }
 
@@ -94,6 +95,7 @@ public class RutasPagina {
     public String mostrarCereales(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("cereales-granos");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Cereales y Granos");
         return "ProductosCategorias/CerealesYGranos";
     }
 
@@ -101,13 +103,16 @@ public class RutasPagina {
     public String mostrarLacteos(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Lácteos");
         return "ProductosCategorias/Lacteos";
     }
 
     @GetMapping("/legumbresSecas")
     public String mostrarLegumbresSecas(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("bebidas-naturales");
+        // CORRECCIÓN: Esta categoría estaba usando "bebidas-naturales"
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("legumbres-secas");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Legumbres Secas");
         return "ProductosCategorias/legumbresSecas";
     }
 
@@ -115,6 +120,7 @@ public class RutasPagina {
     public String mostrarMielYDerivados(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("miel-derivados");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Miel y Derivados");
         return "ProductosCategorias/MielYDerivados";
     }
 
@@ -122,6 +128,7 @@ public class RutasPagina {
     public String mostrarOrganicos(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("productos-organicos");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Productos Orgánicos");
         return "ProductosCategorias/Organicos";
     }
 
@@ -129,13 +136,14 @@ public class RutasPagina {
     public String mostrarVerdurasYHortalizas(Model model) {
         List<ProductDTO> productos = productService.listarProductsPorCategoria("verduras-hortalizas");
         model.addAttribute("productos", productos);
+        model.addAttribute("categoria", "Verduras y Hortalizas");
         return "ProductosCategorias/VerdurasYHortalizas";
     }
 
-    @GetMapping("DashboardAdmin")
+    @GetMapping("/DashboardAdmin")
     public String mostrarDashboardAdmin(Model model) {
         List<ProductDTO> productos = productService.listarProducts();
         model.addAttribute("productos", productos);
-        return "Dashboard_Admin/DashboardAdmin"; // templates/DashBoard/DashboardAdmin.html
+        return "Dashboard_Admin/DashboardAdmin";
     }
 }
