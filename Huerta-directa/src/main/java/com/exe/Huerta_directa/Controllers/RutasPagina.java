@@ -53,6 +53,11 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "Errores/error500";
     }
+    @GetMapping("/actualizacionUsuario")
+    public String actualizacionUsuario() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "DashBoard/actualizacionUsuario";
+    }
 
     @GetMapping("/landing")
     public String mostrarLanding() {
