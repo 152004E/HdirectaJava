@@ -15,9 +15,12 @@
     />
 
     <!--agregar los estilos css-->
-
-    <link rel="stylesheet" href="/CSS/Pasarela.css" />
     <link rel="stylesheet" href="/CSS/Agregar_producto.css" />
+    <link rel="stylesheet" href="/CSS/Pasarela.css" />
+    <link rel="stylesheet" href="/CSS/landing.css" />
+    <link rel="stylesheet" href="/CSS/Footer.css" />
+    <link rel="stylesheet" href="/CSS/styleCategorias.css" />
+
 
     <!--instalacon bootstrap-->
     <link
@@ -35,6 +38,8 @@
   <body>
     <!--congigurar los links-->
     <!--nombre del producto, descripcion,precio,categoria -->
+
+    <div th:replace="fragments/navPagina :: navPagina"></div>
     <div
       class="container1 d-flex align-items-center justify-content-center gap-5"
     >
@@ -162,22 +167,24 @@
         <div
           class="container-button d-flex align-items-center justify-content-center gap-3"
         >
-          <button type="submit" class="btn-2 botonIcon">
-            Agregar
-            <span class="material-symbols-outlined"> arrow_forward </span>
-          </button>
+        <a
+            class="btn-2 d-flex justify-content-center align-items-center botonIcon"
+            th:href="@{/}"
+            >volver
+            <span class="material-symbols-outlined flecha"> arrow_back </span></a
+          >
+          
           <button type="button" id="btn-visualizar" class="btn-2 botonIcon icono">
             Visualizar
             <span id="passwordOjo" class="material-symbols-outlined"
               >visibility</span
             >
           </button>
-          <a
-            class="btn-2 d-flex justify-content-center align-items-center botonIcon"
-            th:href="@{/}"
-            >volver
-            <span class="material-symbols-outlined flecha"> arrow_back </span></a
-          >
+          
+          <button type="submit" class="btn-2 botonIcon">
+            Agregar
+            <span class="material-symbols-outlined"> arrow_forward </span>
+          </button>
         </div>
       </form>
       <div id="modalVistaPrevia" class="modal">
@@ -208,6 +215,7 @@
         </div>
       </div>
     </div>
+    <div th:replace="fragments/footer :: footer"></div>
 
     <script>
       const inputImagen = document.getElementById("imagen");
