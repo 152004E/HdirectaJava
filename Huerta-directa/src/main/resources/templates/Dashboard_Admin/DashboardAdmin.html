@@ -38,6 +38,10 @@
                 <span class="material-symbols-outlined">dashboard</span>
                 <h3>Dashboard</h3>
             </a>
+            <a th:href="@{/consulta_usuarios}">
+                <span class="material-symbols-outlined">person</span>
+                <h3>Consultar Usuarios</h3>
+            </a>
             <a href="#">
                 <span class="material-symbols-outlined">person</span>
                 <h3>Clientes</h3>
@@ -83,6 +87,14 @@
         <div class="date">
             <input type="date" />
         </div>
+
+        <!-- Mensajes de éxito/error -->
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
 
         <div class="insights">
             <div class="sales">

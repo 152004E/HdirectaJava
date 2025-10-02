@@ -17,6 +17,9 @@ public class RutasPagina {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
         List<ProductDTO> productos = productService.listarProducts();
