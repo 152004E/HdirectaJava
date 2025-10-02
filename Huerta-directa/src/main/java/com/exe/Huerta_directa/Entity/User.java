@@ -5,6 +5,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 
@@ -32,6 +33,22 @@ public class User {
     @NotBlank
     @Size(max = 250)
     private String password;
+
+    @Column (name = "phone", length = 15)
+    @Size(max = 15)
+    private String phone;
+
+    @Column (name = "address", length = 250)
+    @Size(max = 250)
+    private String address;
+
+    @Column(name = "creacion_date", nullable = false)
+    private LocalDate creacionDate;
+
+    @PrePersist
+    protected void onCreate() {
+        creacionDate = LocalDate.now();
+    }
 
     @ManyToOne
     @JoinColumn (name = "role_id", nullable = false)

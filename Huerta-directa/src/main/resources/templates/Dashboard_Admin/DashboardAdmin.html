@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,6 +37,10 @@
             <a th:href="@{/Dashboardd}">
                 <span class="material-symbols-outlined">dashboard</span>
                 <h3>Dashboard</h3>
+            </a>
+            <a th:href="@{/consulta_usuarios}">
+                <span class="material-symbols-outlined">person</span>
+                <h3>Consultar Usuarios</h3>
             </a>
             <a href="#">
                 <span class="material-symbols-outlined">person</span>
@@ -83,6 +87,14 @@
         <div class="date">
             <input type="date" />
         </div>
+
+        <!-- Mensajes de éxito/error -->
+            <div th:if="${success}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
 
         <div class="insights">
             <div class="sales">
@@ -218,18 +230,27 @@
                 <tr>
                     <th>ID</th>
                     <th>NOMBRE</th>
-                    <th>Telefono</th>
-                    <th>Direccion</th>
-                    <th>Activo</th>
+                    <th>EMAIL</th>
+                    <th>FECHA CREACION</th>
+                    <th>ACCIONES</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="producto : ${productos}">
-                    <td th:text="${producto.nameProduct}"></td>
-                    <td th:text="${producto.category}"></td>
-                    <td th:text="${producto.price}"></td>
-                    <td th:text="${producto.unit}"></td>
-                    <td th:text="${producto.descriptionProduct}"></td>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.id}"></td>
+                    <td th:text="${usuario.name}"></td>
+                    <td th:text="${usuario.email}"></td>
+                    <td th:text="${usuario.creacionDate}"></td>
+                    <td>
+                        <button type="button" class="btn-actualizar"
+                                th:onclick="'actualizarUsuario(' + ${usuario.id} + ')'">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button type="button" class="btn-eliminar"
+                                th:onclick="'eliminarUsuario(' + ${usuario.id} + ')'">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
