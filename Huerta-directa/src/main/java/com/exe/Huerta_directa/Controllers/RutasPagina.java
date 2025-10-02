@@ -16,9 +16,6 @@ public class RutasPagina {
 
     @Autowired
     private ProductService productService;
-    
-    @Autowired
-    private UserService userService;
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
@@ -47,6 +44,11 @@ public class RutasPagina {
     @GetMapping("/error500")
     public String mostrarerror500() {
         return "Errores/error500";
+    }
+    @GetMapping("/actualizacionUsuario")
+    public String actualizacionUsuario() {
+        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+        return "DashBoard/actualizacionUsuario";
     }
 
     @GetMapping("/landing")
@@ -141,9 +143,9 @@ public class RutasPagina {
     }
 
     @GetMapping("/DashboardAdmin")
-    public String mostrarDashboardAdmin(Model model) {
-        List<ProductDTO> productos = productService.listarProducts();
-        model.addAttribute("productos", productos);
+    public String dashboard(Model model) {
+        List<UserDTO> usuarios = userService.listarUsers(); // Cambiar User por UserDTO
+        model.addAttribute("usuarios", usuarios);
         return "Dashboard_Admin/DashboardAdmin";
     }
 }

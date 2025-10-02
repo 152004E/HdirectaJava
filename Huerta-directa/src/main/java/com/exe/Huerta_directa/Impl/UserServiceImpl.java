@@ -126,6 +126,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
+        userDTO.setCreacionDate(user.getCreacionDate()); // ⚠️ ESTO debe estar incluido
 
         //Si la persona tiene un rol asignado, se convierte a DTO
         if (user.getRole() != null) {
@@ -146,6 +147,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
+        user.setCreacionDate(user.getCreacionDate()); // ⚠️ ESTO debe estar incluido
 
         // Aquí buscamos el rol.
         if (userDTO.getIdRole() != null) {
