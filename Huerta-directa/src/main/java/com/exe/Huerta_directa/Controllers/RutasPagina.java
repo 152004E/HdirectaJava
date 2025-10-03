@@ -134,7 +134,7 @@ public String mostrarLogin(Model model,
 
             // Por ahora, simulamos el proceso exitoso
             redirectAttributes.addFlashAttribute("success",
-                "✅ Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.");
+                "Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.");
 
             return "redirect:/forgot-password";
 

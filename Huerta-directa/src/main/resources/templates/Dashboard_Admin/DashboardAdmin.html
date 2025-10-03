@@ -176,112 +176,165 @@
         </div>
         <!---------- fin de insights ------------->
 
-        <div class="recent-orders">
-            <h2>Usuarios Registrados</h2>
-
-            <!--barra de busqueda-->
-            <form class="busqueda-filtros" method="POST" action="">
-                <!-- Barra de búsqueda larga -->
-                <div class="barra-busqueda">
-                    <input
-                            class="BuscarProInp"
-                            type="text"
-                            name="buscar"
-                            placeholder="Buscar producto..."
-                    />
-                </div>
-
-                <!-- Selects y botón -->
-                <div class="filtros">
-                    <div class="categoriaSelect">
-                        <select class="CategoriaS" id="categoria" name="categoria">
-                            <option>Por ID</option>
-                            <option value="frutas">Frutas</option>
-                            <br>
-                            <option value="verduras-hortalizas">
-                                Por Fecha
-                            </option>
-                            <option value="carnes-proteinas">Ene,Feb,Mar</option>
-                            <option value="cereales-granos">Abr,May,jun</option>
-                            <option value="legumbres-secas">jul,Ago,Sep</option>
-                            <option value="lcteos">Oct,Nov,Dic</option>
-                            <br>
-                            <option value="productos-organicos">
-                                Mas recientes
-                            </option>
-                            <option value="hierbas-especias">Creados</option>
-                            <br>
-                            <option value="procesados-artesanales">
-                                Mas antiguos
-                            </option>
-                            <option value="bebidas-naturales">Creados</option>
-                        </select>
-                        <div class="icon-container">
-                            <i class="fa-solid fa-caret-down"></i>
-                        </div>
+        <!-- Nueva sección: Resumen del Sistema -->
+        <div class="system-overview">
+            <h2>Resumen del Sistema</h2>
+            <div class="overview-cards">
+                <div class="overview-card users">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">group</span>
                     </div>
-
-                    <!-- Botón de consultar -->
-                    <!-- <button type="submit" class="consultar-btn">Consultar</button> -->
-                    <div class="ContainerButton">
-                        <button type="submit" class="consultar-btn">
-                            Consultar
-                            <span class="material-symbols-outlined icono_search"
-                            >search</span
-                            >
-                        </button>
-                        <button
-                                type="submit"
-                                class="btn btn-secundary consultar-btn"
-                                onclick="window.location.href=window.location.pathname"
-                        >
-                            Ver Todos
-                            <span class="material-symbols-outlined icono_search"
-                            >view_list</span
-                            >
-                        </button>
+                    <div class="card-content">
+                        <h3>Usuarios Totales</h3>
+                        <h1 th:text="${usuarios != null ? usuarios.size() : 0}">0</h1>
+                        <small class="text-muted">Clientes registrados</small>
                     </div>
                 </div>
-            </form>
 
-            <table border="1" cellpadding="10" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>NOMBRE</th>
-                    <th>EMAIL</th>
-                    <th>FECHA CREACION</th>
-                    <th>ACCIONES</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="usuario : ${usuarios}">
-                    <td th:text="${usuario.id}"></td>
-                    <td th:text="${usuario.name}"></td>
-                    <td th:text="${usuario.email}"></td>
-                    <td th:text="${usuario.creacionDate}"></td>
-                    <td>
-                        <button type="button" class="btn-actualizar"
-                                th:onclick="'actualizarUsuario(' + ${usuario.id} + ')'">
-                            <span class="material-symbols-outlined">edit</span>
-                        </button>
-                        <button type="button" class="btn-eliminar"
-                                th:onclick="'eliminarUsuario(' + ${usuario.id} + ')'">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <div class="overview-card admins">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>Administradores</h3>
+                        <h1 th:text="${#lists.size(usuarios != null ? usuarios : {})}" th:if="${usuarios != null}">0</h1>
+                        <h1 th:unless="${usuarios != null}">0</h1>
+                        <small class="text-muted">Admins activos</small>
+                    </div>
+                </div>
+
+                <div class="overview-card products">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>Productos</h3>
+                        <h1>247</h1>
+                        <small class="text-muted">En catálogo</small>
+                    </div>
+                </div>
+
+                <div class="overview-card orders">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">shopping_bag</span>
+                    </div>
+                    <div class="card-content">
+                        <h3>Pedidos Hoy</h3>
+                        <h1>18</h1>
+                        <small class="text-muted">Pendientes: 3</small>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--
-         <div class="export-links">
-             <a href="../../controllers/Reportes/reportexls_productos.php?buscar=<?= urlencode($_POST['buscar'] ?? '') ?>&categoria=<?= urlencode($_POST['categoria'] ?? '') ?>">Exportar a Excel</a>
 
-             <hr>
-             <a href="../../controllers/Reportes/reportepdf_productos.php?buscar=<?= urlencode($_POST['buscar'] ?? '') ?>&categoria=<?= urlencode($_POST['categoria'] ?? '') ?>">Exportar a Pdf</a>
-         </div>
-         -->
+        <!-- Accesos Directos Rápidos -->
+        <div class="quick-actions">
+            <h2>Accesos Rápidos</h2>
+            <div class="actions-grid">
+                <a th:href="@{/agregar_admin}" class="action-card primary">
+                    <span class="material-symbols-outlined">person_add</span>
+                    <h3>Registrar Admin</h3>
+                    <p>Añadir nuevo administrador</p>
+                </a>
+
+                <a th:href="@{/consulta_usuarios}" class="action-card secondary">
+                    <span class="material-symbols-outlined">manage_accounts</span>
+                    <h3>Gestionar Usuarios</h3>
+                    <p>Ver y editar usuarios</p>
+                </a>
+
+                <a th:href="@{/agregar_producto}" class="action-card success">
+                    <span class="material-symbols-outlined">add_box</span>
+                    <h3>Nuevo Producto</h3>
+                    <p>Agregar al catálogo</p>
+                </a>
+
+                <a href="#" class="action-card warning">
+                    <span class="material-symbols-outlined">assessment</span>
+                    <h3>Reportes</h3>
+                    <p>Generar informes</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Panel de Actividad Reciente -->
+        <div class="recent-activity">
+            <h2>Actividad Reciente del Sistema</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon admin">
+                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Yeferson Sanchez</strong> registró un nuevo administrador: <strong>Luciana</strong></p>
+                        <small class="text-muted">Hace 2 horas</small>
+                    </div>
+                    <div class="activity-status success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon product">
+                        <span class="material-symbols-outlined">inventory</span>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Luciana</strong> agregó el producto: <strong>Papa Criolla Orgánica</strong></p>
+                        <small class="text-muted">Hace 3 horas</small>
+                    </div>
+                    <div class="activity-status success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon user">
+                        <span class="material-symbols-outlined">person_remove</span>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Sistema</strong> eliminó usuario inactivo: <strong>Juan Pérez</strong></p>
+                        <small class="text-muted">Hace 5 horas</small>
+                    </div>
+                    <div class="activity-status warning">
+                        <span class="material-symbols-outlined">warning</span>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon order">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Cliente nuevo</strong> realizó pedido por <strong>$45.000</strong></p>
+                        <small class="text-muted">Hace 1 día</small>
+                    </div>
+                    <div class="activity-status success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon system">
+                        <span class="material-symbols-outlined">system_update</span>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>Sistema</strong> actualizó precios de <strong>15 productos</strong></p>
+                        <small class="text-muted">Hace 2 días</small>
+                    </div>
+                    <div class="activity-status info">
+                        <span class="material-symbols-outlined">info</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-all-activity">
+                <a href="#" class="btn-view-all">
+                    <span class="material-symbols-outlined">history</span>
+                    Ver todo el historial
+                </a>
+            </div>
+        </div>
+
     </main>
     <!--FIN DEL MAIN 😜😝🤤-->
 
@@ -351,44 +404,65 @@
         </div>
         <!--FIN DE LAS ACTUALIZACIONES MY BROTA-->
         <div class="sales-analytics">
-            <h2>Analiticas</h2>
+            <h2>Resumen del Sistema</h2>
+
+            <!-- Tarjeta de Usuarios Totales -->
             <div class="item online">
                 <div class="icon">
-                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span class="material-symbols-outlined">group</span>
                 </div>
                 <div class="right">
                     <div class="info">
-                        <h3>ORDENES</h3>
-                        <small class="text-muted">Ultimas 24 horas</small>
+                        <h3>USUARIOS TOTALES</h3>
+                        <small class="text-muted">Clientes registrados</small>
                     </div>
-                    <h5 class="success">+39%</h5>
-                    <h3>3849</h3>
+                    <h5 class="success">+12%</h5>
+                    <h3 th:text="${usuarios != null ? usuarios.size() : 0}">0</h3>
                 </div>
             </div>
+
+            <!-- Tarjeta de Administradores -->
             <div class="item offline">
                 <div class="icon">
-                    <span class="material-symbols-outlined">local_mall</span>
+                    <span class="material-symbols-outlined">admin_panel_settings</span>
                 </div>
                 <div class="right">
                     <div class="info">
-                        <h3>OFFLINE ORDENES</h3>
-                        <small class="text-muted">Ultimas 24 horas</small>
+                        <h3>ADMINISTRADORES</h3>
+                        <small class="text-muted">Admins activos</small>
                     </div>
-                    <h5 class="danger">-17%</h5>
-                    <h3>1100</h3>
+                    <h5 class="warning">+2</h5>
+                    <h3 th:text="${adminCount != null ? adminCount : 2}">2</h3>
                 </div>
             </div>
+
+            <!-- Tarjeta de Productos -->
             <div class="item customers">
                 <div class="icon">
-                    <span class="material-symbols-outlined">person</span>
+                    <span class="material-symbols-outlined">inventory_2</span>
                 </div>
                 <div class="right">
                     <div class="info">
-                        <h3>NUEVOS CLIENTES</h3>
-                        <small class="text-muted">Ultimas 24 horas</small>
+                        <h3>PRODUCTOS</h3>
+                        <small class="text-muted">En catálogo</small>
                     </div>
-                    <h5 class="success">+67%</h5>
-                    <h3>849</h3>
+                    <h5 class="success">+5%</h5>
+                    <h3>247</h3>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Pedidos del Día -->
+            <div class="item online" style="border-left: 4px solid #9C27B0;">
+                <div class="icon" style="background: #9C27B0;">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                </div>
+                <div class="right">
+                    <div class="info">
+                        <h3>PEDIDOS HOY</h3>
+                        <small class="text-muted">Pendientes: 3</small>
+                    </div>
+                    <h5 class="success">+8%</h5>
+                    <h3>18</h3>
                 </div>
             </div>
         </div>

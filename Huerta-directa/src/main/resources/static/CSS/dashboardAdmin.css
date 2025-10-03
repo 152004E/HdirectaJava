@@ -880,70 +880,372 @@ main .export-links hr {
     animation: slideInRight 0.5s ease-out, slideOutRight 0.3s ease-in 7.7s forwards;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .modern-alert {
-        left: 10px;
-        right: 10px;
-        max-width: none;
-        top: 10px;
+/* Estilos para las nuevas secciones del dashboard */
+
+/* ========== RESUMEN DEL SISTEMA ========== */
+.system-overview {
+    margin: 2rem 0;
+}
+
+.system-overview h2 {
+    color: var(--color-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.overview-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.overview-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.overview-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.overview-card.users {
+    border-left-color: #4CAF50;
+}
+
+.overview-card.admins {
+    border-left-color: #FF9800;
+}
+
+.overview-card.products {
+    border-left-color: #2196F3;
+}
+
+.overview-card.orders {
+    border-left-color: #9C27B0;
+}
+
+.card-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    height: 60px;
+}
+
+.card-icon .material-symbols-outlined {
+    color: white;
+    font-size: 1.8rem;
+}
+
+.card-content h3 {
+    color: var(--color-dark);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.card-content h1 {
+    color: var(--color-dark);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.card-content small {
+    color: var(--color-info-dark);
+    font-size: 0.8rem;
+}
+
+/* ========== ACCESOS RÁPIDOS ========== */
+.quick-actions {
+    margin: 2rem 0;
+}
+
+.quick-actions h2 {
+    color: var(--color-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.action-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.action-card:hover::before {
+    transform: scaleX(1);
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.action-card .material-symbols-outlined {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #667eea;
+}
+
+.action-card.primary .material-symbols-outlined {
+    color: #4CAF50;
+}
+
+.action-card.secondary .material-symbols-outlined {
+    color: #2196F3;
+}
+
+.action-card.success .material-symbols-outlined {
+    color: #FF9800;
+}
+
+.action-card.warning .material-symbols-outlined {
+    color: #9C27B0;
+}
+
+.action-card h3 {
+    color: var(--color-dark);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.action-card p {
+    color: var(--color-info-dark);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* ========== ACTIVIDAD RECIENTE ========== */
+.recent-activity {
+    margin: 2rem 0;
+}
+
+.recent-activity h2 {
+    color: var(--color-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.activity-list {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item:hover {
+    background: #f8f9fa;
+}
+
+.activity-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.activity-icon.admin {
+    background: linear-gradient(135deg, #FF9800, #FF5722);
+}
+
+.activity-icon.product {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+}
+
+.activity-icon.user {
+    background: linear-gradient(135deg, #F44336, #D32F2F);
+}
+
+.activity-icon.order {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+.activity-icon.system {
+    background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+}
+
+.activity-icon .material-symbols-outlined {
+    color: white;
+    font-size: 1.3rem;
+}
+
+.activity-content {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.activity-content p {
+    color: var(--color-dark);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+}
+
+.activity-content strong {
+    font-weight: 600;
+    color: #333;
+}
+
+.activity-content small {
+    color: var(--color-info-dark);
+    font-size: 0.8rem;
+}
+
+.activity-status {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-status.success {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.activity-status.warning {
+    background: rgba(255, 152, 0, 0.1);
+}
+
+.activity-status.info {
+    background: rgba(33, 150, 243, 0.1);
+}
+
+.activity-status .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+.activity-status.success .material-symbols-outlined {
+    color: #4CAF50;
+}
+
+.activity-status.warning .material-symbols-outlined {
+    color: #FF9800;
+}
+
+.activity-status.info .material-symbols-outlined {
+    color: #2196F3;
+}
+
+.view-all-activity {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+.btn-view-all:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-view-all .material-symbols-outlined {
+    font-size: 1.1rem;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media screen and (max-width: 1200px) {
+    .overview-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
     }
 
-    .alert-content {
-        padding: 12px 15px;
-    }
-
-    .alert-message h4 {
-        font-size: 14px;
-    }
-
-    .alert-message p {
-        font-size: 13px;
+    .actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
     }
 }
 
-@media screen and (max-width: 1200px) {
-    .container {
-        width: 94%;
-        grid-template-columns: 7rem auto 23rem;
-    }
-
-    aside .logo h2 {
-        display: none;
-    }
-
-    aside .sidebar a {
-        width: 5.6rem;
-    }
-
-    aside .sidebar a:last-child {
-        position: relative;
-        margin-top: 1.8rem;
-    }
-
-    main .insights {
+@media screen and (max-width: 768px) {
+    .overview-cards {
         grid-template-columns: 1fr;
-        gap: 0;
     }
 
-    main .recent-orders {
-        width: 94%;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        margin: 2rem 0 0 8.8rem;
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    main .recent-orders table {
-        width: 83vw;
+    .activity-item {
+        padding: 1rem;
     }
 
-    main table thead tr th:last-child main table thead tr th:first-child {
-        display: none;
-    }
-
-    main table tbody tr td:last-child main table tbody tr td:first-child {
-        display: none;
+    .activity-icon {
+        width: 40px;
+        height: 40px;
     }
 }
 
