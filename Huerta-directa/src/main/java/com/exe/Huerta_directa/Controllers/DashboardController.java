@@ -5,6 +5,7 @@ import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -70,6 +71,7 @@ public class DashboardController {
     }
 
     @PostMapping("/actualizar_producto/{id}")
+    @Transactional
     public String actualizarProducto(@PathVariable Long id, 
                                     @ModelAttribute ProductDTO productoDTO,
                                     RedirectAttributes redirectAttributes) {
@@ -108,6 +110,7 @@ public class DashboardController {
     }
 
     @PostMapping("/eliminar_producto/{id}")
+    @Transactional
     public String eliminarProductoPost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             ProductDTO producto = productService.obtenerProductPorId(id);
