@@ -1,0 +1,197 @@
+/* Estilos para el formulario de registro de administrador */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f7efd8 0%, #e8d5a3 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.H-logo {
+    margin: 20px 0 30px 0;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.from-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.from-group label {
+    display: block;
+    font-weight: 500;
+    color: #34495e;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.from-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #8dc84b;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    box-sizing: border-box;
+}
+
+.from-group input:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+    transform: translateY(-2px);
+}
+
+.from-group input::placeholder {
+    color: #95a5a6;
+}
+
+.correo-contraseña {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.correo-contraseña .from-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.btn-1 {
+    background: linear-gradient(135deg, #8dc84b 0%, #27ae60 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-1:hover {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.btn-1:active {
+    transform: translateY(-1px);
+}
+
+/* Botón volver con estilo diferente */
+a.btn-1 {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    box-shadow: 0 4px 15px rgba(127, 140, 141, 0.3);
+}
+
+a.btn-1:hover {
+    background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%);
+    box-shadow: 0 6px 20px rgba(127, 140, 141, 0.4);
+}
+
+/* Responsivo para móviles */
+@media (max-width: 768px) {
+    .form-container {
+        margin: 10px;
+        padding: 30px;
+        max-width: 90%;
+    }
+
+    .correo-contraseña {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .H-logo {
+        width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 20px;
+    }
+
+    .from-group input {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    .btn-1 {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+}
+
+/* Animación de entrada */
+.form-container {
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efectos hover adicionales */
+.from-group input:hover {
+    border-color: #2ecc71;
+}
+
+/* Focus styles mejorados */
+.from-group input:focus::placeholder {
+    opacity: 0.7;
+}

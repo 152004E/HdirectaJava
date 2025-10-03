@@ -2,49 +2,92 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Registrar Administrador</title>
+    <title>Registrar Administrador - Huerta Directa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
-    <link rel="stylesheet" href="fff.css" />
-    <link rel="icon" type="image/png" href="../../login/login/logo_huerta.png"/>
+    <!-- Íconos y estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <link rel="stylesheet" href="/CSS/StyleAdminForm.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-<div class="container" id="container">
+<div class="container">
     <div class="form-container sign-up">
+        <!-- Mensajes de éxito/error -->
+        <div th:if="${success}" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        </div>
 
-        <!-- Ahora usamos Spring/Thymeleaf -->
         <form th:action="@{/registrarAdmin}" th:object="${userDTO}" method="post">
-            <h1>Registrar Administrador</h1>
-            <img class="H-logo" src="logo_huerta.png" alt="logo" width="100" />
+            <h1>
+                <i class="fas fa-user-shield" style="color: #8dc84b; margin-right: 10px;"></i>
+                Registrar Administrador
+            </h1>
+            <img class="H-logo" src="/images/logo_huerta.png" alt="logo huerta" width="100" />
 
+            <!-- Campo nombre -->
             <div class="from-group">
-                <label>Nombre de administrador</label>
-                <input type="text" th:field="*{name}" placeholder="Ej: Carlos Pérez" required />
+                <label>
+                    <i class="fas fa-user" style="margin-right: 8px; color: #8dc84b;"></i>
+                    Nombre completo del administrador
+                </label>
+                <input type="text" th:field="*{name}" placeholder="Ej: Carlos Pérez González" required minlength="2" maxlength="100" />
+                <div th:if="${#fields.hasErrors('name')}" style="color: #e74c3c; font-size: 12px; margin-top: 5px;">
+                    <span th:errors="*{name}"></span>
+                </div>
             </div>
 
+            <!-- Campos correo y contraseña juntos -->
             <div class="correo-contraseña">
                 <div class="from-group">
-                    <label>Correo electrónico</label>
-                    <input type="email" th:field="*{email}" placeholder="Ej: admin@correo.com" required />
+                    <label>
+                        <i class="fas fa-envelope" style="margin-right: 8px; color: #8dc84b;"></i>
+                        Correo electrónico
+                    </label>
+                    <input type="email" th:field="*{email}" placeholder="Ej: admin@huertadirecta.com" required maxlength="150" />
+                    <div th:if="${#fields.hasErrors('email')}" style="color: #e74c3c; font-size: 12px; margin-top: 5px;">
+                        <span th:errors="*{email}"></span>
+                    </div>
                 </div>
 
                 <div class="from-group">
-                    <label>Contraseña</label>
-                    <input type="password" th:field="*{password}" placeholder="Contraseña" required />
+                    <label>
+                        <i class="fas fa-lock" style="margin-right: 8px; color: #8dc84b;"></i>
+                        Contraseña segura
+                    </label>
+                    <input type="password" th:field="*{password}" placeholder="Mín. 8 caracteres" required minlength="8" />
+                    <div th:if="${#fields.hasErrors('password')}" style="color: #e74c3c; font-size: 12px; margin-top: 5px;">
+                        <span th:errors="*{password}"></span>
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-1">Registrar Administrador</button>
+            <!-- Campo oculto para rol -->
+            <input type="hidden" th:field="*{idRole}" value="1" />
+
+            <!-- Botón principal -->
+            <button type="submit" class="btn-1">
+                <i class="fas fa-user-plus" style="margin-right: 8px;"></i>
+                Registrar Administrador
+            </button>
         </form>
 
-        <br />
-        <a class="btn-1" th:href="@{/DashboardAdmin}" style="text-align:center;">Volver al Dashboard</a>
+        <!-- Botón para volver -->
+        <a class="btn-1" th:href="@{/DashboardAdmin}">
+            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>
+            Volver al Dashboard
+        </a>
     </div>
 </div>
+
+
+<script src="/JS/FormAdmin.js"></script>
 </body>
 </html>

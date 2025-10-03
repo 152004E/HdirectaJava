@@ -6,12 +6,13 @@ import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -220,4 +221,86 @@ public class RutasPagina {
         model.addAttribute("producto", producto);
         return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }
+
+    @GetMapping("/agregar_admin")
+    public String mostrarFormularioAdmin(Model model, HttpSession session) {
+        // Verificar que solo admins puedan acceder
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Debe+iniciar+sesión+para+acceder+a+esta+funcionalidad";
+        }
+
+        if (userSession.getRole() == null || userSession.getRole().getIdRole() != 1) {
+            return "redirect:/DashboardAdmin?error=access&message=Acceso+denegado.+Solo+administradores+pueden+registrar+otros+administradores";
+        }
+
+        model.addAttribute("userDTO", new UserDTO());
+        // Pasar información del admin actual para mostrar en el formulario
+        model.addAttribute("currentAdmin", userSession.getName());
+        return "Dashboard_Admin/Registro_nuevo_admin/form_registro_admin";
+    }
+
+    @PostMapping("/registrarAdmin")
+    public String registrarAdmin(@Valid @ModelAttribute("userDTO") UserDTO userDTO,
+                                 BindingResult result,
+                                 RedirectAttributes redirectAttributes,
+                                 HttpSession session) {
+        // Verificar que solo admins puedan registrar otros admins
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Sesión+expirada";
+        }
+
+        if (userSession.getRole() == null || userSession.getRole().getIdRole() != 1) {
+            redirectAttributes.addFlashAttribute("error", "Acceso denegado. Solo administradores pueden registrar otros administradores.");
+            return "redirect:/DashboardAdmin";
+        }
+
+        if (result.hasErrors()) {
+            // Si hay errores de validación, volver al formulario con errores
+            return "Dashboard_Admin/Registro_nuevo_admin/form_registro_admin";
+        }
+
+        try {
+            // Verificar que el email no exista ya usando un try-catch para manejar si el método no existe
+            try {
+                List<UserDTO> todosLosUsuarios = userService.listarUsers();
+                boolean emailExiste = todosLosUsuarios.stream()
+                        .anyMatch(u -> u.getEmail().equalsIgnoreCase(userDTO.getEmail()));
+
+                if (emailExiste) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "Ya existe un usuario con el correo: " + userDTO.getEmail());
+                    return "redirect:/agregar_admin";
+                }
+            } catch (Exception e) {
+                // Si falla la validación de email duplicado, continuar con el registro
+                System.out.println("⚠️ No se pudo verificar email duplicado, continuando...");
+            }
+
+            // Asignar rol de administrador (ID 1) automáticamente
+            userDTO.setIdRole(1L);
+
+            // Establecer fecha de creación
+            userDTO.setCreacionDate(java.time.LocalDate.now());
+
+            UserDTO adminCreado = userService.crearUser(userDTO);
+
+            // Log de la acción para auditoria
+            System.out.println("🔐 ADMIN REGISTRADO: " + userSession.getName() +
+                    " registró a " + adminCreado.getName() + " como administrador");
+
+            /*redirectAttributes.addFlashAttribute("success",
+                    "✅ Administrador '" + adminCreado.getName() + "' registrado exitosamente por " + userSession.getName());
+            */
+            return "redirect:/DashboardAdmin";
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al registrar administrador: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al registrar administrador: " + e.getMessage());
+            return "redirect:/agregar_admin";
+        }
+    }
+
 }
