@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -150,5 +151,12 @@ public class RutasPagina {
         List<UserDTO> usuarios = userService.listarUsers(); // Cambiar User por UserDTO
         model.addAttribute("usuarios", usuarios);
         return "Dashboard_Admin/DashboardAdmin";
+    }
+
+    @GetMapping("/producto/{id}")
+    public String verProducto(@PathVariable("id") Long id, Model model) {
+        ProductDTO producto = productService.obtenerProductPorId(id);
+        model.addAttribute("producto", producto);
+        return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }
 }
