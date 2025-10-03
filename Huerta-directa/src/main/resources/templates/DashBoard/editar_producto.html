@@ -5,25 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Producto - Huerta Directa</title>
     <link rel="icon" type="image/png" href="/images/logo_huerta.png"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css"/>
+    <link rel="stylesheet" href="/CSS/editar_producto.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Link para el font -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
-    />
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-
-    <!-- Enlace al archivo CSS -->
-    <link rel="stylesheet" href="/CSS/editar_producto.css" />
+</head>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto - Huerta Directa</title>
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png"/>
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-        <div class="editar-container">
-            <h1><i class="fas fa-edit"></i> EDITAR PRODUCTO</h1>
+    <div class="editar-container">
+        <h1><i class="fas fa-edit"></i> EDITAR PRODUCTO</h1>
 
             <!-- Mensajes de éxito o error -->
             <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -69,7 +67,7 @@
                             <option value="productos-organicos">Productos Orgánicos</option>
                             <option value="hierbas-especias">Hierbas y Especias</option>
                             <option value="miel-derivados">Miel y Derivados</option>
-                            <option value="procesados-artesanales">ProductosArtesanales</option>
+                            <option value="procesados-artesanales">Procesados Artesanales</option>
                             <option value="bebidas-naturales">Bebidas Naturales</option>
                             <option value="plantas-semillas">Plantas y Semillas</option>
                             <option value="cajas-combos">Cajas Mixtas o Combos</option>
@@ -77,9 +75,9 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="category" class="form-label">Unidad de medida</label>
-                        <select id="unidad" name="unidad" class="form-select">
-                            <option value="">Medida</option>
+                        <label for="unit" class="form-label">Unidad de Medida</label>
+                        <select class="form-select" id="unit" th:field="*{unit}" required>
+                            <option value="">Seleccione una medida</option>
                             <option value="kg">Kilogramos (kg)</option>
                             <option value="g">Gramos (g)</option>
                             <option value="lb">Libras (lb)</option>
@@ -92,7 +90,6 @@
                             <option value="otro">Otro</option>
                         </select>
                     </div>
-
                 </div>
 
                 <div class="mb-3">
@@ -129,7 +126,18 @@
                 </div>
             </form>
         </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-ocultar alertas después de 5 segundos
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
 </body>
 </html>
