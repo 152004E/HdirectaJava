@@ -39,8 +39,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO crearProduct(ProductDTO productDTO) {
+    public ProductDTO crearProduct(ProductDTO productDTO, Long userId) {
+        // Buscar el usuario
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + userId));
+
         Product product = convertirAEntity(productDTO);
+        product.setUser(user); // Asignar el usuario al producto
+
         Product nuevoProduct = productRepository.save(product);
         return convertirADTO(nuevoProduct);
     }
@@ -74,6 +80,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> buscarPorCategoria(String categoria) {
         return productRepository.findByCategoryIgnoreCase(categoria).stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductDTO> listarProductsPorCategoria(String categoria) {
+        return productRepository.findByCategoryIgnoreCase(categoria)
+                .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
@@ -138,13 +153,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true) 
-    public List<ProductDTO> listarProductsPorCategoria(String categoria) {
-        return productRepository.findByCategoryIgnoreCase(categoria)
-                .stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
-    }
+
 
 }

@@ -1,7 +1,9 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +42,15 @@ public class ProductController {
             @RequestParam("categoria-producto") String category,
             @RequestParam("image_product") MultipartFile imageFile,
             @RequestParam("descripcion") String descriptionProduct,
-            @RequestParam("userId") Long userId) {
+            HttpSession session) { // Cambiado: obtener sesión en lugar de userId
         try {
+            // Obtener usuario desde la sesión
+            User userSession = (User) session.getAttribute("user");
+            if (userSession == null) {
+                // Si no hay usuario en sesión, agregar mensaje de alerta y redirigir al login
+                return new RedirectView("/login?error=session&message=No+puedes+registrar+producto,+inicia+sesion+primero.+Si+no+tienes+cuenta,+registrate");
+            }
+
             // Crear carpeta /productos dentro de C:/HuertaUploads
             File uploadDir = new File(uploadPath, "productos");
             if (!uploadDir.exists())
@@ -66,15 +75,22 @@ public class ProductController {
             productDTO.setUnit(unit);
             productDTO.setDescriptionProduct(descriptionProduct);
             productDTO.setPublicationDate(LocalDate.now());
-            productDTO.setUserId(userId);
+            productDTO.setUserId(userSession.getId()); // Usar ID del usuario de la sesión
             productDTO.setImageProduct(nombreImagen);
 
-            ProductDTO creado = productService.crearProduct(productDTO);
+            ProductDTO creado = productService.crearProduct(productDTO, userSession.getId()); // Usar ID del usuario de la sesión
 
             // Condicional para redirigir
             if (creado != null && creado.getIdProduct() != null) {
-                // Registro exitoso -> Dashboard
-                return new RedirectView("/index");
+                // Registro exitoso -> Redirigir según el rol del usuario
+                User user = (User) session.getAttribute("user");
+                if (user != null && user.getRole() != null && user.getRole().getIdRole() == 1) {
+                    // Si es admin, ir al dashboard admin
+                    return new RedirectView("/DashboardAdmin");
+                } else {
+                    // Si es usuario normal, ir al index
+                    return new RedirectView("/index");
+                }
             } else {
                 // Falló el registro -> volver al formulario
                 return new RedirectView("/agregar_producto");
