@@ -66,11 +66,11 @@
                 <span class="material-symbols-outlined">report</span>
                 <h3>Novedades</h3>
             </a>
-            <a href="#">
+            <a th:href="@{/actualizacionUsuario}">
                 <span class="material-symbols-outlined">settings</span>
                 <h3>Configuracion</h3>
             </a>
-            <a th:href="@{/form_registro_admin}">
+            <a th:href="@{/agregar_admin}">
                 <span class="material-symbols-outlined">add</span>
                 <h3>Añadir Administrador</h3>
             </a>
@@ -84,14 +84,36 @@
     <main>
         <h1>Dashboard Admin</h1>
 
+        <!-- Alerta moderna de éxito/error -->
+        <div th:if="${success}" class="modern-alert success-alert" id="successAlert">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert-message">
+                    <h4>¡Éxito!</h4>
+                    <p th:text="${success}"></p>
+                </div>
+                <button class="alert-close" onclick="closeAlert('successAlert')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
 
-        <!-- Mensajes de éxito/error -->
-            <div th:if="${success}" class="alert alert-success">
-                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+        <div th:if="${error}" class="modern-alert error-alert" id="errorAlert">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-message">
+                    <h4>Error</h4>
+                    <p th:text="${error}"></p>
+                </div>
+                <button class="alert-close" onclick="closeAlert('errorAlert')">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div th:if="${error}" class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
-            </div>
+        </div>
 
         <div class="insights">
             <div class="sales">

@@ -126,3 +126,122 @@ function eliminarProductoForm(id) {
     }
 }
 
+// ===============================
+// FUNCIONES PARA ALERTAS MODERNAS
+// ===============================
+
+// Función para cerrar alertas manualmente
+function closeAlert(alertId) {
+    const alert = document.getElementById(alertId);
+    if (alert) {
+        alert.classList.add('closing');
+        setTimeout(() => {
+            alert.remove();
+        }, 300);
+    }
+}
+
+// Función para auto-ocultar alertas después de 8 segundos
+function autoHideAlerts() {
+    const alerts = document.querySelectorAll('.modern-alert');
+    alerts.forEach(alert => {
+        // Agregar clase para animación automática
+        alert.classList.add('auto-hide');
+
+        // Remover el elemento después de 8 segundos
+        setTimeout(() => {
+            if (alert && alert.parentNode) {
+                alert.remove();
+            }
+        }, 8000);
+    });
+}
+
+// Función para mostrar alerta de éxito dinámicamente (opcional para uso futuro)
+function showSuccessAlert(message) {
+    const alertHTML = `
+        <div class="modern-alert success-alert auto-hide" id="dynamicSuccessAlert">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert-message">
+                    <h4>¡Éxito!</h4>
+                    <p>${message}</p>
+                </div>
+                <button class="alert-close" onclick="closeAlert('dynamicSuccessAlert')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', alertHTML);
+
+    // Auto-hide después de 8 segundos
+    setTimeout(() => {
+        const alert = document.getElementById('dynamicSuccessAlert');
+        if (alert && alert.parentNode) {
+            alert.remove();
+        }
+    }, 8000);
+}
+
+// Función para mostrar alerta de error dinámicamente (opcional para uso futuro)
+function showErrorAlert(message) {
+    const alertHTML = `
+        <div class="modern-alert error-alert auto-hide" id="dynamicErrorAlert">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-message">
+                    <h4>Error</h4>
+                    <p>${message}</p>
+                </div>
+                <button class="alert-close" onclick="closeAlert('dynamicErrorAlert')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', alertHTML);
+
+    // Auto-hide después de 8 segundos
+    setTimeout(() => {
+        const alert = document.getElementById('dynamicErrorAlert');
+        if (alert && alert.parentNode) {
+            alert.remove();
+        }
+    }, 8000);
+}
+
+// Inicializar alertas cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-ocultar alertas existentes
+    autoHideAlerts();
+
+    // Agregar efecto de sonido opcional (comentado por defecto)
+    // const successAlert = document.querySelector('.success-alert');
+    // if (successAlert) {
+    //     // Reproducir sonido de éxito (requiere archivo de audio)
+    //     // const audio = new Audio('/sounds/success.mp3');
+    //     // audio.play().catch(e => console.log('No se pudo reproducir el sonido'));
+    // }
+});
+
+// Cerrar alertas con tecla Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const alerts = document.querySelectorAll('.modern-alert');
+        alerts.forEach(alert => {
+            alert.classList.add('closing');
+            setTimeout(() => {
+                if (alert && alert.parentNode) {
+                    alert.remove();
+                }
+            }, 300);
+        });
+    }
+});

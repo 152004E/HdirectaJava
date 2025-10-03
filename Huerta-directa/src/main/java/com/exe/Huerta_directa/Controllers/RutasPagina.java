@@ -197,20 +197,28 @@ public class RutasPagina {
 
     @GetMapping("/DashboardAdmin")
     public String dashboard(Model model, HttpSession session) {
+        // ✅ VERIFICACIÓN DE SESIÓN EXPIRADA
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Sesión+expirada.+Debe+iniciar+sesión+para+acceder+al+panel+de+administración";
+        }
+
+        // ✅ VERIFICACIÓN DE PERMISOS DE ADMINISTRADOR
+        if (userSession.getRole() == null || userSession.getRole().getIdRole() != 1) {
+            return "redirect:/login?error=access&message=Acceso+denegado.+Solo+administradores+pueden+acceder+a+este+panel";
+        }
+
         List<UserDTO> usuarios = userService.listarUsers();
         model.addAttribute("usuarios", usuarios);
 
         // Obtener usuario de la sesión para mostrar información dinámica
-        User userSession = (User) session.getAttribute("user");
-        if (userSession != null) {
-            model.addAttribute("currentUser", userSession);
-            // Determinar el nombre del rol para mostrar
-            String roleName = "Usuario";
-            if (userSession.getRole() != null) {
-                roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
-            }
-            model.addAttribute("userRole", roleName);
+        model.addAttribute("currentUser", userSession);
+        // Determinar el nombre del rol para mostrar
+        String roleName = "Usuario";
+        if (userSession.getRole() != null) {
+            roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
         }
+        model.addAttribute("userRole", roleName);
 
         return "Dashboard_Admin/DashboardAdmin";
     }
