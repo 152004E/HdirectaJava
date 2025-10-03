@@ -154,7 +154,7 @@ public class UserController {
 
             // Título principal
             com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#667eea"));
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#8dc84b"));
             com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
             title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
             document.add(title);
@@ -170,7 +170,7 @@ public class UserController {
             // Información del filtro aplicado
             if (dato != null && valor != null && !valor.isEmpty()) {
                 com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
-                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#667eea"));
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#8dc84b"));
                 com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
                         "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
                 filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
@@ -436,7 +436,7 @@ public class UserController {
     private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle, 
                                   com.lowagie.text.Font font) {
         com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
-        header.setBackgroundColor(java.awt.Color.decode("#667eea"));
+        header.setBackgroundColor(java.awt.Color.decode("#8dc84b"));
         header.setBorderWidth(1);
         header.setPhrase(new com.lowagie.text.Phrase(headerTitle, font));
         header.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
