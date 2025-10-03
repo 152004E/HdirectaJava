@@ -22,6 +22,7 @@
                             <option value="id" th:selected="${datoSeleccionado == 'id'}">ID</option>
                             <option value="name_user" th:selected="${datoSeleccionado == 'name_user'}">Nombre</option>
                             <option value="email" th:selected="${datoSeleccionado == 'email'}">Correo</option>
+                            <option value="role" th:selected="${datoSeleccionado == 'role'}">Rol</option>
                         </select>
                     </div>
                     
@@ -104,14 +105,42 @@
 
             <!-- Botón para volver -->
             <div class="text-center mt-4">
-                <a th:href="@{/home}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Volver al Dashboard
+                <a href="/index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Inicio
                 </a>
             </div>
         </div>
     </section>
 
     <script>
+        // Función para cambiar entre input de texto y select según el filtro
+        function toggleValorInput() {
+            const dato = document.getElementById('dato').value;
+            const valorTexto = document.getElementById('valorTexto');
+            const valorRol = document.getElementById('valorRol');
+            
+            if (dato === 'role') {
+                valorTexto.style.display = 'none';
+                valorRol.style.display = 'block';
+                valorTexto.removeAttribute('name');
+                valorRol.setAttribute('name', 'valor');
+                valorRol.required = true;
+                valorTexto.required = false;
+            } else {
+                valorTexto.style.display = 'block';
+                valorRol.style.display = 'none';
+                valorRol.removeAttribute('name');
+                valorTexto.setAttribute('name', 'valor');
+                valorTexto.required = true;
+                valorRol.required = false;
+            }
+        }
+        
+        // Ejecutar al cargar la página para mantener el estado correcto
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleValorInput();
+        });
+
         function exportarUsuariosExcel() {
             const params = new URLSearchParams(window.location.search);
             window.location.href = `/api/users/exportExcel?${params.toString()}`;

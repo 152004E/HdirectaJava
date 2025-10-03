@@ -58,10 +58,42 @@ public class UserViewController {
                         case "email":
                             return usuario.getEmail() != null && 
                                    usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
+                        case "role":
+                            return filtrarPorRol(usuario, valor);
                         default:
                             return false;
                     }
                 })
                 .collect(Collectors.toList());
+    }
+    
+    private boolean filtrarPorRol(UserDTO usuario, String valor) {
+        if (usuario.getIdRole() == null) {
+            return false;
+        }
+        
+        String valorLower = valor.toLowerCase().trim();
+        Long roleId = usuario.getIdRole();
+        
+        // Buscar por ID del rol (1 o 2)
+        try {
+            Long valorRoleId = Long.parseLong(valorLower);
+            if (roleId.equals(valorRoleId)) {
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            // No es un número, continuar con búsqueda por nombre
+        }
+        
+        // Buscar por nombre del rol
+        if (roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador"))) {
+            return true;
+        }
+        
+        if (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario"))) {
+            return true;
+        }
+        
+        return false;
     }
 }

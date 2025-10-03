@@ -9,8 +9,6 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-
-import org.springframework.dao.DataIntegrityViolationException;
 //import org.springframework.core.io.InputStreamResource;
 //import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -156,7 +154,7 @@ public class UserController {
 
             // Título principal
             com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#8dc84b"));
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#689f38"));
             com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
             title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
             document.add(title);
@@ -172,7 +170,7 @@ public class UserController {
             // Información del filtro aplicado
             if (dato != null && valor != null && !valor.isEmpty()) {
                 com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
-                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#8dc84b"));
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#689f38"));
                 com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
                         "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
                 filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
@@ -297,43 +295,28 @@ public class UserController {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
-@PostMapping("/register")
-public String seveUserView(
-        @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-        BindingResult result,
-        RedirectAttributes redirectAttributes,
-        HttpSession session) {
-    
-    if (result.hasErrors()) {
-        return "login/login";
-    }
 
-    try {
-        // Intentar crear el usuario
-        UserDTO usuarioCreado = userService.crearUser(userDTO);
-        
-        // Guardar usuario en sesión
-        session.setAttribute("user", usuarioCreado);
-
-        // Configurar mensaje de éxito según el rol
-        if (usuarioCreado.getIdRole() == 1) {
-            redirectAttributes.addFlashAttribute("success", "¡Bienvenido Administrador! Tu cuenta ha sido creada exitosamente");
-            return "redirect:/DashboardAdmin";
-        } else {
-            redirectAttributes.addFlashAttribute("success", "¡Bienvenido! Tu cuenta ha sido creada exitosamente");
-            return "redirect:/index";
+    @PostMapping("/register")
+    public String seveUserView(
+            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+            BindingResult result,
+            RedirectAttributes redirect,
+            HttpSession session) {
+        if (result.hasErrors()) {
+            return "login/login"; // Si hay errores, volver al formulario de registro
         }
 
-    } catch (DataIntegrityViolationException e) {
-        // Manejar error de email duplicado
-        redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está registrado");
-        return "redirect:/login";
-    } catch (Exception e) {
-        // Manejar otros errores posibles
-        redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta. Por favor, intente nuevamente");
-        return "redirect:/login";
+        UserDTO usuarioCreado = userService.crearUser(userDTO);
+        redirect.addFlashAttribute("success", "Usuario creado exitosamente");
+
+        // Redirigir según el rol del usuario recién creado
+        if (usuarioCreado != null && usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1) {
+            return "redirect:/DashboardAdmin";
+        } else {
+            return "redirect:/index";
+        }
     }
-}
+
 
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String email,
@@ -429,11 +412,43 @@ public String seveUserView(
                         case "email":
                             return usuario.getEmail() != null && 
                                    usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
+                        case "role":
+                            return filtrarPorRol(usuario, valor);
                         default:
                             return false;
                     }
                 })
                 .collect(java.util.stream.Collectors.toList());
+    }
+    
+    private boolean filtrarPorRol(UserDTO usuario, String valor) {
+        if (usuario.getIdRole() == null) {
+            return false;
+        }
+        
+        String valorLower = valor.toLowerCase().trim();
+        Long roleId = usuario.getIdRole();
+        
+        // Buscar por ID del rol (1 o 2)
+        try {
+            Long valorRoleId = Long.parseLong(valorLower);
+            if (roleId.equals(valorRoleId)) {
+                return true;
+            }
+        } catch (NumberFormatException e) {
+            // No es un número, continuar con búsqueda por nombre
+        }
+        
+        // Buscar por nombre del rol
+        if (roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador"))) {
+            return true;
+        }
+        
+        if (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario"))) {
+            return true;
+        }
+        
+        return false;
     }
 
     private String obtenerNombreRol(Long idRole) {
@@ -453,7 +468,7 @@ public String seveUserView(
     private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle, 
                                   com.lowagie.text.Font font) {
         com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
-        header.setBackgroundColor(java.awt.Color.decode("#8dc84b"));
+        header.setBackgroundColor(java.awt.Color.decode("#689f38"));
         header.setBorderWidth(1);
         header.setPhrase(new com.lowagie.text.Phrase(headerTitle, font));
         header.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
