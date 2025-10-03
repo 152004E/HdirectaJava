@@ -1,6 +1,5 @@
 package com.exe.Huerta_directa.Controllers;
 
-
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
 //import com.exe.Huerta_directa.Impl.UserServiceImpl;
@@ -9,6 +8,8 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+
+import org.springframework.dao.DataIntegrityViolationException;
 //import org.springframework.core.io.InputStreamResource;
 //import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 //import java.io.ByteArrayInputStream;
 //import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping ("/api/users")
+@RequestMapping("/api/users")
 @CrossOrigin("*")
 public class UserController {
 
@@ -40,47 +40,48 @@ public class UserController {
         this.userService = userService;
     }
 
-    //Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con usuario
+    // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
+    // usuario
 
-    //Metodo para listar todos los usuarios
+    // Metodo para listar todos los usuarios
     @GetMapping
-    public  ResponseEntity<List<UserDTO>> listarUsers() {
+    public ResponseEntity<List<UserDTO>> listarUsers() {
         return new ResponseEntity<>(userService.listarUsers(), HttpStatus.OK);
     }
 
-    //Metodo para obtener un usuario por su id
+    // Metodo para obtener un usuario por su id
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> obtenerUserPorId(@PathVariable Long userId){
+    public ResponseEntity<UserDTO> obtenerUserPorId(@PathVariable Long userId) {
         return new ResponseEntity<>(userService.obtenerUserPorId(userId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
     }
 
-    //Metodo para actualizar un usuario
+    // Metodo para actualizar un usuario
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> actualizarUser(@PathVariable ("userId") Long userId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> actualizarUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.actualizarUser(userId, userDTO), HttpStatus.OK);
     }
 
-    //Metodo para eliminar un usuario por su id
+    // Metodo para eliminar un usuario por su id
     @DeleteMapping("/{userId}")
-   public ResponseEntity<Void> eliminarUserPorId(@PathVariable ("userId") Long userId) {
+    public ResponseEntity<Void> eliminarUserPorId(@PathVariable("userId") Long userId) {
         userService.eliminarUserPorId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-   }
+    }
 
     // ========== EXPORTACIÓN CON FILTROS ==========
-    
+
     // Método para exportar usuarios a Excel CON FILTROS
     @GetMapping("/exportExcel")
     public void exportarExcel(
             HttpServletResponse response,
             @RequestParam(required = false) String dato,
             @RequestParam(required = false) String valor) throws IOException {
-        
+
         // Obtener usuarios filtrados
         List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
 
@@ -135,10 +136,10 @@ public class UserController {
             HttpServletResponse response,
             @RequestParam(required = false) String dato,
             @RequestParam(required = false) String valor) throws IOException {
-        
+
         // Obtener usuarios filtrados
         List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
-        
+
         try {
             // Configurar la respuesta HTTP para descarga de archivo PDF
             response.setContentType("application/pdf");
@@ -203,7 +204,7 @@ public class UserController {
                 com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(4);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
-                float[] columnWidths = {1f, 3f, 4f, 2f};
+                float[] columnWidths = { 1f, 3f, 4f, 2f };
                 table.setWidths(columnWidths);
 
                 // Encabezados
@@ -220,18 +221,18 @@ public class UserController {
                 int rowCount = 0;
                 for (UserDTO usuario : usuarios) {
                     rowCount++;
-                    java.awt.Color rowColor = (rowCount % 2 == 0) ? 
-                            new java.awt.Color(240, 240, 240) : java.awt.Color.WHITE;
+                    java.awt.Color rowColor = (rowCount % 2 == 0) ? new java.awt.Color(240, 240, 240)
+                            : java.awt.Color.WHITE;
 
-                    addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor, 
+                    addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor,
                             com.lowagie.text.Element.ALIGN_CENTER);
-                    addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A", 
+                    addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A",
                             dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
-                    addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A", 
+                    addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
                             dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
-                    
+
                     String roleName = obtenerNombreRol(usuario.getIdRole());
-                    addTableCellPdf(table, roleName, dataFont, rowColor, 
+                    addTableCellPdf(table, roleName, dataFont, rowColor,
                             com.lowagie.text.Element.ALIGN_CENTER);
                 }
 
@@ -241,8 +242,7 @@ public class UserController {
                 java.util.Map<String, Long> usersByRole = usuarios.stream()
                         .collect(java.util.stream.Collectors.groupingBy(
                                 user -> obtenerNombreRol(user.getIdRole()),
-                                java.util.stream.Collectors.counting()
-                        ));
+                                java.util.stream.Collectors.counting()));
 
                 if (!usersByRole.isEmpty()) {
                     document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
@@ -294,35 +294,56 @@ public class UserController {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
+    // Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con
+    // usuario
 
     @PostMapping("/register")
     public String seveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
             BindingResult result,
-            RedirectAttributes redirect,
+            RedirectAttributes redirectAttributes,
             HttpSession session) {
+
+        // 1) Si hay errores de validación (JSR-303), mejor renderizamos la vista sin
+        // redirect
+        // así BindingResult está disponible y Thymeleaf puede mostrar errores por
+        // campo.
         if (result.hasErrors()) {
-            return "login/login"; // Si hay errores, volver al formulario de registro
+            return "login/login"; // renderiza la vista con errores (no redirect)
         }
 
-        UserDTO usuarioCreado = userService.crearUser(userDTO);
-        redirect.addFlashAttribute("success", "Usuario creado exitosamente");
+        try {
+            UserDTO usuarioCreado = userService.crearUser(userDTO);
+            session.setAttribute("user", usuarioCreado);
 
-        // Redirigir según el rol del usuario recién creado
-        if (usuarioCreado != null && usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1) {
-            return "redirect:/DashboardAdmin";
-        } else {
-            return "redirect:/index";
+            // Si querés iniciar sesión automáticamente y redirigir:
+            if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
+                redirectAttributes.addFlashAttribute("success",
+                        "¡Bienvenido Administrador! Tu cuenta ha sido creada exitosamente");
+                return "redirect:/DashboardAdmin";
+            } else {
+                redirectAttributes.addFlashAttribute("success", "¡Bienvenido! Tu cuenta ha sido creada exitosamente");
+                return "redirect:/index";
+            }
+
+        } catch (DataIntegrityViolationException e) {
+            // Error de llave única (email duplicado)
+            redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está registrado");
+            // Reenviamos los datos del formulario para que se muestren en la vista
+            redirectAttributes.addFlashAttribute("userDTO", userDTO);
+            return "redirect:/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta. Por favor, intente nuevamente");
+            redirectAttributes.addFlashAttribute("userDTO", userDTO);
+            return "redirect:/login";
         }
     }
 
-
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String email,
-                        @RequestParam String password,
-                        Model model,
-                        HttpSession session) {
+            @RequestParam String password,
+            Model model,
+            HttpSession session) {
 
         User user = userRepository.findByEmail(email).orElse(null);
 
@@ -342,7 +363,7 @@ public class UserController {
             return "redirect:/index";
         }
     }
-    
+
     @PostMapping("/FormAdmin")
     public String registrarAdmin(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
@@ -369,7 +390,8 @@ public class UserController {
     }
 
     /**
-     * Método para obtener información del usuario logueado (útil para mostrar en el frontend)
+     * Método para obtener información del usuario logueado (útil para mostrar en el
+     * frontend)
      */
     @GetMapping("/current")
     @ResponseBody
@@ -389,14 +411,14 @@ public class UserController {
     }
 
     // ========== MÉTODOS AUXILIARES PARA EXPORTACIÓN ==========
-    
+
     private List<UserDTO> obtenerUsuariosFiltrados(String dato, String valor) {
         List<UserDTO> todosUsuarios = userService.listarUsers();
-        
+
         if (dato == null || valor == null || valor.isEmpty()) {
             return todosUsuarios;
         }
-        
+
         return todosUsuarios.stream()
                 .filter(usuario -> {
                     switch (dato) {
@@ -407,11 +429,11 @@ public class UserController {
                                 return false;
                             }
                         case "name_user":
-                            return usuario.getName() != null && 
-                                   usuario.getName().toLowerCase().contains(valor.toLowerCase());
+                            return usuario.getName() != null &&
+                                    usuario.getName().toLowerCase().contains(valor.toLowerCase());
                         case "email":
-                            return usuario.getEmail() != null && 
-                                   usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
+                            return usuario.getEmail() != null &&
+                                    usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
                         case "role":
                             return filtrarPorRol(usuario, valor);
                         default:
@@ -420,15 +442,15 @@ public class UserController {
                 })
                 .collect(java.util.stream.Collectors.toList());
     }
-    
+
     private boolean filtrarPorRol(UserDTO usuario, String valor) {
         if (usuario.getIdRole() == null) {
             return false;
         }
-        
+
         String valorLower = valor.toLowerCase().trim();
         Long roleId = usuario.getIdRole();
-        
+
         // Buscar por ID del rol (1 o 2)
         try {
             Long valorRoleId = Long.parseLong(valorLower);
@@ -438,16 +460,16 @@ public class UserController {
         } catch (NumberFormatException e) {
             // No es un número, continuar con búsqueda por nombre
         }
-        
+
         // Buscar por nombre del rol
         if (roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador"))) {
             return true;
         }
-        
+
         if (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario"))) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -465,8 +487,8 @@ public class UserController {
         }
     }
 
-    private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle, 
-                                  com.lowagie.text.Font font) {
+    private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle,
+            com.lowagie.text.Font font) {
         com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
         header.setBackgroundColor(java.awt.Color.decode("#689f38"));
         header.setBorderWidth(1);
@@ -477,9 +499,9 @@ public class UserController {
         table.addCell(header);
     }
 
-    private void addTableCellPdf(com.lowagie.text.pdf.PdfPTable table, String text, 
-                                com.lowagie.text.Font font, java.awt.Color backgroundColor, 
-                                int alignment) {
+    private void addTableCellPdf(com.lowagie.text.pdf.PdfPTable table, String text,
+            com.lowagie.text.Font font, java.awt.Color backgroundColor,
+            int alignment) {
         com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
         cell.setPhrase(new com.lowagie.text.Phrase(text, font));
         cell.setHorizontalAlignment(alignment);

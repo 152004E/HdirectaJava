@@ -53,23 +53,23 @@ public class RutasPagina {
     }
 
     @GetMapping({ "/", "/index" })
-public String mostrarIndex(Model model, 
-                         @ModelAttribute("success") String success) {
-    // Log para debugging
-    System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
-    
-    // Obtener y agregar productos al modelo
-    List<ProductDTO> productos = productService.listarProducts();
-    System.out.println("Productos obtenidos: " + productos.size());
-    model.addAttribute("productos", productos);
-    
-    // Si hay un mensaje de éxito, agregarlo al modelo
-    if (success != null && !success.isEmpty()) {
-        model.addAttribute("success", success);
-    }
+    public String mostrarIndex(Model model,
+            @ModelAttribute("success") String success) {
+        // Log para debugging
+        System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
 
-    return "index";
-}
+        // Obtener y agregar productos al modelo
+        List<ProductDTO> productos = productService.listarProducts();
+        System.out.println("Productos obtenidos: " + productos.size());
+        model.addAttribute("productos", productos);
+
+        // Si hay un mensaje de éxito, agregarlo al modelo
+        if (success != null && !success.isEmpty()) {
+            model.addAttribute("success", success);
+        }
+
+        return "index";
+    }
 
     @GetMapping("/agregar_producto")
     public String mostrarFormulario() {
@@ -77,37 +77,41 @@ public String mostrarIndex(Model model,
     }
 
     @GetMapping("/login")
-public String mostrarLogin(Model model,
-                          @RequestParam(value = "error", required = false) String error,
-                          @RequestParam(value = "message", required = false) String message,
-                          @RequestParam(value = "success", required = false) String success) {
+    public String mostrarLogin(Model model,
+            @RequestParam(value = "error", required = false) String errorParam,
+            @RequestParam(value = "message", required = false) String messageParam,
+            @RequestParam(value = "success", required = false) String successParam) {
 
-    // Log para debugging - confirma que el controlador está siendo llamado
-    System.out.println("🔍 DEBUG: Controlador /login ejecutándose correctamente");
+        System.out.println("🔍 DEBUG: Controlador /login ejecutándose correctamente");
 
-    // Agregar un objeto UserDTO vacío al modelo para el formulario
-    model.addAttribute("userDTO", new UserDTO());
+        // Si venimos de un redirect con FlashAttributes, el "userDTO" ya estará en el
+        // model:
+        // NO lo sobreescribimos para no perder los datos del formulario.
+        if (!model.containsAttribute("userDTO")) {
+            model.addAttribute("userDTO", new UserDTO());
+        }
 
-    // Procesar mensaje de error de sesión si existe
-    if ("session".equals(error) && message != null) {
-        // Reemplazar '+' por espacios en el mensaje y agregarlo al modelo
-        model.addAttribute("alertMessage", message.replace("+", " "));
+        // Si el controlador anterior puso un flash "alertMessage" o "error", preferimos
+        // eso.
+        // Si no hay flash, seguimos aceptando los query params legacy (ej:
+        // ?error=session&message=...).
+        if (!model.containsAttribute("alertMessage") && "session".equals(errorParam) && messageParam != null) {
+            model.addAttribute("alertMessage", messageParam.replace("+", " "));
+        }
+
+        if (!model.containsAttribute("success") && successParam != null && !successParam.isEmpty()) {
+            model.addAttribute("success", successParam.replace("+", " "));
+        }
+
+        // Si existe flash "error" ya está en el model y Thymeleaf lo mostrará con
+        // th:if="${error}"
+        return "login/login"; // <-- ajusta a "login" si tu archivo está en templates/login.html
     }
-
-    // Procesar mensaje de éxito si existe
-    if (success != null) {
-        // Reemplazar '+' por espacios en el mensaje y agregarlo al modelo
-        model.addAttribute("success", success.replace("+", " "));
-    }
-
-    // Retornar la vista login/login.html
-    return "login/login";
-}
 
     @GetMapping("/forgot-password")
     public String mostrarFormularioRecuperacion(Model model,
-                                              @RequestParam(value = "error", required = false) String error,
-                                              @RequestParam(value = "success", required = false) String success) {
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "success", required = false) String success) {
         System.out.println("🔍 DEBUG: Mostrando formulario de recuperación de contraseña");
 
         // Agregar mensajes de éxito o error si existen
@@ -123,7 +127,7 @@ public String mostrarLogin(Model model,
 
     @PostMapping("/forgot-password")
     public String procesarRecuperacionContrasena(@RequestParam String email,
-                                               RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             System.out.println("🔐 Procesando solicitud de recuperación para: " + email);
 
@@ -134,14 +138,14 @@ public String mostrarLogin(Model model,
 
             // Por ahora, simulamos el proceso exitoso
             redirectAttributes.addFlashAttribute("success",
-                "Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.");
+                    "Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.");
 
             return "redirect:/forgot-password";
 
         } catch (Exception e) {
             System.err.println("❌ Error al procesar recuperación de contraseña: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error",
-                "❌ Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.");
+                    "❌ Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.");
             return "redirect:/forgot-password";
         }
     }
@@ -313,9 +317,9 @@ public String mostrarLogin(Model model,
 
     @PostMapping("/registrarAdmin")
     public String registrarAdmin(@Valid @ModelAttribute("userDTO") UserDTO userDTO,
-                                 BindingResult result,
-                                 RedirectAttributes redirectAttributes,
-                                 HttpSession session) {
+            BindingResult result,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         // Verificar que solo admins puedan registrar otros admins
         User userSession = (User) session.getAttribute("user");
         if (userSession == null) {
@@ -323,7 +327,8 @@ public String mostrarLogin(Model model,
         }
 
         if (userSession.getRole() == null || userSession.getRole().getIdRole() != 1) {
-            redirectAttributes.addFlashAttribute("error", "Acceso denegado. Solo administradores pueden registrar otros administradores.");
+            redirectAttributes.addFlashAttribute("error",
+                    "Acceso denegado. Solo administradores pueden registrar otros administradores.");
             return "redirect:/DashboardAdmin";
         }
 
@@ -333,7 +338,8 @@ public String mostrarLogin(Model model,
         }
 
         try {
-            // Verificar que el email no exista ya usando un try-catch para manejar si el método no existe
+            // Verificar que el email no exista ya usando un try-catch para manejar si el
+            // método no existe
             try {
                 List<UserDTO> todosLosUsuarios = userService.listarUsers();
                 boolean emailExiste = todosLosUsuarios.stream()
@@ -362,7 +368,8 @@ public String mostrarLogin(Model model,
                     " registró a " + adminCreado.getName() + " como administrador");
 
             redirectAttributes.addFlashAttribute("success",
-                    "✅ Administrador '" + adminCreado.getName() + "' registrado exitosamente por " + userSession.getName());
+                    "✅ Administrador '" + adminCreado.getName() + "' registrado exitosamente por "
+                            + userSession.getName());
 
             return "redirect:/DashboardAdmin";
 
