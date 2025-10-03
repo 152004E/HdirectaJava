@@ -290,9 +290,9 @@ public class RutasPagina {
             System.out.println("🔐 ADMIN REGISTRADO: " + userSession.getName() +
                     " registró a " + adminCreado.getName() + " como administrador");
 
-            /*redirectAttributes.addFlashAttribute("success",
+            redirectAttributes.addFlashAttribute("success",
                     "✅ Administrador '" + adminCreado.getName() + "' registrado exitosamente por " + userSession.getName());
-            */
+
             return "redirect:/DashboardAdmin";
 
         } catch (Exception e) {
