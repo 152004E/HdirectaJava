@@ -134,7 +134,9 @@
                 </div>
                 <div class="hijoContainerNombreIcon">
                   <span class="material-symbols-outlined start"> star </span>
-                  <p class="puntuacion"><span class="calificacion">4.5</span> (40)</p>
+                  <p class="puntuacion">
+                    <span class="calificacion">4.5</span> (40)
+                  </p>
                 </div>
               </div>
 
@@ -145,12 +147,14 @@
                   </span>
                   Agregar</a
                 >
-                <a th:href="@{/producto/{id}}" class="btn-2 botonIcono btnInfo"
-                  >Info
-                  <span class="material-symbols-outlined infoIcon">
-                    info
-                  </span></a
+                <a
+                  th:href="@{/producto/{id}(id=${producto.idProduct})}"
+                  class="btn-2 botonIcono btnInfo"
+                  onclick="window.location=this.href; return false;"
                 >
+                  Info
+                  <span class="material-symbols-outlined infoIcon">info</span>
+                </a>
               </div>
             </div>
           </div>

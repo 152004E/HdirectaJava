@@ -2,21 +2,16 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
 @Controller
-@RequestMapping
 public class RutasPagina {
 
     @Autowired
@@ -24,33 +19,6 @@ public class RutasPagina {
 
     @Autowired
     private UserService userService;
-
-    /**
-     * Método helper para obtener la página de inicio según el rol del usuario
-     */
-    private String getHomePageByUserRole(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user != null && user.getRole() != null) {
-            // Si es admin (rol 1), redirigir al dashboard admin
-            if (user.getRole().getIdRole() == 1) {
-                return "redirect:/DashboardAdmin";
-            } else if (user.getRole().getIdRole() == 2) {
-                // Si es cliente (rol 2), redirigir al dashboard cliente
-                return "redirect:/Dashboardd";
-            }
-        }
-        // Por defecto, redirigir al index normal
-        return "redirect:/index";
-    }
-
-    /**
-     * Endpoint para redirección inteligente a inicio basada en sesión
-     * Los botones que antes iban a /index ahora deben ir a /home
-     */
-    @GetMapping("/home")
-    public String irAInicio(HttpSession session) {
-        return getHomePageByUserRole(session);
-    }
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model) {
@@ -66,20 +34,8 @@ public class RutasPagina {
     }
 
     @GetMapping("/login")
-    public String mostrarLogin(Model model,
-                              @RequestParam(value = "error", required = false) String error,
-                              @RequestParam(value = "message", required = false) String message) {
-
-        // Debug logging para verificar que el controlador está siendo llamado
-        System.out.println("🔍 DEBUG: Controlador /login ejecutándose correctamente");
-
+    public String mostrarLogin(Model model) {
         model.addAttribute("userDTO", new UserDTO());
-
-        // Si hay parámetros de error, agregar el mensaje de alerta al modelo
-        if ("session".equals(error) && message != null) {
-            model.addAttribute("alertMessage", message.replace("+", " "));
-        }
-
         return "login/login";
     }
 
@@ -190,22 +146,9 @@ public class RutasPagina {
     }
 
     @GetMapping("/DashboardAdmin")
-    public String dashboard(Model model, HttpSession session) {
-        List<UserDTO> usuarios = userService.listarUsers();
+    public String dashboard(Model model) {
+        List<UserDTO> usuarios = userService.listarUsers(); // Cambiar User por UserDTO
         model.addAttribute("usuarios", usuarios);
-
-        // Obtener usuario de la sesión para mostrar información dinámica
-        User userSession = (User) session.getAttribute("user");
-        if (userSession != null) {
-            model.addAttribute("currentUser", userSession);
-            // Determinar el nombre del rol para mostrar
-            String roleName = "Usuario";
-            if (userSession.getRole() != null) {
-                roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
-            }
-            model.addAttribute("userRole", roleName);
-        }
-
         return "Dashboard_Admin/DashboardAdmin";
     }
 }
