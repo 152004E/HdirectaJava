@@ -15,6 +15,7 @@
     />
 
     <!--agregar los estilos css-->
+    
     <link rel="stylesheet" href="/CSS/Agregar_producto.css" />
     <link rel="stylesheet" href="/CSS/Pasarela.css" />
     <link rel="stylesheet" href="/CSS/landing.css" />
@@ -40,9 +41,11 @@
     <!--nombre del producto, descripcion,precio,categoria -->
 
     <div th:replace="fragments/navPagina :: navPagina"></div>
+     
     <div
       class="container1 d-flex align-items-center justify-content-center gap-5"
     >
+    
       '<form
         class="input-box categoria-form border p-4 border-2 rounded-5 px-5"
         action="http://localhost:8085/api/products/create"
