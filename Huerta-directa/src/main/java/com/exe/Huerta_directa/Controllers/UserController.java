@@ -3,16 +3,16 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
-import com.exe.Huerta_directa.Impl.UserServiceImpl;
+//import com.exe.Huerta_directa.Impl.UserServiceImpl;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
+//import org.springframework.core.io.InputStreamResource;
+//import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+//import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+//import java.io.ByteArrayInputStream;
+//import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import java.util.List;
@@ -59,40 +59,6 @@ public class UserController {
         return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
     }
 
-    /*Metodo para crear un nuevo usuario
-    @PostMapping("/register")
-    public String registrarUser(
-            @RequestParam("name") String name,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            Model model){
-
-        try {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setName(name);
-            userDTO.setEmail(email);
-            userDTO.setPassword(password);
-
-            UserDTO registrado = userService.crearUser(userDTO);
-
-            //Condicional para redirigir segun el resultado del registro
-            if (registrado != null && registrado.getId() != null){
-                //Si el registro es exitoso, redirigir a la pagina de inicio
-                model.addAttribute("Mensaje", "Usuario registrado exitosamente");
-                return "redirect:/index";
-            } else {
-                //Si el registro falla, redirigir a la pagina de registro con un mensaje de error
-                model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
-                return "redirect:/LogIn";
-            }
-        } catch (RuntimeException e) {
-            //Si el usuario falla en registrarse, redirigir a la pagina de registro con un mensaje de error
-             model.addAttribute("Error", "Error al registrar usuario. Intente nuevamente.");
-             return "redirect:/LogIn";
-        }
-    }*/
-
-
     //Metodo para actualizar un usuario
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> actualizarUser(@PathVariable ("userId") Long userId, @RequestBody UserDTO userDTO) {
@@ -104,114 +70,222 @@ public class UserController {
    public ResponseEntity<Void> eliminarUserPorId(@PathVariable ("userId") Long userId) {
         userService.eliminarUserPorId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-   }
-    /*
-
-     /*
-    //Se comento por si acasoooo
-   //Metodo para exportar a excel todos los usuarios
-   // Endpoint para exportar usuarios a Excel
-   @GetMapping("/export/excel")
-   public void exportUsersToExcel(HttpServletResponse response) throws IOException {
-       try {
-           // Configurar la respuesta HTTP para descarga de archivo Excel
-           response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-
-           // Generar nombre de archivo con timestamp
-           String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-           String filename = "users_" + timestamp + ".xlsx";
-
-           // Configurar header para descarga
-           response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-           response.setHeader("Cache-Control", "no-cache");
-
-           // CAMBIO: Llamar al método correcto (con el typo original)
-           userService.exporUserstToExcel(response.getOutputStream());
-
-           // Limpiar el buffer
-           response.getOutputStream().flush();
-
-       } catch (Exception e) {
-           // En caso de error, devolver un error HTTP 500
-           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-           response.getWriter().write("Error al generar el archivo Excel: " + e.getMessage());
-       }
    }
 
-    // Endpoint de prueba
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Controller funcionando correctamente!");
-    }
-
-    // Endpoint para contar usuarios
-    @GetMapping("/count")
-    public ResponseEntity<String> getUserCount() {
-        try {
-            List<UserDTO> users = userService.listarUsers();
-            return ResponseEntity.ok("Total de usuarios encontrados: " + users.size());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al contar usuarios: " + e.getMessage());
-        }
-    }
-    */
-
-    // Método para exportar usuarios a Excel
+    // ========== EXPORTACIÓN CON FILTROS ==========
+    
+    // Método para exportar usuarios a Excel CON FILTROS
     @GetMapping("/exportExcel")
-    public ResponseEntity<InputStreamResource> exportarExcel() throws IOException {
-        // Creamos el flujo de salida en memoria (Array de bytes)
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    public void exportarExcel(
+            HttpServletResponse response,
+            @RequestParam(required = false) String dato,
+            @RequestParam(required = false) String valor) throws IOException {
+        
+        // Obtener usuarios filtrados
+        List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
 
-        // Llamamos al servicio para exportar los usuarios a Excel
-        ((UserServiceImpl) userService).exporUserstToExcel(outputStream);
+        // Configurar respuesta HTTP
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String filename = "Usuarios_" + java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".xlsx";
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
 
-        // Configuramos la respuesta HTTP con el archivo Excel
-        HttpHeaders headers = new HttpHeaders();
+        // Crear libro Excel
+        org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook();
+        org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Usuarios");
 
-        // Definimos el tipo de contenido y las cabeceras para la descarga
-        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        // Crear encabezados
+        org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Nombre");
+        headerRow.createCell(2).setCellValue("Email");
+        headerRow.createCell(3).setCellValue("Rol ID");
 
-        // Indicamos al navegador que es un archivo adjunto con un nombre específico
-        headers.setContentDispositionFormData("attachment", "Usuarios.xlsx");
+        // Si hay filtro, agregar fila informativa
+        if (dato != null && valor != null && !valor.isEmpty()) {
+            org.apache.poi.ss.usermodel.Row filterRow = sheet.createRow(1);
+            filterRow.createCell(0).setCellValue("Filtro aplicado:");
+            filterRow.createCell(1).setCellValue(dato + " = " + valor);
+        }
 
-        // Creamos y devolvemos la respuesta con el archivo Excel en el cuerpo
-        // Creamos un inputStream a partir del array de bytes
-        return new ResponseEntity<>(
-                new InputStreamResource(new ByteArrayInputStream(outputStream.toByteArray())),
-                headers,
-                HttpStatus.OK
-        );
+        // Llenar datos
+        int rowNum = (dato != null && valor != null && !valor.isEmpty()) ? 2 : 1;
+        for (UserDTO usuario : usuarios) {
+            org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(usuario.getId());
+            row.createCell(1).setCellValue(usuario.getName());
+            row.createCell(2).setCellValue(usuario.getEmail());
+            row.createCell(3).setCellValue(usuario.getIdRole() != null ? usuario.getIdRole() : 0);
+        }
+
+        // Ajustar ancho de columnas
+        for (int i = 0; i < 4; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        // Escribir y cerrar
+        workbook.write(response.getOutputStream());
+        workbook.close();
+        response.getOutputStream().flush();
     }
 
-    // Endpoint para exportar usuarios a PDF
+    // Endpoint para exportar usuarios a PDF CON FILTROS
     @GetMapping("/exportPdf")
-    public void exportUsersToPdf(HttpServletResponse response) throws IOException {
+    public void exportUsersToPdf(
+            HttpServletResponse response,
+            @RequestParam(required = false) String dato,
+            @RequestParam(required = false) String valor) throws IOException {
+        
+        // Obtener usuarios filtrados
+        List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
+        
         try {
             // Configurar la respuesta HTTP para descarga de archivo PDF
             response.setContentType("application/pdf");
-
-            // Generar nombre de archivo con timestamp, por si acaso
-            // String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String filename = "Usuarios" + /*timestamp+ */ ".pdf";
-
-            // Configurar header para descarga
+            String filename = "Usuarios_" + java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
             response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
             response.setHeader("Cache-Control", "no-cache");
 
-            // Llamar al método de exportación del service
-            userService.exportUsersToPdf(response.getOutputStream());
+            // Crear documento PDF
+            com.lowagie.text.Document document = new com.lowagie.text.Document();
+            com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
 
-            // Limpiar el buffer
+            // Título principal
+            com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#667eea"));
+            com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
+            title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            document.add(title);
+
+            // Subtítulo
+            com.lowagie.text.Font subtitleFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 14, java.awt.Color.BLACK);
+            com.lowagie.text.Paragraph subtitle = new com.lowagie.text.Paragraph("Reporte de Usuarios", subtitleFont);
+            subtitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            subtitle.setSpacingAfter(10);
+            document.add(subtitle);
+
+            // Información del filtro aplicado
+            if (dato != null && valor != null && !valor.isEmpty()) {
+                com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#667eea"));
+                com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
+                        "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
+                filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                filterInfo.setSpacingAfter(15);
+                document.add(filterInfo);
+            }
+
+            // Información del reporte
+            com.lowagie.text.Font infoFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.GRAY);
+            String currentDate = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            com.lowagie.text.Paragraph reportInfo = new com.lowagie.text.Paragraph(
+                    "Fecha: " + currentDate + " | Total: " + usuarios.size() + " usuario(s)", infoFont);
+            reportInfo.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
+            reportInfo.setSpacingAfter(20);
+            document.add(reportInfo);
+
+            if (usuarios.isEmpty()) {
+                // Si no hay usuarios
+                com.lowagie.text.Font noDataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 12, java.awt.Color.RED);
+                com.lowagie.text.Paragraph noData = new com.lowagie.text.Paragraph(
+                        "No se encontraron usuarios con los filtros aplicados.", noDataFont);
+                noData.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                noData.setSpacingBefore(50);
+                document.add(noData);
+            } else {
+                // Crear tabla con 4 columnas
+                com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(4);
+                table.setWidthPercentage(100);
+                table.setSpacingBefore(10f);
+                float[] columnWidths = {1f, 3f, 4f, 2f};
+                table.setWidths(columnWidths);
+
+                // Encabezados
+                com.lowagie.text.Font headerFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.WHITE);
+                addTableHeaderPdf(table, "ID", headerFont);
+                addTableHeaderPdf(table, "Nombre", headerFont);
+                addTableHeaderPdf(table, "Email", headerFont);
+                addTableHeaderPdf(table, "Rol", headerFont);
+
+                // Datos
+                com.lowagie.text.Font dataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+                int rowCount = 0;
+                for (UserDTO usuario : usuarios) {
+                    rowCount++;
+                    java.awt.Color rowColor = (rowCount % 2 == 0) ? 
+                            new java.awt.Color(240, 240, 240) : java.awt.Color.WHITE;
+
+                    addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor, 
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                    addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A", 
+                            dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                    addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A", 
+                            dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                    
+                    String roleName = obtenerNombreRol(usuario.getIdRole());
+                    addTableCellPdf(table, roleName, dataFont, rowColor, 
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                }
+
+                document.add(table);
+
+                // Estadísticas por rol
+                java.util.Map<String, Long> usersByRole = usuarios.stream()
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                user -> obtenerNombreRol(user.getIdRole()),
+                                java.util.stream.Collectors.counting()
+                        ));
+
+                if (!usersByRole.isEmpty()) {
+                    document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
+
+                    com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
+                            com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+                    com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
+                            "Estadísticas por Rol:", statsFont);
+                    statsTitle.setSpacingBefore(20);
+                    document.add(statsTitle);
+
+                    com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
+                            com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+                    for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        statLine.setIndentationLeft(20);
+                        document.add(statLine);
+                    }
+                }
+            }
+
+            // Pie de página
+            com.lowagie.text.Font footerFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_OBLIQUE, 8, java.awt.Color.GRAY);
+            com.lowagie.text.Paragraph footer = new com.lowagie.text.Paragraph(
+                    "Reporte generado automáticamente por Huerta Directa", footerFont);
+            footer.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            footer.setSpacingBefore(30);
+            document.add(footer);
+
+            document.close();
             response.getOutputStream().flush();
 
+        } catch (com.lowagie.text.DocumentException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         } catch (Exception e) {
-            // En caso de error, devolver un error HTTP 500
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         }
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,6 +342,7 @@ public class UserController {
             return "redirect:/index";
         }
     }
+    
     @PostMapping("/FormAdmin")
     public String registrarAdmin(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
@@ -313,5 +388,73 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
+    // ========== MÉTODOS AUXILIARES PARA EXPORTACIÓN ==========
+    
+    private List<UserDTO> obtenerUsuariosFiltrados(String dato, String valor) {
+        List<UserDTO> todosUsuarios = userService.listarUsers();
+        
+        if (dato == null || valor == null || valor.isEmpty()) {
+            return todosUsuarios;
+        }
+        
+        return todosUsuarios.stream()
+                .filter(usuario -> {
+                    switch (dato) {
+                        case "id":
+                            try {
+                                return usuario.getId().equals(Long.parseLong(valor));
+                            } catch (NumberFormatException e) {
+                                return false;
+                            }
+                        case "name_user":
+                            return usuario.getName() != null && 
+                                   usuario.getName().toLowerCase().contains(valor.toLowerCase());
+                        case "email":
+                            return usuario.getEmail() != null && 
+                                   usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
+                        default:
+                            return false;
+                    }
+                })
+                .collect(java.util.stream.Collectors.toList());
+    }
 
+    private String obtenerNombreRol(Long idRole) {
+        if (idRole == null) {
+            return "Sin Rol";
+        }
+        switch (idRole.intValue()) {
+            case 1:
+                return "Administrador";
+            case 2:
+                return "Cliente";
+            default:
+                return "Otro";
+        }
+    }
+
+    private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle, 
+                                  com.lowagie.text.Font font) {
+        com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
+        header.setBackgroundColor(java.awt.Color.decode("#667eea"));
+        header.setBorderWidth(1);
+        header.setPhrase(new com.lowagie.text.Phrase(headerTitle, font));
+        header.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        header.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
+        header.setPadding(8);
+        table.addCell(header);
+    }
+
+    private void addTableCellPdf(com.lowagie.text.pdf.PdfPTable table, String text, 
+                                com.lowagie.text.Font font, java.awt.Color backgroundColor, 
+                                int alignment) {
+        com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
+        cell.setPhrase(new com.lowagie.text.Phrase(text, font));
+        cell.setHorizontalAlignment(alignment);
+        cell.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
+        cell.setBackgroundColor(backgroundColor);
+        cell.setPadding(5);
+        cell.setBorderWidth(1);
+        table.addCell(cell);
+    }
 }
