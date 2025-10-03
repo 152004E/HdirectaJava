@@ -384,17 +384,12 @@
       </main>
 
       <div class="right">
-        <div class="top !justify-center">
+        <div class="top ">
           <div class="theme-toggler">
             <span class="material-symbols-outlined active">light_mode</span>
             <span class="material-symbols-outlined">dark_mode</span>
           </div>
-          <div class="profile">
-            <div class="info">
-              <p>Ey, <b>Pachito</b></p>
-              <small class="text-muted">Vendedor</small>
-            </div>
-          </div>
+           <div class="profile" th:replace="fragments/profile :: profile"></div>
         </div>
       </div>
     </div>
