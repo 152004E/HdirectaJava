@@ -44,6 +44,21 @@ img {
     justify-content: space-between;
 }
 
+.alert-success .material-symbols-outlined {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.alert-success .close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+}
+
 @keyframes slideIn {
     0% {
         transform: translateY(-100%) translateX(100%);

@@ -20,18 +20,18 @@
 
   <body>
     <!-- Mensaje de error - se muestra cuando hay errores de autenticación o sesión -->
-    <div th:if="${error}" class="alert-danger">
-      <span class="material-symbols-outlined">error</span>
-      <span th:text="${error}"></span>
-      <button
-        class="close-btn"
-        onclick="this.parentElement.style.display='none'"
-      >
-        ×
-      </button>
-    </div>
+<div th:if="${error}" class="alert-danger">
+    <span class="material-symbols-outlined">error</span>
+    <span th:text="${error}"></span>
+    <button class="close-btn" onclick="this.parentElement.style.display='none'">×</button>
+</div>
 
-    
+<!-- Mensaje de éxito - se muestra después de acciones exitosas -->
+<div th:if="${success}" class="alert-success">
+    <span class="material-symbols-outlined">check_circle</span>
+    <span th:text="${success}"></span>
+    <button class="close-btn" onclick="this.parentElement.style.display='none'">×</button>
+</div>
     <!-- 🚨 Alerta de sesión requerida para registrar productos -->
     <div
       th:if="${alertMessage}"
