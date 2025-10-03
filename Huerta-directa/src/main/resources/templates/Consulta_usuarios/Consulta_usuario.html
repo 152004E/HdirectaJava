@@ -47,12 +47,12 @@
             <!-- Botones de exportación -->
             <div class="export-section">
                 <h5>Exportar Datos</h5>
-                <a href="/api/users/exportExcel" class="btn btn-success">
+                <button onclick="exportarUsuariosExcel()" class="btn btn-success">
                     <i class="fas fa-file-excel"></i> Exportar a Excel
-                </a>
-                <a href="/api/users/exportPdf" class="btn btn-danger">
+                </button>
+                <button onclick="exportarUsuariosPDF()" class="btn btn-danger">
                     <i class="fas fa-file-pdf"></i> Exportar a PDF
-                </a>
+                </button>
             </div>
 
             <hr>
@@ -104,15 +104,24 @@
 
             <!-- Botón para volver -->
             <div class="text-center mt-4">
-                <a href="/home" class="btn btn-secondary">
+                <a href="/index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Volver al Inicio
                 </a>
             </div>
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function exportarUsuariosExcel() {
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = `/api/users/exportExcel?${params.toString()}`;
+        }
+
+        function exportarUsuariosPDF() {
+            const params = new URLSearchParams(window.location.search);
+            window.location.href = `/api/users/exportPdf?${params.toString()}`;
+        }
+
         function editarUsuario(id) {
             // Implementar lógica de edición
             alert('Funcionalidad de edición en desarrollo para usuario ID: ' + id);
