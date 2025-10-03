@@ -104,6 +104,48 @@ public String mostrarLogin(Model model,
     return "login/login";
 }
 
+    @GetMapping("/forgot-password")
+    public String mostrarFormularioRecuperacion(Model model,
+                                              @RequestParam(value = "error", required = false) String error,
+                                              @RequestParam(value = "success", required = false) String success) {
+        System.out.println("🔍 DEBUG: Mostrando formulario de recuperación de contraseña");
+
+        // Agregar mensajes de éxito o error si existen
+        if (error != null) {
+            model.addAttribute("error", error.replace("+", " "));
+        }
+        if (success != null) {
+            model.addAttribute("success", success.replace("+", " "));
+        }
+
+        return "login/forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String procesarRecuperacionContrasena(@RequestParam String email,
+                                               RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("🔐 Procesando solicitud de recuperación para: " + email);
+
+            // Aquí deberías implementar la lógica para:
+            // 1. Verificar que el email existe en la base de datos
+            // 2. Generar un token de recuperación
+            // 3. Enviar email con el enlace de recuperación
+
+            // Por ahora, simulamos el proceso exitoso
+            redirectAttributes.addFlashAttribute("success",
+                "✅ Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada y spam.");
+
+            return "redirect:/forgot-password";
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al procesar recuperación de contraseña: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error",
+                "❌ Error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.");
+            return "redirect:/forgot-password";
+        }
+    }
+
     @GetMapping("/error404")
     public String mostrarerror404() {
         return "Errores/error404";
