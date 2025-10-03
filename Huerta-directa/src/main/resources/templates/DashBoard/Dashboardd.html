@@ -57,7 +57,7 @@
                     <span class="material-symbols-outlined">settings</span>
                     <h3>Configuracion</h3>
                 </a>
-                <a th:href="@{/index}">
+                <a th:href="@{/home}">
                     <span class="material-symbols-outlined">logout</span>
                     <h3>Volver al Inicio</h3>
                 </a>
@@ -253,11 +253,25 @@
                 </div>
                 <div class="profile">
                     <div class="info">
-                        <p>Ey, <b>Admin</b></p>
-                        <small class="text-muted">Administrador</small>
+                        <p>Ey, <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}">Usuario</b></p>
+                        <small class="text-muted" th:text="${userRole != null ? userRole : 'Usuario'}">Usuario</small>
+
+                        <!-- Botón de cerrar sesión -->
+                        <form action="/api/users/logout" method="post" style="margin-top: 8px;">
+                            <button type="submit" class="btn-logout"
+                                    style="background: #ff4757; color: white; border: none; padding: 4px 8px;
+                                           border-radius: 4px; font-size: 12px; cursor: pointer;
+                                           display: flex; align-items: center; gap: 4px;
+                                           transition: all 0.3s ease;"
+                                    onmouseover="this.style.background='#ff3838'"
+                                    onmouseout="this.style.background='#ff4757'">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">logout</span>
+                                Cerrar Sesión
+                            </button>
+                        </form>
                     </div>
                     <div class="profile-photo">
-                        <img src="/images/logo_huerta.png" alt=""/>
+                        <img src="/images/logo_huerta.png" alt="Profile"/>
                     </div>
                 </div>
             </div>
@@ -289,41 +303,32 @@
                         <h3>3849</h3>
                     </div>
                 </div>
-                          <div class="item offline">
-            <div class="icon">
-              <span class="material-symbols-outlined">local_mall</span>
-            </div>
-            <div class="right">
-              <div class="info">
-                <h3>OFFLINE ORDENES</h3>
-                <small class="text-muted">Ultimas 24 horas</small>
-              </div>
-              <h5 class="danger">-17%</h5>
-              <h3>1100</h3>
-            </div>
-          </div>
-          <div class="item customers">
-            <div class="icon">
-              <span class="material-symbols-outlined">person</span>
-            </div>
-            <div class="right">
-              <div class="info">
-                <h3>NUEVOS CLIENTES</h3>
-                <small class="text-muted">Ultimas 24 horas</small>
-              </div>
-              <h5 class="success">+67%</h5>
-              <h3>849</h3>
-            </div>
-          </div>
-            <!--
-          <a
-            href="../../views/DashBoard/Registro_nuevo_admin/form_registro_admin.php"
-            class="item add-client"
-            style="text-decoration: none; color: inherit"
-          >
-            <span class="material-symbols-outlined">add</span>
-            <h3>Añadir administrador</h3>
-          </a> -->
+                <div class="item offline">
+                    <div class="icon">
+                        <span class="material-symbols-outlined">local_mall</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>OFFLINE ORDENES</h3>
+                            <small class="text-muted">Ultimas 24 horas</small>
+                        </div>
+                        <h5 class="danger">-17%</h5>
+                        <h3>1100</h3>
+                    </div>
+                </div>
+                <div class="item customers">
+                    <div class="icon">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <div class="right">
+                        <div class="info">
+                            <h3>NUEVOS CLIENTES</h3>
+                            <small class="text-muted">Ultimas 24 horas</small>
+                        </div>
+                        <h5 class="success">+67%</h5>
+                        <h3>849</h3>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

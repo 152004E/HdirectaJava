@@ -1,7 +1,9 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,21 @@ public class DashboardController {
     @GetMapping("/Dashboardd")
     public String dashboard(Model model,
                           @RequestParam(required = false) String buscar,
-                          @RequestParam(required = false) String categoria) {
+                          @RequestParam(required = false) String categoria,
+                          HttpSession session) {
+
+        // Obtener usuario de la sesión para mostrar información dinámica
+        User userSession = (User) session.getAttribute("user");
+        if (userSession != null) {
+            model.addAttribute("currentUser", userSession);
+            // Determinar el nombre del rol para mostrar
+            String roleName = "Usuario";
+            if (userSession.getRole() != null) {
+                roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
+            }
+            model.addAttribute("userRole", roleName);
+        }
+
         List<ProductDTO> productos;
         
         // Lógica de filtrado mejorada
