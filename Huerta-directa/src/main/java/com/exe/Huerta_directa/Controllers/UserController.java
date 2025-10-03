@@ -226,13 +226,21 @@ public class UserController {
     public String seveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
             BindingResult result,
-            RedirectAttributes redirect) {
+            RedirectAttributes redirect,
+            HttpSession session) {
         if (result.hasErrors()) {
-            return "users/login"; // Si hay errores, volver al formulario de registro
+            return "login/login"; // Si hay errores, volver al formulario de registro
         }
-        userService.crearUser(userDTO);
-        redirect.addFlashAttribute("success", "Usuario creado");
-        return "redirect:/index";
+
+        UserDTO usuarioCreado = userService.crearUser(userDTO);
+        redirect.addFlashAttribute("success", "Usuario creado exitosamente");
+
+        // Redirigir según el rol del usuario recién creado
+        if (usuarioCreado != null && usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1) {
+            return "redirect:/DashboardAdmin";
+        } else {
+            return "redirect:/index";
+        }
     }
 
 
@@ -250,15 +258,44 @@ public class UserController {
             return "login/login";
         }
 
-        // Guarda al usuario en sesión (opcional)
+        // Guarda al usuario en sesión
         session.setAttribute("user", user);
 
-        // Redirige según el rol
+        // Redirige según el rol usando redirección inteligente
         if (user.getRole().getIdRole() == 1) {
             return "redirect:/DashboardAdmin";
         } else {
             return "redirect:/index";
         }
+    }
+
+    /**
+     * Método para cerrar sesión
+     */
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // Destruir completamente la sesión
+        return "redirect:/login";
+    }
+
+    /**
+     * Método para obtener información del usuario logueado (útil para mostrar en el frontend)
+     */
+    @GetMapping("/current")
+    @ResponseBody
+    public ResponseEntity<UserDTO> getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
 

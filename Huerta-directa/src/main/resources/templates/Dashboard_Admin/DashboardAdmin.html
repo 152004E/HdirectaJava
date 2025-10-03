@@ -70,11 +70,11 @@
                 <span class="material-symbols-outlined">settings</span>
                 <h3>Configuracion</h3>
             </a>
-            <a href="../Consulta_usuarios/Consulta_usuario.php">
+            <a th:href="@{/agregar_admin}">
                 <span class="material-symbols-outlined">add</span>
-                <h3>Consultar Usuario</h3>
+                <h3>Añadir Administrador</h3>
             </a>
-            <a th:href="@{/index}">
+            <a th:href="@{/home}">
                 <span class="material-symbols-outlined">logout</span>
                 <h3>Volver al Inicio</h3>
             </a>
@@ -275,11 +275,25 @@
             </div>
             <div class="profile">
                 <div class="info">
-                    <p>Ey, <b>Santiago</b></p>
-                    <small class="text-muted">Admin</small>
+                    <p>Ey, <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}">Admin</b></p>
+                    <small class="text-muted" th:text="${userRole != null ? userRole : 'Usuario'}">Administrador</small>
+
+                    <!-- Botón de cerrar sesión -->
+                    <form action="/api/users/logout" method="post" style="margin-top: 8px;">
+                        <button type="submit" class="btn-logout"
+                                style="background: #ff4757; color: white; border: none; padding: 4px 8px;
+                                       border-radius: 4px; font-size: 12px; cursor: pointer;
+                                       display: flex; align-items: center; gap: 4px;
+                                       transition: all 0.3s ease;"
+                                onmouseover="this.style.background='#ff3838'"
+                                onmouseout="this.style.background='#ff4757'">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">logout</span>
+                            Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
                 <div class="profile-photo">
-                    <img src="imagesDashBoard/Santiago.png" alt="" />
+                    <img src="/images/logo_huerta.png" alt="Profile" />
                 </div>
             </div>
         </div>
@@ -358,14 +372,6 @@
                     <h3>849</h3>
                 </div>
             </div>
-            <a
-                    href="../../views/DashBoard/Registro_nuevo_admin/form_registro_admin.php"
-                    class="item add-client"
-                    style="text-decoration: none; color: inherit"
-            >
-                <span class="material-symbols-outlined">add</span>
-                <h3>Añadir administrador</h3>
-            </a>
         </div>
     </div>
 </div>

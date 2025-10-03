@@ -10,7 +10,7 @@ public interface ProductService {
 
     ProductDTO obtenerProductPorId(Long productId);
 
-    ProductDTO crearProduct(ProductDTO productDTO);
+    ProductDTO crearProduct(ProductDTO productDTO, Long userId);
 
     ProductDTO actualizarProduct(Long productId, ProductDTO productDTO);
 
