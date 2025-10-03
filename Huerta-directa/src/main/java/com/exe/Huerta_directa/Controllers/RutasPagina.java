@@ -53,12 +53,23 @@ public class RutasPagina {
     }
 
     @GetMapping({ "/", "/index" })
-    public String mostrarIndex(Model model) {
-        List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos.size());
-        model.addAttribute("productos", productos);
-        return "index";
+public String mostrarIndex(Model model, 
+                         @ModelAttribute("success") String success) {
+    // Log para debugging
+    System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
+    
+    // Obtener y agregar productos al modelo
+    List<ProductDTO> productos = productService.listarProducts();
+    System.out.println("Productos obtenidos: " + productos.size());
+    model.addAttribute("productos", productos);
+    
+    // Si hay un mensaje de éxito, agregarlo al modelo
+    if (success != null && !success.isEmpty()) {
+        model.addAttribute("success", success);
     }
+
+    return "index";
+}
 
     @GetMapping("/agregar_producto")
     public String mostrarFormulario() {
@@ -66,22 +77,32 @@ public class RutasPagina {
     }
 
     @GetMapping("/login")
-    public String mostrarLogin(Model model,
-                              @RequestParam(value = "error", required = false) String error,
-                              @RequestParam(value = "message", required = false) String message) {
+public String mostrarLogin(Model model,
+                          @RequestParam(value = "error", required = false) String error,
+                          @RequestParam(value = "message", required = false) String message,
+                          @RequestParam(value = "success", required = false) String success) {
 
-        // Debug logging para verificar que el controlador está siendo llamado
-        System.out.println("🔍 DEBUG: Controlador /login ejecutándose correctamente");
+    // Log para debugging - confirma que el controlador está siendo llamado
+    System.out.println("🔍 DEBUG: Controlador /login ejecutándose correctamente");
 
-        model.addAttribute("userDTO", new UserDTO());
+    // Agregar un objeto UserDTO vacío al modelo para el formulario
+    model.addAttribute("userDTO", new UserDTO());
 
-        // Si hay parámetros de error, agregar el mensaje de alerta al modelo
-        if ("session".equals(error) && message != null) {
-            model.addAttribute("alertMessage", message.replace("+", " "));
-        }
-
-        return "login/login";
+    // Procesar mensaje de error de sesión si existe
+    if ("session".equals(error) && message != null) {
+        // Reemplazar '+' por espacios en el mensaje y agregarlo al modelo
+        model.addAttribute("alertMessage", message.replace("+", " "));
     }
+
+    // Procesar mensaje de éxito si existe
+    if (success != null) {
+        // Reemplazar '+' por espacios en el mensaje y agregarlo al modelo
+        model.addAttribute("success", success.replace("+", " "));
+    }
+
+    // Retornar la vista login/login.html
+    return "login/login";
+}
 
     @GetMapping("/error404")
     public String mostrarerror404() {

@@ -22,6 +22,46 @@ img {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.alert-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #52c41a;
+    color: #fff;
+    border: 1px solid #52c41a;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    width: 300px;
+    font-size: 13px;
+    padding: 15px 20px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
+    animation: slideIn 4s ease-in-out forwards;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(-100%) translateX(100%);
+        opacity: 0;
+    }
+    10% {
+        transform: translateY(0) translateX(0);
+        opacity: 1;
+    }
+    90% {
+        transform: translateY(0) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100%) translateX(100%);
+        opacity: 0;
+    }
+}
 .header {
   background: linear-gradient(to bottom, #fef5dc 90%, #ffffff 100%);
   display: flex;

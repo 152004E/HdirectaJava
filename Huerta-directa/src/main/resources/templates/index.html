@@ -31,6 +31,17 @@
   </head>
 
   <body>
+    <!-- Mensaje de éxito - se muestra después de acciones exitosas -->
+    <div th:if="${success}" class="alert-success">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span th:text="${success}"></span>
+      <button
+        class="close-btn"
+        onclick="this.parentElement.style.display='none'"
+      >
+        ×
+      </button>
+    </div>
     <header class="header">
       <div class="menu container1">
         <a href="#" class="logo">Huerta directa</a>
@@ -43,9 +54,9 @@
             <li class="dropdown">
               <a href="">Log in ▾</a>
               <ul class="dropdown-menu">
-                  <li>
-                      <a th:href="@{/actualizacionUsuario}">📲 Mi Perfil</a>
-                  </li>
+                <li>
+                  <a th:href="@{/actualizacionUsuario}">📲 Mi Perfil</a>
+                </li>
                 <li>
                   <a th:href="@{/login}">📲 Iniciar Sesion</a>
                 </li>

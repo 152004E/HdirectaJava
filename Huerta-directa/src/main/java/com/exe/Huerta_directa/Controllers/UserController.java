@@ -9,6 +9,8 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+
+import org.springframework.dao.DataIntegrityViolationException;
 //import org.springframework.core.io.InputStreamResource;
 //import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -295,28 +297,43 @@ public class UserController {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    //Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con usuario
-
-    @PostMapping("/register")
-    public String seveUserView(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-            BindingResult result,
-            RedirectAttributes redirect,
-            HttpSession session) {
-        if (result.hasErrors()) {
-            return "login/login"; // Si hay errores, volver al formulario de registro
-        }
-
-        UserDTO usuarioCreado = userService.crearUser(userDTO);
-        redirect.addFlashAttribute("success", "Usuario creado exitosamente");
-
-        // Redirigir según el rol del usuario recién creado
-        if (usuarioCreado != null && usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1) {
-            return "redirect:/DashboardAdmin";
-        } else {
-            return "redirect:/index";
-        }
+@PostMapping("/register")
+public String seveUserView(
+        @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+        BindingResult result,
+        RedirectAttributes redirectAttributes,
+        HttpSession session) {
+    
+    if (result.hasErrors()) {
+        return "login/login";
     }
 
+    try {
+        // Intentar crear el usuario
+        UserDTO usuarioCreado = userService.crearUser(userDTO);
+        
+        // Guardar usuario en sesión
+        session.setAttribute("user", usuarioCreado);
+
+        // Configurar mensaje de éxito según el rol
+        if (usuarioCreado.getIdRole() == 1) {
+            redirectAttributes.addFlashAttribute("success", "¡Bienvenido Administrador! Tu cuenta ha sido creada exitosamente");
+            return "redirect:/DashboardAdmin";
+        } else {
+            redirectAttributes.addFlashAttribute("success", "¡Bienvenido! Tu cuenta ha sido creada exitosamente");
+            return "redirect:/index";
+        }
+
+    } catch (DataIntegrityViolationException e) {
+        // Manejar error de email duplicado
+        redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está registrado");
+        return "redirect:/login";
+    } catch (Exception e) {
+        // Manejar otros errores posibles
+        redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta. Por favor, intente nuevamente");
+        return "redirect:/login";
+    }
+}
 
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String email,
