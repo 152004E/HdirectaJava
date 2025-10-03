@@ -45,10 +45,16 @@ public class RutasPagina {
         return "Errores/error404";
     }
 
+    @GetMapping("/pasarelaPagos")
+    public String mostrarPasarelaPagos() {
+        return "Pasarela_Pagos/Pasarela";
+    }
+
     @GetMapping("/error500")
     public String mostrarerror500() {
         return "Errores/error500";
     }
+
     @GetMapping("/actualizacionUsuario")
     public String actualizacionUsuario() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
@@ -152,7 +158,6 @@ public class RutasPagina {
         model.addAttribute("usuarios", usuarios);
         return "Dashboard_Admin/DashboardAdmin";
     }
-    
 
     @GetMapping("/producto/{id}")
     public String verProducto(@PathVariable("id") Long id, Model model) {

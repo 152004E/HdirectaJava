@@ -65,7 +65,12 @@
               <tbody></tbody>
             </table>
             <a href="#" id="vaciar-carrito" class="btn-2">Vaciar carrito</a>
-            <a href="#" id="miBoton" class="btn-2">Ir a pagar</a>
+            <a
+              th:href="@{/pasarelaPagos}"
+              onclick="window.location=this.href; return false ;"
+              class="btn-2"
+              >Ir a pagar</a
+            >
           </div>
         </li>
       </ul>
