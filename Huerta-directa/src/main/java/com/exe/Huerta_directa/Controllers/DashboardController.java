@@ -1,9 +1,12 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,21 +27,16 @@ public class DashboardController {
                           @RequestParam(required = false) String categoria) {
         List<ProductDTO> productos;
         
-        // Lógica de filtrado mejorada
-        if (buscar != null && !buscar.trim().isEmpty()) {
-            productos = productService.buscarPorNombre(buscar.trim());
-            model.addAttribute("buscarActivo", buscar);
+        if (buscar != null && !buscar.isEmpty()) {
+            productos = productService.buscarPorNombre(buscar);
         } else if (categoria != null && !categoria.isEmpty() && !categoria.equals("Por categoría")) {
             productos = productService.buscarPorCategoria(categoria);
-            model.addAttribute("categoriaActiva", categoria);
         } else {
             productos = productService.listarProducts();
         }
         
         model.addAttribute("productos", productos);
-        model.addAttribute("totalProductos", productos.size());
-        
-        return "DashBoard/Dashboardd";
+        return "DashBoard/Dashboardd";  // <-- CAMBIADO: Carpeta/Archivo
     }
 
     @GetMapping("/editar_producto/{id}")
@@ -46,47 +44,22 @@ public class DashboardController {
         try {
             ProductDTO producto = productService.obtenerProductPorId(id);
             model.addAttribute("producto", producto);
-            return "DashBoard/editar_producto";
+            return "DashBoard/editar_producto";  // <-- CAMBIADO
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", "Producto no encontrado: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
             return "redirect:/Dashboardd";
         }
     }
 
     @PostMapping("/actualizar_producto/{id}")
     public String actualizarProducto(@PathVariable Long id, 
-                                    @ModelAttribute ProductDTO productoDTO,
+                                    @ModelAttribute ProductDTO producto,
                                     RedirectAttributes redirectAttributes) {
         try {
-            // Asegurarse de que el ID esté establecido
-            productoDTO.setIdProduct(id);
-            
-            // Obtener el producto actual para mantener campos que no se editan
-            ProductDTO productoActual = productService.obtenerProductPorId(id);
-            
-            // Mantener la imagen si no se cambió
-            if (productoDTO.getImageProduct() == null || productoDTO.getImageProduct().isEmpty()) {
-                productoDTO.setImageProduct(productoActual.getImageProduct());
-            }
-            
-            // Mantener la fecha de publicación
-            if (productoDTO.getPublicationDate() == null) {
-                productoDTO.setPublicationDate(productoActual.getPublicationDate());
-            }
-            
-            // Mantener el userId
-            if (productoDTO.getUserId() == null) {
-                productoDTO.setUserId(productoActual.getUserId());
-            }
-            
-            // Actualizar el producto
-            ProductDTO productoActualizado = productService.actualizarProduct(id, productoDTO);
-            
-            redirectAttributes.addFlashAttribute("success", 
-                "Producto '" + productoActualizado.getNameProduct() + "' actualizado exitosamente");
+            productService.actualizarProduct(id, producto);
+            redirectAttributes.addFlashAttribute("success", "Producto actualizado exitosamente");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", 
-                "Error al actualizar el producto: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar el producto");
         }
         return "redirect:/Dashboardd";
     }
@@ -94,13 +67,10 @@ public class DashboardController {
     @PostMapping("/eliminar_producto/{id}")
     public String eliminarProductoPost(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            ProductDTO producto = productService.obtenerProductPorId(id);
             productService.eliminarProductPorId(id);
-            redirectAttributes.addFlashAttribute("success", 
-                "Producto '" + producto.getNameProduct() + "' eliminado exitosamente");
+            redirectAttributes.addFlashAttribute("success", "Producto eliminado exitosamente");
         } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", 
-                "Error al eliminar el producto: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el producto");
         }
         return "redirect:/Dashboardd";
     }
