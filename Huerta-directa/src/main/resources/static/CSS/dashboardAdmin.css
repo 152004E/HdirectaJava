@@ -416,7 +416,7 @@ main table tbody tr:last-child td {
 }
 
 .btn-actualizar {
-    background-color: #004d00 ;
+    background-color: #8dc84b;
     color: white;
 }
 
@@ -426,12 +426,12 @@ main table tbody tr:last-child td {
 }
 
 .btn-eliminar {
-    background-color: #dc2626;
+    background-color: #004d00;
     color: white;
 }
 
 .btn-eliminar:hover {
-    background-color: #b91c1c;
+    background-color: #004d00;
     transform: translateY(-1px);
 }
 
