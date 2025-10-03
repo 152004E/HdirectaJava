@@ -87,10 +87,16 @@ public class RutasPagina {
         return "Errores/error404";
     }
 
+    @GetMapping("/pasarelaPagos")
+    public String mostrarPasarelaPagos() {
+        return "Pasarela_Pagos/Pasarela";
+    }
+
     @GetMapping("/error500")
     public String mostrarerror500() {
         return "Errores/error500";
     }
+
     @GetMapping("/actualizacionUsuario")
     public String actualizacionUsuario() {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html

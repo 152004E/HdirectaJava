@@ -129,9 +129,7 @@ function vaciarCarrito() {
   mostrarAlertaEliminacion("Productos eliminados del carrito");
 }
 
-document.getElementById("miBoton").addEventListener("click", function () {
-  window.location.href = "Pasarela_Pagos/Pasarela.html";
-});
+
 
 //slider     lo modifique porque no se ha terminado y me da error en consola
 const swiper = new Swiper(".swiper", {
