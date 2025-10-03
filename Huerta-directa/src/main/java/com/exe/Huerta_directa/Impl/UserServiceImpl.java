@@ -1,10 +1,12 @@
 package com.exe.Huerta_directa.Impl;
 
+import com.exe.Huerta_directa.DTO.RoleDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.RoleRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
+import com.exe.Huerta_directa.Service.RoleService;
 import com.exe.Huerta_directa.Service.UserService;
 
 import com.lowagie.text.Document;
@@ -37,10 +39,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RoleService roleService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     //Metodo para obtener todos los usuarios en reporte excel
@@ -397,5 +401,14 @@ public class UserServiceImpl implements UserService {
     public void exportarUsersToPDF(OutputStream outputStream) throws IOException {
         // Redirigir al método mejorado
         exportUsersToPdf(outputStream);
+    }
+    @Override
+    public UserDTO crearAdmin(UserDTO userDTO) {
+        // obtenemos el rol admin (id = 1) desde el service
+        RoleDTO roleAdmin = roleService.obtenerRolePorId(1L);
+        userDTO.setIdRole(roleAdmin.getIdRole());
+
+        // reutilizamos el método normal de crear
+        return crearUser(userDTO);
     }
 }

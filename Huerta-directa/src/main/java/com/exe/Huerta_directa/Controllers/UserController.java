@@ -268,6 +268,21 @@ public class UserController {
             return "redirect:/index";
         }
     }
+    @PostMapping("/FormAdmin")
+    public String registrarAdmin(
+            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+            BindingResult result,
+            RedirectAttributes redirect) {
+
+        if (result.hasErrors()) {
+            return "Dashboard_Admin/FormAdmin";
+        }
+
+        userService.crearAdmin(userDTO); // crear el admin
+
+        redirect.addFlashAttribute("success", "Administrador creado con éxito");
+        return "redirect:/DashboardAdmin"; // redirección al dashboard
+    }
 
     /**
      * Método para cerrar sesión
