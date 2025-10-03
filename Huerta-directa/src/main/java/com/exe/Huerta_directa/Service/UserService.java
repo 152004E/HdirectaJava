@@ -24,4 +24,6 @@ public interface UserService {
 
     //método para login
     UserDTO autenticarUsuario(String email, String password);
+    //obtener id para admin
+    UserDTO crearAdmin(UserDTO userDTO);
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Registrar Administrador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="fff.css" />
+    <link rel="icon" type="image/png" href="../../login/login/logo_huerta.png"/>
+</head>
+
+<body>
+<div class="container" id="container">
+    <div class="form-container sign-up">
+
+        <!-- Ahora usamos Spring/Thymeleaf -->
+        <form th:action="@{/registrarAdmin}" th:object="${userDTO}" method="post">
+            <h1>Registrar Administrador</h1>
+            <img class="H-logo" src="logo_huerta.png" alt="logo" width="100" />
+
+            <div class="from-group">
+                <label>Nombre de administrador</label>
+                <input type="text" th:field="*{name}" placeholder="Ej: Carlos Pérez" required />
+            </div>
+
+            <div class="correo-contraseña">
+                <div class="from-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" th:field="*{email}" placeholder="Ej: admin@correo.com" required />
+                </div>
+
+                <div class="from-group">
+                    <label>Contraseña</label>
+                    <input type="password" th:field="*{password}" placeholder="Contraseña" required />
+                </div>
+            </div>
+
+            <button type="submit" class="btn-1">Registrar Administrador</button>
+        </form>
+
+        <br />
+        <a class="btn-1" th:href="@{/DashboardAdmin}" style="text-align:center;">Volver al Dashboard</a>
+    </div>
+</div>
+</body>
+</html>

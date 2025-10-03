@@ -141,3 +141,35 @@ body {
   border: 1px solid #ccc;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8dc84b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #689f38;
+}
+
+body.dark-theme ::-webkit-scrollbar-track {
+  background: var(--color-dark-variant);
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb {
+  background: #8dc84b;
+}
+
+body.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: #689f38;
+  border: 1px solid #f5c6cb;
+}
+
