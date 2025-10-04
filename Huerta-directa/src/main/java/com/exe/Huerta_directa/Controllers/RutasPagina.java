@@ -380,5 +380,9 @@ public class RutasPagina {
             return "redirect:/agregar_admin";
         }
     }
+    @GetMapping("/ClientesDestacados")
+    public String mostrarClientesDestacados(Model model) {
+        return "Clientes_Destacados/ClientesDestacados";
+    }
 
 }

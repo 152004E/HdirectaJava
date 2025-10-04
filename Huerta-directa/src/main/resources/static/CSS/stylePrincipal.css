@@ -24,58 +24,58 @@ img {
 }
 
 .alert-success {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #52c41a;
-    color: #fff;
-    border: 1px solid #52c41a;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 500;
-    width: 300px;
-    font-size: 13px;
-    padding: 15px 20px;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
-    animation: slideIn 4s ease-in-out forwards;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #52c41a;
+  color: #fff;
+  border: 1px solid #52c41a;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  width: 300px;
+  font-size: 13px;
+  padding: 15px 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
+  animation: slideIn 4s ease-in-out forwards;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .alert-success .material-symbols-outlined {
-    font-size: 20px;
-    margin-right: 8px;
+  font-size: 20px;
+  margin-right: 8px;
 }
 
 .alert-success .close-btn {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0;
-    margin-left: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
 }
 
 @keyframes slideIn {
-    0% {
-        transform: translateY(-100%) translateX(100%);
-        opacity: 0;
-    }
-    10% {
-        transform: translateY(0) translateX(0);
-        opacity: 1;
-    }
-    90% {
-        transform: translateY(0) translateX(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100%) translateX(100%);
-        opacity: 0;
-    }
+  0% {
+    transform: translateY(-100%) translateX(100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%) translateX(100%);
+    opacity: 0;
+  }
 }
 .header {
   background: linear-gradient(to bottom, #fef5dc 90%, #ffffff 100%);
@@ -439,7 +439,6 @@ h3 {
   justify-content: space-between;
   min-height: 100px; /* Ajusta según altura deseada */
   position: relative;
-
 }
 .product img {
   border-radius: 5px;
@@ -723,6 +722,18 @@ input {
   transform: translateX(4px);
   text-decoration: underline;
   outline: none;
+}
+
+.profile-photo {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.right .top .profile {
+  display: flex;
+  gap: 2rem;
+  text-align: right;
 }
 
 /* Pequeño ajuste en móviles */
