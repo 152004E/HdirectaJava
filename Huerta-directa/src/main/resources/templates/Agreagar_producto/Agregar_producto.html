@@ -79,6 +79,7 @@
               required
             />
           </div>
+
           <br />
           <div class="unidad-medida">
             <label for="unidad">Unidad de medida:</label><br />
@@ -101,7 +102,8 @@
           <span class="border border-1"></span>
 
           <div class="cotegoria-producto">
-            <label for="categoria">Categoría:</label><br />
+            <label>Categoría:</label>
+              <br/>
             <select
               class="rounded"
               name="categoria-producto"
@@ -172,7 +174,7 @@
         >
         <a
             class="btn-2 d-flex justify-content-center align-items-center botonIcon"
-            th:href="@{/}"
+            th:href="@{/home}"
             >volver
             <span class="material-symbols-outlined flecha"> arrow_back </span></a
           >
