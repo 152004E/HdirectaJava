@@ -7,6 +7,7 @@ import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -68,6 +69,7 @@ public class UserController {
 
     // Metodo para eliminar un usuario por su id
     @DeleteMapping("/{userId}")
+    @Transactional
     public ResponseEntity<Void> eliminarUserPorId(@PathVariable("userId") Long userId) {
         userService.eliminarUserPorId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

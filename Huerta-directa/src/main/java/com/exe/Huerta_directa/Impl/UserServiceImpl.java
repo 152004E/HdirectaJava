@@ -19,6 +19,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+
+import jakarta.transaction.Transactional;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -85,14 +88,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void eliminarUserPorId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("Usuario no encontrado por id: " + userId);
-        } else {
-            userRepository.deleteById(userId);
         }
+        
+        User user = userRepository.findById(userId).get();
+        
+        // Verificar si tiene productos asociados
+        if (user.getProducts() != null && !user.getProducts().isEmpty()) {
+            throw new RuntimeException("No se puede eliminar este usuario porque tiene " + 
+                                    user.getProducts().size() + " producto(s) asociado(s). " +
+                                    "Elimine primero los productos o reasígnelos a otro usuario.");
+        }
+        
+        userRepository.deleteById(userId);
     }
-
 
     //Metodo para login
     @Override
