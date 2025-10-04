@@ -12,7 +12,7 @@
     <section class="consulta-wrapper">
         <div class="consulta-container">
             <h1><i class="fas fa-users"></i> CONSULTA DE USUARIOS</h1>
-            
+
             <!-- Formulario de búsqueda -->
             <form action="/consulta_usuarios" method="get">
                 <div class="row mb-3">
@@ -25,13 +25,13 @@
                             <option value="role" th:selected="${datoSeleccionado == 'role'}">Rol</option>
                         </select>
                     </div>
-                    
+
                     <div class="col-md-5">
                         <label for="valor" class="form-label">Valor a consultar</label>
-                        <input name="valor" type="text" class="form-control" id="valor" 
+                        <input name="valor" type="text" class="form-control" id="valor"
                                th:value="${valorBuscado}" placeholder="Ingrese el valor...">
                     </div>
-                    
+
                     <div class="col-md-3 d-flex align-items-end gap-2">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search"></i> Buscar
@@ -83,7 +83,7 @@
                             <td>
                                 <span th:if="${usuario.idRole == 1}" class="badge bg-danger">Admin</span>
                                 <span th:if="${usuario.idRole == 2}" class="badge bg-primary">Cliente</span>
-                                <span th:if="${usuario.idRole != 1 && usuario.idRole != 2}" 
+                                <span th:if="${usuario.idRole != 1 && usuario.idRole != 2}"
                                       class="badge bg-secondary">Otro</span>
                             </td>
                             <td>
@@ -118,7 +118,7 @@
             const dato = document.getElementById('dato').value;
             const valorTexto = document.getElementById('valorTexto');
             const valorRol = document.getElementById('valorRol');
-            
+
             if (dato === 'role') {
                 valorTexto.style.display = 'none';
                 valorRol.style.display = 'block';
@@ -135,7 +135,7 @@
                 valorRol.required = false;
             }
         }
-        
+
         // Ejecutar al cargar la página para mantener el estado correcto
         document.addEventListener('DOMContentLoaded', function() {
             toggleValorInput();

@@ -48,8 +48,11 @@ public class ProductController {
             User userSession = (User) session.getAttribute("user");
             if (userSession == null) {
                 // Si no hay usuario en sesión, agregar mensaje de alerta y redirigir al login
-                return new RedirectView("/login?error=session&message=No+puedes+registrar+producto,+inicia+sesion+primero.+Si+no+tienes+cuenta,+registrate");
+                return new RedirectView("/login?error=session&message=Debe+iniciar+sesión+para+registrar+productos");
             }
+
+            // ✅ PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
+            // (No solo admins, cualquier usuario autenticado puede agregar productos)
 
             // Crear carpeta /productos dentro de C:/HuertaUploads
             File uploadDir = new File(uploadPath, "productos");
@@ -82,24 +85,25 @@ public class ProductController {
 
             // Condicional para redirigir
             if (creado != null && creado.getIdProduct() != null) {
-                // Registro exitoso -> Redirigir según el rol del usuario
+                // ✅ Registro exitoso -> Redirigir según el rol del usuario con mensaje de éxito
                 User user = (User) session.getAttribute("user");
                 if (user != null && user.getRole() != null && user.getRole().getIdRole() == 1) {
-                    // Si es admin, ir al dashboard admin
-                    return new RedirectView("/DashboardAdmin");
+                    // Si es admin, ir al dashboard admin con mensaje de éxito
+                    return new RedirectView("/DashboardAdmin?success=Producto+'" + creado.getNameProduct() + "'+registrado+exitosamente");
                 } else {
-                    // Si es usuario normal, ir al index
-                    return new RedirectView("/index");
+                    // Si es usuario normal, ir al dashboard cliente o index con mensaje de éxito
+                    return new RedirectView("/index?success=¡Producto+registrado+exitosamente!+Gracias+por+contribuir+a+nuestra+comunidad");
                 }
             } else {
-                // Falló el registro -> volver al formulario
-                return new RedirectView("/agregar_producto");
+                // Falló el registro -> volver al formulario con error
+                return new RedirectView("/agregar_producto?error=Error+al+registrar+el+producto.+Inténtalo+de+nuevo");
             }
 
         } catch (IOException | RuntimeException e) {
+            System.err.println("❌ Error al registrar producto: " + e.getMessage());
             e.printStackTrace();
-            // En caso de error -> volver al formulario
-            return new RedirectView("/agregar_producto");
+            // En caso de error -> volver al formulario con mensaje de error
+            return new RedirectView("/agregar_producto?error=Error+interno+del+servidor.+Contacta+al+administrador");
         }
     }
 

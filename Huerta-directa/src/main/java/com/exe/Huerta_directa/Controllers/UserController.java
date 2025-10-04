@@ -314,7 +314,16 @@ public class UserController {
 
         try {
             UserDTO usuarioCreado = userService.crearUser(userDTO);
-            session.setAttribute("user", usuarioCreado);
+
+            // ✅ CORRECCIÓN: Usar el repository para obtener la Entity User
+            User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
+            if (userEntity != null) {
+                session.setAttribute("user", userEntity);
+            } else {
+                // Si por alguna razón no se encuentra, crear un User básico del DTO
+                System.err.println("⚠️ No se pudo encontrar el usuario recién creado, creando sesión básica");
+                session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
+            }
 
             // Si querés iniciar sesión automáticamente y redirigir:
             if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
@@ -510,5 +519,29 @@ public class UserController {
         cell.setPadding(5);
         cell.setBorderWidth(1);
         table.addCell(cell);
+    }
+
+    // ========== MÉTODOS AUXILIARES PARA EXPORTACIÓN ==========
+
+    /**
+     * Método auxiliar para convertir UserDTO a User Entity
+     * Se usa como respaldo si no se puede encontrar el usuario en la base de datos
+     */
+    private User convertirDTOaEntity(UserDTO userDTO) {
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setCreacionDate(userDTO.getCreacionDate());
+
+        // Crear un Role básico si es necesario
+        if (userDTO.getIdRole() != null) {
+            com.exe.Huerta_directa.Entity.Role role = new com.exe.Huerta_directa.Entity.Role();
+            role.setIdRole(userDTO.getIdRole());
+            user.setRole(role);
+        }
+
+        return user;
     }
 }

@@ -136,7 +136,7 @@ function closeAlert(alertId) {
     if (alert) {
         alert.classList.add('closing');
         setTimeout(() => {
-            alert.remove();
+            alert.style.display = 'none';
         }, 300);
     }
 }
@@ -150,8 +150,9 @@ function autoHideAlerts() {
 
         // Remover el elemento después de 8 segundos
         setTimeout(() => {
-            if (alert && alert.parentNode) {
-                alert.remove();
+            if (alert.style.display !== 'none') {
+                alert.classList.add('closing');
+                setTimeout(() => alert.style.display = 'none', 300);
             }
         }, 8000);
     });
