@@ -74,6 +74,7 @@
                 <span class="material-symbols-outlined">add</span>
                 <h3>Añadir Administrador</h3>
             </a>
+            <
             <a th:href="@{/index}">
                 <span class="material-symbols-outlined">logout</span>
                 <h3>Volver al Inicio</h3>
@@ -176,56 +177,6 @@
         </div>
         <!---------- fin de insights ------------->
 
-        <!-- Nueva sección: Resumen del Sistema -->
-        <div class="system-overview">
-            <h2>Resumen del Sistema</h2>
-            <div class="overview-cards">
-                <div class="overview-card users">
-                    <div class="card-icon">
-                        <span class="material-symbols-outlined">group</span>
-                    </div>
-                    <div class="card-content">
-                        <h3>Usuarios Totales</h3>
-                        <h1 th:text="${usuarios != null ? usuarios.size() : 0}">0</h1>
-                        <small class="text-muted">Clientes registrados</small>
-                    </div>
-                </div>
-
-                <div class="overview-card admins">
-                    <div class="card-icon">
-                        <span class="material-symbols-outlined">admin_panel_settings</span>
-                    </div>
-                    <div class="card-content">
-                        <h3>Administradores</h3>
-                        <h1 th:text="${#lists.size(usuarios != null ? usuarios : {})}" th:if="${usuarios != null}">0</h1>
-                        <h1 th:unless="${usuarios != null}">0</h1>
-                        <small class="text-muted">Admins activos</small>
-                    </div>
-                </div>
-
-                <div class="overview-card products">
-                    <div class="card-icon">
-                        <span class="material-symbols-outlined">inventory_2</span>
-                    </div>
-                    <div class="card-content">
-                        <h3>Productos</h3>
-                        <h1>247</h1>
-                        <small class="text-muted">En catálogo</small>
-                    </div>
-                </div>
-
-                <div class="overview-card orders">
-                    <div class="card-icon">
-                        <span class="material-symbols-outlined">shopping_bag</span>
-                    </div>
-                    <div class="card-content">
-                        <h3>Pedidos Hoy</h3>
-                        <h1>18</h1>
-                        <small class="text-muted">Pendientes: 3</small>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Accesos Directos Rápidos -->
         <div class="quick-actions">
