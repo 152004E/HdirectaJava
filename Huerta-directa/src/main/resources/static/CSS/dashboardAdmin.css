@@ -923,19 +923,19 @@ main .export-links hr {
 }
 
 .overview-card.admins {
-    border-left-color: #FF9800;
+    border-left-color: #046b1a;
 }
 
 .overview-card.products {
-    border-left-color: #2196F3;
+    border-left-color: #4CAF50;
 }
 
 .overview-card.orders {
-    border-left-color: #9C27B0;
+    border-left-color: #046b1a;
 }
 
 .card-icon {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #2e6906, #51c255);
     padding: 1rem;
     border-radius: 50%;
     display: flex;
