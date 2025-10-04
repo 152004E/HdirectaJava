@@ -48,8 +48,7 @@ public class Product {
     @Column (name = "publication_date", nullable = false)
     private LocalDate publicationDate =  LocalDate.now();
 
-    @Lob
-    @Column (name = "description_product", nullable = false)
+    @Column(name = "description_product", nullable = false, columnDefinition = "TEXT")
     @NotBlank
     private String descriptionProduct = "sin descripcion";
 

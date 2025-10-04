@@ -4,9 +4,10 @@ import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,48 @@ public class UserViewController {
         model.addAttribute("valorBuscado", valor);
         
         return "Consulta_usuarios/Consulta_usuario";
+    }
+
+    @GetMapping("/editar_usuario/{id}")
+    public String editarUsuario(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            UserDTO usuario = userService.obtenerUserPorId(id);
+            model.addAttribute("usuario", usuario);
+            return "Consulta_usuarios/editar_usuario";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Usuario no encontrado: " + e.getMessage());
+            return "redirect:/consulta_usuarios";
+        }
+    }
+
+    @PostMapping("/actualizar_usuario/{id}")
+    @Transactional
+    public String actualizarUsuario(@PathVariable Long id,
+                                   @ModelAttribute UserDTO usuarioDTO,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            // Asegurarse de que el ID esté establecido
+            usuarioDTO.setId(id);
+            
+            // Obtener el usuario actual
+            UserDTO usuarioActual = userService.obtenerUserPorId(id);
+            
+            // Si la contraseña está vacía, mantener la actual
+            if (usuarioDTO.getPassword() == null || usuarioDTO.getPassword().trim().isEmpty()) {
+                usuarioDTO.setPassword(usuarioActual.getPassword());
+            }
+            
+            // Actualizar el usuario
+            UserDTO usuarioActualizado = userService.actualizarUser(id, usuarioDTO);
+            
+            redirectAttributes.addFlashAttribute("success",
+                "Usuario '" + usuarioActualizado.getName() + "' actualizado exitosamente");
+                
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error",
+                "Error al actualizar el usuario: " + e.getMessage());
+        }
+        return "redirect:/consulta_usuarios";
     }
     
     private List<UserDTO> buscarUsuariosPorFiltro(String dato, String valor) {

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario - Huerta Directa</title>
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png"/>
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css"/>
+    <link rel="stylesheet" href="/CSS/editar_producto.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="editar-container">
+        <h1><i class="fas fa-user-edit"></i> EDITAR USUARIO</h1>
+
+        <!-- Mensajes de éxito o error -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulario de edición -->
+        <form th:action="@{/actualizar_usuario/{id}(id=${usuario.id})}" 
+              method="post" 
+              th:object="${usuario}">
+            
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="name" class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-control" id="name" 
+                           th:field="*{name}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" 
+                           th:field="*{email}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="idRole" class="form-label">Rol</label>
+                    <select class="form-select" id="idRole" th:field="*{idRole}" required>
+                        <option value="">Seleccione un rol</option>
+                        <option value="1">Administrador</option>
+                        <option value="2">Cliente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" 
+                       th:field="*{password}" 
+                       placeholder="Dejar en blanco para mantener la contraseña actual">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle"></i> 
+                    Solo ingrese una nueva contraseña si desea cambiarla.
+                </small>
+            </div>
+
+            <!-- Campo oculto para ID -->
+            <input type="hidden" th:field="*{id}">
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="/consulta_usuarios" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Auto-ocultar alertas después de 5 segundos
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
