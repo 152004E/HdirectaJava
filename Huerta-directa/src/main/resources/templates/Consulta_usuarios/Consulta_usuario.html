@@ -22,7 +22,6 @@
                             <option value="id" th:selected="${datoSeleccionado == 'id'}">ID</option>
                             <option value="name_user" th:selected="${datoSeleccionado == 'name_user'}">Nombre</option>
                             <option value="email" th:selected="${datoSeleccionado == 'email'}">Correo</option>
-                            <option value="role" th:selected="${datoSeleccionado == 'role'}">Rol</option>
                         </select>
                     </div>
 
@@ -152,8 +151,8 @@
         }
 
         function editarUsuario(id) {
-            // Implementar lógica de edición
-            alert('Funcionalidad de edición en desarrollo para usuario ID: ' + id);
+            // Redirigir a la página de edición
+            window.location.href = `/editar_usuario/${id}`;
         }
 
         function eliminarUsuario(id) {
