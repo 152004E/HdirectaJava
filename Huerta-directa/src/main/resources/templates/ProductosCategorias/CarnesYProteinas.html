@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Categoria Carnes y Proteinas | Huerta directa</title>
 
-       <link rel="stylesheet" href="/CSS/darkindex.css" />
-    <link rel="stylesheet" href="/CSS/landing.css" />
+    <link rel="stylesheet" href="/CSS/darkindex.css" />
     <link rel="stylesheet" href="/CSS/stylePrincipal.css" />
     <link rel="stylesheet" href="/CSS/styleCategorias.css" />
-    <link rel="stylesheet" href="/CSS/Footer.css" />
-
+    <link href="/CSS/output.css" rel="stylesheet" />
     <!--agregacion para los iconos-->
     <link
       rel="stylesheet"
@@ -91,8 +89,9 @@
           </div>
         </div>
       </main>
-
-      <div th:replace="fragments/footer :: footer"></div>
+      <div class="flex w-full justify-center items-center bg-[#8bc34a]">
+        <div th:replace="fragments/footer :: footer"></div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <!-- script para animaciones al scrollear -->
