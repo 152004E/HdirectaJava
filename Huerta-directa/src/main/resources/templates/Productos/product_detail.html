@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="/CSS/stylePrincipal.css" />
   <link rel="stylesheet" href="/CSS/darkindex.css" />
   <link rel="stylesheet" href="/CSS/styleCategorias.css" />
-  <link rel="stylesheet" href="/CSS/landing.css" />
-  <link rel="stylesheet" href="/CSS/Footer.css" />
+   <link href="/CSS/output.css" rel="stylesheet" />
   <!--agregacion para los iconos-->
     <link
       rel="stylesheet"
@@ -28,8 +27,8 @@
 
   <!-- BREADCRUMB -->
   <div class="laypout-container">
+    <div th:replace="fragments/navPagina :: navPagina"></div>
     <nav class="breadcrumb">
-      <div th:replace="fragments/navPagina :: navPagina"></div>
       <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
     </nav>
   </div> 
@@ -256,7 +255,10 @@
   </main>
 
   <!-- FOOTER -->
-  <div th:replace="fragments/footer :: footer"></div>
+   <div class="flex w-full justify-center items-center bg-[#8bc34a]">
+
+        <div th:replace="fragments/footer :: footer"></div>
+      </div>
 
   <script>
     // Script para cambiar cantidad
