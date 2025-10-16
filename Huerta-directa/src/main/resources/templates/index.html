@@ -9,13 +9,15 @@
 
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
     <!--link para el slider y css del slider-->
-     <link href="/CSS/output.css" rel="stylesheet" />
+    
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
 
     <link rel="stylesheet" href="/css/slider.css" />
+
+     <link href="/CSS/output.css" rel="stylesheet" />
     <!--agregacion para los iconos-->
     <link
       rel="stylesheet"
@@ -295,7 +297,10 @@
         </div>
       </div>
     </section>
-    <div th:replace="fragments/footer :: footer"></div>
+    <div class="flex items-center justify-center w-full bg-[#8bc34a]">
+
+      <div th:replace="fragments/footer :: footer"></div>
+    </div>
     <!-- <footer
       class="footer1"
       style="background-color: #8bc34a; padding: 40px 0; color: white"
