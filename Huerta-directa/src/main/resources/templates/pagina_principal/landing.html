@@ -1,36 +1,74 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invitación || Huerta Directa</title>
-  <link rel="stylesheet" href="/CSS/landing.css">
-  <link rel="icon" type="image/png" href="/images/logo_huerta.png">
-  <link rel="stylesheet" href="/CSS/stylePrincipal.css">
-</head>
-<body> 
-    <div class="menu container">
-        <a href="#" class="logo">Huerta directa</a>
-        <input type="checkbox" id="menu" />
-        
-        <nav class="navbar">
-          <ul>
-            <li><a th:href="@{/}">Inicio</a></li>
-            
-            <li><a th:href="@{/Quienes_somos}">Quienes Somos</a></li>
-            
-          </ul>
-        </nav>
-        
-      </div>
-  <section class="invitacion">
-    <div class="contenedor-invitacion">
-      <img src="/images/logo_huerta.png" alt="Logo Huerta Directa" class="logo-huerta">
-      <h2>¡Únete a Huerta Directa!</h2>
-      <p>Forma parte de nuestra comunidad que apoya al campo y disfruta de productos frescos, saludables y sin intermediarios.</p>
-      <a th:href="@{/login}" class="boton-invitacion">Registrarse</a>
-    </div>
-  </section>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invitación || Huerta Directa</title>
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <link href="/CSS/output.css" rel="stylesheet" />
+  </head>
 
-</body>
+  <body class="m-0  bg-[#FEF5DC] font-sans text-[18px]">
+    <!-- Menú -->
+    <div
+      class="absolute top-0 left-0 right-0 flex items-center justify-between max-w-[1200px] mx-auto px-6 py-4 bg-[#FEF5DC]"
+    >
+      <!-- Logo -->
+      <a
+        href="#"
+        class="text-[#8dc84b] text-[25px] font-semibold uppercase tracking-[1px] transition-all duration-500 ease-in-out hover:text-[#028602] hover:scale-110 no-underline"
+      >
+        Huerta directa
+      </a>
+
+      <!-- Navbar -->
+      <nav>
+        <ul class="flex space-x-2">
+          <li>
+            <a
+              th:href="@{/}"
+              class="block text-[#333128] text-[18px] font-semibold py-5 px-5 transition-colors duration-500 hover:text-[#5aaa37] no-underline"
+              >Inicio</a
+            >
+          </li>
+          <li>
+            <a
+              th:href="@{/Quienes_somos}"
+              class="block text-[#333128] text-[18px] font-semibold py-5 px-5 transition-colors duration-500 hover:text-[#5aaa37] no-underline"
+              >Quiénes Somos</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Sección Invitación -->
+    <section
+      class="bg-[#FEF5DC] text-center w-full flex flex-col items-center justify-center px-6 py-24 mt-20"
+    >
+      <div class="max-w-[800px] mx-auto">
+        <img
+          src="/images/logo_huerta.png"
+          alt="Logo Huerta Directa"
+          class="max-w-[200px] w-full mx-auto my-12 transition-transform duration-300 ease-in-out hover:scale-110"
+        />
+
+        <h2 class="text-[2.8rem] text-[#4caf50] font-bold mb-4">
+          ¡Únete a Huerta Directa!
+        </h2>
+
+        <p class="text-[1.3rem] text-[#5a4e3c] mb-8">
+          Forma parte de nuestra comunidad que apoya al campo y disfruta de
+          productos frescos, saludables y sin intermediarios.
+        </p>
+
+        <a
+          th:href="@{/login}"
+          class="inline-block bg-[#78d64b] text-white font-bold py-4 px-10 rounded-full text-[1.1rem] uppercase tracking-[1px] transition-all duration-500 hover:bg-[#5aaa37] hover:scale-105 hover:shadow-lg no-underline"
+        >
+          Registrarse
+        </a>
+      </div>
+    </section>
+  </body>
 </html>

@@ -4,26 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Error 404 - Página no encontrada</title>
-    <link rel="stylesheet" href="/CSS/error404.css" />
-
-    <link
-      rel="icon"
-      type="image/png"
-      href="/images/logo_huerta.png"
-    />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <link href="/CSS/output.css" rel="stylesheet" />
   </head>
-  <body>
-    <div class="container text-center mt-5">
-      <h1 class="display-1 text-danger fw-bold">404</h1>
-      <h2 class="mb-4">¡Oops! Esta página se nos voló 😬</h2>
-      <p class="lead">
+
+  <body class="m-0 p-0 font-[Poppins,sans-serif] bg-[#faf2dd] flex items-center justify-center min-h-screen">
+    <div class="text-center w-[650px] p-8 bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.3)]">
+      <h1 class="text-[7rem] text-[#8dc84b] font-bold m-0">404</h1>
+      <h2 class="text-[1.6rem] text-[#333128] my-4 font-semibold">
+        ¡Oops! Esta página se nos voló 😬
+      </h2>
+      <p class="text-[#807f7f] mb-8 text-base leading-relaxed">
         No pudimos encontrar lo que estás buscando. Puede que haya sido movida,
         eliminada o que nunca haya existido.<br />
         Pero no te preocupes, te ayudamos a volver al camino.
       </p>
-      <a th:href="@{/}" class="btn btn-primary mt-3"
-        >🔙 Volver al inicio</a
+      <a
+        th:href="@{/}"
+        class="bg-[#8dc84b] text-white py-3 px-8 rounded-xl font-semibold no-underline transition-colors duration-300 hover:bg-[#004d00]"
       >
+        🔙 Volver al inicio
+      </a>
     </div>
   </body>
 </html>

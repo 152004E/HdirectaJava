@@ -4,53 +4,64 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiénes Somos - Huerta Directa</title>
-    <link rel="stylesheet" href="/CSS/quienes_somos.css" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <link rel="stylesheet" href="/css/output.css" />
   </head>
-  <body>
-    <header class="menu container">
-      <a href="#" class="logo">Huerta Directa</a>
-      <input type="checkbox" id="menu" />
-      <label for="menu">
-        <img src="../images/menu.png" class="menu-icon" alt="menu" />
-      </label>
-      <nav class="navbar">
-        <ul>
-          <li><a th:href="@{/}">Inicio</a></li>
-          <li><a th:href="@{/login}">Iniciar Sesion</a></li>
-          <li><a th:href="@{/#categorias}">Categoria</a></li>
 
-          <li><a th:href="@{/Quienes_somos}">Quienes Somos</a></li>
+  <body class="bg-[#f7efd8] font-sans text-[#333]">
+    <!-- HEADER -->
+    <header
+      class="flex items-center justify-between bg-white p-4 shadow-md sticky top-0 z-50 container mx-auto"
+    >
+      <a href="#" class="text-[#8dc84b] text-2xl font-semibold uppercase hover:text-[#028602] transition-colors">Huerta Directa</a>
+
+      <input type="checkbox" id="menu" class="hidden peer" />
+
+      <label for="menu" class="block md:hidden cursor-pointer">
+        <img src="../images/menu.png" alt="menu" class="w-6" />
+      </label>
+
+      <nav
+        class="hidden md:flex gap-5 peer-checked:flex peer-checked:flex-col absolute md:static top-16 left-0 right-0 bg-white md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none"
+      >
+        <ul class="flex flex-col md:flex-row gap-4 md:gap-6">
+          <li><a th:href="@{/}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Inicio</a></li>
+          <li><a th:href="@{/login}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Iniciar Sesión</a></li>
+          <li><a th:href="@{/#categorias}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Categoría</a></li>
+          <li><a th:href="@{/Quienes_somos}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Quiénes Somos</a></li>
         </ul>
       </nav>
     </header>
 
-    <section class="quienes-somos">
-      <div class="contenido">
-        <h1>Quiénes Somos</h1>
-        <p>
+    <!-- SECCIÓN QUIÉNES SOMOS -->
+    <section
+      class="bg-white max-w-3xl mx-auto my-16 p-8 rounded-xl shadow-lg"
+    >
+      <div class="text-left">
+        <h1 class="text-4xl font-bold text-[#2e7d32] mb-6 text-center">Quiénes Somos</h1>
+        <p class="text-lg leading-relaxed mb-5">
           En <strong>Huerta Directa</strong>, creemos en el poder de lo natural
           y en el valor del trabajo local. Nacimos con el sueño de acercar
           productos frescos del campo directamente a tu mesa, sin intermediarios
           y con el sabor auténtico de lo hecho con amor.
         </p>
 
-        <p>
+        <p class="text-lg leading-relaxed mb-5">
           Nuestro equipo está formado por pequeños productores comprometidos con
           prácticas sostenibles, respetuosas con la tierra y con las personas.
           Cada fruta, verdura o producto que recibes tiene detrás una historia
           de dedicación, esfuerzo y cariño.
         </p>
 
-        <h2>Nuestra Misión</h2>
-        <p>
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">Nuestra Misión</h2>
+        <p class="text-lg leading-relaxed mb-5">
           Conectar a los consumidores con productos frescos, saludables y
           locales, apoyando la economía rural y promoviendo una alimentación
           consciente y sostenible.
         </p>
 
-        <h2>Nuestros Valores</h2>
-        <ul>
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">Nuestros Valores</h2>
+        <ul class="space-y-2 text-lg">
           <li>🌱 Compromiso con la naturaleza</li>
           <li>🤝 Transparencia y cercanía</li>
           <li>🚜 Apoyo al productor local</li>
@@ -59,29 +70,51 @@
         </ul>
       </div>
     </section>
-    <section class="comentarios">
-      <div class="container">
-        <h2>
+
+    <!-- SECCIÓN COMENTARIOS -->
+    <section
+      class="bg-white max-w-3xl mx-auto mb-16 p-8 rounded-xl shadow-lg"
+    >
+      <div>
+        <h2 class="text-2xl font-semibold mb-5 text-[#333]">
           💬 Queremos saber tu opinión: tu experiencia, sugerencias o ideas nos
           ayudan a crecer y mejorar cada día. ¡Déjanos tu comentario!
         </h2>
-        <form class="formulario-comentario" action="#" method="post">
-          <input type="text" placeholder="Nombre" required />
-          <input type="email" placeholder="Correo electrónico" required />
+
+        <form action="#" method="post" class="space-y-4">
+          <input
+            type="text"
+            placeholder="Nombre"
+            required
+            class="w-full p-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            required
+            class="w-full p-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
           <textarea
             rows="5"
             placeholder="Escribe tu comentario..."
             required
+            class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
           ></textarea>
 
-          <!-- Aquí va la sección de términos -->
-          <div class="terminos-condiciones">
-            <label>
-              <input type="checkbox" required />
-              Acepto los
-              <a href="#" target="_blank">Términos y Condiciones</a>
+          <div class="flex items-center justify-between flex-wrap gap-3 text-sm">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" required class="accent-green-600" />
+              <span>
+                Acepto los
+                <a href="#" target="_blank" class="text-blue-600 hover:underline">Términos y Condiciones</a>
+              </span>
             </label>
-            <button type="submit" class="btn-enviar">Enviar</button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-800 transition-colors"
+            >
+              Enviar
+            </button>
           </div>
         </form>
       </div>
