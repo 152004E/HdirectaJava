@@ -1,22 +1,58 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <body>
+  <body
+    class="m-0 font-[Arial,sans-serif] bg-[#FEF5DC] text-[18px] min-h-screen"
+  >
     <!-- Fragmento Navbar -->
     <div th:fragment="navPagina">
-      <div class="navbar-wrapper">
-        <div class="menu container">
-          <a href="#" class="logo">Huerta directa</a>
-          <input type="checkbox" id="menu" />
+      <div
+        class="absolute top-0 left-0 right-0 flex items-center justify-between max-w-[1200px] mx-auto text-[#FEF5DC]"
+      >
+        <a
+          href="#"
+          class="!text-[#8dc84b] !no-underline !text-[25px] !font-semibold !uppercase !tracking-[1px] !transition-all !duration-500 !ease-in-out hover:!text-[#028602] hover:!scale-110"
+        >
+          Huerta directa
+        </a>
 
-          <nav class="navbar">
-            <ul>
-              <li><a th:href="@{/}">Inicio</a></li>
-              <li><a th:href="@{/#categorias}">Categorias</a></li>
-              <li><a th:href="@{/Quienes_somos}">Quienes somos</a></li>
-              <li><a th:href="@{/#lista-1}">Productos</a></li>
-            </ul>
-          </nav>
-        </div>
+        <input type="checkbox" id="menu" class="hidden" />
+
+        <nav class="">
+          <ul class="!flex">
+            <li>
+              <a
+                th:href="@{/}"
+                class="!no-underline !text-[18px] !py-5 !px-5 !block !text-[#333128] !font-semibold !transition-colors !duration-500 hover:!text-[#5aaa37]"
+              >
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a
+                th:href="@{/#categorias}"
+                class="!no-underline !text-[18px] !py-5 !px-5 !block !text-[#333128] !font-semibold !transition-colors !duration-500 hover:!text-[#5aaa37]"
+              >
+                Categorías
+              </a>
+            </li>
+            <li>
+              <a
+                th:href="@{/Quienes_somos}"
+                class="!no-underline !text-[18px] !py-5 !px-5 !block !text-[#333128] !font-semibold !transition-colors !duration-500 hover:!text-[#5aaa37]"
+              >
+                Quiénes somos
+              </a>
+            </li>
+            <li>
+              <a
+                th:href="@{/#lista-1}"
+                class="!no-underline !text-[18px] !py-5 !px-5 !block !text-[#333128] !font-semibold !transition-colors !duration-500 hover:!text-[#5aaa37]"
+              >
+                Productos
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </body>

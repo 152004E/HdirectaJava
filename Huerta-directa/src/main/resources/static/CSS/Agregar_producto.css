@@ -1,5 +1,11 @@
+/* ============================================================
+   🎨 ESTILOS GENERALES — HUERTA DIRECTA
+   ============================================================ */
 :root {
-  --bs-body-font-family: "Poppins", sans-serif;
+  --verde-principal: #8dc84b;
+  --verde-oscuro: #004d00;
+  --crema-fondo: #f7efd8;
+  --fuente-base: "Poppins", sans-serif;
 }
 
 * {
@@ -11,54 +17,93 @@
 }
 
 body {
-  font-family: "Poppins", sans-serif !important;
-  background-color: #f7efd8;
+  font-family: var(--fuente-base) !important;
+  background-color: var(--crema-fondo);
 }
 
+label {
+  color: #000;
+  font-weight: 500;
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--verde-principal);
+  border-radius: 6px;
+  padding: 6px 15px;
+  font-family: var(--fuente-base);
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: #333;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--verde-oscuro);
+  box-shadow: 0 0 5px rgba(0, 77, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+input::placeholder {
+  color: #888;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--verde-principal);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #689f38;
+}
+
+/* ============================================================
+   🥕 SECCIÓN 1: AGREGAR PRODUCTO
+   ============================================================ */
+
 .container1 {
-  width: 100% !important;
-  height: 100vh;
-  background-color: #f7efd8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--crema-fondo);
 }
-.input-imagen-producto {
-  border: none;
+
+.input-box {
+  margin: 10px 0;
 }
+
 .nombre-producto {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-label {
-  color: black;
-  font-weight: 500;
-  display: block;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
 .precio-categorio {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   width: 100%;
-}
-select {
-  width: 100%;
-  padding-left: 5px;
-  border: 1px solid #8dc84b;
-  color: #757575;
-  padding: 6px 15px;
-}
-textarea {
-  height: 40px;
 }
 
 .custom-file-label {
-  background-color: #8dc63f;
+  background-color: var(--verde-principal);
   color: white;
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  display: inline-block;
   font-weight: bold;
-  transition: background-color 0.4s;
+  transition: background-color 0.3s;
 }
 
 .custom-file-label:hover {
@@ -67,36 +112,54 @@ textarea {
 
 #file-name {
   margin-left: 10px;
-  color: #8dc63f;
+  color: var(--verde-principal);
   font-weight: 500;
 }
 
-.input-box input:focus,
-.input-box select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #004d00;
-  box-shadow: 0 0 5px rgba(0, 77, 0, 0.5);
-  transition: all 0.4s ease; /* opcional, para suavizar el efecto */
+/* Botones principales */
+.btn-2 {
+  font-size: 17px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: none;
+  display: inline-block;
+  margin-top: 10px;
+  padding: 7px 40px;
+  color: #fff;
+  background-color: var(--verde-principal);
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.4s ease;
 }
 
-input::placeholder {
-  color: #888;
-  font-size: 14px;
-  font-family: "Poppins", sans-serif;
+.btn-2:hover {
+  background-color: var(--verde-oscuro);
 }
 
-/* Estilos para el modal */
+.botonIcon {
+  position: relative;
+}
+
+.material-symbols-outlined {
+  position: absolute;
+  right: 10px;
+  top: 7px;
+  color: #fff;
+  font-size: 25px !important;
+  transition: all 0.3s;
+}
+
+.flecha {
+  left: 10px;
+}
+
+/* ===== Modal vista previa ===== */
 .modal {
   display: none;
   position: fixed;
   z-index: 9999;
   padding-top: 50px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -107,22 +170,14 @@ input::placeholder {
   border-radius: 20px;
   width: 400px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  position: relative;
   animation: fadeIn 0.3s ease-in-out;
-}
-
-.cerrar {
-  width: 200px !important;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .product {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 .product img {
@@ -132,21 +187,15 @@ input::placeholder {
   margin-bottom: 15px;
 }
 
-.product-txt {
-  text-align: center;
-}
-
-.product-txt h3,
-.product-txt p {
-  margin: 5px 0;
-}
-
-.btn-2.disabled {
-  pointer-events: none;
-  opacity: 0.6;
-}
-.imagenAgregarProducto{
+.imagenAgregarProducto {
   width: 200px !important;
+}
+
+.cerrar {
+  width: 200px !important;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 @keyframes fadeIn {
@@ -160,63 +209,65 @@ input::placeholder {
   }
 }
 
-.botonIcon{
-  position: relative;
-}
-/*  icons*/
-.material-symbols-outlined {
-  top: 20;
-  right: 10px;
-  position: absolute;
-  color: #ffffff;
-  font-family: "Material Symbols Outlined" !important;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 25px !important; /* puedes ajustar el tamaño */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  transition: all 0.5s;
-}
-.flecha{
-  top: 7px;
-  left: 10px;
-}
+/* ============================================================
+   💳 SECCIÓN 2: PASARELA DE PAGOS
+   ============================================================ */
 
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+form {
+  width: 700px;
+  padding: 15px 20px;
+  background-color: #fff;
   border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #8dc84b;
-  border-radius: 10px;
+.title {
+  font-style: oblique;
+  font-size: 20px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #333;
+  font-weight: 500;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #689f38;
+.row-contenido {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
 }
 
-body.dark-theme ::-webkit-scrollbar-track {
-  background: var(--color-dark-variant);
+.column1 {
+  width: 40%;
 }
 
-body.dark-theme ::-webkit-scrollbar-thumb {
-  background: #8dc84b;
+.codigo {
+  padding-top: 4px;
 }
 
-body.dark-theme ::-webkit-scrollbar-thumb:hover {
-  background: #689f38;
-  border: 1px solid #f5c6cb;
+.codigoPdin {
+  padding-top: 8px;
 }
+
+.codigoI {
+  width: 90px;
+  letter-spacing: 3px;
+}
+
+#localidades,
+#localSpan {
+  display: none;
+}
+
+option {
+  color: var(--verde-principal);
+}
+
+/* Botones reutilizan .btn-2 */
+.btn-2.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   ✅ FIN DE ESTILOS UNIFICADOS
+   ============================================================ */
