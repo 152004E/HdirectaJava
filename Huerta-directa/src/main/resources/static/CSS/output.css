@@ -589,6 +589,9 @@
   .gap-5 {
     gap: calc(var(--spacing) * 5);
   }
+  .gap-10 {
+    gap: calc(var(--spacing) * 10);
+  }
   .gap-20 {
     gap: calc(var(--spacing) * 20);
   }
@@ -799,6 +802,9 @@
   }
   .py-10 {
     padding-block: calc(var(--spacing) * 10);
+  }
+  .py-20 {
+    padding-block: calc(var(--spacing) * 20);
   }
   .py-24 {
     padding-block: calc(var(--spacing) * 24);
