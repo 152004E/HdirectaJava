@@ -2,56 +2,57 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <body class="min-h-screen flex flex-col">
     <footer
-      th:fragment="footer"
-      class="bg-[#8bc34a] text-white py-10 !flex !flex-wrap !items-center !justify-between"
-    >
-      <div
-        class="max-w-[1200px] h-[200px] mx-auto gap-20 flex flex-wrap !items-center !justify-between text-left"
-      >
-        <!-- Huerta Directa -->
-        <div class="flex-1 min-w-[200px] m-2.5">
-          <h4 class="text-lg font-semibold mb-2">Huerta Directa</h4>
-          <ul class="list-none p-0 space-y-1">
-            <li><a th:href="@{/}" class="!no-underline !text-white hover:underline">Inicio</a></li>
-            <li><a th:href="@{/#servicios}" class="!no-underline !text-white hover:underline">Servicios</a></li>
-            <li><a th:href="@{/Quienes_somos}" class="!no-underline !text-white hover:underline">Nosotros</a></li>
-            <li><a th:href="@{/#categorias}" class="!no-underline !text-white hover:underline">Categorías</a></li>
-          </ul>
-        </div>
+  th:fragment="footer"
+  class="bg-[#8bc34a] text-white py-10 flex flex-wrap items-center justify-between"
+>
+  <div
+    class="max-w-[1200px] h-[200px] mx-auto gap-20 flex flex-wrap items-center justify-between text-left"
+  >
+    <!-- Huerta Directa -->
+    <div class="flex-1 min-w-[200px] m-2.5">
+      <h4 class="text-lg font-semibold mb-2">Huerta Directa</h4>
+      <ul class="list-none p-0 space-y-1">
+        <li><a th:href="@{/}" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Inicio</a></li>
+        <li><a th:href="@{/#servicios}" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Servicios</a></li>
+        <li><a th:href="@{/Quienes_somos}" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Nosotros</a></li>
+        <li><a th:href="@{/#categorias}" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Categorías</a></li>
+      </ul>
+    </div>
 
-        <!-- Soporte -->
-        <div class="flex-1 min-w-[200px] m-2.5">
-          <h4 class="text-lg font-semibold mb-2">Soporte</h4>
-          <ul class="list-none p-0 space-y-1">
-            <li><a href="#" class="!no-underline !text-white hover:underline">Preguntas frecuentes</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Política de privacidad</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Términos y condiciones</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Ayuda</a></li>
-          </ul>
-        </div>
+    <!-- Soporte -->
+    <div class="flex-1 min-w-[200px] m-2.5">
+      <h4 class="text-lg font-semibold mb-2">Soporte</h4>
+      <ul class="list-none p-0 space-y-1">
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Preguntas frecuentes</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Política de privacidad</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Términos y condiciones</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Ayuda</a></li>
+      </ul>
+    </div>
 
-        <!-- Productores -->
-        <div class="flex-1 min-w-[200px] m-2.5">
-          <h4 class="text-lg font-semibold mb-2">Productores</h4>
-          <ul class="list-none p-0 space-y-1">
-            <li><a href="#" class="!no-underline !text-white hover:underline">Unirse a la red</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Beneficios</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Testimonios</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Capacitación</a></li>
-          </ul>
-        </div>
+    <!-- Productores -->
+    <div class="flex-1 min-w-[200px] m-2.5">
+      <h4 class="text-lg font-semibold mb-2">Productores</h4>
+      <ul class="list-none p-0 space-y-1">
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Unirse a la red</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Beneficios</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Testimonios</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Capacitación</a></li>
+      </ul>
+    </div>
 
-        <!-- Contacto -->
-        <div class="flex-1 min-w-[200px] m-2.5">
-          <h4 class="text-lg font-semibold mb-2">Contáctanos</h4>
-          <ul class="list-none p-0 space-y-1">
-            <li>Email: contacto@huertadirecta.com</li>
-            <li>Tel: +57 300 000 0000</li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">WhatsApp</a></li>
-            <li><a href="#" class="!no-underline !text-white hover:underline">Redes sociales</a></li>
-          </ul>
-        </div>
-      </div>
-    </footer>
+    <!-- Contacto -->
+    <div class="flex-1 min-w-[200px] m-2.5">
+      <h4 class="text-lg font-semibold mb-2">Contáctanos</h4>
+      <ul class="list-none p-0 space-y-1">
+        <li>Email: contacto@huertadirecta.com</li>
+        <li>Tel: +57 300 000 0000</li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">WhatsApp</a></li>
+        <li><a href="#" class="no-underline text-white transition-all duration-[0.7s] hover:text-[#455e28]">Redes sociales</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
   </body>
 </html>
