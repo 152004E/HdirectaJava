@@ -63,6 +63,7 @@
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
     --tracking-wide: 0.025em;
     --tracking-wider: 0.05em;
     --tracking-widest: 0.1em;
@@ -466,6 +467,9 @@
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
   }
+  .mb-10 {
+    margin-bottom: calc(var(--spacing) * 10);
+  }
   .mb-16 {
     margin-bottom: calc(var(--spacing) * 16);
   }
@@ -719,6 +723,9 @@
   }
   .animate-\[slideIn_4s_ease-in-out_forwards\] {
     animation: slideIn 4s ease-in-out forwards;
+  }
+  .\!cursor-pointer {
+    cursor: pointer !important;
   }
   .cursor-pointer {
     cursor: pointer;
@@ -1108,6 +1115,9 @@
   .\!py-5 {
     padding-block: calc(var(--spacing) * 5) !important;
   }
+  .py-1 {
+    padding-block: calc(var(--spacing) * 1);
+  }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -1164,6 +1174,9 @@
   }
   .\!font-\[Arial\,sans-serif\] {
     font-family: Arial,sans-serif !important;
+  }
+  .\!font-\[Poppins\] {
+    font-family: Poppins !important;
   }
   .font-\[Arial\,sans-serif\] {
     font-family: Arial,sans-serif;
@@ -1236,6 +1249,9 @@
   .text-\[13px\] {
     font-size: 13px;
   }
+  .text-\[15px\] {
+    font-size: 15px;
+  }
   .text-\[17px\] {
     font-size: 17px;
   }
@@ -1256,6 +1272,10 @@
     --tw-leading: var(--leading-relaxed);
     line-height: var(--leading-relaxed);
   }
+  .\!font-extrabold {
+    --tw-font-weight: var(--font-weight-extrabold) !important;
+    font-weight: var(--font-weight-extrabold) !important;
+  }
   .\!font-semibold {
     --tw-font-weight: var(--font-weight-semibold) !important;
     font-weight: var(--font-weight-semibold) !important;
@@ -1263,6 +1283,10 @@
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
+  }
+  .font-extrabold {
+    --tw-font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-extrabold);
   }
   .font-light {
     --tw-font-weight: var(--font-weight-light);
@@ -1355,6 +1379,9 @@
   }
   .text-\[\#FEF5DC\] {
     color: #FEF5DC;
+  }
+  .text-\[20\] {
+    color: 20;
   }
   .text-\[var\(\&\#45\;\&\#45\;primary\)\] {
     color: var(&#45;&#45;primary);
@@ -1521,6 +1548,10 @@
     --tw-duration: 500ms !important;
     transition-duration: 500ms !important;
   }
+  .duration-75 {
+    --tw-duration: 75ms;
+    transition-duration: 75ms;
+  }
   .duration-300 {
     --tw-duration: 300ms;
     transition-duration: 300ms;
@@ -1536,6 +1567,10 @@
   .duration-\[1s\] {
     --tw-duration: 1s;
     transition-duration: 1s;
+  }
+  .duration-\[3s\] {
+    --tw-duration: 3s;
+    transition-duration: 3s;
   }
   .\!ease-in-out {
     --tw-ease: var(--ease-in-out) !important;
