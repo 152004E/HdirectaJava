@@ -2,19 +2,30 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
-//import com.exe.Huerta_directa.Impl.UserServiceImpl;
+
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
 
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import java.util.Properties;
 import org.springframework.dao.DataIntegrityViolationException;
-//import org.springframework.core.io.InputStreamResource;
-//import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
-//import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +33,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//import java.io.ByteArrayInputStream;
-//import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 @RequestMapping("/api/users")
@@ -327,6 +336,9 @@ public class UserController {
                 session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
             }
 
+            //Enviar correo de confirmación
+            enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
+
             // Si querés iniciar sesión automáticamente y redirigir:
             if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
                 redirectAttributes.addFlashAttribute("success",
@@ -348,7 +360,41 @@ public class UserController {
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         }
+
     }
+
+        //MÉTODO PARA ENVIAR EL CORREO
+    private void enviarCorreoConfirmacion(String nombre, String email) throws MessagingException {
+        String remitente = "hdirecta@gmail.com"; // cuenta de Gmail
+        String password = "agst ebgg yakk lohu"; // clave de aplicación
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(remitente, password);
+            }
+        });
+
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(remitente));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+        message.setSubject("🌱 Registro exitoso en Huerta Directa");
+        message.setText("¡Hola " + nombre + "!\n\n"
+                + "Tu cuenta en *Huerta Directa* fue creada exitosamente.\n"
+                + "Gracias por unirte a nuestra comunidad campesina. 🧺\n\n"
+                + "Atentamente,\nEl equipo de Huerta Directa.");
+
+        Transport.send(message);
+    }
+
+
+
+    
 
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String email,
@@ -373,6 +419,60 @@ public class UserController {
         } else {
             return "redirect:/index";
         }
+    }
+
+    // Enpoind para enviar correos unitarios
+    @PostMapping("/Email")
+    public String enviarEmail(
+            @RequestParam String name,
+            @RequestParam String email,
+            Model model) {
+        String envio;
+        String res;
+
+        try {
+            // Registrar el usuario en la BD con mensaje de correo
+            UserDTO nuevoUsuario = new UserDTO();
+            nuevoUsuario.setName(name);
+            nuevoUsuario.setEmail(email);
+            userService.crearUser(nuevoUsuario);
+            res = "1";
+
+            // Enviar correo
+            String remitente = "hdirecta@gmail.com";
+            String password = "agst ebgg yakk lohu";
+
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(remitente, password);
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(remitente));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject("Registro exitoso en Huerta Directa");
+            message.setText("¡Hola " + name + "! Tu cuenta fue creada exitosamente.");
+            Transport.send(message);
+
+            envio = "Correo enviado correctamente";
+        } catch (Exception e) {
+            res = "0";
+            envio = "Error al registrar o enviar correo: " + e.getMessage();
+        }
+
+        model.addAttribute("nombre", name);
+        model.addAttribute("correo", email);
+        model.addAttribute("respuesta", res);
+        model.addAttribute("envio", envio);
+
+        return "resultado";
     }
 
     @PostMapping("/FormAdmin")
