@@ -28,10 +28,13 @@ public class Comment {
     private String commentCommenter;
 
     @Column(name = "creation_comment", nullable = false)
-    private LocalDate creationComment;
+    private LocalDate creationComment = LocalDate.now();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 }
