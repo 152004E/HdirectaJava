@@ -98,11 +98,11 @@ public class UserServiceImpl implements UserService {
         
         // Verificar si tiene productos asociados
         if (user.getProducts() != null && !user.getProducts().isEmpty()) {
-            throw new RuntimeException("No se puede eliminar este usuario porque tiene " + 
+            throw new RuntimeException("No se puede eliminar este usuario porque tiene " +
                                     user.getProducts().size() + " producto(s) asociado(s). " +
                                     "Elimine primero los productos o reasígnelos a otro usuario.");
         }
-        
+
         userRepository.deleteById(userId);
     }
 
