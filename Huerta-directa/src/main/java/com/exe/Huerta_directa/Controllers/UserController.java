@@ -317,7 +317,7 @@ public class UserController {
         try {
             UserDTO usuarioCreado = userService.crearUser(userDTO);
 
-            // ✅ CORRECCIÓN: Usar el repository para obtener la Entity User
+            //  Usar el repository para obtener la Entity User
             User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
             if (userEntity != null) {
                 session.setAttribute("user", userEntity);
