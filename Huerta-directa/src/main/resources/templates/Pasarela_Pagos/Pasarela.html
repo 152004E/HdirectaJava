@@ -1,228 +1,143 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pasarela de pagos || Huerta Directa</title>
+    <title>pasarela de pagos || huerta directa</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <!--Insercion de logo-->
+     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 
-    <!-- Fuente Poppins -->
+    <!-- instalacion de las fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              poppins: ["Poppins", "sans-serif"],
-            },
-            colors: {
-              verde: "#8dc84b",
-              "verde-oscuro": "#004d00",
-              crema: "#f7efd8",
-            },
-          },
-        },
-      };
-    </script>
+    <link rel="stylesheet" href="/CSS/Pasarela.css" />
+    <!--<link rel="stylesheet" href="../style.css">-->
+
+    <!--instalacion bootstrap-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
   </head>
+  <body>
+    <div class="container1">
+      <form action="" class="rounded-5">
+  <div class="row-contenido d-flex gap-2">
+    <div class="column1">
+      <h3 class="title">
+        Dirección de <br />
+        facturación
+      </h3>
+      <div class="input-box">
+        <span>Nombre completo:</span>
+        <input type="text" placeholder="Emerson reyes" required />
+      </div>
+      <div class="input-box">
+        <span>Correo electrónico:</span>
+        <input type="email" placeholder="ejem@ejem.com" required />
+      </div>
+      <div class="input-box">
+        <span>Domicilio</span>
+        <input type="text" placeholder="Calle 72 # 11‑45,Chapinero" required />
+      </div>
+      <div class="input-box">
+        <span>Ciudad</span>
+        <select class="rounded-3" id="Select-ciudad" name="opciones" required>
+          <option value="">Selecciona tu Ciudad</option>
+          <option value="zipaquira">Zipaquirá</option>
+          <option value="madrid">Madrid (Cundinamarca)</option>
+          <option value="mosquera">Mosquera</option>
+          <option value="chia">Chía</option>
+          <option value="soacha">Soacha</option>
+          <option value="bogota">Bogotá D.C.</option>
+        </select>
+      </div>
+      <div class="input-box">
+        <span id="localSpan">Localidad</span>
+        <select class="rounded-3" id="localidades" name="localidad" required>
+          <option value="">Selecciona tu localidad</option>
+          <option value="usaquen">Usaquén</option>
+          <option value="chapinero">Chapinero</option>
+          <option value="santa_fe">Santa Fe</option>
+          <option value="san_cristobal">San Cristóbal</option>
+          <option value="usme">Usme</option>
+          <option value="tunjuelito">Tunjuelito</option>
+          <option value="bosa">Bosa</option>
+          <option value="kennedy">Kennedy</option>
+          <option value="fontibon">Fontibón</option>
+          <option value="engativa">Engativá</option>
+          <option value="suba">Suba</option>
+          <option value="barrios_unidos">Barrios Unidos</option>
+          <option value="teusaquillo">Teusaquillo</option>
+          <option value="los_martires">Los Mártires</option>
+          <option value="antonio_narino">Antonio Nariño</option>
+          <option value="puente_aranda">Puente Aranda</option>
+          <option value="la_candelaria">La Candelaria</option>
+          <option value="rafael_uribe_uribe">Rafael Uribe Uribe</option>
+          <option value="ciudad_bolivar">Ciudad Bolívar</option>
+          <option value="sumapaz">Sumapaz</option>
+        </select>
+      </div>
 
-  <body
-    class="font-poppins bg-crema min-h-screen flex items-center justify-center"
+      <div class="input-box d-flex align-items-center gap-4">
+        <span class="codigo">Código postal</span>
+        <input class="codigoI" type="number" placeholder=" 110111" required />
+      </div>
+    </div>
+    <span class="border"></span>
+    <div class="column1">
+      <h3 class="title px-2">
+        Datos para <br />
+        el Pago
+      </h3>
+      <div class="input-box">
+        <span>Método de pago</span>
+        <input type="text" placeholder="Emerson reyes" required />
+      </div>
+      <div class="input-box">
+        <span>Titular de la tarjeta:</span>
+        <input type="text" placeholder="Emerson reyes" required />
+      </div>
+      <div class="input-box">
+        <span>Número de la tarjeta</span>
+        <input type="number" placeholder=" 1111 2222 3333" required />
+      </div>
+
+      <div class="expedicion d-flex gap-3">
+        <div class="input-box">
+          <span>Mes de expedición</span>
+          <input type="text" placeholder=" junio" required />
+        </div>
+        <div class="input-box">
+          <span>Año de expedición</span>
+          <input type="number" placeholder=" 2026" required />
+        </div>
+      </div>
+
+      <div class="input-box d-flex gap-4">
+        <span class="codigoPdin">CVC</span>
+        <input class="codigoI" type="number" placeholder=" 111" required />
+      </div>
+    </div>
+  </div>
+  <div
+    class="container-button d-flex justify-content-center align-items-center m-3 gap-5"
   >
-    <form class="bg-white w-[700px] rounded-2xl p-6 shadow-md">
-      <div class="flex flex-wrap justify-around gap-6">
-        <!-- Columna 1 -->
-        <div class="w-[40%]">
-          <h3
-            class="text-lg font-medium text-gray-800 italic uppercase tracking-wide mb-4"
-          >
-            Dirección de <br />facturación
-          </h3>
+    <button type="submit" class="btn-2">pagar</button>
+    
+    <a class="btn-2 d-flex justify-content-center align-items-center" href="/index">volver</a>
+  </div>
+</form>
 
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1">Nombre completo:</span>
-            <input
-              type="text"
-              placeholder="Emerson reyes"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1"
-              >Correo electrónico:</span
-            >
-            <input
-              type="email"
-              placeholder="ejem@ejem.com"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1">Domicilio</span>
-            <input
-              type="text"
-              placeholder="Calle 72 # 11-45, Chapinero"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1">Ciudad</span>
-            <select
-              id="Select-ciudad"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 text-gray-600 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            >
-              <option value="">Selecciona tu Ciudad</option>
-              <option value="zipaquira">Zipaquirá</option>
-              <option value="madrid">Madrid (Cundinamarca)</option>
-              <option value="mosquera">Mosquera</option>
-              <option value="chia">Chía</option>
-              <option value="soacha">Soacha</option>
-              <option value="bogota">Bogotá D.C.</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1">Localidad</span>
-            <select
-              id="localidades"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 text-gray-600 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            >
-              <option value="">Selecciona tu localidad</option>
-              <option value="usaquen">Usaquén</option>
-              <option value="chapinero">Chapinero</option>
-              <option value="bosa">Bosa</option>
-              <option value="kennedy">Kennedy</option>
-              <option value="suba">Suba</option>
-              <option value="tunjuelito">Tunjuelito</option>
-              <option value="ciudad_bolivar">Ciudad Bolívar</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-3 mt-3">
-            <span class="block text-sm font-medium">Código postal</span>
-            <input
-              type="number"
-              placeholder="110111"
-              required
-              class="w-[100px] border border-verde rounded-md px-2 py-2 text-center tracking-[2px] focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-        </div>
-
-        <span class="border-l-2 border-verde"></span>
-
-        <!-- Columna 2 -->
-        <div class="w-[40%]">
-          <h3
-            class="text-lg font-medium text-gray-800 italic uppercase tracking-wide mb-4"
-          >
-            Datos para <br />el Pago
-          </h3>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1">Método de pago</span>
-            <input
-              type="text"
-              placeholder="Tarjeta crédito / débito"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1"
-              >Titular de la tarjeta:</span
-            >
-            <input
-              type="text"
-              placeholder="Emerson reyes"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="mb-3">
-            <span class="block text-sm font-medium mb-1"
-              >Número de la tarjeta</span
-            >
-            <input
-              type="number"
-              placeholder="1111 2222 3333"
-              required
-              class="w-full border border-verde rounded-md px-3 py-2 tracking-[3px] focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-
-          <div class="flex gap-3">
-            <div class="w-1/2">
-              <span class="block text-sm font-medium mb-1"
-                >Mes de expedición</span
-              >
-              <input
-                type="text"
-                placeholder="Junio"
-                required
-                class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-              />
-            </div>
-
-            <div class="w-1/2">
-              <span class="block text-sm font-medium mb-1"
-                >Año de expedición</span
-              >
-              <input
-                type="number"
-                placeholder="2026"
-                required
-                class="w-full border border-verde rounded-md px-3 py-2 focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-              />
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 mt-3">
-            <span class="block text-sm font-medium">CVC</span>
-            <input
-              type="number"
-              placeholder="111"
-              required
-              class="w-[100px] border border-verde rounded-md px-2 py-2 text-center tracking-[3px] focus:outline-none focus:border-verde-oscuro focus:shadow-md focus:shadow-verde/30"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-around items-center  mt-8">
-       
-
-        <a
-          href="/home"
-          class="w-[200px] text-center bg-verde text-white text-sm uppercase tracking-wider py-2 rounded-md font-semibold hover:bg-verde-oscuro transition duration-500"
-        >
-          Volver
-        </a>
-         <button
-          type="submit"
-          class="w-[200px] bg-verde text-white text-sm uppercase tracking-wider py-2 rounded-md font-semibold hover:bg-verde-oscuro transition duration-500"
-        >
-          Pagar
-        </button>
-      </div>
-    </form>
+    </div>
+    <script src="/JS/Pasarela.js"></script>
   </body>
 </html>
