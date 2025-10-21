@@ -2,30 +2,24 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
-
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
 
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
-import java.util.Properties;
 import org.springframework.dao.DataIntegrityViolationException;
-
 import org.springframework.http.HttpStatus;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,13 +39,19 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    // Constantes para email centralizadas para evitar duplicación
+    private static final String EMAIL_HOST = "smtp.gmail.com";
+    private static final String EMAIL_PORT = "587";
+    private static final String SENDER_EMAIL = "hdirecta@gmail.com";
+    // Nota: la contraseña de aplicación idealmente debe guardarse en properties/secret manager
+    private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
+
     public UserController(UserService userService, UserRepository userRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
     }
 
     // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
-    // usuario
 
     // Metodo para listar todos los usuarios
     @GetMapping
@@ -288,25 +288,14 @@ public class UserController {
             document.close();
             response.getOutputStream().flush();
 
-        } catch (com.lowagie.text.DocumentException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         } catch (Exception e) {
+            // Un único manejo de errores para cualquier excepción durante la generación del PDF
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Aqui van los endpoints para manejar las solicitudes HTTP relacionadas con
-    // usuario
+    //AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
 
     @PostMapping("/register")
     public String seveUserView(
@@ -326,7 +315,7 @@ public class UserController {
         try {
             UserDTO usuarioCreado = userService.crearUser(userDTO);
 
-            // ✅ CORRECCIÓN: Usar el repository para obtener la Entity User
+            // Usar el repository para obtener la Entity User
             User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
             if (userEntity != null) {
                 session.setAttribute("user", userEntity);
@@ -363,38 +352,147 @@ public class UserController {
 
     }
 
-        //MÉTODO PARA ENVIAR EL CORREO
+    //MÉTODO PARA ENVIAR EL CORREO
     private void enviarCorreoConfirmacion(String nombre, String email) throws MessagingException {
-        String remitente = "hdirecta@gmail.com"; // cuenta de Gmail
-        String password = "agst ebgg yakk lohu"; // clave de aplicación
+        Session session = crearSesionCorreo();
 
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(props, new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(remitente, password);
-            }
-        });
-
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(remitente));
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
         message.setSubject("🌱 Registro exitoso en Huerta Directa");
-        message.setText("¡Hola " + nombre + "!\n\n"
-                + "Tu cuenta en *Huerta Directa* fue creada exitosamente.\n"
-                + "Gracias por unirte a nuestra comunidad campesina. 🧺\n\n"
-                + "Atentamente,\nEl equipo de Huerta Directa.");
+
+        // Crear el contenido HTML del correo
+        String htmlContent = crearContenidoHTMLCorreo(nombre);
+
+        // Configurar el mensaje como HTML
+        message.setContent(htmlContent, "text/html; charset=utf-8");
 
         Transport.send(message);
     }
 
+    // Método para crear el contenido HTML del correo
+    private String crearContenidoHTMLCorreo(String nombre) {
+        return """
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Bienvenido a Huerta Directa</title>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
+                <table role="presentation" style="width: 100%%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 0;">
+                            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                
+                                <!-- Header con gradiente verde -->
+                                <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
+                                    <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                        🌱 Huerta Directa
+                                    </h1>
+                                    <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
+                                        Conectando el campo con tu mesa
+                                    </p>
+                                </div>
+                                
+                                <!-- Contenido principal -->
+                                <div style="padding: 40px 30px;">
+                                    <div style="text-align: center; margin-bottom: 30px;">
+                                        <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
+                                            ✅
+                                        </div>
+                                        <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
+                                            ¡Registro Exitoso!
+                                        </h2>
+                                    </div>
+                                    
+                                    <div style="text-align: center; margin-bottom: 30px;">
+                                        <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
+                                            ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
+                                        </p>
+                                        <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                                            Tu cuenta en <strong>Huerta Directa</strong> ha sido creada exitosamente. 
+                                            Ahora formas parte de nuestra comunidad que conecta directamente a productores 
+                                            campesinos con consumidores como tú.
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Beneficios -->
+                                    <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                                        <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
+                                            🧺 ¿Qué puedes hacer ahora?
+                                        </h3>
+                                        <div style="text-align: left;">
+                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                🥕 <strong>Explorar productos frescos</strong> directamente de la huerta
+                                            </p>
+                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                🚚 <strong>Realizar pedidos</strong> con entrega a domicilio
+                                            </p>
+                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                👨‍🌾 <strong>Conocer a los productores</strong> detrás de tus alimentos
+                                            </p>
+                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                💚 <strong>Apoyar la agricultura local</strong> y sostenible
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botón de acción -->
+                                    <div style="text-align: center; margin-bottom: 30px;">
+                                        <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
+                                            🌟 Comenzar a Explorar
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Mensaje de agradecimiento -->
+                                    <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
+                                        <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
+                                            Gracias por unirte a nuestra misión de acercar el campo a tu mesa.<br>
+                                            <strong style="color: #689f38;">¡Juntos construimos un futuro más verde! 🌍</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Footer -->
+                                <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
+                                    <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
+                                        El equipo de Huerta Directa 🌱
+                                    </p>
+                                    <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
+                                        Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
+                                    </p>
+                                    <div style="margin-top: 15px;">
+                                        <span style="color: #c8e6c9; font-size: 12px;">
+                                            © 2024 Huerta Directa - Todos los derechos reservados
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+            """.formatted(nombre);
+    }
 
+    // Método reutilizable para crear la sesión de correo con las constantes
+    private Session crearSesionCorreo() {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", EMAIL_HOST);
+        props.put("mail.smtp.port", EMAIL_PORT);
 
-    
+        return Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+            }
+        });
+    }
 
     @PostMapping("/loginUser")
     public String loginUser(@RequestParam String email,
@@ -421,59 +519,6 @@ public class UserController {
         }
     }
 
-    // Enpoind para enviar correos unitarios
-    @PostMapping("/Email")
-    public String enviarEmail(
-            @RequestParam String name,
-            @RequestParam String email,
-            Model model) {
-        String envio;
-        String res;
-
-        try {
-            // Registrar el usuario en la BD con mensaje de correo
-            UserDTO nuevoUsuario = new UserDTO();
-            nuevoUsuario.setName(name);
-            nuevoUsuario.setEmail(email);
-            userService.crearUser(nuevoUsuario);
-            res = "1";
-
-            // Enviar correo
-            String remitente = "hdirecta@gmail.com";
-            String password = "agst ebgg yakk lohu";
-
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-
-            Session session = Session.getInstance(props, new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(remitente, password);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(remitente));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-            message.setSubject("Registro exitoso en Huerta Directa");
-            message.setText("¡Hola " + name + "! Tu cuenta fue creada exitosamente.");
-            Transport.send(message);
-
-            envio = "Correo enviado correctamente";
-        } catch (Exception e) {
-            res = "0";
-            envio = "Error al registrar o enviar correo: " + e.getMessage();
-        }
-
-        model.addAttribute("nombre", name);
-        model.addAttribute("correo", email);
-        model.addAttribute("respuesta", res);
-        model.addAttribute("envio", envio);
-
-        return "resultado";
-    }
 
     @PostMapping("/FormAdmin")
     public String registrarAdmin(
@@ -482,7 +527,8 @@ public class UserController {
             RedirectAttributes redirect) {
 
         if (result.hasErrors()) {
-            return "Dashboard_Admin/FormAdmin";
+            // Cambiado para usar la plantilla existente en el proyecto
+            return "Dashboard_Admin/Registro_nuevo_admin/form_registro_admin";
         }
 
         userService.crearAdmin(userDTO); // crear el admin
@@ -555,7 +601,7 @@ public class UserController {
     }
 
     private boolean filtrarPorRol(UserDTO usuario, String valor) {
-        if (usuario.getIdRole() == null) {
+        if (usuario.getIdRole() == null || valor == null) {
             return false;
         }
 
@@ -572,12 +618,9 @@ public class UserController {
             // No es un número, continuar con búsqueda por nombre
         }
 
-        // Buscar por nombre del rol
-        if (roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador"))) {
-            return true;
-        }
-
-        if (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario"))) {
+        // Buscar por nombre del rol (comprobación combinada)
+        if ((roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador")))
+                || (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario")))) {
             return true;
         }
 
@@ -588,14 +631,11 @@ public class UserController {
         if (idRole == null) {
             return "Sin Rol";
         }
-        switch (idRole.intValue()) {
-            case 1:
-                return "Administrador";
-            case 2:
-                return "Cliente";
-            default:
-                return "Otro";
-        }
+        return switch (idRole.intValue()) {
+            case 1 -> "Administrador";
+            case 2 -> "Cliente";
+            default -> "Otro";
+        };
     }
 
     private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle,
