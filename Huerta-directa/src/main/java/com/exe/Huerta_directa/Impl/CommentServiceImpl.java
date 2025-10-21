@@ -3,7 +3,6 @@ package com.exe.Huerta_directa.Impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
@@ -36,46 +35,50 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO obtenerCommentPorId(Long idComment) {
-        return null ;
+        return null;
     }
 
     // 🔹 Crear un nuevo comentario (relacionado con usuario y/o producto)
     @Override
     public CommentDTO crearComment(CommentDTO commentDTO, Long userId, Long productId) {
-        return null ;
+        return null;
     }
 
     // 🔹 Actualizar un comentario existente
     @Override
     public CommentDTO actualizarComment(Long idComment, CommentDTO commentDTO) {
-        return null ;
+        return null;
     }
 
     // 🔹 Eliminar un comentario por su ID
     @Override
     public void eliminarComment(Long idComment) {
-        
+
     }
 
     // 🔹 Listar comentarios por producto (si los comentarios están asociados a
     // productos)
     @Override
     public List<CommentDTO> listarCommentsPorProducto(Long productId) {
-        return null ;
+        return null;
     }
 
     // 🔹 Listar comentarios por usuario
     @Override
     public List<CommentDTO> listarCommentsPorUsuario(Long userId) {
-        return null ;
+        return null;
     }
 
+    // Convertir Entity a DTO
     private CommentDTO convertirADTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setIdComment(comment.getIdComment());
         commentDTO.setEmailCommenter(comment.getEmailCommenter());
         commentDTO.setCommentCommenter(comment.getCommentCommenter());
         commentDTO.setCreationComment(comment.getCreationComment());
+        commentDTO.setNameCommenter(comment.getNameCommenter());
+        commentDTO.setUserId(comment.getUser().getId());
+        commentDTO.setProductId(comment.getProduct().getIdProduct());
 
         /*
          * private Long idComment;
@@ -90,5 +93,21 @@ public class CommentServiceImpl implements CommentService {
         return commentDTO;
 
     }
+    /* 
+    private Comment convertirAEntity(CommentDTO commentDTO) {
+        Comment commentEntity = new Comment();
+        commentEntity.setIdComment(commentDTO.getIdComment());
+        commentEntity.setEmailCommenter(commentDTO.getEmailCommenter());
+        commentEntity.setCommentCommenter(commentDTO.getCommentCommenter());
+        commentEntity.setCreationComment(commentDTO.getCreationComment());
+        commentEntity.setNameCommenter(commentDTO.getNameCommenter());
+        commentEntity.setUser(userRepository.findById(commentDTO.getUserId()).orElse(null));
+        commentEntity.setProduct(productRepository.findById(commentDTO.getProductId()).orElse(null));
 
+      
+
+        return commentEntity;
+
+    }
+    */
 }
