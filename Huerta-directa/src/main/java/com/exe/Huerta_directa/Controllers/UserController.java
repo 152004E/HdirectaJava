@@ -19,8 +19,7 @@ import jakarta.mail.Message;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
+
 import java.util.Properties;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -35,7 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
+
 
 @Controller
 @RequestMapping("/api/users")
