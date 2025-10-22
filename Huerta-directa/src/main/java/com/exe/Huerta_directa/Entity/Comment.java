@@ -18,23 +18,21 @@ public class Comment {
     @Column(name = "id_comment", nullable = false, unique = true, updatable = false)
     private Long idComment;
 
-    @Column(name = "name_commenter", length = 100, nullable = false)
-    private String nameCommenter;
-
-    @Column(name = "email_commenter", length = 100, nullable = false)
-    private String emailCommenter;
-
     @Column(name = "comment_commenter", columnDefinition = "TEXT", nullable = false)
     private String commentCommenter;
 
     @Column(name = "creation_comment", nullable = false)
     private LocalDate creationComment = LocalDate.now();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "comment_type", nullable = false, length = 20)
+    private CommentType commentType;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = true)
     private Product product;
 }
