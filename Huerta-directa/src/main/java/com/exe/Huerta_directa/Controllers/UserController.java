@@ -502,7 +502,7 @@ public class UserController {
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null || !user.getPassword().equals(password)) {
-            model.addAttribute("error", "Correo o contraseña incorrectos");
+            model.addAttribute("error", "Correo o contraseña incorrectos, haciendo un commit por que aja");
             model.addAttribute("userDTO", new UserDTO()); // importante para no romper el form
             return "login/login";
         }
