@@ -4,12 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.events.CommentEvent;
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
-import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.Comment;
-import com.exe.Huerta_directa.Entity.Product;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.CommentRepository;
 import com.exe.Huerta_directa.Repository.ProductRepository;
@@ -54,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
 
         // Covertir el comentario a entidad
         Comment comment = convertirAEntity(commentDTO);
-        comment.setUser(user); //le asigamos el comentario al user
+        comment.setUser(user); // le asigamos el comentario al user
 
         Comment newComment = commentRepository.save(comment);
 
@@ -64,15 +61,22 @@ public class CommentServiceImpl implements CommentService {
     // 🔹 Actualizar un comentario existente
     @Override
     public CommentDTO actualizarComment(Long idComment, CommentDTO commentDTO) {
-     //   Comment commmentExistente = commentRepository.findById(idComment).orElseThrow(()-> new RuntimeException("Comentario no encontrado con el id "+ idComment));
+        Comment commmentExistente = commentRepository.findById(idComment)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado con el id " + idComment));
 
-
-        return null;
+        actualizarDatosComment(commmentExistente, commentDTO);
+        Comment commentActializado = commentRepository.save(commmentExistente);
+        return convertirADTO(commentActializado);
     }
 
     // 🔹 Eliminar un comentario por su ID
     @Override
     public void eliminarComment(Long idComment) {
+        if (!commentRepository.existsById(idComment)) {
+            throw new RuntimeException("El comentario con el id :" + idComment + " No se puedo encontrar");
+        } else {
+            commentRepository.deleteById(idComment);
+        }
 
     }
 
@@ -127,22 +131,18 @@ public class CommentServiceImpl implements CommentService {
         return commentEntity;
     }
     // Actualizar Entity con datos del DTO
-    /* 
-    private void actualizarDatosProducto(Product product, ProductDTO productDTO) {
-        product.setNameProduct(productDTO.getNameProduct());
-        product.setPrice(productDTO.getPrice());
-        product.setCategory(productDTO.getCategory());
-        product.setImageProduct(productDTO.getImageProduct());
-        product.setUnit(productDTO.getUnit());
-        product.setDescriptionProduct(productDTO.getDescriptionProduct());
-        product.setPublicationDate(productDTO.getPublicationDate());
 
-        if (productDTO.getUserId() != null) {
-            User user = userRepository.findById(productDTO.getUserId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + productDTO.getUserId()));
-            product.setUser(user);
+    private void actualizarDatosComment(Comment comment, CommentDTO commentDTO) {
+        comment.setEmailCommenter(commentDTO.getEmailCommenter());
+        comment.setCommentCommenter(commentDTO.getCommentCommenter());
+        comment.setCreationComment(commentDTO.getCreationComment());
+        comment.setNameCommenter(commentDTO.getNameCommenter());
+
+        if (commentDTO.getUserId() != null) {
+            User user = userRepository.findById(commentDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + commentDTO.getUserId()));
+            comment.setUser(user);
         }
     }
-        */
 
 }
