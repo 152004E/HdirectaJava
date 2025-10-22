@@ -13,6 +13,8 @@ import com.exe.Huerta_directa.Repository.ProductRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.CommentService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
@@ -43,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // 🔹 Crear un nuevo comentario (relacionado con usuario y/o producto)
+    @Transactional
     @Override
     public CommentDTO crearComment(CommentDTO commentDTO, Long userId, Long productId) {
         // buscar el usuario
@@ -59,6 +62,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // 🔹 Actualizar un comentario existente
+    @Transactional
     @Override
     public CommentDTO actualizarComment(Long idComment, CommentDTO commentDTO) {
         Comment commmentExistente = commentRepository.findById(idComment)
@@ -70,6 +74,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // 🔹 Eliminar un comentario por su ID
+    @Transactional
     @Override
     public void eliminarComment(Long idComment) {
         if (!commentRepository.existsById(idComment)) {
