@@ -87,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> listarCommentsPorProducto(Long productId) {
-        return commentRepository.findByProduct_Id(productId)
+        return commentRepository.findByProduct_IdProduct(productId)
                 .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());

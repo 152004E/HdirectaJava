@@ -33,6 +33,6 @@ public class Comment {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = true)
+    @JoinColumn(name = "id_product", nullable = true)
     private Product product;
 }
