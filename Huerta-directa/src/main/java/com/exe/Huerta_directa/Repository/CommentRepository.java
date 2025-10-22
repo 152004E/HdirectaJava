@@ -9,15 +9,15 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    // 🔹 Buscar comentarios por el nombre del comentarista
-    List<Comment> findByNameCommenterContainingIgnoreCase(String nameCommenter);
+    // Buscar comentarios por el nombre del usuario
+    List<Comment> findByUser_NameContainingIgnoreCase(String name);
 
-    // 🔹 Buscar comentarios por email del comentarista
-    List<Comment> findByEmailCommenterContainingIgnoreCase(String emailCommenter);
+    // Buscar comentarios por el email del usuario
+    List<Comment> findByUser_EmailContainingIgnoreCase(String email);
 
-    // 🔹 Buscar comentarios de un usuario específico
+    // Buscar comentarios de un usuario específico
     List<Comment> findByUser_Id(Long userId);
 
-    // 🔹 (Opcional) Buscar comentarios de un producto específico
-    List<Comment> findByProductIdProduct(Long productId);
+    //  Buscar comentarios de un producto específico
+    List<Comment> findByProduct_Id(Long productId);
 }

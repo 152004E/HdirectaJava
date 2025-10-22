@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import com.exe.Huerta_directa.Entity.CommentType;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,10 +16,9 @@ import java.time.LocalDate;
 public class CommentDTO {
 
     private Long idComment;
-    private String nameCommenter;
-    private String emailCommenter;
     private String commentCommenter;
     private LocalDate creationComment;
+    private CommentType commentType;
     private Long userId;      
     private Long productId;    
 }

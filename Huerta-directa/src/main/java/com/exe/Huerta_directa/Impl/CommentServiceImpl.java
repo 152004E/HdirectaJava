@@ -19,13 +19,13 @@ import jakarta.transaction.Transactional;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    // private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository,
             ProductRepository productRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
-        // this.productRepository = productRepository;
+        this.productRepository = productRepository;
     }
 
     // 🔹 Listar todos los comentarios
@@ -85,29 +85,32 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-    // 🔹 Listar comentarios por producto (si los comentarios están asociados a
-    // productos)
     @Override
     public List<CommentDTO> listarCommentsPorProducto(Long productId) {
-        return null;
+        return commentRepository.findByProduct_Id(productId)
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
     }
 
-    // 🔹 Listar comentarios por usuario
     @Override
     public List<CommentDTO> listarCommentsPorUsuario(Long userId) {
-        return null;
+        return commentRepository.findByUser_Id(userId)
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
     }
 
     // Convertir Entity a DTO
     private CommentDTO convertirADTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setIdComment(comment.getIdComment());
-        commentDTO.setEmailCommenter(comment.getEmailCommenter());
         commentDTO.setCommentCommenter(comment.getCommentCommenter());
         commentDTO.setCreationComment(comment.getCreationComment());
-        commentDTO.setNameCommenter(comment.getNameCommenter());
+        commentDTO.setCommentType(comment.getCommentType());
         commentDTO.setUserId(comment.getUser().getId());
-        commentDTO.setProductId(comment.getProduct().getIdProduct());
+        commentDTO.setProductId(
+                comment.getProduct() != null ? comment.getProduct().getIdProduct() : null);
 
         /*
          * private Long idComment;
@@ -126,22 +129,22 @@ public class CommentServiceImpl implements CommentService {
     private Comment convertirAEntity(CommentDTO commentDTO) {
         Comment commentEntity = new Comment();
         commentEntity.setIdComment(commentDTO.getIdComment());
-        commentEntity.setEmailCommenter(commentDTO.getEmailCommenter());
         commentEntity.setCommentCommenter(commentDTO.getCommentCommenter());
         commentEntity.setCreationComment(commentDTO.getCreationComment());
-        commentEntity.setNameCommenter(commentDTO.getNameCommenter());
+        commentEntity.setCommentType(commentDTO.getCommentType());
         commentEntity.setUser(userRepository.findById(commentDTO.getUserId()).orElse(null));
-        // commentEntity.setProduct(productRepository.findById(commentDTO.getProductId()).orElse(null));
+        if (commentDTO.getProductId() != null) {
+            commentEntity.setProduct(
+                    productRepository.findById(commentDTO.getProductId()).orElse(null));
+        }
 
         return commentEntity;
     }
     // Actualizar Entity con datos del DTO
 
     private void actualizarDatosComment(Comment comment, CommentDTO commentDTO) {
-        comment.setEmailCommenter(commentDTO.getEmailCommenter());
         comment.setCommentCommenter(commentDTO.getCommentCommenter());
         comment.setCreationComment(commentDTO.getCreationComment());
-        comment.setNameCommenter(commentDTO.getNameCommenter());
 
         if (commentDTO.getUserId() != null) {
             User user = userRepository.findById(commentDTO.getUserId())
