@@ -11,9 +11,13 @@
   <body class="bg-[#f7efd8] font-sans text-[#333]">
     <!-- HEADER -->
     <header
-      class="flex items-center justify-between bg-white p-4 shadow-md sticky top-0 z-50 container mx-auto"
+      class="flex items-center justify-between bg-white p-4 shadow-md sticky top-0 z-50 !w-full mx-auto"
     >
-      <a href="#" class="text-[#8dc84b] text-2xl font-semibold uppercase hover:text-[#028602] transition-colors">Huerta Directa</a>
+      <a
+        href="#"
+        class="text-[#8dc84b] text-2xl font-semibold uppercase hover:text-[#028602] transition-colors"
+        >Huerta Directa</a
+      >
 
       <input type="checkbox" id="menu" class="hidden peer" />
 
@@ -25,20 +29,39 @@
         class="hidden md:flex gap-5 peer-checked:flex peer-checked:flex-col absolute md:static top-16 left-0 right-0 bg-white md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none"
       >
         <ul class="flex flex-col md:flex-row gap-4 md:gap-6">
-          <li><a th:href="@{/}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Inicio</a></li>
-          <li><a th:href="@{/login}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Iniciar Sesión</a></li>
-          <li><a th:href="@{/#categorias}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Categoría</a></li>
-          
+          <li>
+            <a
+              th:href="@{/}"
+              class="text-lg font-semibold hover:text-gray-500 transition-colors"
+              >Inicio</a
+            >
+          </li>
+          <li>
+            <a
+              th:href="@{/login}"
+              class="text-lg font-semibold hover:text-gray-500 transition-colors"
+              >Iniciar Sesión</a
+            >
+          </li>
+          <li>
+            <a
+              th:href="@{/#categorias}"
+              class="text-lg font-semibold hover:text-gray-500 transition-colors"
+              >Categoría</a
+            >
+          </li>
         </ul>
       </nav>
     </header>
 
     <!-- SECCIÓN QUIÉNES SOMOS -->
     <section
-      class="bg-white max-w-3xl mx-auto my-16 p-8 rounded-xl shadow-lg"
+      class="bg-white w-[1400px] mx-auto flex items-start justify-center gap-10 mt-16 p-8 rounded-2xl"
     >
-      <div class="text-left">
-        <h1 class="text-4xl font-bold text-[#2e7d32] mb-6 text-center">Quiénes Somos</h1>
+      <div class="text-left p-8 border border-gray-400/60 rounded-2xl">
+        <h1 class="text-4xl font-bold text-[#2e7d32] mb-6 text-center">
+          Quiénes Somos
+        </h1>
         <p class="text-lg leading-relaxed mb-5">
           En <strong>Huerta Directa</strong>, creemos en el poder de lo natural
           y en el valor del trabajo local. Nacimos con el sueño de acercar
@@ -53,14 +76,18 @@
           de dedicación, esfuerzo y cariño.
         </p>
 
-        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">Nuestra Misión</h2>
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">
+          Nuestra Misión
+        </h2>
         <p class="text-lg leading-relaxed mb-5">
           Conectar a los consumidores con productos frescos, saludables y
           locales, apoyando la economía rural y promoviendo una alimentación
           consciente y sostenible.
         </p>
 
-        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">Nuestros Valores</h2>
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">
+          Nuestros Valores
+        </h2>
         <ul class="space-y-2 text-lg">
           <li>🌱 Compromiso con la naturaleza</li>
           <li>🤝 Transparencia y cercanía</li>
@@ -69,46 +96,416 @@
           <li>❤️ Pasión por lo que hacemos</li>
         </ul>
       </div>
+      <div class="border border-gray-400/60 rounded-2xl p-8 flex flex-col gap-20">
+        <article>
+          <h2 class="text-2xl font-semibold mb-5 text-[#333]">
+            💬 Queremos saber tu opinión: tu experiencia, sugerencias o ideas
+            nos ayudan a crecer y mejorar cada día. ¡Déjanos tu comentario!
+          </h2>
+
+          <form action="/api/comments/create" method="post" class="space-y-4">
+            <textarea
+              rows="5"
+              placeholder="Escribe tu comentario..."
+              name="commentCommenter"
+              required
+              class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
+            ></textarea>
+
+            <div
+              class="flex items-center justify-between flex-wrap gap-3 text-sm"
+            >
+              <label class="flex items-center gap-2">
+                <input type="checkbox" required class="accent-green-600" />
+                <span>
+                  Acepto los
+                  <a
+                    href="#"
+                    target="_blank"
+                    class="text-blue-600 hover:underline"
+                    >Términos y Condiciones</a
+                  >
+                </span>
+              </label>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-800 transition-colors"
+              >
+                Enviar
+              </button>
+            </div>
+          </form>
+        </article>
+        <article
+          class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm text-center"
+        >
+          <h2
+            class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-3"
+          >
+            Explora Nuestros Productos
+          </h2>
+          <p class="mb-6 text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+            Descubre la frescura y el sabor de lo auténtico, directamente del
+            campo a tu mesa.
+          </p>
+          <button
+            class="bg-brand-green-light hover:bg-lime-800 dark:bg-brand-green-dark dark:hover:bg-lime-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 shadow-lg transform hover:scale-105"
+          >
+            Ver Productos
+          </button>
+        </article>
+      </div>
     </section>
 
     <!-- SECCIÓN COMENTARIOS -->
-    <section
-      class="bg-white max-w-3xl mx-auto mb-16 p-8 rounded-xl shadow-lg"
-    >
-      <div>
-        <h2 class="text-2xl font-semibold mb-5 text-[#333]">
-          💬 Queremos saber tu opinión: tu experiencia, sugerencias o ideas nos
-          ayudan a crecer y mejorar cada día. ¡Déjanos tu comentario!
+    <section class="bg-white max-w-7xl mx-auto mt-20 p-8 rounded-xl shadow-lg">
+      <div class="space-y-6">
+        <h2
+          class="text-3xl font-bold text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-700 pb-4"
+        >
+          Dashboard del Foro
         </h2>
-
-        <form action="/api/comments/create" method="post"  class="space-y-4">
-          
-          <textarea
-            rows="5"
-            placeholder="Escribe tu comentario..."
-            name="commentCommenter"
-            required
-            class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
-          ></textarea>
-
-          <div class="flex items-center justify-between flex-wrap gap-3 text-sm">
-            <label class="flex items-center gap-2">
-              <input type="checkbox" required class="accent-green-600" />
-              <span>
-                Acepto los
-                <a href="#" target="_blank" class="text-blue-600 hover:underline">Términos y Condiciones</a>
-              </span>
-            </label>
-            <button
-              type="submit"
-              class="px-4  py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-800 transition-colors"
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div class="relative w-full sm:w-auto flex-grow">
+            <span
+              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              >search</span
             >
-              Enviar
-            </button>
+            <input
+              class="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-primary focus:border-primary transition duration-150 ease-in-out"
+              placeholder="Buscar temas por palabra clave..."
+              type="text"
+            />
           </div>
-        </form>
+          <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div class="relative w-full sm:w-auto">
+              <label class="sr-only" for="sort-by">Ordenar por</label>
+              <select
+                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150 ease-in-out py-2"
+                id="sort-by"
+                name="sort-by"
+              >
+                <option value="date-desc">Fecha (Más reciente)</option>
+                <option value="date-asc">Fecha (Más antiguo)</option>
+                <option value="popularity">Popularidad</option>
+                <option value="replies">Más respuestas</option>
+              </select>
+            </div>
+            <div class="relative w-full sm:w-auto">
+              <label class="sr-only" for="filter-category">Categoría</label>
+              <select
+                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150 ease-in-out py-2"
+                id="filter-category"
+                name="filter-category"
+              >
+                <option value="all">Todas las categorías</option>
+                <option value="feedback">Feedback</option>
+                <option value="suggestions">Sugerencias</option>
+                <option value="questions">Preguntas</option>
+                <option value="general">General</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">MG</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Excelente Servicio y Calidad
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      María González
+                      <span class="hidden sm:inline"
+                        >• maria.gonzalez@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  22 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  ¡El servicio es increíble! La entrega fue súper rápida y los
+                  productos de una calidad excepcional. Definitivamente volveré
+                  a comprar. ¡Muy recomendado!
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              3 Respuestas
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">JP</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Más Variedad de Productos Orgánicos
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Juan Pérez
+                      <span class="hidden sm:inline"
+                        >• juan.perez@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  19 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  Me gustaría que tuvieran más variedad de productos orgánicos.
+                  La calidad es buena, pero la selección es un poco limitada.
+                  Aún así, es una gran iniciativa.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              7 Respuestas
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">AR</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Soporte al Cliente Muy Eficiente
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Ana Rodríguez
+                      <span class="hidden sm:inline"
+                        >• ana.rodriguez@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  15 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  El equipo de soporte fue muy atento y resolvió mi duda al
+                  instante. Es genial ver un servicio al cliente tan eficiente.
+                  ¡Sigan así!
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              1 Respuesta
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-primary flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">LM</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Sugerencia para una Nueva Función
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Luis Martínez
+                      <span class="hidden sm:inline"
+                        >• luis.martinez@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  10 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  ¿Han considerado añadir una función de listas de deseos
+                  personalizables? Creo que sería muy útil para planificar
+                  compras futuras.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              5 Respuestas
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-orange-400 flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">SP</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Pregunta sobre Métodos de Pago
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Sofía Prieto
+                      <span class="hidden sm:inline"
+                        >• sofia.prieto@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  08 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  ¿Se aceptan pagos con PayPal o solo tarjetas de
+                  crédito/débito? Me gustaría tener más opciones para realizar
+                  mis compras.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              2 Respuestas
+            </div>
+          </div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start space-x-4 mb-4">
+              <div
+                class="flex-shrink-0 w-12 h-12 rounded-full bg-teal-500 flex items-center justify-center"
+              >
+                <span class="text-white text-xl font-bold">RR</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                    >
+                      Valorando la Iniciativa Ecológica
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Roberto Ruiz
+                      <span class="hidden sm:inline"
+                        >• roberto.ruiz@example.com</span
+                      >
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                    >expand_content</span
+                  >
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  05 de Octubre, 2025
+                </p>
+                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                  Me encanta que la empresa se preocupe por el medio ambiente.
+                  ¡Excelente trabajo con sus prácticas sostenibles!
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+            >
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+                >chat_bubble</span
+              >
+              4 Respuestas
+            </div>
+          </div>
+        </div>
       </div>
-    </section >
+    </section>
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>
