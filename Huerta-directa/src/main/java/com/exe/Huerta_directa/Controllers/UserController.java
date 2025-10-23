@@ -1,5 +1,9 @@
 package com.exe.Huerta_directa.Controllers;
 
+import com.exe.Huerta_directa.DTO.BulkEmailByRoleRequest;
+import com.exe.Huerta_directa.DTO.BulkEmailFilteredRequest;
+import com.exe.Huerta_directa.DTO.BulkEmailRequest;
+import com.exe.Huerta_directa.DTO.BulkEmailResponse;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
@@ -43,7 +47,8 @@ public class UserController {
     private static final String EMAIL_HOST = "smtp.gmail.com";
     private static final String EMAIL_PORT = "587";
     private static final String SENDER_EMAIL = "hdirecta@gmail.com";
-    // Nota: la contraseña de aplicación idealmente debe guardarse en properties/secret manager
+    // Nota: la contraseña de aplicación idealmente debe guardarse en
+    // properties/secret manager
     private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
 
     public UserController(UserService userService, UserRepository userRepository) {
@@ -289,13 +294,14 @@ public class UserController {
             response.getOutputStream().flush();
 
         } catch (Exception e) {
-            // Un único manejo de errores para cualquier excepción durante la generación del PDF
+            // Un único manejo de errores para cualquier excepción durante la generación del
+            // PDF
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         }
     }
 
-    //AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
+    // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
 
     @PostMapping("/register")
     public String seveUserView(
@@ -325,7 +331,7 @@ public class UserController {
                 session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
             }
 
-            //Enviar correo de confirmación
+            // Enviar correo de confirmación
             enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
 
             // Si querés iniciar sesión automáticamente y redirigir:
@@ -352,7 +358,7 @@ public class UserController {
 
     }
 
-    //MÉTODO PARA ENVIAR EL CORREO
+    // MÉTODO PARA ENVIAR EL CORREO
     private void enviarCorreoConfirmacion(String nombre, String email) throws MessagingException {
         Session session = crearSesionCorreo();
 
@@ -373,109 +379,110 @@ public class UserController {
     // Método para crear el contenido HTML del correo
     private String crearContenidoHTMLCorreo(String nombre) {
         return """
-            <!DOCTYPE html>
-            <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Bienvenido a Huerta Directa</title>
-            </head>
-            <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
-                <table role="presentation" style="width: 100%%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 0;">
-                            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                                <!-- Header con gradiente verde -->
-                                <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
-                                    <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                        🌱 Huerta Directa
-                                    </h1>
-                                    <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-                                        Conectando el campo con tu mesa
-                                    </p>
-                                </div>
-                                
-                                <!-- Contenido principal -->
-                                <div style="padding: 40px 30px;">
-                                    <div style="text-align: center; margin-bottom: 30px;">
-                                        <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
-                                            ✅
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Bienvenido a Huerta Directa</title>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
+                    <table role="presentation" style="width: 100%%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    <!-- Header con gradiente verde -->
+                                    <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                            🌱 Huerta Directa
+                                        </h1>
+                                        <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
+                                            Conectando el campo con tu mesa
+                                        </p>
+                                    </div>
+
+                                    <!-- Contenido principal -->
+                                    <div style="padding: 40px 30px;">
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
+                                                ✅
+                                            </div>
+                                            <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
+                                                ¡Registro Exitoso!
+                                            </h2>
                                         </div>
-                                        <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
-                                            ¡Registro Exitoso!
-                                        </h2>
-                                    </div>
-                                    
-                                    <div style="text-align: center; margin-bottom: 30px;">
-                                        <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
-                                            ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
-                                        </p>
-                                        <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-                                            Tu cuenta en <strong>Huerta Directa</strong> ha sido creada exitosamente. 
-                                            Ahora formas parte de nuestra comunidad que conecta directamente a productores 
-                                            campesinos con consumidores como tú.
-                                        </p>
-                                    </div>
-                                    
-                                    <!-- Beneficios -->
-                                    <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
-                                        <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
-                                            🧺 ¿Qué puedes hacer ahora?
-                                        </h3>
-                                        <div style="text-align: left;">
-                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                🥕 <strong>Explorar productos frescos</strong> directamente de la huerta
+
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
+                                                ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
                                             </p>
-                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                🚚 <strong>Realizar pedidos</strong> con entrega a domicilio
-                                            </p>
-                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                👨‍🌾 <strong>Conocer a los productores</strong> detrás de tus alimentos
-                                            </p>
-                                            <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                💚 <strong>Apoyar la agricultura local</strong> y sostenible
+                                            <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                                                Tu cuenta en <strong>Huerta Directa</strong> ha sido creada exitosamente.
+                                                Ahora formas parte de nuestra comunidad que conecta directamente a productores
+                                                campesinos con consumidores como tú.
                                             </p>
                                         </div>
+
+                                        <!-- Beneficios -->
+                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                                            <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
+                                                🧺 ¿Qué puedes hacer ahora?
+                                            </h3>
+                                            <div style="text-align: left;">
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    🥕 <strong>Explorar productos frescos</strong> directamente de la huerta
+                                                </p>
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    🚚 <strong>Realizar pedidos</strong> con entrega a domicilio
+                                                </p>
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    👨‍🌾 <strong>Conocer a los productores</strong> detrás de tus alimentos
+                                                </p>
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    💚 <strong>Apoyar la agricultura local</strong> y sostenible
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Botón de acción -->
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
+                                                🌟 Comenzar a Explorar
+                                            </a>
+                                        </div>
+
+                                        <!-- Mensaje de agradecimiento -->
+                                        <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
+                                            <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
+                                                Gracias por unirte a nuestra misión de acercar el campo a tu mesa.<br>
+                                                <strong style="color: #689f38;">¡Juntos construimos un futuro más verde! 🌍</strong>
+                                            </p>
+                                        </div>
                                     </div>
-                                    
-                                    <!-- Botón de acción -->
-                                    <div style="text-align: center; margin-bottom: 30px;">
-                                        <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
-                                            🌟 Comenzar a Explorar
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- Mensaje de agradecimiento -->
-                                    <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
-                                        <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
-                                            Gracias por unirte a nuestra misión de acercar el campo a tu mesa.<br>
-                                            <strong style="color: #689f38;">¡Juntos construimos un futuro más verde! 🌍</strong>
+
+                                    <!-- Footer -->
+                                    <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
+                                        <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
+                                            El equipo de Huerta Directa 🌱
                                         </p>
+                                        <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
+                                            Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
+                                        </p>
+                                        <div style="margin-top: 15px;">
+                                            <span style="color: #c8e6c9; font-size: 12px;">
+                                                © 2024 Huerta Directa - Todos los derechos reservados
+                                            </span>
+                                        </div>
                                     </div>
+
                                 </div>
-                                
-                                <!-- Footer -->
-                                <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
-                                    <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
-                                        El equipo de Huerta Directa 🌱
-                                    </p>
-                                    <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
-                                        Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
-                                    </p>
-                                    <div style="margin-top: 15px;">
-                                        <span style="color: #c8e6c9; font-size: 12px;">
-                                            © 2024 Huerta Directa - Todos los derechos reservados
-                                        </span>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </body>
-            </html>
-            """.formatted(nombre);
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+                """
+                .formatted(nombre);
     }
 
     // Método reutilizable para crear la sesión de correo con las constantes
@@ -517,7 +524,6 @@ public class UserController {
             return "redirect:/index";
         }
     }
-
 
     @PostMapping("/FormAdmin")
     public String registrarAdmin(
@@ -684,5 +690,182 @@ public class UserController {
         }
 
         return user;
+    }
+
+    // ========== ENVÍO DE CORREOS MASIVOS ==========
+
+    /**
+     * Endpoint para enviar correo masivo a todos los usuarios
+     */
+    @PostMapping("/send-bulk-email")
+    @ResponseBody
+    public ResponseEntity<BulkEmailResponse> enviarCorreoMasivo(@RequestBody BulkEmailRequest request) {
+        try {
+            List<User> users = userRepository.findAll().stream()
+                    .filter(user -> user.getEmail() != null && !user.getEmail().isEmpty())
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (users.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
+            }
+
+            int successCount = 0;
+            int failureCount = 0;
+            List<String> failedEmails = new java.util.ArrayList<>();
+
+            for (User user : users) {
+                try {
+                    String personalizedBody = request.getBody()
+                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
+                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
+
+                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
+                    successCount++;
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    failureCount++;
+                    failedEmails.add(user.getEmail());
+                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
+                }
+            }
+
+            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount, "Envío masivo completado");
+            response.setFailedEmails(failedEmails);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BulkEmailResponse(0, 0, "Error en el envío masivo: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Endpoint para enviar correo masivo filtrado por IDs o emails
+     */
+    @PostMapping("/send-bulk-email-filtered")
+    @ResponseBody
+    public ResponseEntity<BulkEmailResponse> enviarCorreoMasivoFiltrado(@RequestBody BulkEmailFilteredRequest request) {
+        try {
+            List<User> users = new java.util.ArrayList<>();
+
+            if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
+                users = userRepository.findAllById(request.getUserIds());
+            } else if (request.getEmails() != null && !request.getEmails().isEmpty()) {
+                users = userRepository.findByEmailIn(request.getEmails());
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(new BulkEmailResponse(0, 0, "Debe proporcionar IDs de usuarios o emails"));
+            }
+
+            users = users.stream()
+                    .filter(user -> user.getEmail() != null && !user.getEmail().isEmpty())
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (users.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
+            }
+
+            int successCount = 0;
+            int failureCount = 0;
+            List<String> failedEmails = new java.util.ArrayList<>();
+
+            for (User user : users) {
+                try {
+                    String personalizedBody = request.getBody()
+                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
+                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
+
+                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
+                    successCount++;
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    failureCount++;
+                    failedEmails.add(user.getEmail());
+                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
+                }
+            }
+
+            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
+                    "Envío masivo filtrado completado");
+            response.setFailedEmails(failedEmails);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Endpoint para enviar correo masivo por rol
+     */
+    @PostMapping("/send-bulk-email-by-role")
+    @ResponseBody
+    public ResponseEntity<BulkEmailResponse> enviarCorreoMasivoPorRol(@RequestBody BulkEmailByRoleRequest request) {
+        try {
+            List<User> users = userRepository.findAll().stream()
+                    .filter(user -> user.getEmail() != null && !user.getEmail().isEmpty())
+                    .filter(user -> user.getRole() != null && user.getRole().getIdRole().equals(request.getIdRole()))
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (users.isEmpty()) {
+                String roleName = request.getIdRole() == 1 ? "Administradores" : "Clientes";
+                return ResponseEntity.badRequest()
+                        .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
+            }
+
+            int successCount = 0;
+            int failureCount = 0;
+            List<String> failedEmails = new java.util.ArrayList<>();
+
+            for (User user : users) {
+                try {
+                    String personalizedBody = request.getBody()
+                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
+                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
+
+                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
+                    successCount++;
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    failureCount++;
+                    failedEmails.add(user.getEmail());
+                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
+                }
+            }
+
+            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
+                    "Envío masivo por rol completado");
+            response.setFailedEmails(failedEmails);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Método privado para enviar correo personalizado
+     */
+    private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
+            throws MessagingException {
+        Session session = crearSesionCorreo();
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject(asunto);
+
+        // Detectar si el cuerpo es HTML o texto plano
+        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+            message.setContent(cuerpo, "text/html; charset=utf-8");
+        } else {
+            message.setText(cuerpo, "utf-8");
+        }
+
+        Transport.send(message);
     }
 }

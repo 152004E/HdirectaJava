@@ -18,6 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     // Buscar comentarios de un usuario específico
     List<Comment> findByUser_Id(Long userId);
 
-    //  Buscar comentarios de un producto específico
-    List<Comment> findByProduct_Id(Long productId);
+    // Buscar comentarios de un producto específico (campo correcto)
+    List<Comment> findByProduct_IdProduct(Long productId);
 }
