@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
 import com.exe.Huerta_directa.Entity.Comment;
+import com.exe.Huerta_directa.Entity.CommentType;
+import com.exe.Huerta_directa.Entity.Product;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.CommentRepository;
 import com.exe.Huerta_directa.Repository.ProductRepository;
@@ -48,16 +50,29 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDTO crearComment(CommentDTO commentDTO, Long userId, Long productId) {
-        // buscar el usuario
+        // Buscar el usuario
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el id " + userId));
 
-        // Covertir el comentario a entidad
+        // Convertir el DTO a entidad
         Comment comment = convertirAEntity(commentDTO);
-        comment.setUser(user); // le asigamos el comentario al user
+        comment.setUser(user); // Asocia el comentario con el usuario
 
+        // Si el comentario está relacionado con un producto
+        if (productId != null) {
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado con el id " + productId));
+            comment.setProduct(product);
+            comment.setCommentType(CommentType.PRODUCT);
+        } else {
+            // Si no hay producto, es un comentario general del sitio
+            comment.setCommentType(CommentType.SITE);
+        }
+
+        // Guardar el comentario
         Comment newComment = commentRepository.save(comment);
 
+        // Retornar DTO
         return convertirADTO(newComment);
     }
 
@@ -87,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> listarCommentsPorProducto(Long productId) {
-        return commentRepository.findByProduct_Id(productId)
+        return commentRepository.findByProduct_IdProduct(productId)
                 .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());

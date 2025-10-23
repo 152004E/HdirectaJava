@@ -28,7 +28,7 @@
           <li><a th:href="@{/}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Inicio</a></li>
           <li><a th:href="@{/login}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Iniciar Sesión</a></li>
           <li><a th:href="@{/#categorias}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Categoría</a></li>
-          <li><a th:href="@{/Quienes_somos}" class="text-lg font-semibold hover:text-gray-500 transition-colors">Quiénes Somos</a></li>
+          
         </ul>
       </nav>
     </header>
@@ -81,23 +81,12 @@
           ayudan a crecer y mejorar cada día. ¡Déjanos tu comentario!
         </h2>
 
-        <form action="#" method="post" class="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre"
-            name="NombreUsuario"
-            required
-            class="w-full p-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            required
-            class="w-full p-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+        <form action="/api/comments/create" method="post"  class="space-y-4">
+          
           <textarea
             rows="5"
             placeholder="Escribe tu comentario..."
+            name="commentCommenter"
             required
             class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
           ></textarea>
