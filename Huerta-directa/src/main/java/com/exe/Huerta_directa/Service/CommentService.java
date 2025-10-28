@@ -1,6 +1,9 @@
 package com.exe.Huerta_directa.Service;
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
+import com.exe.Huerta_directa.Entity.Comment;
+import com.exe.Huerta_directa.Entity.CommentType;
+
 import java.util.List;
 
 public interface CommentService {
@@ -25,4 +28,7 @@ public interface CommentService {
 
     // Listar comentarios por usuario
     List<CommentDTO> listarCommentsPorUsuario(Long userId);
+
+    //lista los comentarios por producto o sitio
+    List<Comment> obtenerComentariosPorTipo(CommentType commentType);
 }
