@@ -96,7 +96,9 @@
           <li>❤️ Pasión por lo que hacemos</li>
         </ul>
       </div>
-      <div class="border border-gray-400/60 rounded-2xl p-8 flex flex-col gap-20">
+      <div
+        class="border border-gray-400/60 rounded-2xl p-8 flex flex-col gap-20"
+      >
         <article>
           <h2 class="text-2xl font-semibold mb-5 text-[#333]">
             💬 Queremos saber tu opinión: tu experiencia, sugerencias o ideas
@@ -122,14 +124,14 @@
                   <a
                     href="#"
                     target="_blank"
-                    class="text-blue-600 hover:underline"
+                    class="text-[#558b2f] hover:underline"
                     >Términos y Condiciones</a
                   >
                 </span>
               </label>
               <button
                 type="submit"
-                class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-800 transition-colors"
+                class="px-4 py-2 bg-[#558b2f] text-white hover:bg-[#385c1e] font-semibold rounded-md transition-colors cursor-pointer"
               >
                 Enviar
               </button>
@@ -137,81 +139,37 @@
           </form>
         </article>
         <article
-          class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm text-center"
+          class="bg-white p-8 rounded-lg shadow-sm text-center border-2 border-gray-300"
         >
-          <h2
-            class="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-3"
-          >
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">
             Explora Nuestros Productos
           </h2>
-          <p class="mb-6 text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+          <p class="mb-6 text-gray-600 max-w-md mx-auto">
             Descubre la frescura y el sabor de lo auténtico, directamente del
             campo a tu mesa.
           </p>
-          <button
-            class="bg-brand-green-light hover:bg-lime-800 dark:bg-brand-green-dark dark:hover:bg-lime-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 shadow-lg transform hover:scale-105"
+          <a
+            th:href="@{/#lista-1}"
+            class="bg-[#558b2f] text-white hover:bg-[#385c1e] py-3 px-8 rounded-lg transition-all duration-500 shadow-lg transform cursor-pointer"
           >
             Ver Productos
-          </button>
+          </a>
         </article>
       </div>
     </section>
 
     <!-- SECCIÓN COMENTARIOS -->
-    <section class="bg-white max-w-7xl mx-auto mt-20 p-8 rounded-xl shadow-lg">
+    <section class="bg-white w-[1400px] mx-auto my-20 p-8 rounded-xl shadow-lg  ">
       <div class="space-y-6">
         <h2
-          class="text-3xl font-bold text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-700 pb-4"
+          class="text-3xl font-bold text-gray-900 border-b border-gray-300 pb-4"
         >
-          Dashboard del Foro
+           Foro De Huerta Directa
         </h2>
-        <div
-          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-        >
-          <div class="relative w-full sm:w-auto flex-grow">
-            <span
-              class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              >search</span
-            >
-            <input
-              class="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-primary focus:border-primary transition duration-150 ease-in-out"
-              placeholder="Buscar temas por palabra clave..."
-              type="text"
-            />
-          </div>
-          <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <div class="relative w-full sm:w-auto">
-              <label class="sr-only" for="sort-by">Ordenar por</label>
-              <select
-                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150 ease-in-out py-2"
-                id="sort-by"
-                name="sort-by"
-              >
-                <option value="date-desc">Fecha (Más reciente)</option>
-                <option value="date-asc">Fecha (Más antiguo)</option>
-                <option value="popularity">Popularidad</option>
-                <option value="replies">Más respuestas</option>
-              </select>
-            </div>
-            <div class="relative w-full sm:w-auto">
-              <label class="sr-only" for="filter-category">Categoría</label>
-              <select
-                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-primary focus:border-primary transition duration-150 ease-in-out py-2"
-                id="filter-category"
-                name="filter-category"
-              >
-                <option value="all">Todas las categorías</option>
-                <option value="feedback">Feedback</option>
-                <option value="suggestions">Sugerencias</option>
-                <option value="questions">Preguntas</option>
-                <option value="general">General</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -223,11 +181,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Excelente Servicio y Calidad
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       María González
                       <span class="hidden sm:inline"
                         >• maria.gonzalez@example.com</span
@@ -239,10 +197,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  22 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">22 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   ¡El servicio es increíble! La entrega fue súper rápida y los
                   productos de una calidad excepcional. Definitivamente volveré
                   a comprar. ¡Muy recomendado!
@@ -260,7 +216,7 @@
             </div>
           </div>
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -272,11 +228,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Más Variedad de Productos Orgánicos
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       Juan Pérez
                       <span class="hidden sm:inline"
                         >• juan.perez@example.com</span
@@ -288,10 +244,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  19 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">19 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   Me gustaría que tuvieran más variedad de productos orgánicos.
                   La calidad es buena, pero la selección es un poco limitada.
                   Aún así, es una gran iniciativa.
@@ -309,7 +263,7 @@
             </div>
           </div>
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -321,11 +275,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Soporte al Cliente Muy Eficiente
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       Ana Rodríguez
                       <span class="hidden sm:inline"
                         >• ana.rodriguez@example.com</span
@@ -337,10 +291,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  15 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">15 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   El equipo de soporte fue muy atento y resolvió mi duda al
                   instante. Es genial ver un servicio al cliente tan eficiente.
                   ¡Sigan así!
@@ -358,7 +310,7 @@
             </div>
           </div>
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -370,11 +322,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Sugerencia para una Nueva Función
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       Luis Martínez
                       <span class="hidden sm:inline"
                         >• luis.martinez@example.com</span
@@ -386,10 +338,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  10 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">10 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   ¿Han considerado añadir una función de listas de deseos
                   personalizables? Creo que sería muy útil para planificar
                   compras futuras.
@@ -407,7 +357,7 @@
             </div>
           </div>
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -419,11 +369,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Pregunta sobre Métodos de Pago
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       Sofía Prieto
                       <span class="hidden sm:inline"
                         >• sofia.prieto@example.com</span
@@ -435,10 +385,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  08 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">08 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   ¿Se aceptan pagos con PayPal o solo tarjetas de
                   crédito/débito? Me gustaría tener más opciones para realizar
                   mis compras.
@@ -456,7 +404,7 @@
             </div>
           </div>
           <div
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-black/20 p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
           >
             <div class="flex items-start space-x-4 mb-4">
               <div
@@ -468,11 +416,11 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <p
-                      class="text-lg font-semibold text-gray-900 dark:text-white leading-tight"
+                      class="text-lg font-semibold text-gray-900 leading-tight"
                     >
                       Valorando la Iniciativa Ecológica
                     </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm text-gray-500 mt-1">
                       Roberto Ruiz
                       <span class="hidden sm:inline"
                         >• roberto.ruiz@example.com</span
@@ -484,10 +432,8 @@
                     >expand_content</span
                   >
                 </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  05 de Octubre, 2025
-                </p>
-                <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3">
+                <p class="text-xs text-gray-500 mt-2">05 de Octubre, 2025</p>
+                <p class="mt-3 text-gray-700 line-clamp-3">
                   Me encanta que la empresa se preocupe por el medio ambiente.
                   ¡Excelente trabajo con sus prácticas sostenibles!
                 </p>
@@ -506,6 +452,7 @@
         </div>
       </div>
     </section>
+
     <div th:replace="fragments/footer :: footer"></div>
   </body>
 </html>

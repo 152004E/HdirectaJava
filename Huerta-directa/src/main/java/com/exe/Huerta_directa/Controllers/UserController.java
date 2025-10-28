@@ -509,7 +509,7 @@ public class UserController {
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null || !user.getPassword().equals(password)) {
-            model.addAttribute("error", "Correo o contraseña incorrectos, haciendo un commit por que aja");
+            model.addAttribute("error", "Correo o contraseña incorrectos");
             model.addAttribute("userDTO", new UserDTO()); // importante para no romper el form
             return "login/login";
         }
@@ -868,4 +868,197 @@ public class UserController {
 
         Transport.send(message);
     }
+
+    // ========== RECUPERACIÓN DE CONTRASEÑA ==========
+
+    /**
+     * Endpoint para solicitar recuperación de contraseña - Versión simple como el registro
+     */
+    @PostMapping("/forgot-password")
+    public String solicitarRecuperacionContrasena(@RequestParam String email, RedirectAttributes redirectAttributes) {
+        try {
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo mensaje
+                redirectAttributes.addFlashAttribute("success",
+                    "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+                return "redirect:/forgot-password";
+            }
+
+            // Generar nueva contraseña aleatoria
+            String nuevaContrasena = generarContrasenaAleatoria();
+
+            // Actualizar contraseña en la base de datos
+            user.setPassword(nuevaContrasena);
+            userRepository.save(user);
+
+            // Enviar correo con la nueva contraseña
+            enviarCorreoNuevaContrasena(user.getName(), email, nuevaContrasena);
+
+            System.out.println("🔐 Nueva contraseña generada para: " + email);
+
+            redirectAttributes.addFlashAttribute("success",
+                "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+            return "redirect:/forgot-password";
+
+        } catch (Exception e) {
+            System.err.println("❌ Error en recuperación de contraseña: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error",
+                "Error al procesar la solicitud. Por favor, intenta nuevamente");
+            return "redirect:/forgot-password";
+        }
+    }
+
+    /**
+     * Método para generar una contraseña aleatoria segura
+     */
+    private String generarContrasenaAleatoria() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        java.util.Random random = new java.util.Random();
+        StringBuilder contrasena = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(caracteres.length());
+            contrasena.append(caracteres.charAt(index));
+        }
+
+        return contrasena.toString();
+    }
+
+    /**
+     * Método para enviar correo con la nueva contraseña
+     */
+    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena) throws MessagingException {
+        Session session = crearSesionCorreo();
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+        message.setSubject("🔑 Tu nueva contraseña - Huerta Directa");
+
+        String htmlContent = crearContenidoHTMLNuevaContrasena(nombre, nuevaContrasena);
+        message.setContent(htmlContent, "text/html; charset=utf-8");
+
+        Transport.send(message);
+    }
+
+    /**
+     * Método para crear el contenido HTML del correo con la nueva contraseña
+     */
+    private String crearContenidoHTMLNuevaContrasena(String nombre, String nuevaContrasena) {
+        return """
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Nueva Contraseña - Huerta Directa</title>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
+                    <table role="presentation" style="width: 100%%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    <!-- Header -->
+                                    <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
+                                            🌱 Huerta Directa
+                                        </h1>
+                                        <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
+                                            Nueva Contraseña Generada
+                                        </p>
+                                    </div>
+
+                                    <!-- Contenido principal -->
+                                    <div style="padding: 40px 30px;">
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
+                                                🔑
+                                            </div>
+                                            <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
+                                                ¡Nueva Contraseña Lista!
+                                            </h2>
+                                        </div>
+
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
+                                                ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
+                                            </p>
+                                            <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                                                Hemos generado una nueva contraseña para tu cuenta en <strong>Huerta Directa</strong>.
+                                                Ya puedes iniciar sesión con esta nueva contraseña.
+                                            </p>
+                                        </div>
+
+                                        <!-- Nueva contraseña -->
+                                        <div style="background-color: #f8f9fa; border: 2px dashed #8dc84b; border-radius: 15px; padding: 25px; margin-bottom: 30px; text-align: center;">
+                                            <h3 style="color: #2e7d32; margin: 0 0 15px 0; font-size: 18px;">
+                                                🔐 Tu Nueva Contraseña
+                                            </h3>
+                                            <div style="background-color: #ffffff; border: 2px solid #8dc84b; border-radius: 10px; padding: 15px; margin: 10px 0;">
+                                                <span style="font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #2e7d32; letter-spacing: 2px;">
+                                                    %s
+                                                </span>
+                                            </div>
+                                            <p style="color: #666666; font-size: 12px; margin: 10px 0 0 0;">
+                                                Copia esta contraseña exactamente como aparece
+                                            </p>
+                                        </div>
+
+                                        <!-- Instrucciones -->
+                                        <div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                                            <h3 style="color: #f57c00; margin: 0 0 15px 0; font-size: 16px; text-align: center;">
+                                                📋 Próximos Pasos
+                                            </h3>
+                                            <div style="text-align: left;">
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    1️⃣ Ve a la página de inicio de sesión
+                                                </p>
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    2️⃣ Usa tu email y esta nueva contraseña
+                                                </p>
+                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
+                                                    3️⃣ ¡Recomendamos cambiarla por una personalizada!
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Botón de acción -->
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <a href="http://localhost:8080/login" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3);">
+                                                🚀 Iniciar Sesión Ahora
+                                            </a>
+                                        </div>
+
+                                        <!-- Mensaje de seguridad -->
+                                        <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
+                                            <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
+                                                Si no solicitaste este cambio, contacta inmediatamente con soporte.<br>
+                                                <strong style="color: #689f38;">Tu cuenta está segura con nosotros 🛡️</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Footer -->
+                                    <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
+                                        <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
+                                            El equipo de Huerta Directa 🌱
+                                        </p>
+                                        <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
+                                            Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+                """
+                .formatted(nombre, nuevaContrasena);
+    }
+
 }
+
