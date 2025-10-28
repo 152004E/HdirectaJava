@@ -151,10 +151,10 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    @GetMapping("/Quienes_somos")
-    public String mostrarQuienes_somos() {
-        return "Quienes_somos/quienes_somos";
-    }
+    // @GetMapping("/Quienes_somos")
+    // public String mostrarQuienes_somos() {
+    //     return "Quienes_somos/quienes_somos";
+    // }
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {

@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.ui.Model; // ✅ IMPORT CORRECTO
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
 import com.exe.Huerta_directa.Entity.Comment;
@@ -16,13 +16,10 @@ import com.exe.Huerta_directa.Entity.CommentType;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.CommentService;
 
-import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
-
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@RequestMapping("/api/comments")
 @CrossOrigin(origins = "*")
 public class CommentController {
 
@@ -65,6 +62,17 @@ public class CommentController {
 
     }
 
-   
+    // ✅ GET — Mostrar comentarios tipo SITE (para la página "quienes somos")
+    @GetMapping("/Quienes_somos")
+    public String mostrarComentariosSitio(Model model) {
+        // Obtener lista de comentarios tipo SITE
+        List<Comment> comments = commentService.obtenerComentariosPorTipo(CommentType.SITE);
+
+        // Agregar lista al modelo para Thymeleaf
+        model.addAttribute("comments", comments);
+
+        // Renderiza la plantilla Quienes_somos.html
+        return "Quienes_somos/quienes_somos";
+    }
 
 }
