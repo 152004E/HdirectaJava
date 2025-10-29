@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <body class="min-h-screen flex flex-col">
+    <section
+    th:fragment="formQuienesSomos"
+      class="bg-white w-[1400px] mx-auto flex items-start justify-center gap-10 mt-16 p-8 rounded-2xl"
+    >
+      <div class="text-left p-8 border border-gray-400/60 rounded-2xl">
+        <h1 class="text-4xl font-bold text-[#2e7d32] mb-6 text-center">
+          Quiénes Somos
+        </h1>
+        <p class="text-lg leading-relaxed mb-5">
+          En <strong>Huerta Directa</strong>, creemos en el poder de lo natural
+          y en el valor del trabajo local. Nacimos con el sueño de acercar
+          productos frescos del campo directamente a tu mesa, sin intermediarios
+          y con el sabor auténtico de lo hecho con amor.
+        </p>
+
+        <p class="text-lg leading-relaxed mb-5">
+          Nuestro equipo está formado por pequeños productores comprometidos con
+          prácticas sostenibles, respetuosas con la tierra y con las personas.
+          Cada fruta, verdura o producto que recibes tiene detrás una historia
+          de dedicación, esfuerzo y cariño.
+        </p>
+
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">
+          Nuestra Misión
+        </h2>
+        <p class="text-lg leading-relaxed mb-5">
+          Conectar a los consumidores con productos frescos, saludables y
+          locales, apoyando la economía rural y promoviendo una alimentación
+          consciente y sostenible.
+        </p>
+
+        <h2 class="text-2xl font-semibold text-[#558b2f] mt-8 mb-2">
+          Nuestros Valores
+        </h2>
+        <ul class="space-y-2 text-lg">
+          <li>🌱 Compromiso con la naturaleza</li>
+          <li>🤝 Transparencia y cercanía</li>
+          <li>🚜 Apoyo al productor local</li>
+          <li>📦 Entregas responsables</li>
+          <li>❤️ Pasión por lo que hacemos</li>
+        </ul>
+      </div>
+      <div
+        class="border border-gray-400/60 rounded-2xl p-8 flex flex-col gap-20"
+      >
+        <article>
+          <h2 class="text-2xl font-semibold mb-5 text-[#333]">
+            💬 Queremos saber tu opinión: tu experiencia, sugerencias o ideas
+            nos ayudan a crecer y mejorar cada día. ¡Déjanos tu comentario!
+          </h2>
+
+          <form action="/create" method="post" class="space-y-4">
+            <textarea
+              rows="5"
+              placeholder="Escribe tu comentario..."
+              name="commentCommenter"
+              required
+              class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
+            ></textarea>
+
+            <div
+              class="flex items-center justify-between flex-wrap gap-3 text-sm"
+            >
+              <label class="flex items-center gap-2">
+                <input type="checkbox" required class="accent-green-600" />
+                <span>
+                  Acepto los
+                  <a
+                    href="#"
+                    target="_blank"
+                    class="text-[#558b2f] hover:underline"
+                    >Términos y Condiciones</a
+                  >
+                </span>
+              </label>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-[#558b2f] text-white hover:bg-[#385c1e] font-semibold rounded-md transition-colors cursor-pointer"
+              >
+                Enviar
+              </button>
+            </div>
+          </form>
+        </article>
+        <article
+          class="bg-white p-8 rounded-lg shadow-sm text-center border-2 border-gray-300"
+        >
+          <h2 class="text-2xl font-semibold text-gray-800 mb-3">
+            Explora Nuestros Productos
+          </h2>
+          <p class="mb-6 text-gray-600 max-w-md mx-auto">
+            Descubre la frescura y el sabor de lo auténtico, directamente del
+            campo a tu mesa.
+          </p>
+          <a
+            th:href="@{/#lista-1}"
+            class="bg-[#558b2f] text-white hover:bg-[#385c1e] py-3 px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer"
+          >
+            Ver Productos
+          </a>
+        </article>
+      </div>
+    </section>
+  </body>
+</html>
