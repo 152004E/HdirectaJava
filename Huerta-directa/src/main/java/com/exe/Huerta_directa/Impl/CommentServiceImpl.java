@@ -76,6 +76,11 @@ public class CommentServiceImpl implements CommentService {
         return convertirADTO(newComment);
     }
 
+    @Override
+    public List<Comment> obtenerComentariosPorTipo(CommentType commentType) {
+        return commentRepository.findByCommentType(commentType);
+    }
+
     // 🔹 Actualizar un comentario existente
     @Transactional
     @Override
