@@ -870,8 +870,23 @@
   .bg-\[\#dc3545\] {
     background-color: #dc3545;
   }
+  .bg-\[\#dff7d8\] {
+    background-color: #dff7d8;
+  }
+  .bg-\[\#e3f6dd\] {
+    background-color: #e3f6dd;
+  }
+  .bg-\[\#e5f5e0\] {
+    background-color: #e5f5e0;
+  }
+  .bg-\[\#eaf5e7\] {
+    background-color: #eaf5e7;
+  }
   .bg-\[\#f7efd8\] {
     background-color: #f7efd8;
+  }
+  .bg-\[\#f7efd\] {
+    background-color: #f7efd;
   }
   .bg-\[\#f8d7da\] {
     background-color: #f8d7da;
@@ -885,6 +900,15 @@
   .bg-\[\#fff5dc\] {
     background-color: #fff5dc;
   }
+  .bg-\[8bc34a\] {
+    background-color: 8bc34a;
+  }
+  .bg-\[amber-400\] {
+    background-color: amber-400;
+  }
+  .bg-\[f7efd\] {
+    background-color: f7efd;
+  }
   .bg-\[var\(\&\#45\;\&\#45\;primary\)\] {
     background-color: var(&#45;&#45;primary);
   }
@@ -893,6 +917,9 @@
   }
   .bg-\[var\(\&\#45\;\&\#45\;white\)\] {
     background-color: var(&#45;&#45;white);
+  }
+  .bg-amber-400 {
+    background-color: var(--color-amber-400);
   }
   .bg-black {
     background-color: var(--color-black);
@@ -1482,6 +1509,16 @@
       }
     }
   }
+  .hover\:scale-0 {
+    &:hover {
+      @media (hover: hover) {
+        --tw-scale-x: 0%;
+        --tw-scale-y: 0%;
+        --tw-scale-z: 0%;
+        scale: var(--tw-scale-x) var(--tw-scale-y);
+      }
+    }
+  }
   .hover\:scale-105 {
     &:hover {
       @media (hover: hover) {
@@ -1502,10 +1539,38 @@
       }
     }
   }
+  .hover\:scale-\[1\.1\] {
+    &:hover {
+      @media (hover: hover) {
+        scale: 1.1;
+      }
+    }
+  }
+  .hover\:scale-\[1\.03\] {
+    &:hover {
+      @media (hover: hover) {
+        scale: 1.03;
+      }
+    }
+  }
   .hover\:scale-\[1\.05\] {
     &:hover {
       @media (hover: hover) {
         scale: 1.05;
+      }
+    }
+  }
+  .hover\:scale-\[1\.\] {
+    &:hover {
+      @media (hover: hover) {
+        scale: 1.;
+      }
+    }
+  }
+  .hover\:scale-\[2\] {
+    &:hover {
+      @media (hover: hover) {
+        scale: 2;
       }
     }
   }

@@ -6,6 +6,12 @@
     <title>Quiénes Somos - Huerta Directa</title>
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
     <link rel="stylesheet" href="/css/output.css" />
+
+    <!--font de iconos-->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
   </head>
 
   <body class="bg-[#f7efd8] font-sans text-[#333]">
@@ -150,7 +156,7 @@
           </p>
           <a
             th:href="@{/#lista-1}"
-            class="bg-[#558b2f] text-white hover:bg-[#385c1e] py-3 px-8 rounded-lg transition-all duration-500 shadow-lg transform cursor-pointer"
+            class="bg-[#558b2f] text-white hover:bg-[#385c1e] py-3 px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer"
           >
             Ver Productos
           </a>
@@ -159,96 +165,100 @@
     </section>
 
     <!-- SECCIÓN COMENTARIOS -->
-<section class="bg-white w-[1400px] mx-auto my-20 p-8 rounded-xl shadow-lg">
-  <div class="space-y-6">
-    <h2 class="text-3xl font-bold text-gray-900 border-b border-gray-300 pb-4">
-      Foro De Huerta Directa
-    </h2>
+    <section class="bg-white w-[1400px] mx-auto my-20 p-8 rounded-xl shadow-lg">
+      <div class="space-y-6">
+        <h2
+          class="text-3xl font-bold text-gray-900 border-b border-gray-300 pb-4"
+        >
+          Foro De Huerta Directa
+        </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Iterar los comentarios -->
-      <div
-        th:each="comment : ${comments}"
-        class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 ease-in-out cursor-pointer group"
-      >
-        <div class="flex items-start space-x-4 mb-4">
-          <!-- Avatar con iniciales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Iterar los comentarios -->
           <div
-            class="flex-shrink-0 w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+            th:each="comment : ${comments}"
+            class="bg-[#eaf5e7] rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] ease-in-out cursor-pointer group"
           >
-            <span
-              class="text-white text-xl font-bold"
-              th:text="${#strings.substring(comment.user.name, 0, 1)}"
-            >
-              U
-            </span>
-          </div>
-
-          <!-- Contenido del comentario -->
-          <div class="flex-1">
-            <div class="flex justify-between items-start">
-              <div>
-                <!-- Tipo de comentario -->
-                <p
-                  class="text-lg font-semibold text-gray-900 leading-tight"
-                  th:text="${comment.commentType == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
+            <div class="flex items-start space-x-4 mb-4">
+              <!-- Avatar con iniciales -->
+              <div
+                class="flex-shrink-0 bg-[#8bc34a] w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+              >
+                <span
+                  class="text-white text-xl font-bold uppercase"
+                  th:text="${#strings.substring(comment.user.name, 0, 1)}"
                 >
-                  Comentario del sitio
-                </p>
-
-                <!-- Nombre y correo -->
-                <p class="text-sm text-gray-500 mt-1">
-                  <span th:text="${comment.user.name}">
-                    María González
-                  </span>
-                  <span class="hidden sm:inline">
-                    •
-                    <span th:text="${comment.user.email}">
-                      maria.gonzalez@example.com
-                    </span>
-                  </span>
-                </p>
+                  U
+                </span>
               </div>
 
-              <span
-                class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
-              >
-                expand_content
-              </span>
+              <!-- Contenido del comentario -->
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <!-- Tipo de comentario -->
+                    <p
+                      class="text-lg font-semibold text-gray-900 leading-tight"
+                      th:text="${comment.commentType.name() == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
+
+                    >
+                      Comentario del sitio
+                    </p>
+
+                    <!-- Nombre y correo -->
+                    <p class="text-sm text-gray-500 mt-1">
+                      <span th:text="${comment.user.name}">
+                        María González
+                      </span>
+                      <span class="hidden sm:inline">
+                        •
+                        <span th:text="${comment.user.email}">
+                          maria.gonzalez@example.com
+                        </span>
+                      </span>
+                    </p>
+                  </div>
+
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                  >
+                    expand_content
+                  </span>
+                </div>
+
+                <!-- Fecha -->
+                <p
+                  class="text-xs text-gray-500 mt-2"
+                  th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
+                >
+                  22 de Octubre, 2025
+                </p>
+
+                <!-- Texto del comentario -->
+                <p
+                  class="mt-3 text-gray-700 line-clamp-3"
+                  th:text="${comment.commentCommenter}"
+                >
+                  ¡El servicio es increíble! La entrega fue súper rápida y los
+                  productos de una calidad excepcional.
+                </p>
+              </div>
             </div>
 
-            <!-- Fecha -->
-            <p
-              class="text-xs text-gray-500 mt-2"
-              th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
+            <div
+              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
             >
-              22 de Octubre, 2025
-            </p>
-
-            <!-- Texto del comentario -->
-            <p
-              class="mt-3 text-gray-700 line-clamp-3"
-              th:text="${comment.commentCommenter}"
-            >
-              ¡El servicio es increíble! La entrega fue súper rápida y los
-              productos de una calidad excepcional.
-            </p>
+              <span
+                class="material-symbols-outlined text-primary mr-1 text-base"
+              >
+                chat_bubble
+              </span>
+              <span>Responder</span>
+            </div>
           </div>
         </div>
-
-        <div
-          class="flex justify-end items-center text-sm font-medium text-primary mt-4"
-        >
-          <span class="material-symbols-outlined text-primary mr-1 text-base">
-            chat_bubble
-          </span>
-          <span>Responder</span>
-        </div>
       </div>
-    </div>
-  </div>
-</section>
-
+    </section>
 
     <div th:replace="fragments/footer :: footer"></div>
   </body>
