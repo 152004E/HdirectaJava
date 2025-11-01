@@ -372,12 +372,6 @@
   .my-12 {
     margin-block: calc(var(--spacing) * 12);
   }
-  .my-16 {
-    margin-block: calc(var(--spacing) * 16);
-  }
-  .my-20 {
-    margin-block: calc(var(--spacing) * 20);
-  }
   .my-\[15px_0_10px\] {
     margin-block: 15px 0 10px;
   }
@@ -464,9 +458,6 @@
   }
   .mb-11 {
     margin-bottom: calc(var(--spacing) * 11);
-  }
-  .mb-16 {
-    margin-bottom: calc(var(--spacing) * 16);
   }
   .ml-2 {
     margin-left: calc(var(--spacing) * 2);
@@ -567,9 +558,6 @@
   .w-64 {
     width: calc(var(--spacing) * 64);
   }
-  .w-\[9\] {
-    width: 9;
-  }
   .w-\[25px\] {
     width: 25px;
   }
@@ -588,44 +576,17 @@
   .w-\[400px\] {
     width: 400px;
   }
-  .w-\[500px\] {
-    width: 500px;
-  }
   .w-\[650px\] {
     width: 650px;
   }
   .w-\[700px\] {
     width: 700px;
   }
-  .w-\[900\] {
-    width: 900;
-  }
-  .w-\[900px\] {
-    width: 900px;
-  }
-  .w-\[1000px\] {
-    width: 1000px;
-  }
-  .w-\[1100px\] {
-    width: 1100px;
-  }
-  .w-\[1200px\] {
-    width: 1200px;
-  }
-  .w-\[1300px\] {
-    width: 1300px;
-  }
   .w-\[1400px\] {
     width: 1400px;
   }
   .w-full {
     width: 100%;
-  }
-  .max-w-3xl {
-    max-width: var(--container-3xl);
-  }
-  .max-w-4xl {
-    max-width: var(--container-4xl);
   }
   .max-w-6xl {
     max-width: var(--container-6xl);
@@ -729,9 +690,6 @@
   }
   .items-start {
     align-items: flex-start;
-  }
-  .justify-baseline {
-    justify-content: baseline;
   }
   .justify-between {
     justify-content: space-between;
@@ -900,9 +858,6 @@
       border-color: color-mix(in oklab, var(--color-gray-400) 60%, transparent);
     }
   }
-  .border-red-700 {
-    border-color: var(--color-red-700);
-  }
   .border-white {
     border-color: var(--color-white);
   }
@@ -1022,9 +977,6 @@
   .p-8 {
     padding: calc(var(--spacing) * 8);
   }
-  .p-20 {
-    padding: calc(var(--spacing) * 20);
-  }
   .p-\[15px\] {
     padding: 15px;
   }
@@ -1090,15 +1042,6 @@
   }
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
-  }
-  .pt-8 {
-    padding-top: calc(var(--spacing) * 8);
-  }
-  .pt-12 {
-    padding-top: calc(var(--spacing) * 12);
-  }
-  .pt-16 {
-    padding-top: calc(var(--spacing) * 16);
   }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);

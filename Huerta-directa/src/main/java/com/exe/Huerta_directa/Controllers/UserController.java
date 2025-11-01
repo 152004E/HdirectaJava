@@ -9,6 +9,7 @@ import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 
+import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
@@ -32,8 +33,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/users")
@@ -302,7 +305,6 @@ public class UserController {
     }
 
     // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
-
     @PostMapping("/register")
     public String seveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
@@ -376,7 +378,7 @@ public class UserController {
         Transport.send(message);
     }
 
-    // Método para crear el contenido HTML del correo
+    // CONTENIDO HTML DEL CORREO DE REGISTRO
     private String crearContenidoHTMLCorreo(String nombre) {
         return """
                 <!DOCTYPE html>
@@ -655,9 +657,9 @@ public class UserController {
         table.addCell(header);
     }
 
-    private void addTableCellPdf(com.lowagie.text.pdf.PdfPTable table, String text,
-            com.lowagie.text.Font font, java.awt.Color backgroundColor,
-            int alignment) {
+    private void addTableCellPdf(PdfPTable table, String text,
+                                 com.lowagie.text.Font font, java.awt.Color backgroundColor,
+                                 int alignment) {
         com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
         cell.setPhrase(new com.lowagie.text.Phrase(text, font));
         cell.setHorizontalAlignment(alignment);
@@ -692,6 +694,8 @@ public class UserController {
         return user;
     }
 
+
+
     // ========== ENVÍO DE CORREOS MASIVOS ==========
 
     /**
@@ -703,7 +707,7 @@ public class UserController {
         try {
             List<User> users = userRepository.findAll().stream()
                     .filter(user -> user.getEmail() != null && !user.getEmail().isEmpty())
-                    .collect(java.util.stream.Collectors.toList());
+                    .collect(Collectors.toList());
 
             if (users.isEmpty()) {
                 return ResponseEntity.badRequest()
@@ -712,7 +716,7 @@ public class UserController {
 
             int successCount = 0;
             int failureCount = 0;
-            List<String> failedEmails = new java.util.ArrayList<>();
+            List<String> failedEmails = new ArrayList<>();
 
             for (User user : users) {
                 try {
@@ -760,7 +764,7 @@ public class UserController {
 
             users = users.stream()
                     .filter(user -> user.getEmail() != null && !user.getEmail().isEmpty())
-                    .collect(java.util.stream.Collectors.toList());
+                    .collect(Collectors.toList());
 
             if (users.isEmpty()) {
                 return ResponseEntity.badRequest()
@@ -769,7 +773,7 @@ public class UserController {
 
             int successCount = 0;
             int failureCount = 0;
-            List<String> failedEmails = new java.util.ArrayList<>();
+            List<String> failedEmails = new ArrayList<>();
 
             for (User user : users) {
                 try {
