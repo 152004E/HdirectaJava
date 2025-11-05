@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <body>
     <div class="profile" th:fragment="profile">
-        
+
       <div class="info">
         <p>
           Ey,
@@ -19,7 +19,7 @@
        <div class="profile-photo">
         <img src="/images/logo_huerta.png" alt="Profile" />
       </div>
-     
+
        <!-- Botón de cerrar sesión -->
         <form action="/api/users/logout" method="post" >
           <button
@@ -37,7 +37,7 @@
               cursor: pointer;
               display: flex;
               align-items: center;
-              
+
               transition: all 0.3s ease;
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             "
