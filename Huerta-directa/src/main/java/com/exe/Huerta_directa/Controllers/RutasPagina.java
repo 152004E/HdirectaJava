@@ -145,6 +145,10 @@ public class RutasPagina {
         // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
         return "DashBoard/actualizacionUsuario";
     }
+    @GetMapping("/MensajesComentarios")
+    public String MensajesComentarios() {
+        return "DashBoard/MensajesComentarios";
+    }
 
     @GetMapping("/landing")
     public String mostrarLanding() {
