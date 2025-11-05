@@ -34,11 +34,11 @@ public class User {
     @Size(max = 250)
     private String password;
 
-    @Column (name = "phone", length = 15)
+    @Column (name = "phone", nullable = false, length = 15)
     @Size(max = 15)
     private String phone;
 
-    @Column (name = "address", length = 250)
+    @Column (name = "address", nullable = false, length = 250)
     @Size(max = 250)
     private String address;
 

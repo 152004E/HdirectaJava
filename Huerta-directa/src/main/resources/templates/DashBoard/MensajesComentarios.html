@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actualización de datos -- HUERTA DIRECTA</title>
+
+    <!--instalacion de tailwind-->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!--configuracion tailwind-->
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+              "form-bg-light": "#ffffff",
+              "form-bg-dark": "#1e293b",
+              "summary-bg": "#6366f1",
+            },
+            fontFamily: {
+              display: ["Inter"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Link para el font -->
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+  </head>
+
+  <body>
+    <div class="containerActualizarUcuario">
+      <aside>
+        <div class="top">
+          <div class="logo">
+            <img src="/images/logo_huerta.png" alt="Logo" />
+            <h2 class="text-[20px] font-bold">
+              Huerta<span class="danger">Directa</span>
+            </h2>
+          </div>
+          <div class="close" id="close-btn">
+            <span class="material-symbols-outlined">close</span>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <a th:href="@{/Dashboardd}">
+            <span class="material-symbols-outlined">dashboard</span>
+            <h3>Dashboard</h3>
+          </a>
+
+          <a href="#">
+            <span class="material-symbols-outlined">finance_mode</span>
+            <h3>Reportes</h3>
+          </a>
+          <a href="#">
+            <span class="material-symbols-outlined">mail</span>
+            <h3>Mensajes</h3>
+          </a>
+          <a th:href="@{/agregar_producto}">
+            <span class="material-symbols-outlined">inventory</span>
+            <h3>Agregar Producto</h3>
+          </a>
+          <a th:href="@{/actualizacionUsuario}">
+            <span class="material-symbols-outlined">settings</span>
+            <h3>Configuracion</h3>
+          </a>
+          <!--
+          <a href="../Consulta_usuarios/Consulta_usuario.php">
+            <span class="material-symbols-outlined">add</span>
+            <h3>Consultar Usuario</h3>
+          </a>
+          -->
+          <a th:href="@{/home}">
+            <span class="material-symbols-outlined">logout</span>
+            <h3>Volver al Dashboard</h3>
+          </a>
+        </div>
+      </aside>
+      <!-- fin del asside -->
+      <main>
+        
+      </main>
+
+      <div class="right">
+        <div class="top ">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+  </body>
+</html>

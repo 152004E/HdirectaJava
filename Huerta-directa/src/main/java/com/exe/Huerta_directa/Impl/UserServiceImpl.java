@@ -93,9 +93,9 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("Usuario no encontrado por id: " + userId);
         }
-        
+
         User user = userRepository.findById(userId).get();
-        
+
         // Verificar si tiene productos asociados
         if (user.getProducts() != null && !user.getProducts().isEmpty()) {
             throw new RuntimeException("No se puede eliminar este usuario porque tiene " +

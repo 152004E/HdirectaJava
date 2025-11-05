@@ -45,7 +45,7 @@
                     <span class="material-symbols-outlined">finance_mode</span>
                     <h3>Reportes</h3>
                 </a>
-                <a href="#">
+                <a th:href="@{/MensajesComentarios}">
                     <span class="material-symbols-outlined">mail</span>
                     <h3>Mensajes</h3>
                 </a>
@@ -194,7 +194,6 @@
                 <table border="1" cellpadding="10" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nombre</th>
                             <th>Categoría</th>
                             <th>Precio</th>
@@ -210,7 +209,6 @@
                             </td>
                         </tr>
                         <tr th:each="producto : ${productos}">
-                            <td th:text="${producto.idProduct}"></td>
                             <td th:text="${producto.nameProduct}"></td>
                             <td th:text="${producto.category}"></td>
                             <td th:text="'$' + ${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"></td>

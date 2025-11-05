@@ -127,4 +127,50 @@ mvn spring-boot:run
 
 ```bash
 http://localhost:8080
+
 ```
+
+### 🌐 application.properties
+
+
+spring.application.name=Huerta-directa
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/huerta_directa
+spring.datasource.username=postgres
+#spring.datasource.password=2424
+
+
+
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false
+# Desactiva cach? para ver cambios sin reiniciar
+spring.thymeleaf.cache=false
+
+# Ubicaci?n y extensi?n por defecto
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+# (Opcional) Modo de plantillas
+spring.thymeleaf.mode=HTML
+
+logging.level.org.thymeleaf=TRACE
+
+# Ruta para subir im�genes
+upload.path=C:/HuertaUploads
+
+# Tama�o m�ximo de archivo individual
+spring.servlet.multipart.max-file-size=10MB
+# Tama�o m�ximo de request completo
+spring.servlet.multipart.max-request-size=10MB
+
+# Puerto salida
+server.port=8085
