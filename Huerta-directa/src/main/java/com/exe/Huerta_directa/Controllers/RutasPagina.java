@@ -166,6 +166,10 @@ public class RutasPagina {
     public String MensajesComentarios() {
         return "DashBoard/MensajesComentarios";
     }
+    @GetMapping("/DashBoardAgregarProducto")
+    public String DashBoardAgregarProducto() {
+        return "DashBoard/DashBoardAgregarProducto";
+    }
 
     @GetMapping("/landing")
     public String mostrarLanding() {
