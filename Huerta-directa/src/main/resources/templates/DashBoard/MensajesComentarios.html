@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mensajes y comentarios -- HUERTA DIRECTA</title>
 
-    
     <!-- Link para el font -->
 
     <link
@@ -38,17 +37,70 @@
       ></div>
       <!-- fin del asside -->
       <main>
-        <h1 class="!mt-[20px] ">
-          Revisa tus mensajes y comentarios aquí.
-        </h1>
-       <div>
-        <a href="">Mensajes</a>
-        <a href="">Comentarios</a>
-        <a href="">Tus Comentarios</a>
-       </div>
-        
+        <h1 class="!mt-[20px]">Revisa tus mensajes y comentarios aquí.</h1>
+        <div class="flex justify-center items-center gap-20 !mt-[20px] text-xl">
+          <a href="">Tus Comentarios</a>
+          <a href="">Mensajes</a>
+          <a href="">Comentarios de tus productos</a>
+        </div>
+        <!-- SECCIÓN COMENTARIOS -->
+        <table class="min-w-full border border-gray-200 rounded-xl overflow-hidden !mt-20">
+        <thead class="bg-green-100 text-gray-700 !py-3 text-sm uppercase">
+          <tr>
+            <th class="py-3 px-4 text-left">Usuario</th>
+            <th class="py-3 px-4 text-left">Comentario</th>
+            <th class="py-3 px-4 text-left">Fecha</th>
+            <th class="py-3 px-4 text-left">Tipo</th>
+            <th class="py-3 px-4 text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-600">
+          <tr
+            th:each="comment : ${comments}"
+            class="border-t hover:bg-green-50 transition"
+          >
+            <td class="py-2 px-4 break-all whitespace-normal max-w-[120px]" th:text="${comment.commentCommenter}">
+              Usuario
+            </td>
+            <td class="py-2 px-4" th:text="${comment.commentType}">
+              SITE
+            </td>
+            <td
+              class="py-2 px-4"
+              th:text="${#temporals.format(comment.creationComment, 'dd/MM/yyyy')}"
+            >
+              22/10/2025
+            </td>
+            <td class="py-2 px-4" th:text="${comment.commentType}">
+              SITE
+            </td>
+            <td class="py-2 px-4 text-center flex justify-center gap-3">
+              <!-- Botón editar -->
+              <a
+                th:href="@{'/editComment/' + ${comment.idComment}}"
+                class="text-blue-500 hover:text-blue-700 font-medium flex items-center gap-1"
+              >
+                <span class="material-symbols-outlined text-base">
+                  edit
+                </span>
+                Editar
+              </a>
 
-        
+              <!-- Botón eliminar -->
+              <a
+                th:href="@{'/deleteComment/' + ${comment.idComment}}"
+                class="text-red-500 hover:text-red-700 font-medium flex items-center gap-1"
+                onclick="return confirm('¿Estás seguro de eliminar este comentario?');"
+              >
+                <span class="material-symbols-outlined text-base">
+                  delete
+                </span>
+                Eliminar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       </main>
 
       <div class="right">
