@@ -14,6 +14,7 @@
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
     --color-red-800: oklch(44.4% 0.177 26.899);
+    --color-amber-50: oklch(98.7% 0.022 95.277);
     --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-yellow-50: oklch(98.7% 0.026 102.212);
     --color-yellow-100: oklch(97.3% 0.071 103.193);
@@ -386,6 +387,9 @@
   .\!mt-7 {
     margin-top: calc(var(--spacing) * 7) !important;
   }
+  .\!mt-16 {
+    margin-top: calc(var(--spacing) * 16) !important;
+  }
   .\!mt-20 {
     margin-top: calc(var(--spacing) * 20) !important;
   }
@@ -667,6 +671,9 @@
   }
   .max-w-\[300px\] {
     max-width: 300px;
+  }
+  .max-w-\[320px\] {
+    max-width: 320px;
   }
   .max-w-\[500px\] {
     max-width: 500px;
@@ -983,6 +990,9 @@
   .border-yellow-500 {
     border-color: var(--color-yellow-500);
   }
+  .\!bg-amber-50 {
+    background-color: var(--color-amber-50) !important;
+  }
   .bg-\[\#8bc34a\] {
     background-color: #8bc34a;
   }
@@ -1033,6 +1043,9 @@
   }
   .bg-\[var\(\&\#45\;\&\#45\;white\)\] {
     background-color: var(&#45;&#45;white);
+  }
+  .bg-amber-50 {
+    background-color: var(--color-amber-50);
   }
   .bg-amber-500 {
     background-color: var(--color-amber-500);
@@ -1145,6 +1158,9 @@
   .p-\[15px_20px\] {
     padding: 15px 20px;
   }
+  .\!px-4 {
+    padding-inline: calc(var(--spacing) * 4) !important;
+  }
   .\!px-5 {
     padding-inline: calc(var(--spacing) * 5) !important;
   }
@@ -1177,6 +1193,9 @@
   }
   .px-\[30px\] {
     padding-inline: 30px;
+  }
+  .\!py-2 {
+    padding-block: calc(var(--spacing) * 2) !important;
   }
   .\!py-3 {
     padding-block: calc(var(--spacing) * 3) !important;
