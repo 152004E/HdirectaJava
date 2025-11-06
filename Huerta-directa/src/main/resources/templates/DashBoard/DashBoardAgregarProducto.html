@@ -61,25 +61,21 @@
 
   <body>
     <div class="containerActualizarUcuario">
-      <div
-        th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"
-      ></div>
+      
+        <div th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"></div>
       <!-- fin del asside -->
       <main>
-        <!-- SECCIÓN QUIÉNES SOMOS -->
-        <div
-          th:replace="fragments/quienesSomos/formQuienesSomos :: formQuienesSomos"
-        ></div>
-
+         <div th:replace="fragments/producto/AgregarProducto :: AgregarProducto"></div>
         
       </main>
 
       <div class="right">
-        <div class="top">
+        <div class="top ">
           <div class="theme-toggler">
             <span class="material-symbols-outlined active">light_mode</span>
             <span class="material-symbols-outlined">dark_mode</span>
           </div>
+
         </div>
       </div>
     </div>
