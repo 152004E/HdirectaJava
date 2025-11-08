@@ -714,29 +714,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount, "Envío masivo completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -771,30 +758,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo filtrado: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo filtrado completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -820,35 +793,54 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new java.util.ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " " + roleName);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo por rol: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo por rol completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
         }
+    }
+
+    /**
+     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola operación
+     */
+    private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
+        Session session = crearSesionCorreo();
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+
+        // Agregar todos los destinatarios de una vez usando BCC para privacidad
+        InternetAddress[] destinatarios = new InternetAddress[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            destinatarios[i] = new InternetAddress(users.get(i).getEmail());
+        }
+
+        // Usar BCC para envío masivo manteniendo privacidad de emails
+        message.setRecipients(Message.RecipientType.BCC, destinatarios);
+        message.setSubject(asunto);
+
+        // Configurar el contenido
+        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+            message.setContent(cuerpo, "text/html; charset=utf-8");
+        } else {
+            message.setText(cuerpo, "utf-8");
+        }
+
+        // Enviar el correo masivo en una sola operación
+        Transport.send(message);
+
+        System.out.println("✅ Correo enviado masivamente a " + users.size() + " destinatarios");
     }
 
     /**
@@ -1065,5 +1057,4 @@ public class UserController {
     }
 
 }
-
 
