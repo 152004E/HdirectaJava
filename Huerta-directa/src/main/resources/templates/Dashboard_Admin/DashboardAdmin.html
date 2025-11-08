@@ -393,6 +393,62 @@
         </div>
     </div>
 </div>
+<div class="floating-chat-button" id="openChatBtn">
+  <span class="emoji">🤖</span>
+  <span class="text">Chat con IA</span>
+</div>
+
+<div class="chat-modal-overlay" id="chatModalOverlay">
+  <div class="chat-modal-content" id="chatModalContent">
+    
+    <div class="chat-container">
+      
+      <div class="chat-header">
+        <div class="header-left">
+          <div class="bot-avatar">🤖</div>
+          <div class="header-info">
+            <h1>Asistente Huerta</h1>
+            <p>Powered by Groq</p>
+          </div>
+        </div>
+        <div class="user-info">
+          <span class="user-name" th:text="${username} ? ${username} : 'Admin'">Usuario</span> 
+          <button class="btn-settings" id="btnSettings">⚙️</button>
+          <button class="btn-settings" id="btnCloseModal" style="margin-left: 10px;">❌</button>
+        </div>
+      </div>
+
+      <div class="settings-panel" id="settingsPanel">
+        <div class="setting-item">
+          <label for="apiKeyInput">Groq API Key</label>
+          <input type="password" id="apiKeyInput" placeholder="Ingresa tu clave aquí" />
+        </div>
+        <button id="btnSaveKey" class="btn-save">Guardar Configuración</button>
+      </div>
+
+      <div class="messages-container" id="messagesContainer">
+        <div class="messages-wrapper" id="messagesWrapper">
+          <div class="welcome-screen" id="welcomeScreen">
+            <span class="material-symbols-outlined emoji-large">👋</span>
+            <h2>¡Hola! Soy Huerta-IA</h2>
+            <small>Recuerda configurar tu Groq API Key en ⚙️</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <div class="input-wrapper">
+          <textarea id="messageInput" placeholder="Escribe tu mensaje..." rows="1"></textarea>
+          <button id="btnSend">
+            <span class="material-symbols-outlined">📤</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+    </div>
+</div>
+<script src="/JS/chat-ia.js"></script>
 <script src="/JS/dashboar.js"></script>
 </body>
 </html>
