@@ -4,10 +4,12 @@ import com.exe.Huerta_directa.DTO.BulkEmailByRoleRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailFilteredRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
+import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
+import com.exe.Huerta_directa.Service.ProductService;
 
 import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
@@ -23,6 +25,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +34,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -45,6 +51,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ProductService productService;
 
     // Constantes para email centralizadas para evitar duplicación
     private static final String EMAIL_HOST = "smtp.gmail.com";
@@ -54,9 +61,10 @@ public class UserController {
     // properties/secret manager
     private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository, ProductService productService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.productService = productService;
     }
 
     // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
@@ -714,29 +722,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+                // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount, "Envío masivo completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -771,30 +766,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo filtrado: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo filtrado completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -820,35 +801,54 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new java.util.ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " " + roleName);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo por rol: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo por rol completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
         }
+    }
+
+    /**
+     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola operación
+     */
+    private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
+        Session session = crearSesionCorreo();
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+
+        // Agregar todos los destinatarios de una vez usando BCC para privacidad
+        InternetAddress[] destinatarios = new InternetAddress[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            destinatarios[i] = new InternetAddress(users.get(i).getEmail());
+        }
+
+        // Usar BCC para envío masivo manteniendo privacidad de emails
+        message.setRecipients(Message.RecipientType.BCC, destinatarios);
+        message.setSubject(asunto);
+
+        // Configurar el contenido
+        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+            message.setContent(cuerpo, "text/html; charset=utf-8");
+        } else {
+            message.setText(cuerpo, "utf-8");
+        }
+
+        // Enviar el correo masivo en una sola operación
+        Transport.send(message);
+
+        System.out.println("✅ Correo enviado masivamente a " + users.size() + " destinatarios");
     }
 
     /**
@@ -872,6 +872,7 @@ public class UserController {
 
         Transport.send(message);
     }
+
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
@@ -1064,6 +1065,508 @@ public class UserController {
                 .formatted(nombre, nuevaContrasena);
     }
 
+    // ========== CARGA DE DATOS DESDE ARCHIVO ==========
+
+    /**
+     * Endpoint para cargar datos desde archivo CSV o Excel
+     */
+    @PostMapping("/upload")
+    @ResponseBody
+    public ResponseEntity<?> cargarDatosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+        try {
+            // Validar que se envió un archivo
+            if (archivo.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "No se ha seleccionado ningún archivo"
+                        ));
+            }
+
+            // Validar tipo de archivo
+            String nombreArchivo = archivo.getOriginalFilename();
+            if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
+                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
+                        ));
+            }
+
+            List<UserDTO> usuariosCargados = new ArrayList<>();
+            int usuariosCreados = 0;
+            int usuariosDuplicados = 0;
+            List<String> errores = new ArrayList<>();
+
+            if (nombreArchivo.endsWith(".csv")) {
+                usuariosCargados = procesarArchivoCSV(archivo.getInputStream());
+            } else {
+                usuariosCargados = procesarArchivoExcel(archivo.getInputStream());
+            }
+
+            // Procesar cada usuario del archivo
+            for (int i = 0; i < usuariosCargados.size(); i++) {
+                UserDTO usuario = usuariosCargados.get(i);
+                try {
+                    // Validar datos básicos
+                    if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Email requerido");
+                        continue;
+                    }
+                    if (usuario.getName() == null || usuario.getName().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Nombre requerido");
+                        continue;
+                    }
+
+                    // Verificar si el usuario ya existe
+                    if (userRepository.findByEmail(usuario.getEmail()).isPresent()) {
+                        usuariosDuplicados++;
+                        continue;
+                    }
+
+                    // Asignar valores por defecto si no están presentes
+                    if (usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
+                        usuario.setPassword("123456"); // Contraseña por defecto
+                    }
+                    if (usuario.getIdRole() == null) {
+                        usuario.setIdRole(2L); // Rol cliente por defecto
+                    }
+
+                    // Crear el usuario
+                    userService.crearUser(usuario);
+                    usuariosCreados++;
+
+                } catch (DataIntegrityViolationException e) {
+                    usuariosDuplicados++;
+                } catch (Exception e) {
+                    errores.add("Fila " + (i + 2) + ": " + e.getMessage());
+                }
+            }
+
+            // Preparar respuesta
+            java.util.Map<String, Object> respuesta = new java.util.HashMap<>();
+            respuesta.put("success", true);
+            respuesta.put("message", "Procesamiento completado");
+            respuesta.put("usuariosCreados", usuariosCreados);
+            respuesta.put("usuariosDuplicados", usuariosDuplicados);
+            respuesta.put("totalProcesados", usuariosCargados.size());
+            respuesta.put("errores", errores);
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (Exception e) {
+            System.err.println("Error al procesar archivo: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of(
+                        "success", false,
+                        "message", "Error al procesar el archivo: " + e.getMessage()
+                    ));
+        }
+    }
+
+    /**
+     * Procesar archivo CSV
+     */
+    private List<UserDTO> procesarArchivoCSV(InputStream inputStream) throws IOException {
+        List<UserDTO> usuarios = new ArrayList<>();
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+
+            String linea;
+            boolean primeraLinea = true;
+
+            while ((linea = reader.readLine()) != null) {
+                if (primeraLinea) {
+                    primeraLinea = false; // Saltar encabezados
+                    continue;
+                }
+
+                String[] campos = linea.split(",");
+                if (campos.length >= 2) // Al menos nombre y email
+                {
+                    UserDTO usuario = new UserDTO();
+                    usuario.setName(campos[0].trim());
+                    usuario.setEmail(campos[1].trim());
+
+                    // Campos opcionales
+                    if (campos.length > 2 && !campos[2].trim().isEmpty()) {
+                        usuario.setPassword(campos[2].trim());
+                    }
+                    if (campos.length > 3 && !campos[3].trim().isEmpty()) {
+                        try {
+                            usuario.setIdRole(Long.parseLong(campos[3].trim()));
+                        } catch (NumberFormatException e) {
+                            // Usar rol por defecto si no es válido
+                        }
+                    }
+
+                    usuarios.add(usuario);
+                }
+            }
+        }
+
+        return usuarios;
+    }
+
+    /**
+     * Procesar archivo Excel
+     */
+    private List<UserDTO> procesarArchivoExcel(InputStream inputStream) throws IOException {
+        List<UserDTO> usuarios = new ArrayList<>();
+
+        try (Workbook workbook = WorkbookFactory.create(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); // Primera hoja
+
+            boolean primeraFila = true;
+            for (Row fila : sheet) {
+                if (primeraFila) {
+                    primeraFila = false; // Saltar encabezados
+                    continue;
+                }
+
+                if (fila.getPhysicalNumberOfCells() >= 2) {
+                    UserDTO usuario = new UserDTO();
+
+                    // Nombre (columna A)
+                    Cell celdaNombre = fila.getCell(0);
+                    if (celdaNombre != null) {
+                        usuario.setName(obtenerValorCelda(celdaNombre));
+                    }
+
+                    // Email (columna B)
+                    Cell celdaEmail = fila.getCell(1);
+                    if (celdaEmail != null) {
+                        usuario.setEmail(obtenerValorCelda(celdaEmail));
+                    }
+
+                    // Contraseña (columna C) - opcional
+                    Cell celdaPassword = fila.getCell(2);
+                    if (celdaPassword != null && !obtenerValorCelda(celdaPassword).trim().isEmpty()) {
+                        usuario.setPassword(obtenerValorCelda(celdaPassword));
+                    }
+
+                    // Rol (columna D) - opcional
+                    Cell celdaRol = fila.getCell(3);
+                    if (celdaRol != null) {
+                        try {
+                            String valorRol = obtenerValorCelda(celdaRol);
+                            if (!valorRol.trim().isEmpty()) {
+                                usuario.setIdRole(Long.parseLong(valorRol));
+                            }
+                        } catch (NumberFormatException e) {
+                            // Usar rol por defecto si no es válido
+                        }
+                    }
+
+                    if (usuario.getName() != null && !usuario.getName().trim().isEmpty() &&
+                        usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
+                        usuarios.add(usuario);
+                    }
+                }
+            }
+        }
+
+        return usuarios;
+    }
+
+    /**
+     * Obtener valor de celda como String
+     */
+    private String obtenerValorCelda(Cell celda) {
+        if (celda == null) {
+            return "";
+        }
+
+        switch (celda.getCellType()) {
+            case STRING:
+                return celda.getStringCellValue().trim();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(celda)) {
+                    return celda.getDateCellValue().toString();
+                } else {
+                    // Para números enteros, quitar decimales
+                    double numero = celda.getNumericCellValue();
+                    if (numero == (long) numero) {
+                        return String.valueOf((long) numero);
+                    } else {
+                        return String.valueOf(numero);
+                    }
+                }
+            case BOOLEAN:
+                return String.valueOf(celda.getBooleanCellValue());
+            case FORMULA:
+                return celda.getCellFormula();
+            default:
+                return "";
+        }
+    }
+
+    // ========== CARGA MASIVA DE PRODUCTOS ==========
+
+    /**
+     * Endpoint para cargar productos masivamente desde archivo CSV o Excel
+     */
+    @PostMapping("/upload-products")
+    @ResponseBody
+    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+        try {
+            // Validar que se envió un archivo
+            if (archivo.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "No se ha seleccionado ningún archivo"
+                        ));
+            }
+
+            // Validar tipo de archivo
+            String nombreArchivo = archivo.getOriginalFilename();
+            if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
+                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
+                        ));
+            }
+
+            List<ProductDTO> productosCargados = new ArrayList<>();
+            int productosCreados = 0;
+            int productosDuplicados = 0;
+            List<String> errores = new ArrayList<>();
+
+            if (nombreArchivo.endsWith(".csv")) {
+                productosCargados = procesarArchivoProductosCSV(archivo.getInputStream());
+            } else {
+                productosCargados = procesarArchivoProductosExcel(archivo.getInputStream());
+            }
+
+            // Procesar cada producto del archivo
+            for (int i = 0; i < productosCargados.size(); i++) {
+                ProductDTO producto = productosCargados.get(i);
+                try {
+                    // Validar datos básicos
+                    if (producto.getNameProduct() == null || producto.getNameProduct().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Nombre del producto requerido");
+                        continue;
+                    }
+                    if (producto.getPrice() == null || producto.getPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                        errores.add("Fila " + (i + 2) + ": Precio válido requerido");
+                        continue;
+                    }
+                    if (producto.getCategory() == null || producto.getCategory().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Categoría requerida");
+                        continue;
+                    }
+
+                    // Asignar valores por defecto si no están presentes
+                    if (producto.getUnit() == null || producto.getUnit().trim().isEmpty()) {
+                        producto.setUnit("Unidad");
+                    }
+                    if (producto.getImageProduct() == null || producto.getImageProduct().trim().isEmpty()) {
+                        producto.setImageProduct("default-product.png");
+                    }
+                    if (producto.getDescriptionProduct() == null || producto.getDescriptionProduct().trim().isEmpty()) {
+                        producto.setDescriptionProduct("Producto sin descripción");
+                    }
+                    if (producto.getPublicationDate() == null) {
+                        producto.setPublicationDate(java.time.LocalDate.now());
+                    }
+                    // ID de usuario por defecto (admin)
+                    if (producto.getUserId() == null) {
+                        producto.setUserId(1L);
+                    }
+
+                    // Verificar si el producto ya existe (por nombre exacto y categoría)
+                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(), producto.getCategory().trim());
+                    if (existe) {
+                        productosDuplicados++;
+                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - " + producto.getCategory());
+                        continue;
+                    }
+
+                    // Crear el producto usando el servicio
+                    crearProductoDesdeDTO(producto);
+                    productosCreados++;
+
+                } catch (Exception e) {
+                    errores.add("Fila " + (i + 2) + ": " + e.getMessage());
+                }
+            }
+
+            // Preparar respuesta
+            java.util.Map<String, Object> respuesta = new java.util.HashMap<>();
+            respuesta.put("success", true);
+            respuesta.put("message", "Procesamiento de productos completado");
+            respuesta.put("productosCreados", productosCreados);
+            respuesta.put("productosDuplicados", productosDuplicados);
+            respuesta.put("totalProcesados", productosCargados.size());
+            respuesta.put("errores", errores);
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (Exception e) {
+            System.err.println("Error al procesar archivo de productos: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of(
+                        "success", false,
+                        "message", "Error al procesar el archivo: " + e.getMessage()
+                    ));
+        }
+    }
+
+    /**
+     * Procesar archivo CSV de productos
+     */
+    private List<ProductDTO> procesarArchivoProductosCSV(InputStream inputStream) throws IOException {
+        List<ProductDTO> productos = new ArrayList<>();
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+
+            String linea;
+            boolean primeraLinea = true;
+
+            while ((linea = reader.readLine()) != null) {
+                if (primeraLinea) {
+                    primeraLinea = false; // Saltar encabezados
+                    continue;
+                }
+
+                String[] campos = linea.split(",");
+                if (campos.length >= 4) { // Al menos nombre, precio, categoría, unidad
+                    ProductDTO producto = new ProductDTO();
+                    producto.setNameProduct(campos[0].trim());
+
+                    // Precio
+                    try {
+                        producto.setPrice(new java.math.BigDecimal(campos[1].trim()));
+                    } catch (NumberFormatException e) {
+                        continue; // Saltar fila con precio inválido
+                    }
+
+                    producto.setCategory(campos[2].trim());
+                    producto.setUnit(campos[3].trim());
+
+                    // Campos opcionales
+                    if (campos.length > 4 && !campos[4].trim().isEmpty()) {
+                        producto.setDescriptionProduct(campos[4].trim());
+                    }
+                    if (campos.length > 5 && !campos[5].trim().isEmpty()) {
+                        producto.setImageProduct(campos[5].trim());
+                    }
+
+                    productos.add(producto);
+                }
+            }
+        }
+
+        return productos;
+    }
+
+    /**
+     * Procesar archivo Excel de productos
+     */
+    private List<ProductDTO> procesarArchivoProductosExcel(InputStream inputStream) throws IOException {
+        List<ProductDTO> productos = new ArrayList<>();
+
+        try (Workbook workbook = WorkbookFactory.create(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); // Primera hoja
+
+            boolean primeraFila = true;
+            for (Row fila : sheet) {
+                if (primeraFila) {
+                    primeraFila = false; // Saltar encabezados
+                    continue;
+                }
+
+                if (fila.getPhysicalNumberOfCells() >= 4) {
+                    ProductDTO producto = new ProductDTO();
+
+                    // Nombre del producto (columna A)
+                    Cell celdaNombre = fila.getCell(0);
+                    if (celdaNombre != null) {
+                        producto.setNameProduct(obtenerValorCelda(celdaNombre));
+                    }
+
+                    // Precio (columna B)
+                    Cell celdaPrecio = fila.getCell(1);
+                    if (celdaPrecio != null) {
+                        try {
+                            String valorPrecio = obtenerValorCelda(celdaPrecio);
+                            if (!valorPrecio.trim().isEmpty()) {
+                                producto.setPrice(new java.math.BigDecimal(valorPrecio));
+                            }
+                        } catch (NumberFormatException e) {
+                            continue; // Saltar fila con precio inválido
+                        }
+                    }
+
+                    // Categoría (columna C)
+                    Cell celdaCategoria = fila.getCell(2);
+                    if (celdaCategoria != null) {
+                        producto.setCategory(obtenerValorCelda(celdaCategoria));
+                    }
+
+                    // Unidad (columna D)
+                    Cell celdaUnidad = fila.getCell(3);
+                    if (celdaUnidad != null) {
+                        producto.setUnit(obtenerValorCelda(celdaUnidad));
+                    }
+
+                    // Descripción (columna E) - opcional
+                    Cell celdaDescripcion = fila.getCell(4);
+                    if (celdaDescripcion != null && !obtenerValorCelda(celdaDescripcion).trim().isEmpty()) {
+                        producto.setDescriptionProduct(obtenerValorCelda(celdaDescripcion));
+                    }
+
+                    // Imagen (columna F) - opcional
+                    Cell celdaImagen = fila.getCell(5);
+                    if (celdaImagen != null && !obtenerValorCelda(celdaImagen).trim().isEmpty()) {
+                        producto.setImageProduct(obtenerValorCelda(celdaImagen));
+                    }
+
+                    // Validar que los campos obligatorios no estén vacíos
+                    if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
+                        producto.getPrice() != null &&
+                        producto.getCategory() != null && !producto.getCategory().trim().isEmpty() &&
+                        producto.getUnit() != null && !producto.getUnit().trim().isEmpty()) {
+                        productos.add(producto);
+                    }
+                }
+            }
+        }
+
+        return productos;
+    }
+
+    /**
+     * Verificar si un producto ya existe
+     */
+    private boolean verificarProductoExistente(String nombre, String categoria) {
+        try {
+            // Usar método optimizado para verificar duplicados exactos
+            return productService.existeProducto(nombre, categoria);
+        } catch (Exception e) {
+            System.err.println("Error verificando producto existente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Crear producto desde DTO
+     */
+    private void crearProductoDesdeDTO(ProductDTO producto) {
+        try {
+            // Usar ProductService para crear el producto en la base de datos
+            ProductDTO productoCreado = productService.crearProduct(producto, producto.getUserId());
+            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: " + productoCreado.getIdProduct() + ")");
+        } catch (Exception e) {
+            System.err.println("❌ Error creando producto: " + producto.getNameProduct() + " - " + e.getMessage());
+            throw e; // Re-lanzar la excepción para que sea manejada en el bucle principal
+        }
+    }
+
 }
-
-
