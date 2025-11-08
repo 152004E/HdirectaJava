@@ -4,10 +4,12 @@ import com.exe.Huerta_directa.DTO.BulkEmailByRoleRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailFilteredRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
+import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
+import com.exe.Huerta_directa.Service.ProductService;
 
 import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
@@ -49,6 +51,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ProductService productService;
 
     // Constantes para email centralizadas para evitar duplicación
     private static final String EMAIL_HOST = "smtp.gmail.com";
@@ -58,9 +61,10 @@ public class UserController {
     // properties/secret manager
     private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository, ProductService productService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.productService = productService;
     }
 
     // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
@@ -869,8 +873,6 @@ public class UserController {
         Transport.send(message);
     }
 
-    // ========== CARGAR DATOS DESDE ARCHIVO (DEPRECATED) ========== //
-    // Este endpoint está deprecado, usar /upload en su lugar
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
@@ -1298,6 +1300,272 @@ public class UserController {
                 return celda.getCellFormula();
             default:
                 return "";
+        }
+    }
+
+    // ========== CARGA MASIVA DE PRODUCTOS ==========
+
+    /**
+     * Endpoint para cargar productos masivamente desde archivo CSV o Excel
+     */
+    @PostMapping("/upload-products")
+    @ResponseBody
+    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+        try {
+            // Validar que se envió un archivo
+            if (archivo.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "No se ha seleccionado ningún archivo"
+                        ));
+            }
+
+            // Validar tipo de archivo
+            String nombreArchivo = archivo.getOriginalFilename();
+            if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
+                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
+                        ));
+            }
+
+            List<ProductDTO> productosCargados = new ArrayList<>();
+            int productosCreados = 0;
+            int productosDuplicados = 0;
+            List<String> errores = new ArrayList<>();
+
+            if (nombreArchivo.endsWith(".csv")) {
+                productosCargados = procesarArchivoProductosCSV(archivo.getInputStream());
+            } else {
+                productosCargados = procesarArchivoProductosExcel(archivo.getInputStream());
+            }
+
+            // Procesar cada producto del archivo
+            for (int i = 0; i < productosCargados.size(); i++) {
+                ProductDTO producto = productosCargados.get(i);
+                try {
+                    // Validar datos básicos
+                    if (producto.getNameProduct() == null || producto.getNameProduct().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Nombre del producto requerido");
+                        continue;
+                    }
+                    if (producto.getPrice() == null || producto.getPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                        errores.add("Fila " + (i + 2) + ": Precio válido requerido");
+                        continue;
+                    }
+                    if (producto.getCategory() == null || producto.getCategory().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Categoría requerida");
+                        continue;
+                    }
+
+                    // Asignar valores por defecto si no están presentes
+                    if (producto.getUnit() == null || producto.getUnit().trim().isEmpty()) {
+                        producto.setUnit("Unidad");
+                    }
+                    if (producto.getImageProduct() == null || producto.getImageProduct().trim().isEmpty()) {
+                        producto.setImageProduct("default-product.png");
+                    }
+                    if (producto.getDescriptionProduct() == null || producto.getDescriptionProduct().trim().isEmpty()) {
+                        producto.setDescriptionProduct("Producto sin descripción");
+                    }
+                    if (producto.getPublicationDate() == null) {
+                        producto.setPublicationDate(java.time.LocalDate.now());
+                    }
+                    // ID de usuario por defecto (admin)
+                    if (producto.getUserId() == null) {
+                        producto.setUserId(1L);
+                    }
+
+                    // Verificar si el producto ya existe (por nombre exacto y categoría)
+                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(), producto.getCategory().trim());
+                    if (existe) {
+                        productosDuplicados++;
+                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - " + producto.getCategory());
+                        continue;
+                    }
+
+                    // Crear el producto usando el servicio
+                    crearProductoDesdeDTO(producto);
+                    productosCreados++;
+
+                } catch (Exception e) {
+                    errores.add("Fila " + (i + 2) + ": " + e.getMessage());
+                }
+            }
+
+            // Preparar respuesta
+            java.util.Map<String, Object> respuesta = new java.util.HashMap<>();
+            respuesta.put("success", true);
+            respuesta.put("message", "Procesamiento de productos completado");
+            respuesta.put("productosCreados", productosCreados);
+            respuesta.put("productosDuplicados", productosDuplicados);
+            respuesta.put("totalProcesados", productosCargados.size());
+            respuesta.put("errores", errores);
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (Exception e) {
+            System.err.println("Error al procesar archivo de productos: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of(
+                        "success", false,
+                        "message", "Error al procesar el archivo: " + e.getMessage()
+                    ));
+        }
+    }
+
+    /**
+     * Procesar archivo CSV de productos
+     */
+    private List<ProductDTO> procesarArchivoProductosCSV(InputStream inputStream) throws IOException {
+        List<ProductDTO> productos = new ArrayList<>();
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+
+            String linea;
+            boolean primeraLinea = true;
+
+            while ((linea = reader.readLine()) != null) {
+                if (primeraLinea) {
+                    primeraLinea = false; // Saltar encabezados
+                    continue;
+                }
+
+                String[] campos = linea.split(",");
+                if (campos.length >= 4) { // Al menos nombre, precio, categoría, unidad
+                    ProductDTO producto = new ProductDTO();
+                    producto.setNameProduct(campos[0].trim());
+
+                    // Precio
+                    try {
+                        producto.setPrice(new java.math.BigDecimal(campos[1].trim()));
+                    } catch (NumberFormatException e) {
+                        continue; // Saltar fila con precio inválido
+                    }
+
+                    producto.setCategory(campos[2].trim());
+                    producto.setUnit(campos[3].trim());
+
+                    // Campos opcionales
+                    if (campos.length > 4 && !campos[4].trim().isEmpty()) {
+                        producto.setDescriptionProduct(campos[4].trim());
+                    }
+                    if (campos.length > 5 && !campos[5].trim().isEmpty()) {
+                        producto.setImageProduct(campos[5].trim());
+                    }
+
+                    productos.add(producto);
+                }
+            }
+        }
+
+        return productos;
+    }
+
+    /**
+     * Procesar archivo Excel de productos
+     */
+    private List<ProductDTO> procesarArchivoProductosExcel(InputStream inputStream) throws IOException {
+        List<ProductDTO> productos = new ArrayList<>();
+
+        try (Workbook workbook = WorkbookFactory.create(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); // Primera hoja
+
+            boolean primeraFila = true;
+            for (Row fila : sheet) {
+                if (primeraFila) {
+                    primeraFila = false; // Saltar encabezados
+                    continue;
+                }
+
+                if (fila.getPhysicalNumberOfCells() >= 4) {
+                    ProductDTO producto = new ProductDTO();
+
+                    // Nombre del producto (columna A)
+                    Cell celdaNombre = fila.getCell(0);
+                    if (celdaNombre != null) {
+                        producto.setNameProduct(obtenerValorCelda(celdaNombre));
+                    }
+
+                    // Precio (columna B)
+                    Cell celdaPrecio = fila.getCell(1);
+                    if (celdaPrecio != null) {
+                        try {
+                            String valorPrecio = obtenerValorCelda(celdaPrecio);
+                            if (!valorPrecio.trim().isEmpty()) {
+                                producto.setPrice(new java.math.BigDecimal(valorPrecio));
+                            }
+                        } catch (NumberFormatException e) {
+                            continue; // Saltar fila con precio inválido
+                        }
+                    }
+
+                    // Categoría (columna C)
+                    Cell celdaCategoria = fila.getCell(2);
+                    if (celdaCategoria != null) {
+                        producto.setCategory(obtenerValorCelda(celdaCategoria));
+                    }
+
+                    // Unidad (columna D)
+                    Cell celdaUnidad = fila.getCell(3);
+                    if (celdaUnidad != null) {
+                        producto.setUnit(obtenerValorCelda(celdaUnidad));
+                    }
+
+                    // Descripción (columna E) - opcional
+                    Cell celdaDescripcion = fila.getCell(4);
+                    if (celdaDescripcion != null && !obtenerValorCelda(celdaDescripcion).trim().isEmpty()) {
+                        producto.setDescriptionProduct(obtenerValorCelda(celdaDescripcion));
+                    }
+
+                    // Imagen (columna F) - opcional
+                    Cell celdaImagen = fila.getCell(5);
+                    if (celdaImagen != null && !obtenerValorCelda(celdaImagen).trim().isEmpty()) {
+                        producto.setImageProduct(obtenerValorCelda(celdaImagen));
+                    }
+
+                    // Validar que los campos obligatorios no estén vacíos
+                    if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
+                        producto.getPrice() != null &&
+                        producto.getCategory() != null && !producto.getCategory().trim().isEmpty() &&
+                        producto.getUnit() != null && !producto.getUnit().trim().isEmpty()) {
+                        productos.add(producto);
+                    }
+                }
+            }
+        }
+
+        return productos;
+    }
+
+    /**
+     * Verificar si un producto ya existe
+     */
+    private boolean verificarProductoExistente(String nombre, String categoria) {
+        try {
+            // Usar método optimizado para verificar duplicados exactos
+            return productService.existeProducto(nombre, categoria);
+        } catch (Exception e) {
+            System.err.println("Error verificando producto existente: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Crear producto desde DTO
+     */
+    private void crearProductoDesdeDTO(ProductDTO producto) {
+        try {
+            // Usar ProductService para crear el producto en la base de datos
+            ProductDTO productoCreado = productService.crearProduct(producto, producto.getUserId());
+            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: " + productoCreado.getIdProduct() + ")");
+        } catch (Exception e) {
+            System.err.println("❌ Error creando producto: " + producto.getNameProduct() + " - " + e.getMessage());
+            throw e; // Re-lanzar la excepción para que sea manejada en el bucle principal
         }
     }
 

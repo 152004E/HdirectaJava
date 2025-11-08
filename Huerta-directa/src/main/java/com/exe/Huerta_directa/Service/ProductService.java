@@ -21,4 +21,6 @@ public interface ProductService {
     List<ProductDTO> buscarPorNombre(String nombre);
     
     List<ProductDTO> buscarPorCategoria(String categoria);
+
+    boolean existeProducto(String nombre, String categoria);
 }
