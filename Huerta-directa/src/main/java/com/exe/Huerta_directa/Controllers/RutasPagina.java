@@ -162,6 +162,14 @@ public class RutasPagina {
 
         return "DashBoard/actualizacionUsuario";
     }
+    // @GetMapping("/MensajesComentarios")
+    // public String MensajesComentarios() {
+    //     return "DashBoard/MensajesComentarios";
+    // }
+    @GetMapping("/DashBoardAgregarProducto")
+    public String DashBoardAgregarProducto() {
+        return "DashBoard/DashBoardAgregarProducto";
+    }
 
     @GetMapping("/landing")
     public String mostrarLanding() {
