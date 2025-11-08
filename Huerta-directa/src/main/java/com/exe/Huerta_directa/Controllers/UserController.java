@@ -23,6 +23,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +32,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -714,29 +718,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+                // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount, "Envío masivo completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -771,30 +762,16 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo filtrado: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo filtrado completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -820,35 +797,54 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
             }
 
-            int successCount = 0;
-            int failureCount = 0;
-            List<String> failedEmails = new java.util.ArrayList<>();
-
-            for (User user : users) {
-                try {
-                    String personalizedBody = request.getBody()
-                            .replace("{{nombre}}", user.getName() != null ? user.getName() : "Usuario")
-                            .replace("{{name}}", user.getName() != null ? user.getName() : "Usuario");
-
-                    enviarCorreoPersonalizado(user.getEmail(), request.getSubject(), personalizedBody);
-                    successCount++;
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    failureCount++;
-                    failedEmails.add(user.getEmail());
-                    System.err.println("Error enviando correo a " + user.getEmail() + ": " + e.getMessage());
-                }
+            // Envío masivo real sin personalización individual
+            try {
+                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
+                String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " " + roleName);
+                return ResponseEntity.ok(response);
+            } catch (Exception e) {
+                System.err.println("Error en envío masivo por rol: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
             }
-
-            BulkEmailResponse response = new BulkEmailResponse(successCount, failureCount,
-                    "Envío masivo por rol completado");
-            response.setFailedEmails(failedEmails);
-            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
         }
+    }
+
+    /**
+     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola operación
+     */
+    private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
+        Session session = crearSesionCorreo();
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+
+        // Agregar todos los destinatarios de una vez usando BCC para privacidad
+        InternetAddress[] destinatarios = new InternetAddress[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            destinatarios[i] = new InternetAddress(users.get(i).getEmail());
+        }
+
+        // Usar BCC para envío masivo manteniendo privacidad de emails
+        message.setRecipients(Message.RecipientType.BCC, destinatarios);
+        message.setSubject(asunto);
+
+        // Configurar el contenido
+        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+            message.setContent(cuerpo, "text/html; charset=utf-8");
+        } else {
+            message.setText(cuerpo, "utf-8");
+        }
+
+        // Enviar el correo masivo en una sola operación
+        Transport.send(message);
+
+        System.out.println("✅ Correo enviado masivamente a " + users.size() + " destinatarios");
     }
 
     /**
@@ -872,6 +868,9 @@ public class UserController {
 
         Transport.send(message);
     }
+
+    // ========== CARGAR DATOS DESDE ARCHIVO (DEPRECATED) ========== //
+    // Este endpoint está deprecado, usar /upload en su lugar
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
@@ -1064,6 +1063,242 @@ public class UserController {
                 .formatted(nombre, nuevaContrasena);
     }
 
+    // ========== CARGA DE DATOS DESDE ARCHIVO ==========
+
+    /**
+     * Endpoint para cargar datos desde archivo CSV o Excel
+     */
+    @PostMapping("/upload")
+    @ResponseBody
+    public ResponseEntity<?> cargarDatosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+        try {
+            // Validar que se envió un archivo
+            if (archivo.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "No se ha seleccionado ningún archivo"
+                        ));
+            }
+
+            // Validar tipo de archivo
+            String nombreArchivo = archivo.getOriginalFilename();
+            if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
+                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                return ResponseEntity.badRequest()
+                        .body(java.util.Map.of(
+                            "success", false,
+                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
+                        ));
+            }
+
+            List<UserDTO> usuariosCargados = new ArrayList<>();
+            int usuariosCreados = 0;
+            int usuariosDuplicados = 0;
+            List<String> errores = new ArrayList<>();
+
+            if (nombreArchivo.endsWith(".csv")) {
+                usuariosCargados = procesarArchivoCSV(archivo.getInputStream());
+            } else {
+                usuariosCargados = procesarArchivoExcel(archivo.getInputStream());
+            }
+
+            // Procesar cada usuario del archivo
+            for (int i = 0; i < usuariosCargados.size(); i++) {
+                UserDTO usuario = usuariosCargados.get(i);
+                try {
+                    // Validar datos básicos
+                    if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Email requerido");
+                        continue;
+                    }
+                    if (usuario.getName() == null || usuario.getName().trim().isEmpty()) {
+                        errores.add("Fila " + (i + 2) + ": Nombre requerido");
+                        continue;
+                    }
+
+                    // Verificar si el usuario ya existe
+                    if (userRepository.findByEmail(usuario.getEmail()).isPresent()) {
+                        usuariosDuplicados++;
+                        continue;
+                    }
+
+                    // Asignar valores por defecto si no están presentes
+                    if (usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
+                        usuario.setPassword("123456"); // Contraseña por defecto
+                    }
+                    if (usuario.getIdRole() == null) {
+                        usuario.setIdRole(2L); // Rol cliente por defecto
+                    }
+
+                    // Crear el usuario
+                    userService.crearUser(usuario);
+                    usuariosCreados++;
+
+                } catch (DataIntegrityViolationException e) {
+                    usuariosDuplicados++;
+                } catch (Exception e) {
+                    errores.add("Fila " + (i + 2) + ": " + e.getMessage());
+                }
+            }
+
+            // Preparar respuesta
+            java.util.Map<String, Object> respuesta = new java.util.HashMap<>();
+            respuesta.put("success", true);
+            respuesta.put("message", "Procesamiento completado");
+            respuesta.put("usuariosCreados", usuariosCreados);
+            respuesta.put("usuariosDuplicados", usuariosDuplicados);
+            respuesta.put("totalProcesados", usuariosCargados.size());
+            respuesta.put("errores", errores);
+
+            return ResponseEntity.ok(respuesta);
+
+        } catch (Exception e) {
+            System.err.println("Error al procesar archivo: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of(
+                        "success", false,
+                        "message", "Error al procesar el archivo: " + e.getMessage()
+                    ));
+        }
+    }
+
+    /**
+     * Procesar archivo CSV
+     */
+    private List<UserDTO> procesarArchivoCSV(InputStream inputStream) throws IOException {
+        List<UserDTO> usuarios = new ArrayList<>();
+
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+
+            String linea;
+            boolean primeraLinea = true;
+
+            while ((linea = reader.readLine()) != null) {
+                if (primeraLinea) {
+                    primeraLinea = false; // Saltar encabezados
+                    continue;
+                }
+
+                String[] campos = linea.split(",");
+                if (campos.length >= 2) // Al menos nombre y email
+                {
+                    UserDTO usuario = new UserDTO();
+                    usuario.setName(campos[0].trim());
+                    usuario.setEmail(campos[1].trim());
+
+                    // Campos opcionales
+                    if (campos.length > 2 && !campos[2].trim().isEmpty()) {
+                        usuario.setPassword(campos[2].trim());
+                    }
+                    if (campos.length > 3 && !campos[3].trim().isEmpty()) {
+                        try {
+                            usuario.setIdRole(Long.parseLong(campos[3].trim()));
+                        } catch (NumberFormatException e) {
+                            // Usar rol por defecto si no es válido
+                        }
+                    }
+
+                    usuarios.add(usuario);
+                }
+            }
+        }
+
+        return usuarios;
+    }
+
+    /**
+     * Procesar archivo Excel
+     */
+    private List<UserDTO> procesarArchivoExcel(InputStream inputStream) throws IOException {
+        List<UserDTO> usuarios = new ArrayList<>();
+
+        try (Workbook workbook = WorkbookFactory.create(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); // Primera hoja
+
+            boolean primeraFila = true;
+            for (Row fila : sheet) {
+                if (primeraFila) {
+                    primeraFila = false; // Saltar encabezados
+                    continue;
+                }
+
+                if (fila.getPhysicalNumberOfCells() >= 2) {
+                    UserDTO usuario = new UserDTO();
+
+                    // Nombre (columna A)
+                    Cell celdaNombre = fila.getCell(0);
+                    if (celdaNombre != null) {
+                        usuario.setName(obtenerValorCelda(celdaNombre));
+                    }
+
+                    // Email (columna B)
+                    Cell celdaEmail = fila.getCell(1);
+                    if (celdaEmail != null) {
+                        usuario.setEmail(obtenerValorCelda(celdaEmail));
+                    }
+
+                    // Contraseña (columna C) - opcional
+                    Cell celdaPassword = fila.getCell(2);
+                    if (celdaPassword != null && !obtenerValorCelda(celdaPassword).trim().isEmpty()) {
+                        usuario.setPassword(obtenerValorCelda(celdaPassword));
+                    }
+
+                    // Rol (columna D) - opcional
+                    Cell celdaRol = fila.getCell(3);
+                    if (celdaRol != null) {
+                        try {
+                            String valorRol = obtenerValorCelda(celdaRol);
+                            if (!valorRol.trim().isEmpty()) {
+                                usuario.setIdRole(Long.parseLong(valorRol));
+                            }
+                        } catch (NumberFormatException e) {
+                            // Usar rol por defecto si no es válido
+                        }
+                    }
+
+                    if (usuario.getName() != null && !usuario.getName().trim().isEmpty() &&
+                        usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
+                        usuarios.add(usuario);
+                    }
+                }
+            }
+        }
+
+        return usuarios;
+    }
+
+    /**
+     * Obtener valor de celda como String
+     */
+    private String obtenerValorCelda(Cell celda) {
+        if (celda == null) {
+            return "";
+        }
+
+        switch (celda.getCellType()) {
+            case STRING:
+                return celda.getStringCellValue().trim();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(celda)) {
+                    return celda.getDateCellValue().toString();
+                } else {
+                    // Para números enteros, quitar decimales
+                    double numero = celda.getNumericCellValue();
+                    if (numero == (long) numero) {
+                        return String.valueOf((long) numero);
+                    } else {
+                        return String.valueOf(numero);
+                    }
+                }
+            case BOOLEAN:
+                return String.valueOf(celda.getBooleanCellValue());
+            case FORMULA:
+                return celda.getCellFormula();
+            default:
+                return "";
+        }
+    }
+
 }
-
-
