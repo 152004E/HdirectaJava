@@ -20,4 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameProductContainingIgnoreCase(String nameProduct);
     
     List<Product> findByCategoryIgnoreCase(String category);
+
+    // Método para verificar duplicados exactos
+    boolean existsByNameProductIgnoreCaseAndCategoryIgnoreCase(String nameProduct, String category);
 }

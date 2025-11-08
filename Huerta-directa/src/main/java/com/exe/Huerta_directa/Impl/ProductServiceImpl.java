@@ -85,6 +85,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public boolean existeProducto(String nombre, String categoria) {
+        return productRepository.existsByNameProductIgnoreCaseAndCategoryIgnoreCase(nombre, categoria);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProductDTO> listarProductsPorCategoria(String categoria) {
         return productRepository.findByCategoryIgnoreCase(categoria)
