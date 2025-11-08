@@ -714,7 +714,7 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-            // Envío masivo real sin personalización individual
+                // Envío masivo real sin personalización individual
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
                 BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
