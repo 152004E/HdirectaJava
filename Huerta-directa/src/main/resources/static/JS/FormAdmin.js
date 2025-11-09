@@ -1,5 +1,3 @@
-<!-- Script para validación adicional -->
-
 // Mejorar la experiencia del usuario
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');

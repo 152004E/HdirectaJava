@@ -19,10 +19,10 @@
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
   </head>
-<body>
-<style>
-    /* Estilos para el modal email */
-    .modal-overlay {
+  <body>
+    <style>
+      /* Estilos para el modal email */
+      .modal-overlay {
         display: none;
         position: fixed;
         top: 0;
@@ -32,10 +32,10 @@
         background: rgba(0, 0, 0, 0.7);
         z-index: 9998;
         animation: fadeIn 0.3s;
-    }
+      }
 
-    /*Estilos para el modal Cargar datos*/
-    .modalOverlayCarga{
+      /*Estilos para el modal Cargar datos*/
+      .modalOverlayCarga {
         display: none;
         position: fixed;
         top: 0;
@@ -45,13 +45,13 @@
         background: rgba(0, 0, 0, 0.7);
         z-index: 9998;
         animation: fadeIn 0.3s;
-    }
+      }
 
-    .modalOverlayCarga.active {
+      .modalOverlayCarga.active {
         display: block;
-    }
+      }
 
-    .modal-carga {
+      .modal-carga {
         display: none;
         position: fixed;
         top: 50%;
@@ -65,13 +65,13 @@
         z-index: 9999;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         animation: slideDown 0.3s;
-    }
+      }
 
-    .modal-carga.active {
+      .modal-carga.active {
         display: block;
-    }
+      }
 
-    .modal-email {
+      .modal-email {
         display: none;
         position: fixed;
         top: 50%;
@@ -87,100 +87,104 @@
         z-index: 9999;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         animation: slideDown 0.3s;
-    }
+      }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideDown {
+      @keyframes fadeIn {
         from {
-            opacity: 0;
-            transform: translate(-50%, -60%);
+          opacity: 0;
         }
         to {
-            opacity: 1;
-            transform: translate(-50%, -50%);
+          opacity: 1;
         }
-    }
+      }
 
-    .modal-email.active,
-    .modal-overlay.active {
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -60%);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .modal-email.active,
+      .modal-overlay.active {
         display: block;
-    }
+      }
 
-    .modal-header {
+      .modal-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 25px;
         padding-bottom: 15px;
         border-bottom: 2px solid #689f38;
-    }
+      }
 
-    .modal-header h2 {
+      .modal-header h2 {
         color: #689f38;
         margin: 0;
         font-size: 24px;
-    }
+      }
 
-    .btn-close-modal {
+      .btn-close-modal {
         background: none;
         border: none;
         font-size: 28px;
         color: #999;
         cursor: pointer;
         transition: color 0.3s;
-    }
+      }
 
-    .btn-close-modal:hover {
+      .btn-close-modal:hover {
         color: #333;
-    }
+      }
 
-    .form-group {
+      .form-group {
         margin-bottom: 20px;
-    }
+      }
 
-    .form-group label {
+      .form-group label {
         display: block;
         margin-bottom: 8px;
         color: #333;
         font-weight: 600;
         font-size: 14px;
-    }
+      }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
         width: 100%;
         padding: 12px;
         border: 2px solid #ddd;
         border-radius: 8px;
         font-size: 14px;
         transition: border-color 0.3s;
-    }
+      }
 
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
         outline: none;
         border-color: #689f38;
-    }
+      }
 
-    .form-group textarea {
+      .form-group textarea {
         min-height: 150px;
         resize: vertical;
         font-family: inherit;
-    }
+      }
 
-    .recipient-type {
+      .recipient-type {
         display: flex;
         gap: 15px;
         margin-bottom: 15px;
-    }
+      }
 
-    .recipient-type label {
+      .recipient-type label {
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -188,20 +192,20 @@
         border: 2px solid #ddd;
         border-radius: 8px;
         transition: all 0.3s;
-    }
+      }
 
-    .recipient-type input[type="radio"] {
+      .recipient-type input[type="radio"] {
         margin-right: 8px;
         width: auto;
-    }
+      }
 
-    .recipient-type label:has(input:checked) {
+      .recipient-type label:has(input:checked) {
         background: #689f38;
         color: white;
         border-color: #689f38;
-    }
+      }
 
-    .btn-send-email {
+      .btn-send-email {
         width: 100%;
         padding: 15px;
         background: linear-gradient(135deg, #689f38, #8bc34a);
@@ -212,30 +216,30 @@
         font-weight: 600;
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s;
-    }
+      }
 
-    .btn-send-email:hover {
+      .btn-send-email:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(104, 159, 56, 0.4);
-    }
+      }
 
-    .btn-send-email:disabled {
+      .btn-send-email:disabled {
         background: #ccc;
         cursor: not-allowed;
         transform: none;
-    }
+      }
 
-    .loading-spinner {
+      .loading-spinner {
         display: none;
         text-align: center;
         padding: 20px;
-    }
+      }
 
-    .loading-spinner.active {
+      .loading-spinner.active {
         display: block;
-    }
+      }
 
-    .spinner {
+      .spinner {
         border: 4px solid #f3f3f3;
         border-top: 4px solid #689f38;
         border-radius: 50%;
@@ -243,38 +247,42 @@
         height: 40px;
         animation: spin 1s linear infinite;
         margin: 0 auto;
-    }
+      }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-    .result-message {
+      .result-message {
         display: none;
         padding: 15px;
         border-radius: 8px;
         margin-top: 15px;
         text-align: center;
-    }
+      }
 
-    .result-message.success {
+      .result-message.success {
         background: #d4edda;
         color: #155724;
         border: 1px solid #c3e6cb;
-    }
+      }
 
-    .result-message.error {
+      .result-message.error {
         background: #f8d7da;
         color: #721c24;
         border: 1px solid #f5c6cb;
-    }
+      }
 
-    .result-message.active {
+      .result-message.active {
         display: block;
-    }
+      }
 
-    .help-text {
+      .help-text {
         font-size: 12px;
         color: #666;
         margin-top: 5px;
@@ -283,9 +291,9 @@
         padding: 10px;
         border-radius: 6px;
         border-left: 4px solid #8dc84b;
-    }
+      }
 
-    .btn-email-masivo {
+      .btn-email-masivo {
         background: #8dc84b;
         border: none;
         color: white;
@@ -295,450 +303,516 @@
         cursor: pointer;
         transition: all 0.3s;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+      }
 
-    .btn-email-masivo:hover {
+      .btn-email-masivo:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(104, 159, 56, 0.4);
         background: #689f38;
-    }
+      }
 
-    .export-section {
+      .export-section {
         display: flex;
         gap: 10px;
         align-items: center;
         flex-wrap: wrap;
         margin: 20px 0;
-    }
+      }
     </style>
     <div class="container">
-        <div th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"></div>
+      <div
+        th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"
+      ></div>
 
-        <main>
-            <h1>Dashboard</h1>
+      <main>
+        <h1>Dashboard</h1>
 
-
-            <!-- Mensajes de éxito/error -->
-            <div th:if="${success}" class="alert alert-success">
-                <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
-            </div>
-            <div th:if="${error}" class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
-            </div>
-
-            <div class="insights">
-                <div class="sales">
-                    <span class="material-symbols-outlined">analytics</span>
-                    <div class="middle">
-                        <div class="left">
-                            <h3>Ventas</h3>
-                            <h1>$25,000</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx="38" cy="38" r="36"></circle>
-                            </svg>
-                            <div class="number">
-                                <p>81%</p>
-                            </div>
-                        </div>
-                    </div>
-                    <small class="text-muted">Ultimas 24 horas</small>
-                </div>
-
-                <div class="expenses">
-                    <span class="material-symbols-outlined">bar_chart</span>
-                    <div class="middle">
-                        <div class="left">
-                            <h3>Gastos</h3>
-                            <h1>$15,567</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx="38" cy="38" r="36"></circle>
-                            </svg>
-                            <div class="number">
-                                <p>62%</p>
-                            </div>
-                        </div>
-                    </div>
-                    <small class="text-muted">Ultimas 24 horas</small>
-                </div>
-
-                <div class="income">
-                    <span class="material-symbols-outlined">stacked_line_chart</span>
-                    <div class="middle">
-                        <div class="left">
-                            <h3>Ingresos</h3>
-                            <h1>$10,240</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx="38" cy="38" r="36"></circle>
-                            </svg>
-                            <div class="number">
-                                <p>31%</p>
-                            </div>
-                        </div>
-                    </div>
-                    <small class="text-muted">Ultimas 24 horas</small>
-                </div>
-            </div>
-
-            <div class="recent-orders">
-                <h2>Gestión de Productos</h2>
-
-                <!-- Total de productos -->
-                <div class="total-productos" th:if="${totalProductos != null}">
-                    <i class="fas fa-box"></i> 
-                    Total de Productos: <span th:text="${totalProductos}"></span>
-                </div>
-
-                <!-- Barra de búsqueda y filtros -->
-                <form class="busqueda-filtros" method="GET" action="/Dashboardd">
-                    <div class="barra-busqueda">
-                        <input class="BuscarProInp" type="text" name="buscar" 
-                               placeholder="Buscar producto..." 
-                               th:value="${buscarActivo}"/>
-                    </div>
-
-                    <div class="filtros">
-                        <div class="categoriaSelect">
-                            <select class="CategoriaS" id="categoria" name="categoria">
-                                <option value="">Por categoría</option>
-                                <option value="frutas" th:selected="${categoriaActiva == 'frutas'}">Frutas</option>
-                                <option value="verduras-hortalizas" th:selected="${categoriaActiva == 'verduras-hortalizas'}">Verduras y Hortalizas</option>
-                                <option value="lacteos" th:selected="${categoriaActiva == 'lacteos'}">Lácteos</option>
-                                <option value="carnes-proteinas" th:selected="${categoriaActiva == 'carnes-proteinas'}">Carnes y Proteínas</option>
-                                <option value="cereales-granos" th:selected="${categoriaActiva == 'cereales-granos'}">Cereales y Granos</option>
-                                <option value="legumbres-secas" th:selected="${categoriaActiva == 'legumbres-secas'}">Legumbres Secas</option>
-                                <option value="productos-organicos" th:selected="${categoriaActiva == 'productos-organicos'}">Productos Orgánicos</option>
-                                <option value="hierbas-especias" th:selected="${categoriaActiva == 'hierbas-especias'}">Hierbas y Especias</option>
-                                <option value="miel-derivados" th:selected="${categoriaActiva == 'miel-derivados'}">Miel y Derivados</option>
-                                <option value="procesados-artesanales" th:selected="${categoriaActiva == 'procesados-artesanales'}">Procesados Artesanales</option>
-                                <option value="bebidas-naturales" th:selected="${categoriaActiva == 'bebidas-naturales'}">Bebidas Naturales</option>
-                                <option value="plantas-semillas" th:selected="${categoriaActiva == 'plantas-semillas'}">Plantas y Semillas</option>
-                                <option value="cajas-combos" th:selected="${categoriaActiva == 'cajas-combos'}">Cajas Mixtas o Combos</option>
-                            </select>
-                            <div class="icon-container">
-                                <i class="fa-solid fa-caret-down"></i>
-                            </div>
-                        </div>
-
-                        <div class="ContainerButton">
-                            <button type="submit" class="consultar-btn">
-                                Consultar
-                                <span class="material-symbols-outlined icono_search">search</span>
-                            </button>
-                            <a href="/Dashboardd" class="consultar-btn" style="text-decoration: none; display: flex; align-items: center; gap: 5px;">
-                                Ver Todos
-                                <span class="material-symbols-outlined icono_search">view_list</span>
-                            </a>
-                        </div>
-                    </div>
-                </form>
-
-                
-
-                <!-- Tabla de productos -->
-                <table border="1" cellpadding="10" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Categoría</th>
-                            <th>Precio</th>
-                            <th>Unidad</th>
-                            <th>Descripción</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${productos == null || productos.isEmpty()}">
-                            <td colspan="7" style="text-align: center;">
-                                <i class="fas fa-info-circle"></i> No se encontraron productos
-                            </td>
-                        </tr>
-                        <tr th:each="producto : ${productos}">
-                            <td th:text="${producto.nameProduct}"></td>
-                            <td th:text="${producto.category}"></td>
-                            <td th:text="'$' + ${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"></td>
-                            <td th:text="${producto.unit}"></td>
-                            <td th:text="${#strings.length(producto.descriptionProduct) > 50 ? #strings.substring(producto.descriptionProduct, 0, 50) + '...' : producto.descriptionProduct}"></td>
-                            <td>
-                                <button type="button" class="btn-actualizar" 
-                                        th:onclick="'actualizarProducto(' + ${producto.idProduct} + ')'">
-                                    <span class="material-symbols-outlined">edit</span>
-                                </button>
-                                <button type="button" class="btn-eliminar" 
-                                        th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Botones de exportación -->
-                <div class="export-buttons">
-                    <button class="export-btn export-btn-excel" onclick="exportarExcel()">
-                        <i class="fas fa-file-excel"></i> Exportar a Excel
-                    </button>
-                    <button class="export-btn export-btn-pdf" onclick="exportarPDF()">
-                        <i class="fas fa-file-pdf"></i> Exportar a PDF
-                    </button>
-                    <button class="btn-email-masivo" onclick="abrirModalCargaDatos()">
-                        <i class="fas fa-upload"></i> Carga Masiva de Productos
-                    </button>
-                </div>
-            </div>
-        </main>
-
-        <div class="right">
-            <div class="top">
-                <div class="theme-toggler">
-                    <span class="material-symbols-outlined active">light_mode</span>
-                    <span class="material-symbols-outlined">dark_mode</span>
-                </div>
-                <div th:replace="fragments/profile :: profile"></div>
-            </div>
-
-            <div class="recent-updates">
-                <h2>Actualizaciones</h2>
-                <div class="updates">
-                    <div class="update">
-                        <div class="message">
-                            <p><b>Sistema</b> funcionando correctamente</p>
-                            <small class="text-muted">Hace 1 hora</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sales-analytics">
-                <h2>Analiticas</h2>
-                <div class="item online">
-                    <div class="icon">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                    </div>
-                    <div class="right">
-                        <div class="info">
-                            <h3>ORDENES</h3>
-                            <small class="text-muted">Ultimas 24 horas</small>
-                        </div>
-                        <h5 class="success">+39%</h5>
-                        <h3>3849</h3>
-                    </div>
-                </div>
-                <div class="item offline">
-                    <div class="icon">
-                        <span class="material-symbols-outlined">local_mall</span>
-                    </div>
-                    <div class="right">
-                        <div class="info">
-                            <h3>OFFLINE ORDENES</h3>
-                            <small class="text-muted">Ultimas 24 horas</small>
-                        </div>
-                        <h5 class="danger">-17%</h5>
-                        <h3>1100</h3>
-                    </div>
-                </div>
-                <div class="item customers">
-                    <div class="icon">
-                        <span class="material-symbols-outlined">person</span>
-                    </div>
-                    <div class="right">
-                        <div class="info">
-                            <h3>NUEVOS CLIENTES</h3>
-                            <small class="text-muted">Ultimas 24 horas</small>
-                        </div>
-                        <h5 class="success">+67%</h5>
-                        <h3>849</h3>
-                    </div>
-                </div>
-            </div>
+        <!-- Mensajes de éxito/error -->
+        <div th:if="${success}" class="alert alert-success">
+          <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
         </div>
+        <div th:if="${error}" class="alert alert-danger">
+          <i class="fas fa-exclamation-circle"></i>
+          <span th:text="${error}"></span>
+        </div>
+
+        <div class="insights">
+          <div class="sales">
+            <span class="material-symbols-outlined">analytics</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Ventas</h3>
+                <h1>$25,000</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>81%</p>
+                </div>
+              </div>
+            </div>
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+
+          <div class="expenses">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Gastos</h3>
+                <h1>$15,567</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>62%</p>
+                </div>
+              </div>
+            </div>
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+
+          <div class="income">
+            <span class="material-symbols-outlined">stacked_line_chart</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Ingresos</h3>
+                <h1>$10,240</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>31%</p>
+                </div>
+              </div>
+            </div>
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+        </div>
+
+        <div class="recent-orders">
+          <h2>Gestión de Productos</h2>
+
+          <!-- Total de productos -->
+          <div class="total-productos" th:if="${totalProductos != null}">
+            <i class="fas fa-box"></i>
+            Total de Productos: <span th:text="${totalProductos}"></span>
+          </div>
+
+          <!-- Barra de búsqueda y filtros -->
+          <form class="busqueda-filtros" method="GET" action="/Dashboardd">
+            <div class="barra-busqueda">
+              <input
+                class="BuscarProInp"
+                type="text"
+                name="buscar"
+                placeholder="Buscar producto..."
+                th:value="${buscarActivo}"
+              />
+            </div>
+
+            <div class="filtros">
+              <div class="categoriaSelect">
+                <select class="CategoriaS" id="categoria" name="categoria">
+                  <option value="">Por categoría</option>
+                  <option
+                    value="frutas"
+                    th:selected="${categoriaActiva == 'frutas'}"
+                  >
+                    Frutas
+                  </option>
+                  <option
+                    value="verduras-hortalizas"
+                    th:selected="${categoriaActiva == 'verduras-hortalizas'}"
+                  >
+                    Verduras y Hortalizas
+                  </option>
+                  <option
+                    value="lacteos"
+                    th:selected="${categoriaActiva == 'lacteos'}"
+                  >
+                    Lácteos
+                  </option>
+                  <option
+                    value="carnes-proteinas"
+                    th:selected="${categoriaActiva == 'carnes-proteinas'}"
+                  >
+                    Carnes y Proteínas
+                  </option>
+                  <option
+                    value="cereales-granos"
+                    th:selected="${categoriaActiva == 'cereales-granos'}"
+                  >
+                    Cereales y Granos
+                  </option>
+                  <option
+                    value="legumbres-secas"
+                    th:selected="${categoriaActiva == 'legumbres-secas'}"
+                  >
+                    Legumbres Secas
+                  </option>
+                  <option
+                    value="productos-organicos"
+                    th:selected="${categoriaActiva == 'productos-organicos'}"
+                  >
+                    Productos Orgánicos
+                  </option>
+                  <option
+                    value="hierbas-especias"
+                    th:selected="${categoriaActiva == 'hierbas-especias'}"
+                  >
+                    Hierbas y Especias
+                  </option>
+                  <option
+                    value="miel-derivados"
+                    th:selected="${categoriaActiva == 'miel-derivados'}"
+                  >
+                    Miel y Derivados
+                  </option>
+                  <option
+                    value="procesados-artesanales"
+                    th:selected="${categoriaActiva == 'procesados-artesanales'}"
+                  >
+                    Procesados Artesanales
+                  </option>
+                  <option
+                    value="bebidas-naturales"
+                    th:selected="${categoriaActiva == 'bebidas-naturales'}"
+                  >
+                    Bebidas Naturales
+                  </option>
+                  <option
+                    value="plantas-semillas"
+                    th:selected="${categoriaActiva == 'plantas-semillas'}"
+                  >
+                    Plantas y Semillas
+                  </option>
+                  <option
+                    value="cajas-combos"
+                    th:selected="${categoriaActiva == 'cajas-combos'}"
+                  >
+                    Cajas Mixtas o Combos
+                  </option>
+                </select>
+                <div class="icon-container">
+                  <i class="fa-solid fa-caret-down"></i>
+                </div>
+              </div>
+
+              <div class="ContainerButton">
+                <button type="submit" class="consultar-btn">
+                  Consultar
+                  <span class="material-symbols-outlined icono_search"
+                    >search</span
+                  >
+                </button>
+                <a
+                  href="/Dashboardd"
+                  class="consultar-btn"
+                  style="
+                    text-decoration: none;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                  "
+                >
+                  Ver Todos
+                  <span class="material-symbols-outlined icono_search"
+                    >view_list</span
+                  >
+                </a>
+              </div>
+            </div>
+          </form>
+
+          <!-- Tabla de productos -->
+          <table border="1" cellpadding="10" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Unidad</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${productos == null || productos.isEmpty()}">
+                <td colspan="7" style="text-align: center">
+                  <i class="fas fa-info-circle"></i> No se encontraron productos
+                </td>
+              </tr>
+              <tr th:each="producto : ${productos}">
+                <td th:text="${producto.nameProduct}"></td>
+                <td th:text="${producto.category}"></td>
+                <td
+                  th:text="'$' + ${#numbers.formatDecimal(producto.price, 0, 'COMMA', 2, 'POINT')}"
+                ></td>
+                <td th:text="${producto.unit}"></td>
+                <td
+                  th:text="${#strings.length(producto.descriptionProduct) > 50 ? #strings.substring(producto.descriptionProduct, 0, 50) + '...' : producto.descriptionProduct}"
+                ></td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn-actualizar"
+                    th:attr="data-id=${producto.idProduct}, 
+           data-name=${producto.nameProduct}, 
+           data-category=${producto.category}, 
+           data-price=${producto.price},
+           data-unit=${producto.unit},
+           data-description=${producto.descriptionProduct},
+           data-image=${producto.imageProduct}"
+                    onclick="abrirModalEditarDesdeBoton(this)"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-eliminar"
+                    th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'"
+                  >
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Botones de exportación -->
+          <div class="export-buttons">
+            <button
+              class="export-btn export-btn-excel"
+              onclick="exportarExcel()"
+            >
+              <i class="fas fa-file-excel"></i> Exportar a Excel
+            </button>
+            <button class="export-btn export-btn-pdf" onclick="exportarPDF()">
+              <i class="fas fa-file-pdf"></i> Exportar a PDF
+            </button>
+            <button class="btn-email-masivo" onclick="abrirModalCargaDatos()">
+              <i class="fas fa-upload"></i> Carga Masiva de Productos
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+
+        <div class="recent-updates">
+          <h2>Actualizaciones</h2>
+          <div class="updates">
+            <div class="update">
+              <div class="message">
+                <p><b>Sistema</b> funcionando correctamente</p>
+                <small class="text-muted">Hace 1 hora</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sales-analytics">
+          <h2>Analiticas</h2>
+          <div class="item online">
+            <div class="icon">
+              <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>ORDENES</h3>
+                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
+              <h5 class="success">+39%</h5>
+              <h3>3849</h3>
+            </div>
+          </div>
+          <div class="item offline">
+            <div class="icon">
+              <span class="material-symbols-outlined">local_mall</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>OFFLINE ORDENES</h3>
+                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
+              <h5 class="danger">-17%</h5>
+              <h3>1100</h3>
+            </div>
+          </div>
+          <div class="item customers">
+            <div class="icon">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>NUEVOS CLIENTES</h3>
+                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
+              <h5 class="success">+67%</h5>
+              <h3>849</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal de carga de productos -->
     <div class="modalOverlayCarga" id="modalOverlayCarga" onclick="cerrarModalCargaDatos()"></div>
     <div class="modal-carga" id="modalCargaDatos">
-        <div class="modal-header">
-            <h2><i class="fas fa-box-open"></i> Carga Masiva de Productos</h2>
-            <button class="btn-close-modal" onclick="cerrarModalCargaDatos()">&times;</button>
+      <div class="modal-header">
+        <h2><i class="fas fa-box-open"></i> Carga Masiva de Productos</h2>
+        <button class="btn-close-modal" onclick="cerrarModalCargaDatos()">
+          &times;
+        </button>
+      </div>
+
+      <form
+        id="formCargaProductos"
+        enctype="multipart/form-data"
+        onsubmit="cargarProductos(event)"
+      >
+        <div class="form-group">
+          <label for="archivoProductos">
+            <i class="fas fa-file-csv"></i> Seleccionar archivo de productos:
+          </label>
+          <input
+            type="file"
+            id="archivoProductos"
+            name="archivo"
+            accept=".csv,.xlsx,.xls"
+            required
+          />
+          <div class="help-text">
+            💡 <strong>Formato esperado:</strong><br />
+            📋
+            <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen</em
+            ><br />
+            📁 Formatos: CSV, Excel (.xlsx, .xls)
+          </div>
         </div>
 
-        <form id="formCargaProductos" enctype="multipart/form-data" onsubmit="cargarProductos(event)">
-            <div class="form-group">
-                <label for="archivoProductos">
-                    <i class="fas fa-file-csv"></i> Seleccionar archivo de productos:
-                </label>
-                <input type="file" id="archivoProductos" name="archivo"
-                       accept=".csv,.xlsx,.xls" required>
-                <div class="help-text">
-                    💡 <strong>Formato esperado:</strong><br>
-                    📋 <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen</em><br>
-                    📁 Formatos: CSV, Excel (.xlsx, .xls)
-                </div>
-            </div>
+        <button type="submit" class="btn-send-email" id="btnCargarProductos">
+          <i class="fas fa-cloud-upload-alt"></i> Cargar Productos
+        </button>
+      </form>
 
-            <button type="submit" class="btn-send-email" id="btnCargarProductos">
-                <i class="fas fa-cloud-upload-alt"></i> Cargar Productos
-            </button>
-        </form>
+      <div class="loading-spinner" id="loadingProductos">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; color: #666">
+          Procesando productos, por favor espera...
+        </p>
+      </div>
 
-        <div class="loading-spinner" id="loadingProductos">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #666;">Procesando productos, por favor espera...</p>
-        </div>
-
-        <div class="result-message" id="resultProductos"></div>
+      <div class="result-message" id="resultProductos"></div>
     </div>
 
+    <!-- Formulario de edición -->
+
+    <!-- Modal de edición de producto -->
+    <div class="modal-editar" id="modalEditarProducto">
+      <div class="modal-header">
+        <h2><i class="fas fa-pen"></i> Editar Producto</h2>
+        <button class="btn-close-modal" onclick="cerrarModalEditar()">
+          &times;
+        </button>
+      </div>
+
+      <form id="formEditarProducto" method="post">
+        <input type="hidden" id="idProduct" name="idProduct" />
+
+        <div class="form-group">
+          <label for="nameProduct">Nombre del Producto</label>
+          <input type="text" id="nameProduct" name="nameProduct" required />
+        </div>
+
+        <div class="form-group">
+          <label for="price">Precio (COP)</label>
+          <input type="number" step="0.01" id="price" name="price" required />
+        </div>
+
+        <div class="form-group">
+          <label for="category">Categoría</label>
+          <select id="category" name="category" required>
+            <option value="">Seleccione una categoría</option>
+            <option value="frutas">Frutas</option>
+            <option value="verduras-hortalizas">Verduras y Hortalizas</option>
+            <option value="lacteos">Lácteos</option>
+            <option value="carnes-proteinas">Carnes y Proteínas</option>
+            <option value="cereales-granos">Cereales y Granos</option>
+            <option value="legumbres-secas">Legumbres Secas</option>
+            <option value="productos-organicos">Productos Orgánicos</option>
+            <option value="hierbas-especias">Hierbas y Especias</option>
+            <option value="miel-derivados">Miel y Derivados</option>
+            <option value="procesados-artesanales">
+              Procesados Artesanales
+            </option>
+            <option value="bebidas-naturales">Bebidas Naturales</option>
+            <option value="plantas-semillas">Plantas y Semillas</option>
+            <option value="cajas-combos">Cajas Mixtas o Combos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="unit">Unidad de Medida</label>
+          <select id="unit" name="unit" required>
+            <option value="">Seleccione una medida</option>
+            <option value="kg">Kilogramos (kg)</option>
+            <option value="g">Gramos (g)</option>
+            <option value="lb">Libras (lb)</option>
+            <option value="unidad">Unidad (u)</option>
+            <option value="litro">Litros (L)</option>
+            <option value="ml">Mililitros (ml)</option>
+            <option value="docena">Docena</option>
+            <option value="paq">Paquete</option>
+            <option value="caja">Caja</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="descriptionProduct">Descripción</label>
+          <textarea
+            id="descriptionProduct"
+            name="descriptionProduct"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imageProduct">Imagen</label>
+          <input type="text" id="imageProduct" name="imageProduct" readonly />
+          <small class="text-muted">
+            <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
+          </small>
+        </div>
+
+        <button type="submit" class="btn-send-email">
+          <i class="fas fa-save"></i> Guardar Cambios
+        </button>
+      </form>
+    </div>
+
+    <!-- Overlay del modal -->
+    <div
+      class="modalOverlayEditar"
+      id="modalOverlayEditar"
+      onclick="cerrarModalEditar()"
+    ></div>
+
     <script src="/JS/dashboar.js"></script>
-    <script>
-
-        // Función para abrir el modal de cargar datos
-        function abrirModalCargaDatos() {
-            document.getElementById('modalOverlayCarga').classList.add('active');
-            document.getElementById('modalCargaDatos').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Función para cerrar el modal de carga de productos
-        function cerrarModalCargaDatos() {
-            document.getElementById('modalOverlayCarga').classList.remove('active');
-            document.getElementById('modalCargaDatos').classList.remove('active');
-            document.body.style.overflow = 'auto';
-
-            // Limpiar formulario y mensajes
-            document.getElementById('formCargaProductos').reset();
-            document.getElementById('resultProductos').classList.remove('active', 'success', 'error');
-            document.getElementById('loadingProductos').classList.remove('active');
-            document.getElementById('formCargaProductos').style.display = 'block';
-        }
-
-        // Función para cargar productos desde archivo
-        async function cargarProductos(event) {
-            event.preventDefault();
-
-            const form = event.target;
-            const archivo = document.getElementById('archivoProductos').files[0];
-            const loadingProductos = document.getElementById('loadingProductos');
-            const resultProductos = document.getElementById('resultProductos');
-
-            if (!archivo) {
-                alert('Por favor seleccione un archivo');
-                return;
-            }
-
-            // Mostrar loading
-            form.style.display = 'none';
-            loadingProductos.classList.add('active');
-            resultProductos.classList.remove('active');
-
-            const formData = new FormData();
-            formData.append('archivo', archivo);
-
-            try {
-                const response = await fetch('/api/users/upload-products', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                // Ocultar loading
-                loadingProductos.classList.remove('active');
-                form.style.display = 'block';
-
-                if (response.ok && result.success) {
-                    // Mostrar resultado exitoso
-                    resultProductos.className = 'result-message success active';
-                    resultProductos.innerHTML = `
-                        <i class="fas fa-check-circle"></i>
-                        <strong>¡Productos cargados exitosamente!</strong><br>
-                        📦 <strong>Resumen de importación:</strong><br>
-                        ✅ Productos creados: ${result.productosCreados}<br>
-                        📁 Total procesados: ${result.totalProcesados}<br>
-                        ${result.productosDuplicados > 0 ? `⚠️ Productos duplicados (omitidos): ${result.productosDuplicados}<br>` : ''}
-                        ${result.errores && result.errores.length > 0 ?
-                        `❌ Errores encontrados: ${result.errores.length}<br><div style="max-height: 100px; overflow-y: auto; font-size: 12px;">${result.errores.slice(0, 3).map(error => `• ${error}`).join('<br>')}</div>` :
-                        '<small>✨ ¡Todos los productos fueron importados correctamente!</small>'}
-                    `;
-
-                    // Recargar la página después de 3 segundos para mostrar los nuevos productos
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 3000);
-                } else {
-                    // Mostrar error
-                    resultProductos.className = 'result-message error active';
-                    resultProductos.innerHTML = `
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Error al procesar archivo de productos</strong><br>
-                        ${result.message || 'Ocurrió un error inesperado'}<br>
-                        <small>📋 Verifique el formato del archivo y los datos de los productos</small>
-                    `;
-                }
-
-            } catch (error) {
-                loadingProductos.classList.remove('active');
-                form.style.display = 'block';
-
-                resultProductos.className = 'result-message error active';
-                resultProductos.innerHTML = `
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Error de conexión</strong><br>
-                    No se pudo conectar con el servidor<br>
-                    <small>Verifique su conexión a internet e intente nuevamente</small>
-                `;
-                console.error('Error:', error);
-            }
-        }
-
-        function exportarExcel() {
-            const params = new URLSearchParams(window.location.search);
-            window.location.href = `/exportar_productos_excel?${params.toString()}`;
-        }
-
-        function exportarPDF() {
-            const params = new URLSearchParams(window.location.search);
-            window.location.href = `/exportar_productos_pdf?${params.toString()}`;
-        }
-
-        // Cerrar modal con tecla ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                cerrarModalCargaDatos();
-            }
-        });
-
-        function actualizarProducto(id) {
-            window.location.href = `/editar_producto/${id}`;
-        }
-
-        function eliminarProducto(id) {
-            if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/eliminar_producto/${id}`;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        }
-
-        // Ocultar alertas después de 5 segundos
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
-
-
-
-    </script>
-</body>
+  </body>
 </html>
