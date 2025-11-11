@@ -144,6 +144,7 @@
 
       .form-group {
         margin-bottom: 20px;
+        margin-right: 20px;
       }
 
       .form-group label {
@@ -326,7 +327,7 @@
 
       <main>
         <h1>Dashboard</h1>
-
+ 
         <!-- Mensajes de éxito/error -->
         <div th:if="${success}" class="alert alert-success">
           <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
@@ -747,17 +748,18 @@
 
       <form id="formEditarProducto" method="post">
         <input type="hidden" id="idProduct" name="idProduct" />
+        <div class="form-groupCategoriaUnidad">
+          <div class="form-group">
+            <label for="nameProduct">Nombre del Producto</label>
+            <input type="text" id="nameProduct" name="nameProduct" required />
+          </div>
 
-        <div class="form-group">
-          <label for="nameProduct">Nombre del Producto</label>
-          <input type="text" id="nameProduct" name="nameProduct" required />
+          <div class="form-group">
+            <label for="price">Precio (COP)</label>
+            <input type="number" step="0.01" id="price" name="price" required />
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="price">Precio (COP)</label>
-          <input type="number" step="0.01" id="price" name="price" required />
-        </div>
-
+        <!--div para la categoria y la unidad de medida-->
         <div class="form-groupCategoriaUnidad">
           <div class="form-group">
             <label for="category">Categoría</label>
@@ -798,25 +800,26 @@
             </select>
           </div>
         </div>
-
-        <div class="form-group">
-          <label for="descriptionProduct">Descripción</label>
-          <textarea
-            id="descriptionProduct"
-            name="descriptionProduct"
-            rows="4"
-            required
-          ></textarea>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="descriptionProduct">Descripción</label>
+            <textarea
+              id="descriptionProduct"
+              name="descriptionProduct"
+              rows="4"
+              required
+            ></textarea>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="imageProduct">Imagen</label>
-          <input type="text" id="imageProduct" name="imageProduct" readonly />
-          <small class="text-muted">
-            <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
-          </small>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="imageProduct">Imagen</label>
+            <input type="text" id="imageProduct" name="imageProduct" readonly />
+            <small class="text-muted">
+              <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
+            </small>
+          </div>
         </div>
-
         <button type="submit" class="btn-send-email">
           <i class="fas fa-save"></i> Guardar Cambios
         </button>
@@ -832,6 +835,5 @@
 
     <script src="/JS/dashboar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   
   </body>
 </html>

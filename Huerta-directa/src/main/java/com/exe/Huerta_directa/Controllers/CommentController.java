@@ -85,7 +85,7 @@ public class CommentController {
         }
 
         // Obtener todos los comentarios o filtrar por usuario según necesites
-        List<CommentDTO> comments = commentService.listarCommentsPorUsuario(userSession.getId());
+        List<Comment> comments = commentService.obtenerComentariosPorUsuario(userSession.getId());
 
         // O si quieres todos: commentService.obtenerTodosLosComentarios();
 
