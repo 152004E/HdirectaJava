@@ -385,13 +385,24 @@ function actualizarProducto(id) {
 }
 
 function eliminarProducto(id) {
-  if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = `/eliminar_producto/${id}`;
-    document.body.appendChild(form);
-    form.submit();
-  }
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: "Esta acción eliminará el producto permanentemente.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#004D00",
+    cancelButtonColor: "#8dc84b",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = `/eliminar_producto/${id}`;
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
 }
 
 // Ocultar alertas después de 5 segundos

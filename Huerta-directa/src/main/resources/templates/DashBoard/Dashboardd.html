@@ -144,6 +144,7 @@
 
       .form-group {
         margin-bottom: 20px;
+        margin-right: 20px;
       }
 
       .form-group label {
@@ -326,7 +327,7 @@
 
       <main>
         <h1>Dashboard</h1>
-
+ 
         <!-- Mensajes de éxito/error -->
         <div th:if="${success}" class="alert alert-success">
           <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
@@ -573,6 +574,17 @@
                   >
                     <span class="material-symbols-outlined">edit</span>
                   </button>
+                  <!-- Botón eliminar -->
+                  <!-- <a
+                  href="#"
+                  class="text-red-500 hover:text-red-700 font-medium flex items-center gap-1"
+                  th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
+                >
+                  <span class="material-symbols-outlined text-base">
+                    delete
+                  </span>
+                  Eliminar
+                </a> -->
                   <button
                     type="button"
                     class="btn-eliminar"
@@ -670,7 +682,11 @@
     </div>
 
     <!-- Modal de carga de productos -->
-    <div class="modalOverlayCarga" id="modalOverlayCarga" onclick="cerrarModalCargaDatos()"></div>
+    <div
+      class="modalOverlayCarga"
+      id="modalOverlayCarga"
+      onclick="cerrarModalCargaDatos()"
+    ></div>
     <div class="modal-carga" id="modalCargaDatos">
       <div class="modal-header">
         <h2><i class="fas fa-box-open"></i> Carga Masiva de Productos</h2>
@@ -732,74 +748,78 @@
 
       <form id="formEditarProducto" method="post">
         <input type="hidden" id="idProduct" name="idProduct" />
+        <div class="form-groupCategoriaUnidad">
+          <div class="form-group">
+            <label for="nameProduct">Nombre del Producto</label>
+            <input type="text" id="nameProduct" name="nameProduct" required />
+          </div>
 
-        <div class="form-group">
-          <label for="nameProduct">Nombre del Producto</label>
-          <input type="text" id="nameProduct" name="nameProduct" required />
+          <div class="form-group">
+            <label for="price">Precio (COP)</label>
+            <input type="number" step="0.01" id="price" name="price" required />
+          </div>
         </div>
+        <!--div para la categoria y la unidad de medida-->
+        <div class="form-groupCategoriaUnidad">
+          <div class="form-group">
+            <label for="category">Categoría</label>
+            <select id="category" name="category" required>
+              <option value="">Seleccione una categoría</option>
+              <option value="frutas">Frutas</option>
+              <option value="verduras-hortalizas">Verduras y Hortalizas</option>
+              <option value="lacteos">Lácteos</option>
+              <option value="carnes-proteinas">Carnes y Proteínas</option>
+              <option value="cereales-granos">Cereales y Granos</option>
+              <option value="legumbres-secas">Legumbres Secas</option>
+              <option value="productos-organicos">Productos Orgánicos</option>
+              <option value="hierbas-especias">Hierbas y Especias</option>
+              <option value="miel-derivados">Miel y Derivados</option>
+              <option value="procesados-artesanales">
+                Procesados Artesanales
+              </option>
+              <option value="bebidas-naturales">Bebidas Naturales</option>
+              <option value="plantas-semillas">Plantas y Semillas</option>
+              <option value="cajas-combos">Cajas Mixtas o Combos</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="price">Precio (COP)</label>
-          <input type="number" step="0.01" id="price" name="price" required />
+          <div class="form-group">
+            <label for="unit">Unidad de Medida</label>
+            <select id="unit" name="unit" required>
+              <option value="">Seleccione una medida</option>
+              <option value="kg">Kilogramos (kg)</option>
+              <option value="g">Gramos (g)</option>
+              <option value="lb">Libras (lb)</option>
+              <option value="unidad">Unidad (u)</option>
+              <option value="litro">Litros (L)</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="docena">Docena</option>
+              <option value="paq">Paquete</option>
+              <option value="caja">Caja</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="category">Categoría</label>
-          <select id="category" name="category" required>
-            <option value="">Seleccione una categoría</option>
-            <option value="frutas">Frutas</option>
-            <option value="verduras-hortalizas">Verduras y Hortalizas</option>
-            <option value="lacteos">Lácteos</option>
-            <option value="carnes-proteinas">Carnes y Proteínas</option>
-            <option value="cereales-granos">Cereales y Granos</option>
-            <option value="legumbres-secas">Legumbres Secas</option>
-            <option value="productos-organicos">Productos Orgánicos</option>
-            <option value="hierbas-especias">Hierbas y Especias</option>
-            <option value="miel-derivados">Miel y Derivados</option>
-            <option value="procesados-artesanales">
-              Procesados Artesanales
-            </option>
-            <option value="bebidas-naturales">Bebidas Naturales</option>
-            <option value="plantas-semillas">Plantas y Semillas</option>
-            <option value="cajas-combos">Cajas Mixtas o Combos</option>
-          </select>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="descriptionProduct">Descripción</label>
+            <textarea
+              id="descriptionProduct"
+              name="descriptionProduct"
+              rows="4"
+              required
+            ></textarea>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="unit">Unidad de Medida</label>
-          <select id="unit" name="unit" required>
-            <option value="">Seleccione una medida</option>
-            <option value="kg">Kilogramos (kg)</option>
-            <option value="g">Gramos (g)</option>
-            <option value="lb">Libras (lb)</option>
-            <option value="unidad">Unidad (u)</option>
-            <option value="litro">Litros (L)</option>
-            <option value="ml">Mililitros (ml)</option>
-            <option value="docena">Docena</option>
-            <option value="paq">Paquete</option>
-            <option value="caja">Caja</option>
-            <option value="otro">Otro</option>
-          </select>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="imageProduct">Imagen</label>
+            <input type="text" id="imageProduct" name="imageProduct" readonly />
+            <small class="text-muted">
+              <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
+            </small>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="descriptionProduct">Descripción</label>
-          <textarea
-            id="descriptionProduct"
-            name="descriptionProduct"
-            rows="4"
-            required
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="imageProduct">Imagen</label>
-          <input type="text" id="imageProduct" name="imageProduct" readonly />
-          <small class="text-muted">
-            <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
-          </small>
-        </div>
-
         <button type="submit" class="btn-send-email">
           <i class="fas fa-save"></i> Guardar Cambios
         </button>
@@ -814,5 +834,6 @@
     ></div>
 
     <script src="/JS/dashboar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
