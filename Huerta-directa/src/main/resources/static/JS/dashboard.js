@@ -38,8 +38,8 @@ function confirmarEliminacion(id) {
     text: "Esta acción no se puede deshacer.",
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
+    confirmButtonColor: "#004D00",
+    cancelButtonColor: "#8dc84b",
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar'
   }).then((result) => {

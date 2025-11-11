@@ -37,6 +37,7 @@
       ></div>
       <!-- fin del asside -->
       <main>
+        <h1 class="!mt-[20px]">Revisa tus mensajes y comentarios aquí.</h1>
         <div
           class="bg-yellow-100 !border-l-4 !border-yellow-500 text-yellow-800 !p-4 rounded-md shadow-md !w-full h-18 mx-auto !mt-16 flex justify-between items-center hover:bg-yellow-100/80 transition-all duration-500"
         >
@@ -51,21 +52,25 @@
             Ir a Quienes Somos
           </a>
         </div>
-        <h1 class="!mt-[20px]">Revisa tus mensajes y comentarios aquí.</h1>
-        <div class="flex justify-center items-center gap-20 !mt-[20px] text-xl">
-          <a href="">Tus Comentarios</a>
+        
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]" href=""
+            >Tus Comentarios</a
+          >
           <a href="">Mensajes</a>
           <a href="">Comentarios de tus productos</a>
         </div>
         <!-- SECCIÓN COMENTARIOS -->
-       
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 !gap-6">
           <!-- Iterar los comentarios -->
           <div
             th:each="comment : ${comments}"
-            class="bg-[#eaf5e7] rounded-xl  shadow-lg !p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] ease-in-out cursor-pointer group"
+            class="bg-white rounded-xl shadow-lg !p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] ease-in-out cursor-pointer group"
           >
-            <div class="flex items-start space-x-4 mb-4">
+            <div class="flex items-start !space-x-4 !mb-4">
               <!-- Avatar con iniciales -->
               <div
                 class="flex-shrink-0 bg-[#8bc34a] w-12 h-12 rounded-full bg-accent flex items-center justify-center"
@@ -84,14 +89,16 @@
                   <div>
                     <!-- Tipo de comentario -->
                     <p
-                      class="text-lg font-semibold text-gray-900 leading-tight"
+                      class="text-lg font-semibold text-gray-900 !leading-tight"
                       th:text="${comment.commentType.name() == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
                     >
                       Comentario del sitio
                     </p>
 
                     <!-- Nombre y correo -->
-                    <p class="text-sm text-gray-500 mt-1">
+                    <p class="!text-lg !text-gray-500 !mt-2">
+                      <span class="!mr-2"> Tú : </span>
+
                       <span th:text="${comment.user.name}">
                         María González
                       </span>
@@ -107,17 +114,9 @@
                   <span
                     class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
                   >
-                    expand_content
+                    3p
                   </span>
                 </div>
-
-                <!-- Fecha -->
-                <p
-                  class="text-xs text-gray-500 mt-2"
-                  th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
-                >
-                  22 de Octubre, 2025
-                </p>
 
                 <!-- Texto del comentario -->
                 <p
@@ -131,29 +130,46 @@
             </div>
 
             <div
-              class="flex justify-end items-center text-sm font-medium text-primary mt-4"
+              class="flex justify-around items-center !pt-3 text-sm font-medium text-primary !mt-8 !border-t-2 !border-black/10"
             >
-              <span
-                class="material-symbols-outlined text-primary mr-1 text-base"
+              <!-- Fecha -->
+              <p
+                class="!text-[14px] !text-gray-500 !mt-2"
+                th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
               >
-                chat_bubble
-              </span>
-              <span>Responder</span>
+                22 de Octubre, 2025
+              </p>
+              <div>
+                <button
+                    type="button"
+                    class="btn-actualizar"
+                    
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-eliminar"
+                     th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
+                    
+                  >
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+              </div>
             </div>
           </div>
         </div>
-        
       </main>
 
       <div class="right">
-            <div class="top">
-                <div class="theme-toggler">
-                    <span class="material-symbols-outlined active">light_mode</span>
-                    <span class="material-symbols-outlined">dark_mode</span>
-                </div>
-                <div th:replace="fragments/profile :: profile"></div>
-            </div>
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
         </div>
+      </div>
     </div>
     <script src="/JS/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
