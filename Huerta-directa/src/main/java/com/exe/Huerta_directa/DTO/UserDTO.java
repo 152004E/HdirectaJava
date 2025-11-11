@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+//import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,8 +20,16 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private LocalDate creacionDate;
+    private LocalDateTime creacionDate;
 
     private Long idRole;
+
+    public LocalDateTime getCreacionDate() {
+    return creacionDate;
+}
+
+public void setCreacionDate(LocalDateTime creacionDate) {
+    this.creacionDate = creacionDate;
+}
 
 }
