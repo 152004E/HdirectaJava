@@ -161,3 +161,56 @@ if (toggle && sidebar && main) {
     console.log("Sidebar toggled");
   };
 }
+
+
+  async function crearPago() {
+  // Obtener productos del carrito
+  const filas = document.querySelectorAll("#lista-carrito tbody tr");
+  
+  if (filas.length === 0) {
+    alert("⚠️ Tu carrito está vacío. Agrega productos primero.");
+    return;
+  }
+
+  // Calcular total
+  let total = 0;
+  filas.forEach(fila => {
+    const precioTexto = fila.querySelector("td:nth-child(3)").textContent;
+    const precio = parseFloat(precioTexto.replace(/[^0-9]/g, ""));
+    total += precio;
+  });
+
+  const nombreProducto = `Pedido de ${filas.length} producto(s) - Huerta Directa`;
+
+  // Crear formulario GET
+  const form = document.createElement("form");
+  form.method = "GET";
+  form.action = "/payment/checkout";
+  
+  // Campo: nombre del producto
+  const inputNombre = document.createElement("input");
+  inputNombre.type = "hidden";
+  inputNombre.name = "productName";
+  inputNombre.value = nombreProducto;
+  form.appendChild(inputNombre);
+
+  // Campo: precio total
+  const inputPrecio = document.createElement("input");
+  inputPrecio.type = "hidden";
+  inputPrecio.name = "price";
+  inputPrecio.value = total;
+  form.appendChild(inputPrecio);
+
+  // Campo: cantidad 
+  const inputCantidad = document.createElement("input");
+  inputCantidad.type = "hidden";
+  inputCantidad.name = "quantity";
+  inputCantidad.value = 1;
+  form.appendChild(inputCantidad);
+
+  // Enviar formulario
+  document.body.appendChild(form);
+  form.submit();
+}
+
+
