@@ -143,6 +143,9 @@ aside .active {
   display: none;
 }
 
+main {
+  max-width:1200px ;
+}
 main .active {
   grid-column: 1 / -1;
 }
@@ -1563,6 +1566,30 @@ body:has(.consulta-wrapper) {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.form-groupCategoriaUnidad{
+  width: 100%;
+  padding-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  background: #dbdbdb;
+  border-left:  solid 6px #8dc84b;
+  align-items: center;
+  justify-content: space-around;
+  display: flex;
+}
+.form-groupDescripcionYImagen{
+  width: 100%;
+  padding-top: 10px;
+  margin-bottom: 20px;
+  padding-left: 10px;
+  border-radius: 15px;
+  background: #dbdbdb;
+  border-left:  solid 6px #8dc84b;
+ 
+
+  
 }
 
 .alert-success {
