@@ -19,7 +19,6 @@ import com.exe.Huerta_directa.Service.CommentService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @CrossOrigin(origins = "*")

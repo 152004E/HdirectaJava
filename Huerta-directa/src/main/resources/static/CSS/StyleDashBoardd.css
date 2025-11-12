@@ -501,7 +501,7 @@ select:hover {
 }
 
 .CategoriaS {
-  width: 190px;
+  width: 155px !important;
   padding: 10px 35px 10px 15px;
   background-color: #8cc63f;
   color: white;
@@ -590,8 +590,8 @@ main .export-links hr {
 .right .top {
 
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .right .top button {
@@ -902,7 +902,7 @@ main .export-links hr {
 
   .consulta-container table th,
   .consulta-container table td {
-    padding: 8px;
+    padding: 8px; 
   }
 }
 
