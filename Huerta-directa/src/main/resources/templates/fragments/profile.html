@@ -2,32 +2,58 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <body>
     <div class="profile" th:fragment="profile">
+      <div class="flex gap-3">
+        <div>
+          <button
+            type="button"
+            onclick="DesplegarProfile()"
+            style="
+            
+              color: white;
+              border: none;
+              padding: 5px 8px;
+              border-radius: 10px;
+              font-size: 12px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
 
-      <div class="info">
-        <p>
-          Ey,
-          <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
-            >Usuario</b
+              transition: all 0.3s ease;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            "
           >
-        </p>
-        <small
-          class="text-muted"
-          th:text="${userRole != null ? userRole : 'Usuario'}"
-          >Usuario</small
-        >
+            <div class="profile-photo">
+              <img src="/images/logo_huerta.png" alt="Profile" />
+            </div>
+            <span class="material-symbols-outlined text-[#8bc34a]">
+              expand_circle_down
+            </span>
+          </button>
+        </div>
       </div>
-       <div class="profile-photo">
-        <img src="/images/logo_huerta.png" alt="Profile" />
-      </div>
+      <div id="MostrarInfo" class="flex flex-col absolute top-[80px] bg-[#dfeece] !p-4 rounded-xl">
+        <div class="info">
+          <p>
+            Ey,
+            <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
+              >Usuario</b
+            >
+          </p>
+          <small
+            class="text-muted !text-[13px]"
+            th:text="${userRole != null ? userRole : 'Usuario'}"
+            >Usuario</small
+          >
+        </div>
 
-       <!-- Botón de cerrar sesión -->
-        <form action="/api/users/logout" method="post" >
+        <!-- Botón de cerrar sesión -->
+        <form action="/api/users/logout" method="post">
           <button
             type="submit"
             class="btn-logout"
             style="
-            width: 70px;
-            height: 40px !important;
+              width: 100%;
+              height: 40px !important;
               background: #20571b;
               color: white;
               border: none;
@@ -47,9 +73,11 @@
             <span class="material-symbols-outlined" style="font-size: 14px"
               >logout</span
             >
-            Cerrar  Sesión
+            Cerrar Sesión
           </button>
         </form>
+      </div>
     </div>
   </body>
+  
 </html>
