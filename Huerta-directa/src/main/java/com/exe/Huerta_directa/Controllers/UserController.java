@@ -1629,14 +1629,15 @@ public class UserController {
                 //Actualizar el usuario en la sesión
                 session.setAttribute("user", user);
 
-                redirectAttributes.addFlashAttribute("message", "Informacion actualizado exitosamente.");
+                redirectAttributes.addFlashAttribute("success", "Informacion actualizado exitosamente.");
+                return "redirect:/actualizacionUsuario";
 
-                return "redirect:/actualizarUsuario";
+
 
             } catch (Exception e) {
-                System.err.println("Erro ao actualizar usuario: " + e.getMessage());
+                System.err.println("Erro al actualizar usuario: " + e.getMessage());
                 redirectAttributes.addFlashAttribute("error", "Error al actualizar la información");
-                return "redirect:/actualizarUsuario";
+                return "redirect:/actualizacionUsuario";
             }
 
             }
@@ -1661,7 +1662,7 @@ public class UserController {
                 if (!currentUser.getEmail().equals(email) &&
                         userRepository.findByEmail(email).isPresent()) {
                     redirectAttributes.addFlashAttribute("error", "El email ya está registrado");
-                    return "redirect:/actualizarUsuario";
+                    return "redirect:/actualizacionUsuario";
                 }
 
                 User user = userRepository.findById(currentUser.getId())
@@ -1674,13 +1675,57 @@ public class UserController {
                 session.setAttribute("user", user);
 
                 redirectAttributes.addFlashAttribute("success", "Contacto actualizado correctamente");
-                return "redirect:/actualizarUsuario";
+                return "redirect:/actualizacionUsuario";
 
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("error", "Error al actualizar contacto");
-                return "redirect:/actualizarUsuario";
+                return "redirect:/actualizacionUsuario";
             }
         }
+    /*
+    @PostMapping("/change-password")
+    public String cambiarContrasena(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Sesión expirada");
+                return "redirect:/login";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            // Verificar contraseña actual
+            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+                redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
+                return "redirect:/DashboardActualizarUser";
+            }
+
+            // Verificar que las contraseñas coincidan
+            if (!newPassword.equals(confirmPassword)) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
+                return "redirect:/DashboardActualizarUser";
+            }
+
+            // Actualizar contraseña
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+
+            redirectAttributes.addFlashAttribute("success", "Contraseña cambiada exitosamente");
+            return "redirect:/DashboardActualizarUser";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al cambiar la contraseña");
+            return "redirect:/DashboardActualizarUser";
+        }
+    }
+        */
 
 
     }
