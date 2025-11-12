@@ -8,8 +8,6 @@ let main = document.querySelector(".main");
 
 // }
 
-console.log("scrip ejecutado");
-
 let list = document.querySelectorAll(".navigation li");
 function activeLink() {
   list.forEach((item) => {
@@ -34,17 +32,47 @@ function toggleCard(id) {
 }
 function confirmarEliminacion(id) {
   Swal.fire({
-    title: '¿Estás seguro?',
+    title: "¿Estás seguro?",
     text: "Esta acción no se puede deshacer.",
-    icon: 'warning',
+    icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#004D00",
     cancelButtonColor: "#8dc84b",
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar'
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
   }).then((result) => {
     if (result.isConfirmed) {
-      window.location.href = '/deleteComment/' + id;
+      window.location.href = "/deleteComment/" + id;
     }
   });
 }
+
+function abrirModalComentario(id, text) {
+  //mostrar modal
+  const modal = document.getElementById("modalEditarComentario");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  document.body.style.overflow = "hidden";
+
+  //obtener datos
+  document.getElementById("idComment").value = id;
+  document.getElementById("commentCommenter").value = text;
+
+  //accion del formulario
+
+  const form = document.getElementById("formEditarComentario");
+  form.action = `/actualizarComentario/${id}`;
+}
+
+function cerrarModalComentario() {
+  //cerrar modal
+  const modal = document.getElementById("modalEditarComentario");
+  modal.classList.remove("flex");
+  modal.classList.add("hidden");
+  document.body.style.overflow = "auto";
+}
+// Cerrar al hacer clic fuera del modal
+window.addEventListener("click", (e) => {
+  const modal = document.getElementById("modalEditarComentario");
+  if (e.target === modal) cerrarModalComentario();
+});

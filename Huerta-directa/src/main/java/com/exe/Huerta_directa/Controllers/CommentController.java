@@ -19,6 +19,7 @@ import com.exe.Huerta_directa.Service.CommentService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -106,6 +107,33 @@ public class CommentController {
         CommentDTO comment = commentService.obtenerCommentPorId(id);
         model.addAttribute("comment", comment);
         return "DashBoard/EditarComentario";
+    }
+
+    @PostMapping("/actualizarComentario/{id}")
+    public RedirectView actualizarCome(@PathVariable long id, @RequestParam("commentCommenter") String commentCommenter,
+            HttpSession session) {
+        try {
+            // verificar sesion
+            User userSesion = (User) session.getAttribute("user");
+            if (userSesion == null) {
+                return new RedirectView("redirect:/login?error=session&message=Debe+iniciar+sesión");
+            }
+
+            // crear dto con los datos actualizados
+
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setCommentCommenter(commentCommenter);
+            commentDTO.setCreationComment(java.time.LocalDate.now());
+
+            // llamar al servicio
+
+            commentService.actualizarComment(id, commentDTO);
+            return new RedirectView("/MensajesComentarios?success=Comentario+actualizado+correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("/MensajesComentarios?error=No+se+pudo+actualizar+el+comentario");
+        }
+
     }
 
 }

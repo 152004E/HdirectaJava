@@ -52,7 +52,7 @@
             Ir a Quienes Somos
           </a>
         </div>
-        
+
         <div
           class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
         >
@@ -141,22 +141,81 @@
               </p>
               <div>
                 <button
-                    type="button"
-                    class="btn-actualizar"
-                    
-                  >
-                    <span class="material-symbols-outlined">edit</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn-eliminar"
-                     th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
-                    
-                  >
-                    <span class="material-symbols-outlined">delete</span>
-                  </button>
+                  type="button"
+                  class="btn-actualizar"
+                  th:attr="onclick='abrirModalComentario(' + ${comment.idComment} + ', `' + ${comment.commentCommenter} + '`)'"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-eliminar"
+                  th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
               </div>
             </div>
+          </div>
+        </div>
+        <!--modal para editar el comentario-->
+
+        <!-- Modal para editar comentario -->
+        <div
+          id="modalEditarComentario"
+          class="fixed inset-0 bg-black/50 bg-opacity-50 hidden justify-center items-center z-50"
+        >
+          <div
+            class="bg-white rounded-xl shadow-xl w-[600px] !p-6 relative !animate-fadeIn"
+          >
+            <!-- Botón cerrar -->
+            <button
+              onclick="cerrarModalComentario()"
+              class="absolute top-3 right-3 text-gray-700 hover:text-[#8bc34a] cursor-pointer transition-all duration-500 hover:scale-[1.05]"
+            >
+              ✕
+            </button>
+            <div class="flex justify-center items-center h-10">
+              <h2
+                class="text-2xl font-semibold text-gray-800 !mb-10 text-center"
+              >
+                <span class="material-symbols-outlined !mt-2">
+                  edit_arrow_down
+                </span>
+                Edita tu comentario
+              </h2>
+            </div>
+
+            <form id="formEditarComentario" method="post">
+              <input type="hidden" name="idComment" id="idComment" />
+
+              <textarea
+                id="commentCommenter"
+                name="commentCommenter"
+                rows="5"
+                placeholder="Escribe tu comentario..."
+                required
+                class="w-full !p-3 !border !border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
+              ></textarea>
+
+              <div class="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  onclick="cerrarModalComentario()"
+                  class="bg-gray-300 text-gray-700 flex justify-center items-center gap-2 !px-4 !py-2 rounded-lg hover:bg-gray-400 transition-all duration-500 hover:scale-[1.05]"
+                >
+                  <span class="material-symbols-outlined"> cancel </span>
+                  <p>Cancelar</p>
+                </button>
+                <button
+                  type="submit"
+                  class="bg-green-600 flex justify-center items-center gap-2 text-white !px-4 !py-2 rounded-lg hover:bg-green-700 transition-all duration-500 hover:scale-[1.05]"
+                >
+                  <span class="material-symbols-outlined"> save_as </span>
+                  <p class="!text-white">Guardar</p>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </main>
