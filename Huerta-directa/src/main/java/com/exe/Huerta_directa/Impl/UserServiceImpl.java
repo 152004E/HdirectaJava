@@ -26,6 +26,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.awt.Color;
@@ -44,13 +46,15 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final RoleService roleService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; // ⭐ AGREGAR ESTO
+
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RoleService roleService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.roleService = roleService;
     }
 
-    //Metodo para obtener todos los usuarios en reporte excel
     public List<User> obtenerTodos() {
         return userRepository.findAll();
     }
@@ -73,6 +77,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO crearUser(UserDTO userDTO) {
         User user = convertirAEntity(userDTO);
+
+        // ⭐ HASHEAR la contraseña antes de guardar
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
+            user.setPassword(hashedPassword);
+        }
+
         User nuevoUser = userRepository.save(user);
         return convertirADTO(nuevoUser);
     }
@@ -83,6 +94,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + userId));
 
         actualizarDatosPersona(userExistente, userDTO);
+
+        // ⭐ Solo hashear si la contraseña cambió (no está vacía)
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
+            userExistente.setPassword(hashedPassword);
+        }
+
         User userActualizado = userRepository.save(userExistente);
         return convertirADTO(userActualizado);
     }
@@ -96,26 +114,29 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.findById(userId).get();
 
-        // Verificar si tiene productos asociados
         if (user.getProducts() != null && !user.getProducts().isEmpty()) {
             throw new RuntimeException("No se puede eliminar este usuario porque tiene " +
-                                    user.getProducts().size() + " producto(s) asociado(s). " +
-                                    "Elimine primero los productos o reasígnelos a otro usuario.");
+                    user.getProducts().size() + " producto(s) asociado(s). " +
+                    "Elimine primero los productos o reasígnelos a otro usuario.");
         }
 
         userRepository.deleteById(userId);
     }
 
-    //Metodo para login
+    // ⭐ MÉTODO DE AUTENTICACIÓN CON BCRYPT
     @Override
     public UserDTO autenticarUsuario(String email, String password) {
         // Buscar usuario por email
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Correo no registrado."));
+                .orElse(null);
 
-        // Verificar la contraseña
-        if (!user.getPassword().equals(password)) {
-            throw new RuntimeException("Contraseña incorrecta.");
+        if (user == null) {
+            return null;
+        }
+
+        // ⭐ Verificar la contraseña hasheada con BCrypt
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return null;
         }
 
         // Convertir a DTO y devolver
@@ -123,79 +144,75 @@ public class UserServiceImpl implements UserService {
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
-        dto.setPassword(null); // nunca devolvemos la contraseña
+        dto.setPassword(null); // NUNCA devolver la contraseña
         dto.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
 
         return dto;
     }
 
+    @Override
+    public UserDTO crearAdmin(UserDTO userDTO) {
+        // Obtener el rol admin (id = 1)
+        RoleDTO roleAdmin = roleService.obtenerRolePorId(1L);
+        userDTO.setIdRole(roleAdmin.getIdRole());
 
-    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Convertir Entity a DTO
+        // ⭐ La contraseña se hasheará automáticamente en crearUser()
+        return crearUser(userDTO);
+    }
+
+    // ========== MÉTODOS PRIVADOS ==========
+
     private UserDTO convertirADTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setCreacionDate(user.getCreacionDate()); // ⚠️ ESTO debe estar incluido
+        // ⭐ NO incluir la contraseña en el DTO
+        userDTO.setPassword(null);
+        userDTO.setCreacionDate(user.getCreacionDate());
 
-        //Si la persona tiene un rol asignado, se convierte a DTO
         if (user.getRole() != null) {
             userDTO.setIdRole(user.getRole().getIdRole());
         } else {
-            userDTO.setIdRole(null); // O cualquier valor por defecto que consideres apropiado
+            userDTO.setIdRole(null);
         }
 
         return userDTO;
     }
 
-    // Convertir DTO a Entity
     private User convertirAEntity(UserDTO userDTO) {
         User user = new User();
-        // Comentamos esta línea para que la base de datos genere el ID automáticamente
-        // y evitemos el error de duplicidad.
-        // user.setId(userDTO.getId());
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setCreacionDate(user.getCreacionDate()); // ⚠️ ESTO debe estar incluido
+        user.setPassword(userDTO.getPassword()); // Se hasheará en crearUser()
 
-        // Aquí buscamos el rol.
+        // ⭐ CORRECCIÓN: Establecer fecha actual si no existe
+        if (user.getCreacionDate() == null) {
+            user.setCreacionDate(LocalDateTime.now());
+        }
+
         if (userDTO.getIdRole() != null) {
-            // Si el DTO tiene un rol asignado (idRole no es nulo), buscamos ese rol
-            // específico en la base de datos.
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
-            user.setRole(role); // Asignamos el rol encontrado al usuario.
+            user.setRole(role);
         } else {
-            // --- INICIO DE LA MODIFICACIÓN PARA ROL POR DEFECTO ---
-            // Si el DTO no tiene un rol asignado (idRole es nulo), buscamos el rol por
-            // defecto con ID 2 ('Cliente').
-            // Este rol se asignará automáticamente a los nuevos usuarios si no se
-            // especifica uno.
-            Role defaultRole = roleRepository.findById(2L) // Buscamos el rol con ID 2. Usamos 2L para indicar que es un
-                    // Long.
+            // Rol por defecto: Cliente (ID 2)
+            Role defaultRole = roleRepository.findById(2L)
                     .orElseThrow(() -> new RuntimeException(
-                            "Rol por defecto con ID 2 ('cliente') no encontrado. Por favor, asegúrate de que exista en la base de datos."));
-            user.setRole(defaultRole); // Asignamos el rol por defecto encontrado al usuario.
-            // --- FIN DE LA MODIFICACIÓN ---
+                            "Rol por defecto con ID 2 ('cliente') no encontrado."));
+            user.setRole(defaultRole);
         }
 
         return user;
     }
 
-    //Actualizar Entity con datos del DTO
     private void actualizarDatosPersona(User user, UserDTO userDTO) {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
 
-        // Si el DTO tiene un rol asignado, buscar el rol existente en la base de datos
+        // ⭐ La contraseña se hasheará en actualizarUser() si no está vacía
+        // NO hashear aquí para evitar hashear dos veces
+
         if (userDTO.getIdRole() != null) {
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
@@ -205,24 +222,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // MÉTODO PARA EXPORTAR A EXCEL (Corregido)
+    // ========== EXPORTACIÓN ==========
+
     @Override
     public void exporUserstToExcel(OutputStream outputStream) throws IOException {
-        //Un nuevo libro de excel
         Workbook workbook = new XSSFWorkbook();
-
-        //Una nueva hoja en el libro
         Sheet sheet = workbook.createSheet("Users");
 
-        //Crear la fila de encabezado
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("User ID");
         headerRow.createCell(1).setCellValue("Name");
         headerRow.createCell(2).setCellValue("Email");
         headerRow.createCell(3).setCellValue("Password");
-        headerRow.createCell(4).setCellValue("Role"); // CORREGIDO: era índice 3, debe ser 4
+        headerRow.createCell(4).setCellValue("Role");
 
-        //Obtener todos los usuarios
         List<User> users = obtenerTodos();
         int rowNum = 1;
         for (User user : users) {
@@ -230,40 +243,32 @@ public class UserServiceImpl implements UserService {
             row.createCell(0).setCellValue(user.getId());
             row.createCell(1).setCellValue(user.getName());
             row.createCell(2).setCellValue(user.getEmail());
-            row.createCell(3).setCellValue(user.getPassword());
+            row.createCell(3).setCellValue("●●●●●●●●"); // ⭐ Ocultar contraseña por seguridad
 
-            // Si el usuario tiene un rol asignado, obtener el nombre del rol; de lo contrario, dejarlo vacío
             String roleName = (user.getRole() != null) ? user.getRole().getName() : "No Role Assigned";
             row.createCell(4).setCellValue(roleName);
         }
 
-        //Ajustamos el tamaño de las columnas automaticamente
         for (int i = 0; i < 5; i++) {
             sheet.autoSizeColumn(i);
         }
 
         try {
-            //Escribimos el libro en el OutputStream proporcionado
             workbook.write(outputStream);
         } finally {
-            //Cerramos el workbook para liberar recursos
             workbook.close();
         }
     }
 
-    // MÉTODO PARA EXPORTAR A PDF 
     @Override
     public void exportUsersToPdf(OutputStream outputStream) throws IOException {
         Document document = new Document();
 
         try {
-
             PdfWriter.getInstance(document, outputStream);
-
-            // Abrir el documento para empezar a escribir
             document.open();
 
-            // Título principal con estilo
+            // Título
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, Color.GREEN.darker());
             Paragraph title = new Paragraph("HUERTA DIRECTA", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
@@ -276,82 +281,71 @@ public class UserServiceImpl implements UserService {
             subtitle.setSpacingAfter(10);
             document.add(subtitle);
 
-            // Información del reporte
+            // Info del reporte
             Font infoFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.GRAY);
             String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-            
+
             List<User> users = obtenerTodos();
-            Paragraph reportInfo = new Paragraph("Fecha de generación: " + currentDate + 
+            Paragraph reportInfo = new Paragraph("Fecha de generación: " + currentDate +
                     " | Total de registros: " + users.size(), infoFont);
             reportInfo.setAlignment(Element.ALIGN_RIGHT);
             reportInfo.setSpacingAfter(20);
             document.add(reportInfo);
 
-            
             if (users.isEmpty()) {
-                // Si no hay usuarios
                 Font noDataFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.RED);
                 Paragraph noData = new Paragraph("No se encontraron usuarios registrados.", noDataFont);
                 noData.setAlignment(Element.ALIGN_CENTER);
                 noData.setSpacingBefore(50);
                 document.add(noData);
             } else {
-                // Crear tabla con 5 columnas
+                // Tabla
                 PdfPTable table = new PdfPTable(5);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
                 table.setSpacingAfter(10f);
 
-                // Configurar anchos de columnas
-                float[] columnWidths = {1f, 2.5f, 3f, 2f, 1.5f};
+                float[] columnWidths = { 1f, 2.5f, 3f, 2f, 1.5f };
                 table.setWidths(columnWidths);
 
-                // Estilo para encabezados
                 Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.WHITE);
-                
-                // Agregar encabezados con estilo
+
                 addTableHeader(table, "ID", headerFont);
                 addTableHeader(table, "Nombre", headerFont);
                 addTableHeader(table, "Email", headerFont);
                 addTableHeader(table, "Contraseña", headerFont);
                 addTableHeader(table, "Rol", headerFont);
 
-                // Fuente para datos
                 Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
 
-                // Agregar datos de usuarios
                 int rowCount = 0;
                 for (User user : users) {
                     rowCount++;
-                    
-                    // Alternar colores de filas
                     Color rowColor = (rowCount % 2 == 0) ? new Color(240, 240, 240) : Color.WHITE;
 
-                    // Agregar celdas con datos
                     addTableCell(table, String.valueOf(user.getId()), dataFont, rowColor, Element.ALIGN_CENTER);
-                    addTableCell(table, user.getName() != null ? user.getName() : "N/A", dataFont, rowColor, Element.ALIGN_LEFT);
-                    addTableCell(table, user.getEmail() != null ? user.getEmail() : "N/A", dataFont, rowColor, Element.ALIGN_LEFT);
-                    addTableCell(table, "●●●●●●●●", dataFont, rowColor, Element.ALIGN_CENTER); // Ocultar contraseña por seguridad
-                    
+                    addTableCell(table, user.getName() != null ? user.getName() : "N/A", dataFont, rowColor,
+                            Element.ALIGN_LEFT);
+                    addTableCell(table, user.getEmail() != null ? user.getEmail() : "N/A", dataFont, rowColor,
+                            Element.ALIGN_LEFT);
+                    addTableCell(table, "●●●●●●●●", dataFont, rowColor, Element.ALIGN_CENTER); // ⭐ Ocultar
+
                     String roleName = (user.getRole() != null) ? user.getRole().getName() : "Sin Rol";
                     addTableCell(table, roleName, dataFont, rowColor, Element.ALIGN_CENTER);
                 }
 
                 document.add(table);
 
-                // ==================== ESTADÍSTICAS ADICIONALES ====================
-                
-                // Agregar estadísticas por rol
+                // Estadísticas
                 Map<String, Long> usersByRole = users.stream()
                         .collect(Collectors.groupingBy(
-                                user -> user.getRole() != null && user.getRole().getName() != null 
-                                        ? user.getRole().getName() 
+                                user -> user.getRole() != null && user.getRole().getName() != null
+                                        ? user.getRole().getName()
                                         : "Sin Rol",
-                                Collectors.counting()
-                        ));
+                                Collectors.counting()));
 
                 if (!usersByRole.isEmpty()) {
-                    document.add(new Paragraph(" ")); // Espacio
+                    document.add(new Paragraph(" "));
 
                     Font statsFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
                     Paragraph statsTitle = new Paragraph("Estadísticas por Rol:", statsFont);
@@ -360,17 +354,18 @@ public class UserServiceImpl implements UserService {
 
                     Font statsDataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
                     for (Map.Entry<String, Long> entry : usersByRole.entrySet()) {
-                        Paragraph statLine = new Paragraph("• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        Paragraph statLine = new Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
                         statLine.setIndentationLeft(20);
                         document.add(statLine);
                     }
                 }
             }
 
-            // ==================== PIE DE PÁGINA ====================
-            
+            // Footer
             Font footerFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 8, Color.GRAY);
-            Paragraph footer = new Paragraph("Reporte generado automáticamente por el sistema Huerta Directa", footerFont);
+            Paragraph footer = new Paragraph("Reporte generado automáticamente por el sistema Huerta Directa",
+                    footerFont);
             footer.setAlignment(Element.ALIGN_CENTER);
             footer.setSpacingBefore(30);
             document.add(footer);
@@ -378,17 +373,15 @@ public class UserServiceImpl implements UserService {
         } catch (DocumentException e) {
             throw new IOException("Error al crear el documento PDF: " + e.getMessage(), e);
         } finally {
-            // Cerrar el documento
             if (document.isOpen()) {
                 document.close();
             }
         }
     }
 
-    // MÉTODO AUXILIAR: Agregar encabezado de tabla con estilo
     private void addTableHeader(PdfPTable table, String headerTitle, Font font) {
         PdfPCell header = new PdfPCell();
-        header.setBackgroundColor(new Color(67, 160, 71)); 
+        header.setBackgroundColor(new Color(67, 160, 71));
         header.setBorderWidth(1);
         header.setPhrase(new Phrase(headerTitle, font));
         header.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -397,7 +390,6 @@ public class UserServiceImpl implements UserService {
         table.addCell(header);
     }
 
-    // MÉTODO AUXILIAR: Agregar celda con datos y estilo
     private void addTableCell(PdfPTable table, String text, Font font, Color backgroundColor, int alignment) {
         PdfPCell cell = new PdfPCell();
         cell.setPhrase(new Phrase(text, font));
@@ -409,18 +401,7 @@ public class UserServiceImpl implements UserService {
         table.addCell(cell);
     }
 
-    // MÉTODO HEREDADO (manteniendo compatibilidad con tu código anterior)
     public void exportarUsersToPDF(OutputStream outputStream) throws IOException {
-        // Redirigir al método mejorado
         exportUsersToPdf(outputStream);
-    }
-    @Override
-    public UserDTO crearAdmin(UserDTO userDTO) {
-        // obtenemos el rol admin (id = 1) desde el service
-        RoleDTO roleAdmin = roleService.obtenerRolePorId(1L);
-        userDTO.setIdRole(roleAdmin.getIdRole());
-
-        // reutilizamos el método normal de crear
-        return crearUser(userDTO);
     }
 }

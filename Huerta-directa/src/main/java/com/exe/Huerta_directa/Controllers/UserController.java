@@ -26,9 +26,13 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,6 +50,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/users")
 @CrossOrigin("*")
+
 public class UserController {
 
     private final UserService userService;
@@ -312,6 +317,9 @@ public class UserController {
     }
 
     // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
+    @Autowired
+    private PasswordEncoder passwordEncoder; // o BCryptPasswordEncoder, pero mejor PasswordEncoder
+
     @PostMapping("/register")
     public String seveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
@@ -319,52 +327,44 @@ public class UserController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        // 1) Si hay errores de validación (JSR-303), mejor renderizamos la vista sin
-        // redirect
-        // así BindingResult está disponible y Thymeleaf puede mostrar errores por
-        // campo.
         if (result.hasErrors()) {
-            return "login/login"; // renderiza la vista con errores (no redirect)
+            return "login/login";
         }
 
         try {
-            UserDTO usuarioCreado = userService.crearUser(userDTO);
+            // ❌ NO hashear aquí: quitar la siguiente línea si existe en tu controlador
+            // userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-            // Usar el repository para obtener la Entity User
+            // Dejar que el servicio se encargue de hashear:
+            UserDTO usuarioCreado = userService.crearUser(userDTO);
             User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
+
             if (userEntity != null) {
                 session.setAttribute("user", userEntity);
             } else {
-                // Si por alguna razón no se encuentra, crear un User básico del DTO
-                System.err.println("⚠️ No se pudo encontrar el usuario recién creado, creando sesión básica");
                 session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
             }
 
-            // Enviar correo de confirmación
             enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
 
-            // Si querés iniciar sesión automáticamente y redirigir:
             if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
-                redirectAttributes.addFlashAttribute("success",
-                        "¡Bienvenido Administrador! Tu cuenta ha sido creada exitosamente");
+                redirectAttributes.addFlashAttribute("success", "¡Bienvenido Administrador!");
                 return "redirect:/DashboardAdmin";
             } else {
-                redirectAttributes.addFlashAttribute("success", "¡Bienvenido! Tu cuenta ha sido creada exitosamente");
+                redirectAttributes.addFlashAttribute("success", "¡Bienvenido!");
                 return "redirect:/index";
             }
 
         } catch (DataIntegrityViolationException e) {
-            // Error de llave única (email duplicado)
             redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está registrado");
-            // Reenviamos los datos del formulario para que se muestren en la vista
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta. Por favor, intente nuevamente");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta.");
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         }
-
     }
 
     // MÉTODO PARA ENVIAR EL CORREO
@@ -510,23 +510,33 @@ public class UserController {
     }
 
     @PostMapping("/loginUser")
-    public String loginUser(@RequestParam String email,
+    public String loginUser(
+            @RequestParam String email,
             @RequestParam String password,
             Model model,
             HttpSession session) {
 
+        // Buscar el usuario por correo
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        // ⚠️ Validar si el usuario existe y si la contraseña coincide
+        if (user == null) {
             model.addAttribute("error", "Correo o contraseña incorrectos");
-            model.addAttribute("userDTO", new UserDTO()); // importante para no romper el form
+            model.addAttribute("userDTO", new UserDTO());
             return "login/login";
         }
 
-        // Guarda al usuario en sesión
+        // Verificar con BCrypt si la contraseña plana coincide con el hash
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            model.addAttribute("error", "Correo o contraseña incorrectos");
+            model.addAttribute("userDTO", new UserDTO());
+            return "login/login";
+        }
+
+        // Guardar usuario en la sesión
         session.setAttribute("user", user);
 
-        // Redirige según el rol usando redirección inteligente
+        // Redirigir según el rol
         if (user.getRole().getIdRole() == 1) {
             return "redirect:/DashboardAdmin";
         } else {
@@ -665,8 +675,8 @@ public class UserController {
     }
 
     private void addTableCellPdf(PdfPTable table, String text,
-                                 com.lowagie.text.Font font, java.awt.Color backgroundColor,
-                                 int alignment) {
+            com.lowagie.text.Font font, java.awt.Color backgroundColor,
+            int alignment) {
         com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
         cell.setPhrase(new com.lowagie.text.Phrase(text, font));
         cell.setHorizontalAlignment(alignment);
@@ -701,8 +711,6 @@ public class UserController {
         return user;
     }
 
-
-
     // ========== ENVÍO DE CORREOS MASIVOS ==========
 
     /**
@@ -721,10 +729,11 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-                // Envío masivo real sin personalización individual
+            // Envío masivo real sin personalización individual
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " usuarios");
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo: " + e.getMessage());
@@ -768,7 +777,8 @@ public class UserController {
             // Envío masivo real sin personalización individual
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo filtrado: " + e.getMessage());
@@ -804,7 +814,8 @@ public class UserController {
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
                 String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " " + roleName);
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " " + roleName);
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo por rol: " + e.getMessage());
@@ -819,7 +830,8 @@ public class UserController {
     }
 
     /**
-     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola operación
+     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola
+     * operación
      */
     private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
         Session session = crearSesionCorreo();
@@ -872,11 +884,11 @@ public class UserController {
         Transport.send(message);
     }
 
-
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
     /**
-     * Endpoint para solicitar recuperación de contraseña - Versión simple como el registro
+     * Endpoint para solicitar recuperación de contraseña - Versión simple como el
+     * registro
      */
     @PostMapping("/forgot-password")
     public String solicitarRecuperacionContrasena(@RequestParam String email, RedirectAttributes redirectAttributes) {
@@ -884,9 +896,10 @@ public class UserController {
             User user = userRepository.findByEmail(email).orElse(null);
 
             if (user == null) {
-                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo mensaje
+                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo
+                // mensaje
                 redirectAttributes.addFlashAttribute("success",
-                    "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+                        "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
                 return "redirect:/forgot-password";
             }
 
@@ -903,13 +916,13 @@ public class UserController {
             System.out.println("🔐 Nueva contraseña generada para: " + email);
 
             redirectAttributes.addFlashAttribute("success",
-                "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+                    "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
             return "redirect:/forgot-password";
 
         } catch (Exception e) {
             System.err.println("❌ Error en recuperación de contraseña: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error",
-                "Error al procesar la solicitud. Por favor, intenta nuevamente");
+                    "Error al procesar la solicitud. Por favor, intenta nuevamente");
             return "redirect:/forgot-password";
         }
     }
@@ -933,7 +946,8 @@ public class UserController {
     /**
      * Método para enviar correo con la nueva contraseña
      */
-    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena) throws MessagingException {
+    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena)
+            throws MessagingException {
         Session session = crearSesionCorreo();
 
         MimeMessage message = new MimeMessage(session);
@@ -1077,20 +1091,18 @@ public class UserController {
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "No se ha seleccionado ningún archivo"
-                        ));
+                                "success", false,
+                                "message", "No se ha seleccionado ningún archivo"));
             }
 
             // Validar tipo de archivo
             String nombreArchivo = archivo.getOriginalFilename();
             if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
-                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                    !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
-                        ));
+                                "success", false,
+                                "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
 
             List<UserDTO> usuariosCargados = new ArrayList<>();
@@ -1158,9 +1170,8 @@ public class UserController {
             System.err.println("Error al procesar archivo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(java.util.Map.of(
-                        "success", false,
-                        "message", "Error al procesar el archivo: " + e.getMessage()
-                    ));
+                            "success", false,
+                            "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
 
@@ -1260,7 +1271,7 @@ public class UserController {
                     }
 
                     if (usuario.getName() != null && !usuario.getName().trim().isEmpty() &&
-                        usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
+                            usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
                         usuarios.add(usuario);
                     }
                 }
@@ -1315,20 +1326,18 @@ public class UserController {
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "No se ha seleccionado ningún archivo"
-                        ));
+                                "success", false,
+                                "message", "No se ha seleccionado ningún archivo"));
             }
 
             // Validar tipo de archivo
             String nombreArchivo = archivo.getOriginalFilename();
             if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
-                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                    !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
-                        ));
+                                "success", false,
+                                "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
 
             List<ProductDTO> productosCargados = new ArrayList<>();
@@ -1379,10 +1388,12 @@ public class UserController {
                     }
 
                     // Verificar si el producto ya existe (por nombre exacto y categoría)
-                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(), producto.getCategory().trim());
+                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(),
+                            producto.getCategory().trim());
                     if (existe) {
                         productosDuplicados++;
-                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - " + producto.getCategory());
+                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - "
+                                + producto.getCategory());
                         continue;
                     }
 
@@ -1410,9 +1421,8 @@ public class UserController {
             System.err.println("Error al procesar archivo de productos: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(java.util.Map.of(
-                        "success", false,
-                        "message", "Error al procesar el archivo: " + e.getMessage()
-                    ));
+                            "success", false,
+                            "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
 
@@ -1529,9 +1539,9 @@ public class UserController {
 
                     // Validar que los campos obligatorios no estén vacíos
                     if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
-                        producto.getPrice() != null &&
-                        producto.getCategory() != null && !producto.getCategory().trim().isEmpty() &&
-                        producto.getUnit() != null && !producto.getUnit().trim().isEmpty()) {
+                            producto.getPrice() != null &&
+                            producto.getCategory() != null && !producto.getCategory().trim().isEmpty() &&
+                            producto.getUnit() != null && !producto.getUnit().trim().isEmpty()) {
                         productos.add(producto);
                     }
                 }
@@ -1561,11 +1571,29 @@ public class UserController {
         try {
             // Usar ProductService para crear el producto en la base de datos
             ProductDTO productoCreado = productService.crearProduct(producto, producto.getUserId());
-            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: " + productoCreado.getIdProduct() + ")");
+            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: "
+                    + productoCreado.getIdProduct() + ")");
         } catch (Exception e) {
             System.err.println("❌ Error creando producto: " + producto.getNameProduct() + " - " + e.getMessage());
             throw e; // Re-lanzar la excepción para que sea manejada en el bucle principal
         }
+    }
+
+    @GetMapping("/admin/migrate-passwords")
+    public String migratePasswords() {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            // Solo hashear si NO está hasheada (BCrypt empieza con $2a$)
+            if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+                String hashedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(hashedPassword);
+                userRepository.save(user);
+                System.out.println("✅ Contraseña hasheada para: " + user.getEmail());
+            }
+        }
+
+        return "redirect:/DashboardAdmin";
     }
 
 }

@@ -3,6 +3,8 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.PaymentRequestDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.MercadoPagoService;
+//import com.mercadopago.exceptions.MPApiException;
+//import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
