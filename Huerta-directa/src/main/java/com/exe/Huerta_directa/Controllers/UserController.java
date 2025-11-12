@@ -1596,4 +1596,91 @@ public class UserController {
         return "redirect:/DashboardAdmin";
     }
 
-}
+        @PostMapping("/actualizarDatos")
+        public String actualizarDatos(
+                @RequestParam String name,
+                @RequestParam String address,
+                HttpSession session,
+                RedirectAttributes redirectAttributes
+        ) {
+            {
+            try{
+                //Obtener el usuario actual de la sesión
+                User currentUser = (User) session.getAttribute("user");
+
+                if (currentUser == null){
+                    redirectAttributes.addFlashAttribute("error", "Usuario no autenticado.");
+                    return "redirect:/login";
+                }
+
+                //Buscar el usuario en la base de datos
+
+                User user = userRepository.findById(currentUser.getId())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+
+                //Actualizar los datos direccion y telefono
+                user.setName(name);
+                user.setAddress(address);
+
+
+                //Guardar los cambios
+                userRepository.save(user);
+
+                //Actualizar el usuario en la sesión
+                session.setAttribute("user", user);
+
+                redirectAttributes.addFlashAttribute("message", "Informacion actualizado exitosamente.");
+
+                return "redirect:/actualizarUsuario";
+
+            } catch (Exception e) {
+                System.err.println("Erro ao actualizar usuario: " + e.getMessage());
+                redirectAttributes.addFlashAttribute("error", "Error al actualizar la información");
+                return "redirect:/actualizarUsuario";
+            }
+
+            }
+        }
+
+
+        @PostMapping("/ActualizarContacto")
+        public String actualizarContacto(
+                @RequestParam String email,
+                @RequestParam(required = false) String phone,
+                HttpSession session,
+                RedirectAttributes redirectAttributes) {
+            try {
+                User currentUser = (User) session.getAttribute("user");
+
+                if (currentUser == null) {
+                    redirectAttributes.addFlashAttribute("error", "Sesión expirada");
+                    return "redirect:/login";
+                }
+
+                // Verificar si el email ya está en uso por otro usuario
+                if (!currentUser.getEmail().equals(email) &&
+                        userRepository.findByEmail(email).isPresent()) {
+                    redirectAttributes.addFlashAttribute("error", "El email ya está registrado");
+                    return "redirect:/actualizarUsuario";
+                }
+
+                User user = userRepository.findById(currentUser.getId())
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                user.setEmail(email);
+                user.setPhone(phone);
+
+                userRepository.save(user);
+                session.setAttribute("user", user);
+
+                redirectAttributes.addFlashAttribute("success", "Contacto actualizado correctamente");
+                return "redirect:/actualizarUsuario";
+
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Error al actualizar contacto");
+                return "redirect:/actualizarUsuario";
+            }
+        }
+
+
+    }
