@@ -21,42 +21,7 @@
             animation: fadeIn 0.3s;
         }
 
-        /*Estilos para el modal Cargar datos*/
-        .modalOverlayCarga{
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9998;
-            animation: fadeIn 0.3s;
-        }
 
-        .modalOverlayCarga.active {
-            display: block;
-        }
-
-        .modal-carga {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            z-index: 9999;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s;
-        }
-
-        .modal-carga.active {
-            display: block;
-        }
 
         .modal-email {
             display: none;
@@ -345,9 +310,6 @@
                 <button onclick="abrirModalEmail()" class="btn-email-masivo">
                     <i class="fas fa-envelope"></i> Enviar Correo Masivo
                 </button>
-                <button onclick="abrirModalCargaDatos()" class="btn-email-masivo">
-                    <i class="fa-solid fa-download"></i> Cargar Datos
-                </button>
             </div>
 
             <hr>
@@ -463,43 +425,7 @@
         <div class="result-message" id="resultMessage"></div>
     </div>
 
-    <!-- Modal de carga de datos -->
-    <div class="modalOverlayCarga" id="modalOverlayCarga" onclick="cerrarModalCargaDatos()"></div>
-    <div class="modal-carga" id="modalCargaDatos">
-        <div class="modal-header">
-            <h2><i class="fas fa-upload"></i> Cargar Datos</h2>
-            <button class="btn-close-modal" onclick="cerrarModalCargaDatos()">&times;</button>
-        </div>
 
-        <form th:action="@{/api/users/archivo}"
-              th:method="post"
-              id="formCargaDatos"
-              enctype="multipart/form-data"
-              onsubmit="cargarDatos(event)">
-            <div class="form-group">
-                <label for="archivoCargaDatos">
-                    <i class="fas fa-file"></i> Seleccionar archivo:
-                </label>
-                <input type="file" id="archivoCargaDatos" name="archivo"
-                       accept=".csv,.xlsx,.xls" required
-                       placeholder="Seleccione un archivo">
-                <div class="help-text">
-                    💡 Formatos soportados: CSV, Excel (.xlsx, .xls)
-                </div>
-            </div>
-
-            <button type="submit" class="btn-send-email" id="btnCargarDatos">
-                <i class="fas fa-upload"></i> Cargar Datos
-            </button>
-        </form>
-
-        <div class="loading-spinner" id="loadingCarga">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #666;">Cargando datos, por favor espera...</p>
-        </div>
-
-        <div class="result-message" id="resultCarga"></div>
-    </div>
     <script>
         // Función para abrir el modal de email
         function abrirModalEmail() {
@@ -521,25 +447,7 @@
             document.getElementById('formEmailMasivo').style.display = 'block';
         }
 
-        // Función para abrir el modal de cargar datos
-        function abrirModalCargaDatos() {
-            document.getElementById('modalOverlayCarga').classList.add('active');
-            document.getElementById('modalCargaDatos').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
 
-        // Función para cerrar el modal de carga de datos
-        function cerrarModalCargaDatos() {
-            document.getElementById('modalOverlayCarga').classList.remove('active');
-            document.getElementById('modalCargaDatos').classList.remove('active');
-            document.body.style.overflow = 'auto';
-
-            // Limpiar formulario y mensajes
-            document.getElementById('formCargaDatos').reset();
-            document.getElementById('resultCarga').classList.remove('active', 'success', 'error');
-            document.getElementById('loadingCarga').classList.remove('active');
-            document.getElementById('formCargaDatos').style.display = 'block';
-        }
 
         // Función para enviar correo masivo
         async function enviarCorreoMasivo(event) {
@@ -624,84 +532,7 @@
             }
         }
 
-        // Función para cargar datos desde archivo
-        async function cargarDatos(event) {
-            event.preventDefault();
 
-            const form = event.target;
-            const archivo = document.getElementById('archivoCargaDatos').files[0];
-            const loadingCarga = document.getElementById('loadingCarga');
-            const resultCarga = document.getElementById('resultCarga');
-
-            if (!archivo) {
-                alert('Por favor seleccione un archivo');
-                return;
-            }
-
-            // Mostrar loading
-            form.style.display = 'none';
-            loadingCarga.classList.add('active');
-            resultCarga.classList.remove('active');
-
-            const formData = new FormData();
-            formData.append('archivo', archivo);
-
-            try {
-                const response = await fetch('/api/users/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                // Ocultar loading
-                loadingCarga.classList.remove('active');
-                form.style.display = 'block';
-
-                if (response.ok && result.success) {
-                    // Mostrar resultado exitoso
-                    resultCarga.className = 'result-message success active';
-                    resultCarga.innerHTML = `
-                        <i class="fas fa-check-circle"></i>
-                        <strong>¡Archivo procesado exitosamente!</strong><br>
-                        📊 <strong>Resumen de importación:</strong><br>
-                        ✅ Usuarios creados: ${result.usuariosCreados}<br>
-                        📁 Total procesados: ${result.totalProcesados}<br>
-                        ${result.usuariosDuplicados > 0 ? `⚠️ Usuarios duplicados (omitidos): ${result.usuariosDuplicados}<br>` : ''}
-                        ${result.errores && result.errores.length > 0 ?
-                            `❌ Errores encontrados: ${result.errores.length}<br><small>${result.errores.slice(0, 3).join('<br>')}</small>` :
-                            '<small>✨ Todos los registros válidos fueron importados</small>'}
-                    `;
-
-                    // Recargar la tabla de usuarios después de 2 segundos
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 3000);
-                } else {
-                    // Mostrar error
-                    resultCarga.className = 'result-message error active';
-                    resultCarga.innerHTML = `
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Error al procesar archivo</strong><br>
-                        ${result.message || 'Ocurrió un error inesperado'}<br>
-                        <small>📋 Verifique el formato del archivo y los datos</small>
-                    `;
-                }
-
-            } catch (error) {
-                loadingCarga.classList.remove('active');
-                form.style.display = 'block';
-
-                resultCarga.className = 'result-message error active';
-                resultCarga.innerHTML = `
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Error de conexión</strong><br>
-                    No se pudo conectar con el servidor<br>
-                    <small>Verifique su conexión a internet</small>
-                `;
-                console.error('Error:', error);
-            }
-        }
 
         // Funciones existentes
         function exportarUsuariosExcel() {
