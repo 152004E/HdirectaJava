@@ -1793,7 +1793,7 @@ body.dark-theme .export-links a {
         resize: none;
         flex-grow: 1; /* Esto hace que el textarea ocupe el espacio restante */
         width: 100%;
-        font-family: ;
+        font-family: "Poppins", sans-serif !important;
     }
 
       .input-wrapper {

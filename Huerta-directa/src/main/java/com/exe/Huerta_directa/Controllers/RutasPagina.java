@@ -359,7 +359,9 @@ public class RutasPagina {
             userDTO.setIdRole(1L);
 
             // Establecer fecha de creación
-            userDTO.setCreacionDate(java.time.LocalDate.now());
+            userDTO.setCreacionDate(java.time.LocalDateTime.now());
+
+
 
             UserDTO adminCreado = userService.crearUser(userDTO);
 
