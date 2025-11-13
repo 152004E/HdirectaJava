@@ -42,6 +42,7 @@
 
     <!-- Enlace al archivo CSS del dashboard -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 </head>
 
@@ -117,7 +118,7 @@
                             </div>
 
                             <div class="p-6 hidden" id="personal-info">
-                                <form action="/api/users/update-profile" method="post" class="space-y-6 text-left">
+                                <form th:action="@{/api/users/actualizarDatos}" method="post" class="space-y-6 text-left">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="form-group">
                                             <label class="block text-gray-700 font-medium mb-2">
@@ -168,7 +169,7 @@
                             </div>
 
                             <div class="p-6 hidden" id="contact-info">
-                                <form action="/api/users/update-contact" method="post" class="space-y-6 text-left">
+                                <form th:action="@{/api/users/ActualizarContacto}" method="post" class="space-y-6 text-left">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="form-group">
                                             <label class="block text-gray-700 font-medium mb-2">
@@ -444,5 +445,7 @@
             });
         }, 5000);
     </script>
+        <script src="/JS/dashboar.js"></script>
+
 </body>
 </html>

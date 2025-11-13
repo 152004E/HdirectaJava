@@ -76,3 +76,21 @@ window.addEventListener("click", (e) => {
   const modal = document.getElementById("modalEditarComentario");
   if (e.target === modal) cerrarModalComentario();
 });
+
+
+//boton de prifile 
+
+function DesplegarProfile() {
+  console.log("click");
+  const MostrarInfo = document.getElementById("MostrarInfo");
+
+  if (MostrarInfo.classList.contains("hidden")) {
+    // Si está oculto, mostrarlo
+    MostrarInfo.classList.remove("hidden");
+    MostrarInfo.classList.add("flex");
+  } else {
+    // Si está visible, ocultarlo
+    MostrarInfo.classList.add("hidden");
+    MostrarInfo.classList.remove("flex");
+  }
+}
