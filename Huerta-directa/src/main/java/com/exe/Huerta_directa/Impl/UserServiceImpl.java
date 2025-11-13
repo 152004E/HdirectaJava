@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -167,7 +168,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        // ⭐ NO incluir la contraseña en el DTO
+        // NO incluir la contraseña en el DTO
         userDTO.setPassword(null);
         userDTO.setCreacionDate(user.getCreacionDate());
 
@@ -186,9 +187,9 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword()); // Se hasheará en crearUser()
 
-        // ⭐ CORRECCIÓN: Establecer fecha actual si no existe
+        // CORRECCIÓN: Establecer fecha actual si no existe
         if (user.getCreacionDate() == null) {
-            user.setCreacionDate(LocalDateTime.now());
+            user.setCreacionDate(LocalDate.now());
         }
 
         if (userDTO.getIdRole() != null) {
@@ -210,7 +211,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
 
-        // ⭐ La contraseña se hasheará en actualizarUser() si no está vacía
+        // La contraseña se hasheará en actualizarUser() si no está vacía
         // NO hashear aquí para evitar hashear dos veces
 
         if (userDTO.getIdRole() != null) {

@@ -43,12 +43,9 @@ public class User {
     private String address;
 
     @Column(name = "creacion_date", nullable = false)
-    private LocalDateTime creacionDate;
+    private LocalDate creacionDate;
 
-    @PrePersist
-    protected void onCreate() {
-        this.creacionDate = LocalDateTime.now();
-    }
+
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
@@ -57,13 +54,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Product> products;
 
-    public void setCreacionDate(LocalDate now) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCreacionDate'");
-    }
 
-    public void setCreacionDate(LocalDateTime creacionDate) {
-        this.creacionDate = creacionDate;
-    }
 
 }

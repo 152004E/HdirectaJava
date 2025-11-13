@@ -6,11 +6,14 @@ import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
+import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import com.exe.Huerta_directa.Service.ProductService;
 
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Authenticator;
@@ -40,11 +43,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Controller
@@ -662,12 +668,12 @@ public class UserController {
         };
     }
 
-    private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle,
+    private void addTableHeaderPdf(PdfPTable table, String headerTitle,
             com.lowagie.text.Font font) {
-        com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
+        PdfPCell header = new PdfPCell();
         header.setBackgroundColor(java.awt.Color.decode("#689f38"));
         header.setBorderWidth(1);
-        header.setPhrase(new com.lowagie.text.Phrase(headerTitle, font));
+        header.setPhrase(new Phrase(headerTitle, font));
         header.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
         header.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
         header.setPadding(8);
@@ -677,8 +683,8 @@ public class UserController {
     private void addTableCellPdf(PdfPTable table, String text,
             com.lowagie.text.Font font, java.awt.Color backgroundColor,
             int alignment) {
-        com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
-        cell.setPhrase(new com.lowagie.text.Phrase(text, font));
+        PdfPCell cell = new PdfPCell();
+        cell.setPhrase(new Phrase(text, font));
         cell.setHorizontalAlignment(alignment);
         cell.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
         cell.setBackgroundColor(backgroundColor);
@@ -703,7 +709,7 @@ public class UserController {
 
         // Crear un Role básico si es necesario
         if (userDTO.getIdRole() != null) {
-            com.exe.Huerta_directa.Entity.Role role = new com.exe.Huerta_directa.Entity.Role();
+            com.exe.Huerta_directa.Entity.Role role = new Role();
             role.setIdRole(userDTO.getIdRole());
             user.setRole(role);
         }
@@ -906,8 +912,8 @@ public class UserController {
             // Generar nueva contraseña aleatoria
             String nuevaContrasena = generarContrasenaAleatoria();
 
-            // Actualizar contraseña en la base de datos
-            user.setPassword(nuevaContrasena);
+            // Se hashea la nueva contraseña antes de guardarla
+            user.setPassword(passwordEncoder.encode(nuevaContrasena));
             userRepository.save(user);
 
             // Enviar correo con la nueva contraseña
@@ -932,7 +938,7 @@ public class UserController {
      */
     private String generarContrasenaAleatoria() {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        java.util.Random random = new java.util.Random();
+        java.util.Random random = new Random();
         StringBuilder contrasena = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
@@ -1181,8 +1187,8 @@ public class UserController {
     private List<UserDTO> procesarArchivoCSV(InputStream inputStream) throws IOException {
         List<UserDTO> usuarios = new ArrayList<>();
 
-        try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, "UTF-8"))) {
 
             String linea;
             boolean primeraLinea = true;
