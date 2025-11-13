@@ -30,7 +30,7 @@ body {
     color: black;
 }
 
-.container {
+.container1 {
     display: grid;
     width: 96%;
     margin: 0 auto;
@@ -613,7 +613,8 @@ main .export-links hr {
 
 .right .top {
     display: flex;
-    justify-content: end;
+    justify-content: space-around;
+    align-items: center;
     gap: 2rem;
 }
 
