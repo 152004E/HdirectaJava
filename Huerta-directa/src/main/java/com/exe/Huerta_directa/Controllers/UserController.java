@@ -1326,8 +1326,17 @@ public class UserController {
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo, HttpSession session) {
         try {
+            // Verificar que el usuario esté autenticado
+            User userSession = (User) session.getAttribute("user");
+            if (userSession == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(java.util.Map.of(
+                                "success", false,
+                                "message", "Debe iniciar sesión para cargar productos"));
+            }
+            
             // Validar que se envió un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
@@ -1388,10 +1397,8 @@ public class UserController {
                     if (producto.getPublicationDate() == null) {
                         producto.setPublicationDate(java.time.LocalDate.now());
                     }
-                    // ID de usuario por defecto (admin)
-                    if (producto.getUserId() == null) {
-                        producto.setUserId(1L);
-                    }
+                    // Asignar el ID del usuario logueado
+                    producto.setUserId(userSession.getId());
 
                     // Verificar si el producto ya existe (por nombre exacto y categoría)
                     boolean existe = verificarProductoExistente(producto.getNameProduct().trim(),
