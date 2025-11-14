@@ -25,4 +25,6 @@ public interface ProductService {
     List<ProductDTO> buscarPorCategoria(String categoria);
 
     boolean existeProducto(String nombre, String categoria);
+
+    long contarTotalProductos();
 }

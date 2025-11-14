@@ -98,6 +98,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public long contarTotalProductos() {
+        return productRepository.count();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProductDTO> listarProductsPorCategoria(String categoria) {
         return productRepository.findByCategoryIgnoreCase(categoria)
