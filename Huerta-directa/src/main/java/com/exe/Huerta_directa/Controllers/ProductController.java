@@ -4,6 +4,7 @@ import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -143,6 +144,19 @@ public class ProductController {
     public ResponseEntity<Void> eliminarProductPorId(@PathVariable("productId") Long productId) {
         productService.eliminarProductPorId(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/mis-Productos" )
+    @ResponseBody
+    public ResponseEntity<List<ProductDTO>> obtenerMisProductos(HttpSession session) {
+        User user = (User)  session.getAttribute("user");
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<ProductDTO> productos = productService.listarProductosPorUsuario(user.getId());
+        return ResponseEntity.ok(productos);
     }
 
 }

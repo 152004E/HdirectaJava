@@ -56,14 +56,25 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model,
-            @ModelAttribute("success") String success) {
+            @ModelAttribute("success") String success,
+            HttpSession session) {
         // Log para debugging
         System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
 
-        // Obtener y agregar productos al modelo
-        List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos.size());
+        // Obtener usuario de la sesión (igual que en dashboard)
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            // Si no hay sesión, redirigir al login
+            return "redirect:/login?message=Debes+iniciar+sesión+para+acceder";
+        }
+
+        // Obtener SOLO los productos del usuario logueado (igual que dashboard)
+        List<ProductDTO> productos = productService.listarProductosPorUsuario(userSession.getId());
+        System.out.println("📦 Productos del usuario " + userSession.getName() + ": " + productos.size());
         model.addAttribute("productos", productos);
+
+        // Agregar información del usuario al modelo
+        model.addAttribute("currentUser", userSession);
 
         // Si hay un mensaje de éxito, agregarlo al modelo
         if (success != null && !success.isEmpty()) {

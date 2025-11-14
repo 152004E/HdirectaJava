@@ -8,6 +8,8 @@ public interface ProductService {
 
     List<ProductDTO> listarProducts();
 
+    List<ProductDTO> listarProductosPorUsuario(Long userID);
+
     ProductDTO obtenerProductPorId(Long productId);
 
     ProductDTO crearProduct(ProductDTO productDTO, Long userId);
