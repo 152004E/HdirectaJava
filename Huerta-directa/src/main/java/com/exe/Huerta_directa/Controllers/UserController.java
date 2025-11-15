@@ -872,24 +872,26 @@ public class UserController {
     /**
      * Método privado para enviar correo personalizado
      */
-    private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
-            throws MessagingException {
-        Session session = crearSesionCorreo();
 
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-        message.setSubject(asunto);
+    //  lo comente por que me daba error y sé que no se usa/////
+    // private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
+    //         throws MessagingException {
+    //     Session session = crearSesionCorreo();
 
-        // Detectar si el cuerpo es HTML o texto plano
-        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
-            message.setContent(cuerpo, "text/html; charset=utf-8");
-        } else {
-            message.setText(cuerpo, "utf-8");
-        }
+    //     MimeMessage message = new MimeMessage(session);
+    //     message.setFrom(new InternetAddress(SENDER_EMAIL));
+    //     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+    //     message.setSubject(asunto);
 
-        Transport.send(message);
-    }
+    //     // Detectar si el cuerpo es HTML o texto plano
+    //     if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+    //         message.setContent(cuerpo, "text/html; charset=utf-8");
+    //     } else {
+    //         message.setText(cuerpo, "utf-8");
+    //     }
+
+    //     Transport.send(message);
+    // }
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
