@@ -103,6 +103,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public boolean existeProductoPorUsuario(String nombre, String categoria, Long userId) {
+        try{
+            List<Product> productos = productRepository.findAll();
+            return productos.stream()
+                    .anyMatch(p -> p.getNameProduct().trim().equalsIgnoreCase(nombre.trim()) &&
+                            p.getCategory().trim().equalsIgnoreCase(categoria.trim()) &&
+                            p.getUser()  != null &&
+                            p.getUser().getId().equals(userId));
+
+
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProductDTO> listarProductsPorCategoria(String categoria) {
         return productRepository.findByCategoryIgnoreCase(categoria)

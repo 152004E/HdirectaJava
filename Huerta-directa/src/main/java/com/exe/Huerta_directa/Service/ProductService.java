@@ -26,5 +26,7 @@ public interface ProductService {
 
     boolean existeProducto(String nombre, String categoria);
 
+    boolean existeProductoPorUsuario(String nombre, String Categoria, Long productId);
+
     long contarTotalProductos();
 }
