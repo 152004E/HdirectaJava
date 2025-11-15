@@ -358,6 +358,7 @@ p {
 }
 .information-1 img {
   width: 35px;
+  margin-bottom: 7px;
 }
 h3 {
   font-size: 17px;
@@ -367,6 +368,12 @@ h3 {
 .information-1 p {
   margin-bottom: 0;
 }
+.information-1  {
+ display: flex ;
+ flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 .oferts {
   display: flex;
@@ -374,11 +381,16 @@ h3 {
   padding: 100px 0;
 }
 .ofert {
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
   padding: 35px;
   text-align: center;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   flex-basis: calc(25% - 20px);
   transition: transform 0.3s ease;
+  gap: 15px;
 }
 
 .ofert:hover {
