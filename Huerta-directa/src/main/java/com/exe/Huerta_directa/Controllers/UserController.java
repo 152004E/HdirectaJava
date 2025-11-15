@@ -1331,13 +1331,13 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo, HttpSession session) {
         try {
-            // ✅ OBTENER USUARIO DE LA SESIÓN
+            // OBTENER USUARIO DE LA SESIÓN
             User userSession = (User) session.getAttribute("user");
             if (userSession == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of(
                                 "success", false,
-                                "message", "Sesión expirada. Debe iniciar sesión para cargar productos"));
+                                "message", "Sesion expirada. Debe iniciar sesion para cargar productos"));
             }
 
             Long currentUserId = userSession.getId();
