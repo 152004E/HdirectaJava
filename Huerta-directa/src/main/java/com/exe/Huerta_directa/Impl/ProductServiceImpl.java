@@ -111,8 +111,6 @@ public class ProductServiceImpl implements ProductService {
                             p.getCategory().trim().equalsIgnoreCase(categoria.trim()) &&
                             p.getUser()  != null &&
                             p.getUser().getId().equals(userId));
-
-
         } catch (Exception e) {
             return false;
         }

@@ -72,23 +72,7 @@
         display: block;
       }
 
-      .modal-email {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        width: 90%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-        z-index: 9999;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        animation: slideDown 0.3s;
-      }
+
 
       @keyframes fadeIn {
         from {
@@ -702,11 +686,12 @@
             name="archivo"
             accept=".csv,.xlsx,.xls"
             required
+
           />
           <div class="help-text">
             💡 <strong>Formato esperado:</strong><br />
             📋
-            <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen</em
+            <em>Nombre | Categoría | Precio | Unidad | Descripción | Imagen</em
             ><br />
             📁 Formatos: CSV, Excel (.xlsx, .xls)
           </div>

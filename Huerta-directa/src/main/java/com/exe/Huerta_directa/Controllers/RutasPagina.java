@@ -65,11 +65,11 @@ public class RutasPagina {
         User userSession = (User) session.getAttribute("user");
         if (userSession == null) {
             // Si no hay sesión, redirigir al login
-            return "redirect:/login?message=Debes+iniciar+sesión+para+acceder";
+            return "redirect:/login?message=Debes+iniciar+sesion+para+acceder";
         }
 
         // Obtener SOLO los productos del usuario logueado (igual que dashboard)
-        List<ProductDTO> productos = productService.listarProductosPorUsuario(userSession.getId());
+        List<ProductDTO> productos = productService.listarProducts( );
         System.out.println("📦 Productos del usuario " + userSession.getName() + ": " + productos.size());
         model.addAttribute("productos", productos);
 
