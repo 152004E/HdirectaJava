@@ -184,6 +184,11 @@ public class RutasPagina {
         return "DashBoard/DashBoardAgregarProducto";
     }
 
+    @GetMapping("/DashBoardGraficos")
+    public String DashBoardGraficos() {
+        return "DashBoard/GraficosDashboarCliente";
+    }
+
     @GetMapping("/landing")
     public String mostrarLanding() {
         return "pagina_principal/landing";
