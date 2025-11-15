@@ -872,24 +872,26 @@ public class UserController {
     /**
      * Método privado para enviar correo personalizado
      */
-    private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
-            throws MessagingException {
-        Session session = crearSesionCorreo();
 
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-        message.setSubject(asunto);
+    //  lo comente por que me daba error y sé que no se usa/////
+    // private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
+    //         throws MessagingException {
+    //     Session session = crearSesionCorreo();
 
-        // Detectar si el cuerpo es HTML o texto plano
-        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
-            message.setContent(cuerpo, "text/html; charset=utf-8");
-        } else {
-            message.setText(cuerpo, "utf-8");
-        }
+    //     MimeMessage message = new MimeMessage(session);
+    //     message.setFrom(new InternetAddress(SENDER_EMAIL));
+    //     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+    //     message.setSubject(asunto);
 
-        Transport.send(message);
-    }
+    //     // Detectar si el cuerpo es HTML o texto plano
+    //     if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+    //         message.setContent(cuerpo, "text/html; charset=utf-8");
+    //     } else {
+    //         message.setText(cuerpo, "utf-8");
+    //     }
+
+    //     Transport.send(message);
+    // }
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
@@ -1400,18 +1402,22 @@ public class UserController {
                     if (producto.getPublicationDate() == null) {
                         producto.setPublicationDate(LocalDate.now());
                     }
-                    // ✅ ASIGNAR USUARIO ACTUAL DE LA SESIÓN
+                    // ASIGNAR USUARIO ACTUAL DE LA SESIÓN
                     if (producto.getUserId() == null) {
                         producto.setUserId(currentUserId);
                     }
 
-                    // Verificar si el producto ya existe (por nombre exacto y categoría)
-                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(),
-                            producto.getCategory().trim());
+                    // Verificar si el producto ya existe para este usuario
+                    boolean existe = verificarProductoExistente(
+                            producto.getNameProduct().trim(),
+                            producto.getCategory().trim(),
+                            currentUserId
+                    );
+
                     if (existe) {
                         productosDuplicados++;
-                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - "
-                                + producto.getCategory());
+                        System.out.println("⚠️ Producto duplicado omitido: " + currentUserId +
+                                ": " + producto.getNameProduct() + " - " + producto.getCategory());
                         continue;
                     }
 
@@ -1561,9 +1567,9 @@ public class UserController {
     /**
      * Verificar si un producto ya existe por nombre y categoría
      */
-    private boolean verificarProductoExistente(String nombre, String categoria) {
+    private boolean verificarProductoExistente(String nombre, String categoria, Long userId) {
         try {
-            return productService.existeProducto(nombre, categoria);
+            return productService.existeProductoPorUsuario(nombre, categoria, userId);
         } catch (Exception e) {
             return false;
         }
