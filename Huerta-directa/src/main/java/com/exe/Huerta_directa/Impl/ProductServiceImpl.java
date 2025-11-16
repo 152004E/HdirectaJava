@@ -32,6 +32,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> listarProductosPorUsuario(Long userID){
+        return productRepository.findByUserId(userID)
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ProductDTO obtenerProductPorId(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productId));
@@ -87,6 +95,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean existeProducto(String nombre, String categoria) {
         return productRepository.existsByNameProductIgnoreCaseAndCategoryIgnoreCase(nombre, categoria);
+    }
+
+    @Override
+    public long contarTotalProductos() {
+        return productRepository.count();
+    }
+
+    @Override
+    public boolean existeProductoPorUsuario(String nombre, String categoria, Long userId) {
+        try{
+            List<Product> productos = productRepository.findAll();
+            return productos.stream()
+                    .anyMatch(p -> p.getNameProduct().trim().equalsIgnoreCase(nombre.trim()) &&
+                            p.getCategory().trim().equalsIgnoreCase(categoria.trim()) &&
+                            p.getUser()  != null &&
+                            p.getUser().getId().equals(userId));
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override

@@ -8,12 +8,14 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -54,14 +56,25 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model,
-            @ModelAttribute("success") String success) {
+            @ModelAttribute("success") String success,
+            HttpSession session) {
         // Log para debugging
         System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
 
-        // Obtener y agregar productos al modelo
-        List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos.size());
+        // Obtener usuario de la sesión (igual que en dashboard)
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            // Si no hay sesión, redirigir al login
+            return "redirect:/login?message=Debes+iniciar+sesion+para+acceder";
+        }
+
+        // Obtener SOLO los productos del usuario logueado (igual que dashboard)
+        List<ProductDTO> productos = productService.listarProducts( );
+        System.out.println("📦 Productos del usuario " + userSession.getName() + ": " + productos.size());
         model.addAttribute("productos", productos);
+
+        // Agregar información del usuario al modelo
+        model.addAttribute("currentUser", userSession);
 
         // Si hay un mensaje de éxito, agregarlo al modelo
         if (success != null && !success.isEmpty()) {
@@ -169,6 +182,11 @@ public class RutasPagina {
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
+    }
+
+    @GetMapping("/DashBoardGraficos")
+    public String DashBoardGraficos() {
+        return "DashBoard/GraficosDashboarCliente";
     }
 
     @GetMapping("/landing")
@@ -359,7 +377,7 @@ public class RutasPagina {
             userDTO.setIdRole(1L);
 
             // Establecer fecha de creación
-            userDTO.setCreacionDate(java.time.LocalDateTime.now());
+            userDTO.setCreacionDate(LocalDate.now());
 
 
 

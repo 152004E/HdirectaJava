@@ -4,6 +4,8 @@ import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.ProductService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.coyote.Response;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/products")
@@ -144,5 +145,20 @@ public class ProductController {
         productService.eliminarProductPorId(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/mis-Productos" )
+    @ResponseBody
+    public ResponseEntity<List<ProductDTO>> obtenerMisProductos(HttpSession session) {
+        User user = (User)  session.getAttribute("user");
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<ProductDTO> productos = productService.listarProductosPorUsuario(user.getId());
+        return ResponseEntity.ok(productos);
+    }
+
+
 
 }
