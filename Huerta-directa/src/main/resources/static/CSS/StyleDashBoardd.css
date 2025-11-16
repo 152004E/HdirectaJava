@@ -594,6 +594,11 @@ main .export-links hr {
   align-items: center;
 }
 
+.dashboarRight{
+  right: 30px !important;
+  top: 70px;
+}
+
 .right .top button {
   display: none;
 }
