@@ -23,6 +23,8 @@ public class ProductDTO {
     private LocalDate publicationDate;
     private String descriptionProduct;
     private Long userId;
+    private String etiqueta;
+
 }
 
 
