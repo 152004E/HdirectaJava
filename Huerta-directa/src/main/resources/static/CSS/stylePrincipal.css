@@ -1084,3 +1084,43 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
   border: 1px solid #f5c6cb;
 }
 
+/* Estilos para las etiquetas de productos */
+.product-etiqueta {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.mi-producto-badge {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 2px solid #1e7e34;
+    position: relative;
+    left: -160px;
+}
+
+.otro-producto-badge {
+  background-color: #6c757d;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 2px solid #545b62;
+    position: relative;
+    left: -90px;
+}
+
+/* Asegurar que el contenedor del producto tenga posición relativa */
+.product {
+  position: relative;
+}

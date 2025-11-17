@@ -208,6 +208,14 @@
               favorite
             </span>
 
+            <!-- Etiqueta para identificar productos del usuario -->
+            <div class="product-etiqueta" th:if="${producto.etiqueta != null}">
+              <span th:text="${producto.etiqueta}"
+                    th:class="${producto.etiqueta == 'MI PRODUCTO'} ? 'mi-producto-badge' : 'otro-producto-badge'">
+              </span>
+            </div>
+
+
             <img
               th:src="@{'/images/productos/' + ${producto.imageProduct}}"
               alt="Imagen de [[${producto.nameProduct}]]"

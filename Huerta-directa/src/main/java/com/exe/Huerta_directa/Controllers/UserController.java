@@ -1329,7 +1329,10 @@ public class UserController {
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo, HttpSession session) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo
+    (@RequestParam("archivo")
+     MultipartFile archivo,
+     HttpSession session) {
         try {
             // OBTENER USUARIO DE LA SESIÓN
             User userSession = (User) session.getAttribute("user");
@@ -1463,33 +1466,53 @@ public class UserController {
 
             String linea;
             boolean primeraLinea = true;
+            int numeroLinea = 0;
+
+            System.out.println("📄 Procesando archivo CSV...");
 
             while ((linea = reader.readLine()) != null) {
+                numeroLinea++;
+
                 if (primeraLinea) {
                     primeraLinea = false; // Saltar encabezados
+                    System.out.println("⏭️ Línea " + numeroLinea + " (encabezado): " + linea);
                     continue;
                 }
 
+                System.out.println("📋 Línea " + numeroLinea + ": " + linea);
+
                 String[] campos = linea.split(",");
+                System.out.println("  📊 Campos encontrados: " + campos.length);
+
                 if (campos.length >= 6) {
                     ProductDTO producto = new ProductDTO();
                     producto.setNameProduct(campos[0].trim());
+                    System.out.println("  📝 Nombre: " + producto.getNameProduct());
 
                     try {
                         producto.setPrice(new BigDecimal(campos[1].trim()));
+                        System.out.println("  💰 Precio: " + producto.getPrice());
                     } catch (NumberFormatException e) {
+                        System.err.println("  ❌ Error parseando precio: " + e.getMessage());
                         continue; // Saltar fila con precio inválido
                     }
 
                     producto.setCategory(campos[2].trim());
+                    System.out.println("  📂 Categoría: " + producto.getCategory());
+
                     producto.setUnit(campos[3].trim());
                     producto.setDescriptionProduct(campos[4].trim());
                     producto.setImageProduct(campos[5].trim());
                     producto.setPublicationDate(LocalDate.now());
 
                     productos.add(producto);
+                    System.out.println("  ✅ Producto agregado");
+                } else {
+                    System.out.println("  ⚠️ Línea con menos de 6 campos - omitida");
                 }
             }
+
+            System.out.println("📊 Total productos procesados del CSV: " + productos.size());
         }
         return productos;
     }
@@ -1504,11 +1527,16 @@ public class UserController {
             Sheet sheet = workbook.getSheetAt(0);
             boolean primeraFila = true;
 
+            System.out.println("📄 Procesando Excel - Total filas: " + sheet.getPhysicalNumberOfRows());
+
             for (Row row : sheet) {
                 if (primeraFila) {
                     primeraFila = false; // Saltar encabezados
+                    System.out.println("⏭️ Saltando fila de encabezados");
                     continue;
                 }
+
+                System.out.println("📋 Procesando fila " + row.getRowNum() + " - Celdas: " + row.getPhysicalNumberOfCells());
 
                 if (row.getPhysicalNumberOfCells() >= 6) {
                     ProductDTO producto = new ProductDTO();
@@ -1516,6 +1544,7 @@ public class UserController {
                     Cell nombreCell = row.getCell(0);
                     if (nombreCell != null) {
                         producto.setNameProduct(obtenerValorCelda(nombreCell));
+                        System.out.println("  📝 Nombre: " + producto.getNameProduct());
                     }
 
                     Cell precioCell = row.getCell(1);
@@ -1524,8 +1553,10 @@ public class UserController {
                             String valorPrecio = obtenerValorCelda(precioCell);
                             if (!valorPrecio.trim().isEmpty()) {
                                 producto.setPrice(new BigDecimal(valorPrecio));
+                                System.out.println("  💰 Precio: " + producto.getPrice());
                             }
                         } catch (NumberFormatException e) {
+                            System.err.println("  ❌ Error parseando precio: " + e.getMessage());
                             continue; // Saltar fila con precio inválido
                         }
                     }
@@ -1533,6 +1564,7 @@ public class UserController {
                     Cell categoriaCell = row.getCell(2);
                     if (categoriaCell != null) {
                         producto.setCategory(obtenerValorCelda(categoriaCell));
+                        System.out.println("  📂 Categoría: " + producto.getCategory());
                     }
 
                     Cell unidadCell = row.getCell(3);
@@ -1557,9 +1589,16 @@ public class UserController {
                             producto.getPrice() != null &&
                             producto.getCategory() != null && !producto.getCategory().trim().isEmpty()) {
                         productos.add(producto);
+                        System.out.println("  ✅ Producto agregado a la lista");
+                    } else {
+                        System.out.println("  ⚠️ Producto NO agregado - falta información obligatoria");
                     }
+                } else {
+                    System.out.println("  ⚠️ Fila con menos de 6 celdas - omitida");
                 }
             }
+
+            System.out.println("📊 Total productos procesados del Excel: " + productos.size());
         }
         return productos;
     }

@@ -68,12 +68,23 @@ public class RutasPagina {
             return "redirect:/login?message=Debes+iniciar+sesion+para+acceder";
         }
 
-        // Obtener SOLO los productos del usuario logueado (igual que dashboard)
-        List<ProductDTO> productos = productService.listarProducts( );
-        System.out.println("📦 Productos del usuario " + userSession.getName() + ": " + productos.size());
-        model.addAttribute("productos", productos);
+        // Obtener TODOS los productos para mostrar en el index
+        List<ProductDTO> productos = productService.listarProducts();
 
-        // Agregar información del usuario al modelo
+        // Marcar productos del usuario actual con etiqueta
+        productos.forEach(producto -> {
+            if (producto.getUserId() != null && producto.getUserId().equals(userSession.getId())) {
+                producto.setEtiqueta("MI PRODUCTO"); // Agregar etiqueta a tus productos
+            } else {
+                producto.setEtiqueta("PRODUCTO DE OTRO USUARIO");
+            }
+        });
+
+        System.out.println("📦 Total productos cargados: " + productos.size());
+        System.out.println("👤 MIS PRODUCTOS del usuario " + userSession.getName() + ": " +
+            productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
+
+        model.addAttribute("productos", productos);
         model.addAttribute("currentUser", userSession);
 
         // Si hay un mensaje de éxito, agregarlo al modelo

@@ -334,10 +334,12 @@ async function cargarProductos(event) {
                         }
                     `;
 
-      // Recargar la página después de 3 segundos para mostrar los nuevos productos
+      // Recargar la página después de 2 segundos para mostrar los nuevos productos
+      // Forzar recarga sin caché
       setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+        console.log("🔄 Recargando página para mostrar productos...");
+        window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
+      }, 2000);
     } else {
       // Mostrar error
       resultProductos.className = "result-message error active";
