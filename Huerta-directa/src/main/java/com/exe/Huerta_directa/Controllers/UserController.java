@@ -1096,6 +1096,8 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> cargarDatosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
         try {
+
+
             // Validar que se envió un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
