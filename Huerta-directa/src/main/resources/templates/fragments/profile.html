@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" >
   <body>
     <div class="profile" th:fragment="profile">
       <div class="flex gap-3">
@@ -22,18 +22,22 @@
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             "
           >
-            <div class="profile-photo">
+            <div class="profile-photo !size-9">
               <img src="/images/logo_huerta.png" alt="Profile" />
             </div>
-            <span class="material-symbols-outlined text-[#8bc34a]">
-              expand_circle_down
-            </span>
+            <span class="material-symbols-outlined text-2xl text-black">
+  keyboard_arrow_down
+</span>
           </button>
         </div>
       </div>
-      <div id="MostrarInfo" class="hidden flex-col absolute top-[80px] bg-[#dfeece] !p-4 rounded-xl">
-        <div class="info">
-          <p>
+      <div id="MostrarInfo" class="dashboarRight flex flex-col absolute top-[60px]  bg-[#dfeece] !p-4 rounded-xl">
+        <div class="errorMargindiv">
+          <header>
+           <img class="size-10" src="/images/logo_huerta.png" alt="Profile" />
+
+          </header>
+          <p class="errorMargin ">
             Ey,
             <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
               >Usuario</b
