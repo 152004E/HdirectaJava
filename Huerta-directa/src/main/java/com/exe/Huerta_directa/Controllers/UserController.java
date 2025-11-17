@@ -1329,7 +1329,10 @@ public class UserController {
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo, HttpSession session) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo
+    (@RequestParam("archivo")
+     MultipartFile archivo,
+     HttpSession session) {
         try {
             // OBTENER USUARIO DE LA SESIÓN
             User userSession = (User) session.getAttribute("user");
