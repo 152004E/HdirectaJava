@@ -6,7 +6,7 @@
     <!-- Fragmento Navbar -->
     <div th:fragment="navPagina">
       <div
-        class=" flex items-center justify-center w-full h-25 gap-40 mx-auto text-[#FEF5DC] "
+        class=" flex items-center justify-center w-full h-[73px] gap-40 mx-auto text-[#FEF5DC] "
       >
         <a
           href="#"
@@ -17,7 +17,7 @@
 
         <input type="checkbox" id="menu" class="hidden" />
 
-        <nav class="">
+        <nav class="flex items-center justify-center" >
           <ul class="!flex">
             <li>
               <a
@@ -51,7 +51,9 @@
                 Productos
               </a>
             </li>
+             
           </ul>
+          <div th:replace="fragments/profile :: profile"></div>
         </nav>
       </div>
     </div>
