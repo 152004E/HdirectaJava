@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" >
+<html lang="es">
   <body>
     <div class="profile" th:fragment="profile">
       <div class="flex gap-3">
@@ -8,7 +8,6 @@
             type="button"
             onclick="DesplegarProfile()"
             style="
-            
               color: white;
               border: none;
               padding: 5px 8px;
@@ -26,29 +25,99 @@
               <img src="/images/logo_huerta.png" alt="Profile" />
             </div>
             <span class="material-symbols-outlined text-2xl text-black">
-  keyboard_arrow_down
-</span>
+              keyboard_arrow_down
+            </span>
           </button>
         </div>
       </div>
-      <div id="MostrarInfo" class="dashboarRight flex flex-col absolute top-[60px]  bg-[#dfeece] !p-4 rounded-xl">
-        <div class="errorMargindiv">
-          <header>
-           <img class="size-10" src="/images/logo_huerta.png" alt="Profile" />
-
+      <div
+        id="MostrarInfo"
+        class="dashboarRight !w-[210px] hidden flex-col gap-2 absolute top-[60px] bg-[#ebefe5] !p-4 rounded-xl"
+      >
+        <div
+          class="flex flex-col !justify-center !items-center !border-b !border-black !mb-[10px]"
+        >
+          <header class="flex flex-col !items-center">
+            <img
+              class="!size-10 !mt-3"
+              src="/images/logo_huerta.png"
+              alt="Profile"
+            />
+            <p class="errorMargin">
+              <b
+                class="text-[15px]"
+                th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
+                >Usuario</b
+              >
+            </p>
           </header>
-          <p class="errorMargin ">
-            Ey,
-            <b th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
-              >Usuario</b
-            >
-          </p>
+
           <small
             class="text-muted !text-[13px]"
             th:text="${userRole != null ? userRole : 'Usuario'}"
             >Usuario</small
           >
         </div>
+        <div class="flex flex-col gap-2 !pb-2 border-b border-black">
+           <a
+           th:href="@{/actualizacionUsuario}"
+          class="btn-logout"
+          style="
+            width: 100%;
+            height: 40px !important;
+            background: #20571b;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+          "
+       onmouseover="this.style.background='#52a54a'"
+          onmouseout="this.style.background='#20571b'"
+        >
+          Mi perfil
+          <span class="material-symbols-outlined" style="font-size: 20px">
+            person
+          </span>
+        </a>
+        <a
+          th:href="@{/home}"
+          class="btn-logout"
+          style="
+            width: 100%;
+            height: 40px !important;
+            background: #20571b;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+          "
+          onmouseover="this.style.background='#52a54a'"
+          onmouseout="this.style.background='#20571b'"
+        >
+          DashBoard
+          <span class="material-symbols-outlined" style="font-size: 20px">
+            dashboard
+          </span>
+        </a>
+
+        </div>
+       
 
         <!-- Botón de cerrar sesión -->
         <form action="/api/users/logout" method="post">
@@ -58,30 +127,30 @@
             style="
               width: 100%;
               height: 40px !important;
-              background: #20571b;
+              background: #d6031f;
               color: white;
               border: none;
               padding: 5px 8px;
               border-radius: 10px;
-              font-size: 12px;
+              font-size: 15px;
               cursor: pointer;
               display: flex;
+              justify-content: space-around;
               align-items: center;
 
               transition: all 0.3s ease;
               box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             "
-            onmouseover="this.style.background='#20571b'"
-            onmouseout="this.style.background='#20571b'"
+            onmouseover="this.style.background='#df707f'"
+            onmouseout="this.style.background='#d6031f'"
           >
-            <span class="material-symbols-outlined" style="font-size: 14px"
+            Cerrar Sesión
+            <span class="material-symbols-outlined" style="font-size: 20px"
               >logout</span
             >
-            Cerrar Sesión
           </button>
         </form>
       </div>
     </div>
   </body>
-  
 </html>
