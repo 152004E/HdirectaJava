@@ -1,0 +1,12 @@
+Nombre,Precio,Categoria,Unidad,Descripcion,Imagen
+Manzana Roja,2500,frutas,kg,Manzanas rojas frescas de la region,default-product.png
+Pera Verde,3000,frutas,kg,Peras verdes organicas,default-product.png
+Lechuga Romana,1500,verduras-hortalizas,unidad,Lechuga fresca y crujiente,default-product.png
+Tomate Cherry,4000,verduras-hortalizas,kg,Tomates cherry dulces,default-product.png
+Leche Entera,3500,lacteos,litro,Leche fresca de vaca,default-product.png
+Queso Campesino,8000,lacteos,kg,Queso artesanal campesino,default-product.png
+Pollo Entero,15000,carnes-proteinas,kg,Pollo fresco de granja,default-product.png
+Arroz Blanco,2000,cereales-granos,kg,Arroz de primera calidad,default-product.png
+Frijol Rojo,3500,legumbres-secas,kg,Frijoles rojos organicos,default-product.png
+Miel de Abeja,12000,productos-organicos,500g,Miel pura de colmena,default-product.png
+
