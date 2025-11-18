@@ -7,11 +7,10 @@
     <link rel="stylesheet" href="/css/darkindex.css" />
     <link rel="stylesheet" href="/css/stylePrincipal.css" />
     <link rel="stylesheet" href="/css/IA.css" />
-    
 
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
     <!--link para el slider y css del slider-->
-    
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
@@ -19,7 +18,7 @@
 
     <link rel="stylesheet" href="/css/slider.css" />
 
-     <link href="/CSS/output.css" rel="stylesheet" />
+    <link href="/CSS/output.css" rel="stylesheet" />
     <!--agregacion para los iconos-->
     <link
       rel="stylesheet"
@@ -40,112 +39,155 @@
   </head>
 
   <body class="">
-    
-    
-  <header class="bg-gradient-to-b from-[#fef5dc] via-[#fef5dc] to-white flex items-center min-h-[70vh] ">
-    <div class=" my-0 !mx-auto max-w-[1200px] absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-4">
-      
-      <!-- Logo -->
-      <a href="#" class="logo text-[#8dc84b] text-[25px] font-semibold uppercase transition-colors duration-500 hover:text-[#028602]">
-        Huerta directa
-      </a>
-      
-      <!-- Checkbox para menu móvil -->
-      <input type="checkbox" id="menu" class="hidden peer" />
-      
-      <!-- Icono del menú móvil -->
-      <label for="menu" class="cursor-pointer hidden lg:hidden">
-        <img src="images/menu.png" class="w-[25px]" alt="menu" />
-      </label>
-      
-      <!-- Navbar -->
-      <nav class="navbar bg-[#fff5dc] hidden peer-checked:block peer-checked:absolute peer-checked:top-full peer-checked:left-0 peer-checked:right-0 peer-checked:bg-[#333128] peer-checked:pl-[50px] lg:block lg:relative lg:bg-transparent lg:pl-0">
-        <ul class="nav-menu list-none flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 m-0 p-2 lg:p-0">
-          
-          <!-- Dropdown: Log in -->
-          <li class="dropdown relative">
-            <a href="" class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]">
-              Log in ▾
-            </a>
-            <ul class="dropdown-menu">
-              <li class="p-0">
-                <a th:href="@{/actualizacionUsuario}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  📲 Mi Perfil
-                </a>
-              </li>
-              <li class="p-0">
-                <a th:href="@{/login}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  📲 Iniciar Sesion
-                </a>
-              </li>
-              <li class="p-0">
-                <a th:href="@{/home}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  📲 Dashboard
-                </a>
-              </li>
-            </ul>
-          </li>
-          
-          
-          <!-- Categorias -->
-          <li>
-            <a href="#categorias" class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]">
-              Categorias
-            </a>
-          </li>
-          <!-- Productos -->
-          <li>
-            <a href="#lista-1" class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]">
-              Productos
-            </a>
-          </li>
-          
-          <!-- Dropdown: Conocenos -->
-          <li class="dropdown relative">
-            <a href="" class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]">
-              Conocenos ▾
-            </a>
-            <ul class="dropdown-menu">
-              <li class="p-0">
-                <a th:href="@{/landing}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  🔗 Unete
-                </a>
-              </li>
-              <li class="p-0">
-                <a th:href="@{/Quienes_somos}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  🔎 Quienes somos
-                </a>
-              </li>
-              <li class="p-0">
-                <a th:href="@{/error500}" class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]">
-                  🎛️ Contactanos
-                </a>
-              </li>
-            </ul>
-          </li>
-          
-          
-        </ul>
-      </nav>
-      
-      <!-- Botón Agregar Producto -->
-      <div class="agragar_producto">
-        <a class="btn-2 inline-block mt-0 py-2.5 px-5 text-white bg-[#8dc84b] rounded-[5px] no-underline transition-all duration-500" th:href="@{/agregar_producto}">
-          Agregar<br />Producto
+    <header
+      class="bg-gradient-to-b from-[#fef5dc] via-[#fef5dc] to-white flex items-center min-h-[70vh]"
+    >
+      <div
+        class="my-0 !mx-auto max-w-[1200px] absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-4"
+      >
+        <!-- Logo -->
+        <a
+          href="#"
+          class="logo text-[#8dc84b] text-[25px] font-semibold uppercase transition-colors duration-500 hover:text-[#028602]"
+        >
+          Huerta directa
         </a>
+
+        <!-- Checkbox para menu móvil -->
+        <input type="checkbox" id="menu" class="hidden peer" />
+
+        <!-- Icono del menú móvil -->
+        <label for="menu" class="cursor-pointer hidden lg:hidden">
+          <img src="images/menu.png" class="w-[25px]" alt="menu" />
+        </label>
+
+        <!-- Navbar -->
+        <nav
+          class="navbar bg-[#fff5dc] hidden peer-checked:block peer-checked:absolute peer-checked:top-full peer-checked:left-0 peer-checked:right-0 peer-checked:bg-[#333128] peer-checked:pl-[50px] lg:block lg:relative lg:bg-transparent lg:pl-0"
+        >
+          <ul
+            class="nav-menu list-none flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 m-0 p-2 lg:p-0"
+          >
+            <!-- Dropdown: Log in -->
+            <li class="dropdown relative">
+              <a
+                href=""
+                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
+              >
+                Log in ▾
+              </a>
+              <ul class="dropdown-menu">
+                <li class="p-0">
+                  <a
+                    th:href="@{/actualizacionUsuario}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    📲 Mi Perfil
+                  </a>
+                </li>
+                <li class="p-0">
+                  <a
+                    th:href="@{/login}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    📲 Iniciar Sesion
+                  </a>
+                </li>
+                <li class="p-0">
+                  <a
+                    th:href="@{/home}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    📲 Dashboard
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Categorias -->
+            <li>
+              <a
+                href="#categorias"
+                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
+              >
+                Categorias
+              </a>
+            </li>
+            <!-- Productos -->
+            <li>
+              <a
+                href="#lista-1"
+                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
+              >
+                Productos
+              </a>
+            </li>
+
+            <!-- Dropdown: Conocenos -->
+            <li class="dropdown relative">
+              <a
+                href=""
+                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
+              >
+                Conocenos ▾
+              </a>
+              <ul class="dropdown-menu">
+                <li class="p-0">
+                  <a
+                    th:href="@{/landing}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    🔗 Unete
+                  </a>
+                </li>
+                <li class="p-0">
+                  <a
+                    th:href="@{/Quienes_somos}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    🔎 Quienes somos
+                  </a>
+                </li>
+                <li class="p-0">
+                  <a
+                    th:href="@{/error500}"
+                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
+                  >
+                    🎛️ Contactanos
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Botón Agregar Producto -->
+        <div class="agragar_producto">
+          <a
+            class="btn-2 inline-block mt-0 py-2.5 px-5 text-white bg-[#8dc84b] rounded-[5px] no-underline transition-all duration-500"
+            th:href="@{/agregar_producto}"
+          >
+            Agregar<br />Producto
+          </a>
+        </div>
+
+        <!-- Carrito (Fragment - NO TOCAR) -->
+        <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
       </div>
-      
-      <!-- Carrito (Fragment - NO TOCAR) -->
-      <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
-    </div>
-    
-    <!-- Header Content (Fragment - NO TOCAR) -->
-    <div th:replace="fragments/filesIndex/header-context :: header-content"></div>
-  </header>
-    <section th:replace="fragments/filesIndex/informacion :: information"></section>
+
+      <!-- Header Content (Fragment - NO TOCAR) -->
+      <div
+        th:replace="fragments/filesIndex/header-context :: header-content"
+      ></div>
+    </header>
+    <section
+      th:replace="fragments/filesIndex/informacion :: information"
+    ></section>
 
     <section th:replace="fragments/filesIndex/oferts :: ofertas"></section>
-    <section th:replace="fragments/filesIndex/slider-section :: slider-section"></section>
+    <section
+      th:replace="fragments/filesIndex/slider-section :: slider-section"
+    ></section>
 
     <main class="products container1" id="lista-1">
       <h2 data-aos="zoom-in">Productos destacados</h2>
@@ -324,7 +366,6 @@
       </div>
     </section>
     <div class="flex items-center justify-center w-full bg-[#8bc34a]">
-
       <div th:replace="fragments/footer :: footer"></div>
     </div>
     <div class="floating-chat-button" id="openChatBtn">
@@ -400,7 +441,7 @@
       </div>
     </div>
     <script src="/JS/chat-ia.js"></script>
- 
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="/JS/script.js"></script>
     <!-- scrit para animaciones al scrollear -->
