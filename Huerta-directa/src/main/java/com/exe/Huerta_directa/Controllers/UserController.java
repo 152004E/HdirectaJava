@@ -54,6 +54,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Controller
 @RequestMapping("/api/users")
 @CrossOrigin("*")
@@ -1729,4 +1731,43 @@ public class UserController {
             return "redirect:/actualizacionUsuario";
         }
     }
+
+
+    @PostMapping("/ActualizarContrasena")
+    public String actualizarContrasena(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
+                return "redirect:/login";
+            }
+
+            if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+                redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
+                return "redirect:/actualizacionUsuario";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente");
+            return "redirect:/actualizacionUsuario";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseña");
+            return "redirect:/actualizacionUsuario";
+        }
+    }
+
+
+
 }
