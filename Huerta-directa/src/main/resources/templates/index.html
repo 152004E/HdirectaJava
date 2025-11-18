@@ -43,7 +43,7 @@
       class="bg-gradient-to-b from-[#fef5dc] via-[#fef5dc] to-white flex items-center min-h-[70vh]"
     >
       <div
-        class="!mt-4 !mx-auto max-w-[1200px] absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-4"
+        class="my-0 !mx-auto max-w-[1200px] absolute top-0 left-0 right-0 flex items-center justify-between !py-3"
       >
         <!-- Logo -->
         <a
@@ -68,8 +68,6 @@
           <ul
             class="nav-menu list-none flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 m-0 p-2 lg:p-0"
           >
-           
-
             <!-- Categorias -->
             <li>
               <a
@@ -88,12 +86,10 @@
                 Productos
               </a>
             </li>
-
-            
           </ul>
         </nav>
 
-        <!-- Botón Agregar Producto -->
+       <!-- Botón Agregar Producto -->
         <div class="!flex justify-center items-center gap-3">
           <a
             class="btn-2 inline-block !mt-0 py-2.5 !px-2 text-white bg-[#8dc84b] rounded-[5px] no-underline transition-all duration-500"
@@ -102,11 +98,11 @@
             <i class="fa-solid fa-plus"></i>
             Agrega productos
           </a>
-          <div th:replace="fragments/profile :: profile"></div>
-        </div>
+          </div>
 
         <!-- Carrito (Fragment - NO TOCAR) -->
         <div th:replace="fragments/carritoProducto :: carritoProducto"></div>
+        <div th:replace="fragments/profile :: profile"></div>
       </div>
 
       <!-- Header Content (Fragment - NO TOCAR) -->
@@ -142,17 +138,17 @@
 
             <!-- Etiqueta para identificar productos del usuario -->
             <div class="product-etiqueta" th:if="${producto.etiqueta != null}">
-              <span th:text="${producto.etiqueta}"
-                    th:class="${producto.etiqueta == 'MI PRODUCTO'} ? 'mi-producto-badge' : 'otro-producto-badge'">
+              <span
+                th:text="${producto.etiqueta}"
+                th:class="${producto.etiqueta == 'MI PRODUCTO'} ? 'mi-producto-badge' : 'otro-producto-badge'"
+              >
               </span>
             </div>
-
 
             <img
               th:src="@{'/images/productos/' + ${producto.imageProduct}}"
               alt="Imagen de [[${producto.nameProduct}]]"
               width="150"
-
             />
             <div class="borderImgNombre"></div>
 
@@ -312,14 +308,13 @@
         th:href="@{/Quienes_somos}"
         class="fixed !h-[55px] bg-[#8bc34a] !p-4 right-[26px] bottom-[100px] rounded-full hover:w-[200px] cursor-pointer group"
       >
-      <div class="flex justify-center gap-3">
-         <i class="fa-solid fa-envelope text-2xl text-white"></i>
+        <div class="flex justify-center gap-3">
+          <i class="fa-solid fa-envelope text-2xl text-white"></i>
 
-        <p class="hidden group-hover:block !text-white whitespace-nowrap">
-          Conocenos
-        </p>
-      </div>
-       
+          <p class="hidden group-hover:block !text-white whitespace-nowrap">
+            Conocenos
+          </p>
+        </div>
       </a>
     </section>
     <div class="flex items-center justify-center w-full bg-[#8bc34a]">
