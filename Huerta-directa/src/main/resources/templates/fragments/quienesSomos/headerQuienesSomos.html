@@ -18,7 +18,7 @@
       </label>
 
       <nav
-        class="hidden md:flex gap-5 peer-checked:flex peer-checked:flex-col absolute md:static top-16 left-0 right-0 bg-white md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none"
+        class="hidden justify-center items-center md:flex gap-5 peer-checked:flex peer-checked:flex-col absolute md:static top-16 left-0 right-0 mr-[125px] bg-white md:bg-transparent p-5 md:p-0 shadow-md md:shadow-none"
       >
         <ul class="flex flex-col md:flex-row gap-4 md:gap-6">
           <li>
@@ -43,7 +43,9 @@
             >
           </li>
         </ul>
+        <div th:replace="fragments/profile :: profile"></div>
       </nav>
+      
     </header>
   </body>
 </html>

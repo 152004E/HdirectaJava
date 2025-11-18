@@ -213,4 +213,20 @@ if (toggle && sidebar && main) {
   form.submit();
 }
 
+// para el boton de profile
+ function DesplegarProfile() {
+  console.log("click");
+  const MostrarInfo = document.getElementById("MostrarInfo");
+
+  if (MostrarInfo.classList.contains("hidden")) {
+    // Si está oculto, mostrarlo
+    MostrarInfo.classList.remove("hidden");
+    MostrarInfo.classList.add("flex");
+  } else {
+    // Si está visible, ocultarlo
+    MostrarInfo.classList.add("hidden");
+    MostrarInfo.classList.remove("flex");
+  }
+}
+
 
