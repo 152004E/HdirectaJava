@@ -14,23 +14,26 @@
       rel="stylesheet"
     />
     <!-- Iconos de Google (Material Symbols) -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-  rel="stylesheet"
-/>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
 
     <!-- Tailwind CSS -->
     <link href="/CSS/output.css" rel="stylesheet" />
   </head>
+ 
 
-  <body class="min-h-screen flex flex-col font-[Poppins] bg-[#f7efd8] text-[#333]">
+  <body
+    class="min-h-screen flex flex-col font-[Poppins] bg-[#f7efd8] text-[#333]"
+  >
     <!-- Nav -->
     <div th:replace="fragments/navPagina :: navPagina"></div>
 
     <!-- Contenedor principal -->
-    <div th:replace="fragments/producto/AgregarProducto :: AgregarProducto"></div>
-
-
+    <div
+      th:replace="fragments/producto/AgregarProducto :: AgregarProducto"
+    ></div>
 
     <div th:replace="fragments/footer :: footer"></div>
 
@@ -95,6 +98,22 @@
       window.addEventListener("click", (e) => {
         if (e.target === modal) modal.classList.add("hidden");
       });
+
+      // para el boton de profile
+      function DesplegarProfile() {
+        console.log("click");
+        const MostrarInfo = document.getElementById("MostrarInfo");
+
+        if (MostrarInfo.classList.contains("hidden")) {
+          // Si está oculto, mostrarlo
+          MostrarInfo.classList.remove("hidden");
+          MostrarInfo.classList.add("flex");
+        } else {
+          // Si está visible, ocultarlo
+          MostrarInfo.classList.add("hidden");
+          MostrarInfo.classList.remove("flex");
+        }
+      }
     </script>
   </body>
 </html>

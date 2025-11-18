@@ -272,6 +272,9 @@
   .inset-y-0 {
     inset-block: calc(var(--spacing) * 0);
   }
+  .\!top-\[200px\] {
+    top: 200px !important;
+  }
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
@@ -292,6 +295,12 @@
   }
   .top-\[60px\] {
     top: 60px;
+  }
+  .top-\[63px\] {
+    top: 63px;
+  }
+  .top-\[200px\] {
+    top: 200px;
   }
   .\!right-0 {
     right: calc(var(--spacing) * 0) !important;
@@ -500,6 +509,27 @@
   .mr-4 {
     margin-right: calc(var(--spacing) * 4);
   }
+  .mr-10 {
+    margin-right: calc(var(--spacing) * 10);
+  }
+  .mr-20 {
+    margin-right: calc(var(--spacing) * 20);
+  }
+  .mr-30 {
+    margin-right: calc(var(--spacing) * 30);
+  }
+  .mr-40 {
+    margin-right: calc(var(--spacing) * 40);
+  }
+  .mr-\[110px\] {
+    margin-right: 110px;
+  }
+  .mr-\[120px\] {
+    margin-right: 120px;
+  }
+  .mr-\[125px\] {
+    margin-right: 125px;
+  }
   .\!mb-2 {
     margin-bottom: calc(var(--spacing) * 2) !important;
   }
@@ -655,6 +685,9 @@
   .h-18 {
     height: calc(var(--spacing) * 18);
   }
+  .h-20 {
+    height: calc(var(--spacing) * 20);
+  }
   .h-24 {
     height: calc(var(--spacing) * 24);
   }
@@ -663,6 +696,12 @@
   }
   .h-72 {
     height: calc(var(--spacing) * 72);
+  }
+  .h-\[73px\] {
+    height: 73px;
+  }
+  .h-\[75px\] {
+    height: 75px;
   }
   .h-\[200px\] {
     height: 200px;
