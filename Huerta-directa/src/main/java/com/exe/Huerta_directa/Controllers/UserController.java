@@ -6,7 +6,6 @@ import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Entity.Product;
 import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
