@@ -63,46 +63,12 @@
 
         <!-- Navbar -->
         <nav
-          class="navbar bg-[#fff5dc] hidden peer-checked:block peer-checked:absolute peer-checked:top-full peer-checked:left-0 peer-checked:right-0 peer-checked:bg-[#333128] peer-checked:pl-[50px] lg:block lg:relative lg:bg-transparent lg:pl-0"
+          class="navbar bg-[#fff5dc] hidden peer-checked:block peer-checked:absolute peer-checked:top-full !ml-100 peer-checked:left-0 peer-checked:right-0 peer-checked:bg-[#333128] peer-checked:pl-[50px] lg:block lg:relative lg:bg-transparent lg:pl-0"
         >
           <ul
             class="nav-menu list-none flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 m-0 p-2 lg:p-0"
           >
-            <!-- Dropdown: Log in -->
-            <li class="dropdown relative">
-              <a
-                href=""
-                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
-              >
-                Log in ▾
-              </a>
-              <ul class="dropdown-menu">
-                <li class="p-0">
-                  <a
-                    th:href="@{/actualizacionUsuario}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    📲 Mi Perfil
-                  </a>
-                </li>
-                <li class="p-0">
-                  <a
-                    th:href="@{/login}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    📲 Iniciar Sesion
-                  </a>
-                </li>
-                <li class="p-0">
-                  <a
-                    th:href="@{/home}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    📲 Dashboard
-                  </a>
-                </li>
-              </ul>
-            </li>
+           
 
             <!-- Categorias -->
             <li>
@@ -123,41 +89,7 @@
               </a>
             </li>
 
-            <!-- Dropdown: Conocenos -->
-            <li class="dropdown relative">
-              <a
-                href=""
-                class="no-underline text-[#222] peer-checked:text-white font-semibold text-base py-2.5 px-4 transition-colors duration-300 hover:text-[#7bbf45]"
-              >
-                Conocenos ▾
-              </a>
-              <ul class="dropdown-menu">
-                <li class="p-0">
-                  <a
-                    th:href="@{/landing}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    🔗 Unete
-                  </a>
-                </li>
-                <li class="p-0">
-                  <a
-                    th:href="@{/Quienes_somos}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    🔎 Quienes somos
-                  </a>
-                </li>
-                <li class="p-0">
-                  <a
-                    th:href="@{/error500}"
-                    class="block py-3 px-5 text-[#333] text-[15px] transition-all duration-300 hover:bg-[#f2fbd7] hover:text-[#7bbf45] hover:border-l-4 hover:border-[#7bbf45]"
-                  >
-                    🎛️ Contactanos
-                  </a>
-                </li>
-              </ul>
-            </li>
+            
           </ul>
         </nav>
 
