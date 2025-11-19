@@ -2,6 +2,7 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
@@ -23,9 +25,11 @@ import java.util.*;
 public class ProductController {
 
     private final ProductService productService;
+    private final UserRepository userRepository;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, UserRepository userRepository) {
         this.productService = productService;
+        this.userRepository = userRepository;
     }
 
     @Value("${upload.path}")
@@ -40,7 +44,25 @@ public class ProductController {
             @RequestParam("categoria-producto") String category,
             @RequestParam("image_product") MultipartFile imageFile,
             @RequestParam("descripcion") String descriptionProduct,
-            HttpSession session) { // Cambiado: obtener sesión en lugar de userId
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null) {
+            return new RedirectView("/login?error=session&message=Debe+iniciar+sesión+para+registrar+productos");
+        }
+
+        // Validar datos completos del usuario
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty() ||
+                user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Complete su teléfono y dirección en el perfil antes de agregar productos");
+            return new RedirectView("/actualizacionUsuario");
+        }
+
         try {
             // Obtener usuario desde la sesión
             User userSession = (User) session.getAttribute("user");
@@ -49,13 +71,17 @@ public class ProductController {
                 return new RedirectView("/login?error=session&message=Debe+iniciar+sesión+para+registrar+productos");
             }
 
-            // ✅ PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
+            //  PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
             // (No solo admins, cualquier usuario autenticado puede agregar productos)
 
             // Crear carpeta /productos dentro de C:/HuertaUploads
             File uploadDir = new File(uploadPath, "productos");
-            if (!uploadDir.exists())
-                uploadDir.mkdirs();
+            if (!uploadDir.exists()) {
+                boolean created = uploadDir.mkdirs();
+                if (!created) {
+                    throw new IOException("No se pudo crear el directorio de uploads");
+                }
+            }
 
             String nombreImagen = "default.png";
             if (imageFile != null && !imageFile.isEmpty()) {
@@ -83,8 +109,7 @@ public class ProductController {
 
             // Condicional para redirigir
             if (creado != null && creado.getIdProduct() != null) {
-                // ✅ Registro exitoso -> Redirigir según el rol del usuario con mensaje de éxito
-                User user = (User) session.getAttribute("user");
+                //  Registro exitoso -> Redirigir según el rol del usuario con mensaje de éxito
                 if (user != null && user.getRole() != null && user.getRole().getIdRole() == 1) {
                     // Si es admin, ir al dashboard admin con mensaje de éxito
                     return new RedirectView("/DashboardAdmin?success=Producto+'" + creado.getNameProduct() + "'+registrado+exitosamente");
@@ -99,7 +124,6 @@ public class ProductController {
 
         } catch (IOException | RuntimeException e) {
             System.err.println("❌ Error al registrar producto: " + e.getMessage());
-            e.printStackTrace();
             // En caso de error -> volver al formulario con mensaje de error
             return new RedirectView("/agregar_producto?error=Error+interno+del+servidor.+Contacta+al+administrador");
         }
