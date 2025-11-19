@@ -613,10 +613,13 @@ main .export-links hr {
 
 .right .top {
     display: flex;
-    justify-content: start;
+    justify-content: space-around;
     align-items: center;
-    gap: 70px;
   
+}
+.dashboarRight{
+  right: 30px !important;
+  top: 70px;
 }
 
 .right .top button {
