@@ -296,6 +296,11 @@ public class RutasPagina {
         return "DashBoard/GraficosDashboarCliente";
     }
 
+     @GetMapping("/GraficosDashboarAdmin")
+    public String DashBoardGraficosAdmin() {
+        return "Dashboard_Admin/GraficosDashboarAdmin";
+    }
+
     @GetMapping("/landing")
     public String mostrarLanding() {
         return "pagina_principal/landing";
