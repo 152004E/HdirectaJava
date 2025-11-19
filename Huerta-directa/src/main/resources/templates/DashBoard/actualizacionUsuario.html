@@ -46,12 +46,12 @@
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 </head>
 
-<body class="bg-gradient-to-br from-dashboard-bg to-yellow-100 min-h-screen">
+<body class=" min-h-screen">
      <div class="containerActualizarUcuario">
        
         <div th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"></div>
 
-        <main class="flex-1 flex items-center justify-center p-4 min-h-screen">
+        <main class="flex-1 flex items-center justify-center p-4 m-0 min-h-screen">
             <div class="w-full max-w-4xl">
                 <!-- Mensajes de éxito/error -->
                 <div th:if="${success}" class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg shadow-sm">
@@ -455,8 +455,9 @@
                 setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
+        
     </script>
-        <script src="/JS/dashboar.js"></script>
+        <script src="/JS/dashboard.js"></script>
 
 </body>
 </html>
