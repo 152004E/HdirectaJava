@@ -256,6 +256,31 @@ public class RutasPagina {
 
         return "DashBoard/actualizacionUsuario";
     }
+
+    //Este getMapping es para el dashboarAdmin
+
+     @GetMapping("/actualizacionUsuarioAdmin")
+    public String actualizacionUsuarioAdmin(HttpSession session, Model model) {
+        // Obtener usuario desde la sesión
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser != null) {
+            model.addAttribute("currentUser", currentUser);
+
+            // Determinar el rol para mostrar
+            String userRole = "Usuario";
+            if (currentUser.getRole() != null) {
+                userRole = currentUser.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
+            }
+            model.addAttribute("userRole", userRole);
+
+            System.out.println("🔍 Usuario en sesión: " + currentUser.getName() + " - " + currentUser.getEmail());
+        } else {
+            System.out.println("⚠️ No hay usuario en sesión");
+        }
+
+        return "Dashboard_Admin/actualizacionUsuarioAdmin";
+    }
     /*@GetMapping("/MensajesComentarios")
     // public String MensajesComentarios() {
     //     return "DashBoard/MensajesComentarios";
