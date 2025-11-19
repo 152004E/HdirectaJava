@@ -1703,10 +1703,24 @@ public class UserController {
             User currentUser = (User) session.getAttribute("user");
 
             if (currentUser == null) {
-                redirectAttributes.addFlashAttribute("error", "Sesión expirada");
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
                 return "redirect:/login";
             }
 
+            //Validar telefono
+            if (phone != null && !phone.trim().isEmpty()) {
+                //Esto eliminar espacion y caracteres no numericos
+                String phoneClean = phone.replaceAll("[^0-9]", "");
+
+                if (phoneClean.length() != 10){
+                    redirectAttributes.addFlashAttribute("error", "El número de teléfono debe tener 10 dígitos");
+                    return "redirect:/actualizacionUsuario";
+                }
+
+                phone = phoneClean; //Asignar el telefono limpio
+            }
+
+            //Verificar si el email ya está en uso por otro usuario
             if (!currentUser.getEmail().equals(email) &&
                     userRepository.findByEmail(email).isPresent()) {
                 redirectAttributes.addFlashAttribute("error", "El email ya está registrado");

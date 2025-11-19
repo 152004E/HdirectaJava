@@ -191,7 +191,7 @@
                                             <input type="tel" name="phone"
                                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-500/20 transition-all duration-300 font-medium"
                                                    th:value="${currentUser != null ? currentUser.phone : ''}"
-                                                   placeholder="+57 300 123 4567">
+                                                   placeholder="Ej: 300 123 4567" maxlength="10" pattern="[0-9]{10}" title="Debe tener exactamente 10 dígitos" required >
                                         </div>
                                     </div>
 
@@ -398,6 +398,17 @@
                 sideBar.style.display = 'none';
             });
         }
+
+        //Validaciones para el telefono
+        document.querySelector('input[name="phone"]').addEventListener('input', function(e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Limitar a 10 caracteres
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
 
         // Animaciones suaves para los formularios
         document.querySelectorAll('form').forEach(form => {
