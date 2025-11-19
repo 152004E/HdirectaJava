@@ -3,11 +3,12 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,11 +21,19 @@ import java.util.List;
 @Controller
 public class RutasPagina {
 
-    @Autowired
-    private ProductService productService;
 
-    @Autowired
-    private UserService userService;
+    private final ProductService productService;
+    private final UserService userService;
+    private final UserRepository userRepository;
+
+    public  RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+        this.productService = productService;
+        this.userService = userService;
+        this.userRepository = userRepository;
+
+    }
+
+
 
     /**
      * Método helper para obtener la página de inicio según el rol del usuario
@@ -95,7 +104,35 @@ public class RutasPagina {
     }
 
     @GetMapping("/agregar_producto")
-    public String mostrarFormulario() {
+    public String mostrarFormulario(
+            HttpSession session,
+           RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe iniciar sesion para acceder");
+            return "redirect:/login";
+        }
+
+        //Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById (currentUser.getId())
+                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+
+        // Validar que tenga teléfono y dirección completos
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su número de teléfono en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su dirección en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        //Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
     }
 
@@ -185,10 +222,11 @@ public class RutasPagina {
 
         return "DashBoard/actualizacionUsuario";
     }
-    // @GetMapping("/MensajesComentarios")
+    /*@GetMapping("/MensajesComentarios")
     // public String MensajesComentarios() {
     //     return "DashBoard/MensajesComentarios";
-    // }
+     }
+    */
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
@@ -204,10 +242,11 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    // @GetMapping("/Quienes_somos")
+    /* @GetMapping("/Quienes_somos")
     // public String mostrarQuienes_somos() {
     //     return "Quienes_somos/quienes_somos";
     // }
+    */
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {
@@ -410,10 +449,7 @@ public class RutasPagina {
             return "redirect:/agregar_admin";
         }
     }
-    @GetMapping("/ClientesDestacados")
-    public String mostrarClientesDestacados(Model model) {
-        return "Clientes_Destacados/ClientesDestacados";
-    }
+
 
 }
 

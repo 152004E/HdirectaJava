@@ -615,7 +615,11 @@ main .export-links hr {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    gap: 2rem;
+  
+}
+.dashboarRight{
+  right: 30px !important;
+  top: 70px;
 }
 
 .right .top button {

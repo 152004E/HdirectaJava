@@ -53,6 +53,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
 @Controller
 @RequestMapping("/api/users")
 @CrossOrigin("*")
@@ -1701,10 +1703,24 @@ public class UserController {
             User currentUser = (User) session.getAttribute("user");
 
             if (currentUser == null) {
-                redirectAttributes.addFlashAttribute("error", "Sesión expirada");
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
                 return "redirect:/login";
             }
 
+            //Validar telefono
+            if (phone != null && !phone.trim().isEmpty()) {
+                //Esto eliminar espacion y caracteres no numericos
+                String phoneClean = phone.replaceAll("[^0-9]", "");
+
+                if (phoneClean.length() != 10){
+                    redirectAttributes.addFlashAttribute("error", "El número de teléfono debe tener 10 dígitos");
+                    return "redirect:/actualizacionUsuario";
+                }
+
+                phone = phoneClean; //Asignar el telefono limpio
+            }
+
+            //Verificar si el email ya está en uso por otro usuario
             if (!currentUser.getEmail().equals(email) &&
                     userRepository.findByEmail(email).isPresent()) {
                 redirectAttributes.addFlashAttribute("error", "El email ya está registrado");
@@ -1728,4 +1744,43 @@ public class UserController {
             return "redirect:/actualizacionUsuario";
         }
     }
+
+
+    @PostMapping("/ActualizarContrasena")
+    public String actualizarContrasena(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
+                return "redirect:/login";
+            }
+
+            if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+                redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
+                return "redirect:/actualizacionUsuario";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente");
+            return "redirect:/actualizacionUsuario";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseña");
+            return "redirect:/actualizacionUsuario";
+        }
+    }
+
+
+
 }
