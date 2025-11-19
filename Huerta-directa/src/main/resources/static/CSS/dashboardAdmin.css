@@ -613,9 +613,10 @@ main .export-links hr {
 
 .right .top {
     display: flex;
-    justify-content: space-around;
+    justify-content: start;
     align-items: center;
-    gap: 2rem;
+    gap: 70px;
+  
 }
 
 .right .top button {
