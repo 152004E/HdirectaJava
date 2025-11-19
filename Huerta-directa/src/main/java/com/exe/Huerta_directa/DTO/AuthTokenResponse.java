@@ -1,4 +1,15 @@
 package com.exe.Huerta_directa.DTO;
 
-public class AuthRokenResponse {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class AuthTokenResponse {
+    private String uid;
+    private String email;
+    private String message;
+    private boolean success;
 }

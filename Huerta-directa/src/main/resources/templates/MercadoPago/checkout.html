@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Huerta Directa</title>
+
+    <!-- Estilos: Tailwind + Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #009ee3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<div class="container mx-auto py-5">
+    <!-- Encabezado -->
+    <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Finalizar Pedido</h1>
+        <p class="text-gray-600 mt-2">Huerta Directa - Productos frescos del campo</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <!-- Contenedor del Payment Brick -->
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">💳 Método de pago</h5>
+
+                    <!-- Loading mientras carga el brick -->
+                    <div id="loadingBrick" class="text-center py-5">
+                        <div class="loading-spinner"></div>
+                        <p class="text-muted mt-3">Cargando opciones de pago...</p>
+                    </div>
+
+                    <!-- Contenedor donde se renderiza el Payment Brick -->
+                    <div id="paymentBrick_container"></div>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    🔒 Pago seguro procesado por Mercado Pago<br>
+                    Tus datos están protegidos
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SDK de Mercado Pago -->
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+
+<!-- Script principal con integración completa -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // ===== CONFIGURACIÓN DESDE THYMELEAF =====
+    const publicKey = /*[[${publicKey}]]*/ '';
+
+    // Validar que tenemos la public key
+    if (!publicKey || publicKey === '') {
+        console.error('ERROR: No se proporcionó la Public Key de Mercado Pago');
+        document.getElementById('loadingBrick').innerHTML = `
+            <div class="alert alert-danger">
+                ❌ Error de configuración: No se encontró la clave pública de Mercado Pago.
+                <br>Por favor, contacta al administrador.
+            </div>
+        `;
+    }
+
+    // ===== INICIALIZAR MERCADO PAGO =====
+    const mp = new MercadoPago(publicKey, {
+        locale: 'es-CO'
+    });
+
+    const bricksBuilder = mp.bricks();
+
+    // ===== DATOS DEL PEDIDO =====
+    // Estructura que coincide con tu MercadoPagoDTO
+    const pedidoData = {
+        orderId: 123, // TODO: Obtener del backend/sesión
+        payerEmail: "cliente@example.com", // TODO: Obtener del usuario actual
+        items: [
+            {
+                title: "Tomates Frescos - 1kg",
+                unitPrice: 5000,
+                quantity: 2
+            },
+            {
+                title: "Lechugas Orgánicas",
+                unitPrice: 3000,
+                quantity: 3
+            }
+        ]
+    };
+
+    // ===== FUNCIÓN PRINCIPAL: CREAR PREFERENCIA Y RENDERIZAR BRICK =====
+    async function inicializarCheckout() {
+        try {
+            // PASO 1: Crear la preferencia de pago en tu backend
+            console.log('Creando preferencia de pago...');
+
+            const preferenciaResponse = await fetch('/api/checkout/preference', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pedidoData)
+            });
+
+            if (!preferenciaResponse.ok) {
+                throw new Error('Error al crear la preferencia de pago');
+            }
+
+            const preferenciaData = await preferenciaResponse.json();
+            console.log('Preferencia creada:', preferenciaData);
+
+            // Obtener el preference_id directamente del backend
+            const preferenceId = preferenciaData.preference_id;
+
+            console.log('Preference ID:', preferenceId);
+
+            // PASO 2: Renderizar el Payment Brick con el preference ID
+            await renderPaymentBrick(preferenceId);
+
+        } catch (error) {
+            console.error('Error al inicializar checkout:', error);
+            document.getElementById('loadingBrick').innerHTML = `
+                <div class="alert alert-danger">
+                    ❌ Error al inicializar el proceso de pago: ${error.message}
+                    <br><br>
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        🔄 Reintentar
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    // ===== RENDERIZAR EL PAYMENT BRICK =====
+    async function renderPaymentBrick(preferenceId) {
+                const settings = {
+            initialization: {
+                // Calcular el monto total de todos los items
+                amount: pedidoData.items.reduce((sum, item) =>
+                    sum + (item.unitPrice * item.quantity), 0
+                ),
+                // ID de preferencia obtenido del backend
+                preferenceId: preferenceId,
+                // Información del comprador (opcional, mejora UX)
+                payer: {
+                    email: pedidoData.payerEmail,
+                },
+            },
+            customization: {
+                visual: {
+                    style: {
+                        theme: "default", // Opciones: "default", "dark", "bootstrap", "flat"
+                    },
+                },
+                paymentMethods: {
+                    // Habilitar todos los métodos de pago disponibles en Colombia
+                    creditCard: "all",           // Tarjetas de crédito
+                    debitCard: "all",            // Tarjetas débito
+                    ticket: "all",               // Efectivo (Efecty, Baloto, etc.)
+                    bankTransfer: "all",         // PSE
+                    wallet_purchase: "all",      // Mercado Pago Wallet
+                    maxInstallments: 12          // Hasta 12 cuotas
+                },
+            },
+            callbacks: {
+                onReady: () => {
+                    // Ocultar el loading cuando el brick está listo
+                    document.getElementById('loadingBrick').style.display = 'none';
+                    console.log('✅ Payment Brick cargado correctamente');
+                },
+
+                onSubmit: ({ selectedPaymentMethod, formData }) => {
+                    console.log('📤 Enviando pago:', formData);
+
+                    // Mercado Pago maneja el pago automáticamente
+                    // Solo retornamos una promesa resuelta
+                    return new Promise((resolve, reject) => {
+                        // Si quieres procesar el pago en tu backend (opcional):
+                        /*
+                        fetch('/api/checkout/process', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Pago procesado:', data);
+                            resolve();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            reject();
+                        });
+                        */
+
+                        // Por defecto, MP maneja todo y redirige automáticamente
+                        resolve();
+                    });
+                },
+
+                onError: (error) => {
+                    console.error('❌ Error en Payment Brick:', error);
+                    alert('Ocurrió un error al procesar tu pago. Por favor, intenta nuevamente.');
+                },
+            },
+        };
+
+        try {
+            // Crear el Payment Brick
+            window.paymentBrickController = await bricksBuilder.create(
+                'payment',
+                'paymentBrick_container',
+                settings
+            );
+        } catch (error) {
+            console.error('Error al crear Payment Brick:', error);
+            document.getElementById('loadingBrick').innerHTML = `
+                <div class="alert alert-danger">
+                    ❌ No se pudo cargar el formulario de pago.
+                    <br>Error: ${error.message}
+                </div>
+            `;
+        }
+    }
+
+    // ===== INICIAR EL PROCESO AL CARGAR LA PÁGINA =====
+    inicializarCheckout();
+
+    /*]]>*/
+</script>
+
+<!-- Scripts de Bootstrap (opcional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

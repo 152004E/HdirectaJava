@@ -1,6 +1,5 @@
 package com.exe.Huerta_directa.config;
 
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -12,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
-public class SMS_FirebaseConfig {
+public class FirebaseConfig {
 
     @Bean
     public FirebaseAuth firebaseAuth() throws IOException {

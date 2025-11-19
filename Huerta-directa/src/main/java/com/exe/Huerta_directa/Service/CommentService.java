@@ -30,5 +30,11 @@ public interface CommentService {
     List<CommentDTO> listarCommentsPorUsuario(Long userId);
 
     //lista los comentarios por producto o sitio
-    List<Comment> obtenerComentariosPorTipo(CommentType commentType);
+    List<Comment> obtenerComentariosPorTipo(CommentType commentType);// Listar todos los comentarios (DTO)
+    List<Comment> listarTodosComments();
+
+
+
+
+
 }

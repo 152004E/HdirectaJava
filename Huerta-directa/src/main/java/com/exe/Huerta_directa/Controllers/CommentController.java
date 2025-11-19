@@ -1,15 +1,19 @@
 package com.exe.Huerta_directa.Controllers;
 
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.ui.Model; // ✅ IMPORT CORRECTO
+import org.springframework.ui.Model;
 
 import com.exe.Huerta_directa.DTO.CommentDTO;
 import com.exe.Huerta_directa.Entity.Comment;
@@ -17,8 +21,14 @@ import com.exe.Huerta_directa.Entity.CommentType;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.CommentService;
 
+import org.jfree.chart.ChartUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
+
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -107,5 +117,64 @@ public class CommentController {
         model.addAttribute("comment", comment);
         return "DashBoard/EditarComentario";
     }
+
+    @GetMapping("/reporteFc")
+    public String reporteProductVsSite(Model model) {
+
+        // Traer todos los comentarios
+        List<Comment> listaComments = commentService.listarTodosComments();
+        model.addAttribute("comentarios", listaComments);
+
+        // Contar comentarios por tipo
+        int totalProductComments = 0;
+        int totalSiteComments = 0;
+
+        for (Comment c : listaComments) {
+            if (c.getCommentType() == CommentType.PRODUCT) {
+                totalProductComments++;
+            } else if (c.getCommentType() == CommentType.SITE) {
+                totalSiteComments++;
+            }
+        }
+
+        // Crear dataset para el gráfico
+        DefaultPieDataset<String> datos = new DefaultPieDataset<>();
+        datos.setValue("Comentarios PRODUCT", totalProductComments);
+        datos.setValue("Comentarios SITE", totalSiteComments);
+
+        // Crear gráfico
+        JFreeChart chart = ChartFactory.createPieChart(
+                "Comparación Comentarios PRODUCT vs SITE",
+                datos,
+                true,
+                true,
+                false
+        );
+
+        // Guardar gráfico en disco
+        String rutaArchivo = "uploads/graficos/reporteProductSite.png";
+
+        try {
+            File carpeta = new File("uploads/graficos/");
+            if (!carpeta.exists()) carpeta.mkdirs();
+
+            try (OutputStream out = new FileOutputStream(rutaArchivo)) {
+                ChartUtils.writeChartAsPNG(out, chart, 650, 450);
+            }
+
+            Thread.sleep(2000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Agregar atributos para la vista
+        model.addAttribute("grafico", "/uploads/graficos/reporteProductSite.png");
+        model.addAttribute("totalProductComments", totalProductComments);
+        model.addAttribute("totalSiteComments", totalSiteComments);
+
+        return "Reportes_estadisticos/commentFc";
+    }
+
 
 }
