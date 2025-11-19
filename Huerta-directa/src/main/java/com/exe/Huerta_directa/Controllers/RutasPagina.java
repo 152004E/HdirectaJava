@@ -135,6 +135,40 @@ public class RutasPagina {
         //Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
     }
+    // agregar producto desde agregar producto admin
+
+    @GetMapping("/DashBoardAdminAgregarProducto")
+    public String mostrarFormularioAdmin(
+            HttpSession session,
+           RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe iniciar sesion para acceder");
+            return "redirect:/login";
+        }
+
+        //Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById (currentUser.getId())
+                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+
+        // Validar que tenga teléfono y dirección completos
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su número de teléfono en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su dirección en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        //Si todo está bien, mostrar el formulario
+        return "Dashboard_Admin/DashBoardAdminAgregarProducto";
+    }
 
     @GetMapping("/login")
     public String mostrarLogin(Model model,
