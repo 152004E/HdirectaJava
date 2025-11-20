@@ -106,6 +106,26 @@ public class CommentController {
         return "DashBoard/MensajesComentarios";
     }
 
+    //Este apartado esel get mappin de comentarios pero para le admin
+     @GetMapping("/MensajesComentariosAdmin")
+    public String mostrarMensajesComentariosAdmin(Model model, HttpSession session) {
+        // Obtener usuario de la sesión
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Debe+iniciar+sesión";
+        }
+
+        // Obtener todos los comentarios o filtrar por usuario según necesites
+        List<Comment> comments = commentService.obtenerComentariosPorUsuario(userSession.getId());
+
+        // O si quieres todos: commentService.obtenerTodosLosComentarios();
+
+        // Añadir comentarios al modelo
+        model.addAttribute("comments", comments);
+
+        return "Dashboard_Admin/MensajesComentariosAdmin";
+    }
+
     @GetMapping("/deleteComment/{id}")
     public RedirectView eliminarComentario(@PathVariable Long id) {
         commentService.eliminarComment(id);

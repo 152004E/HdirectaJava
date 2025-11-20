@@ -3,242 +3,212 @@
   
   <body class="">
 
-    <div th:fragment="AgregarProducto" class="flex justify-center items-center h-[800px]  bg-[#f7efd8]">
-      <form
-        class="bg-white w-[700px] p-6 rounded-xl shadow-md"
-        action="http://localhost:8085/api/products/create"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <!-- Título -->
-        <div class="flex justify-center mb-4">
-          <h2 class="text-2xl font-semibold uppercase tracking-wide">
-            Registro de Producto
-          </h2>
-        </div>
-        <hr class="border border-[#8dc84b] mb-4" />
+   <div th:fragment="AgregarProducto" class="!flex !justify-center !items-center !h-[800px] !bg-[#f7efd8]">
+  <form
+    class="!bg-white !w-[700px] !p-6 !rounded-xl !shadow-md"
+    action="http://localhost:8085/api/products/create"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <!-- Título -->
+    <div class="!flex !justify-center !mb-4">
+      <h2 class="!text-2xl !font-semibold !uppercase !tracking-wide">
+        Registro de Producto
+      </h2>
+    </div>
+    <hr class="!border !border-[#8dc84b] !mb-4" />
 
-        <!-- Nombre -->
-        <div class="mb-4">
-          <label for="nombre" class="block text-sm font-medium mb-1 text-black"
-            >Nombre del producto:</label
-          >
-          <input
-            type="text"
-            id="nombre"
-            name="nombre"
-            required
-            class="w-full border border-[#8dc84b] rounded-md px-4 py-2 focus:outline-none focus:border-[#004d00] focus:ring-2 focus:ring-[#004d00]/40 transition-all text-sm"
-          />
-        </div>
+    <!-- Nombre -->
+    <div class="!mb-4">
+      <label for="nombre" class="!block !text-sm !font-medium !mb-1 !text-black">
+        Nombre del producto:
+      </label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+        class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
+      />
+    </div>
 
-        <hr class="border border-[#8dc84b] mb-4" />
+    <hr class="!border !border-[#8dc84b] !mb-4" />
 
-        <!-- Precio, unidad y categoría -->
-        <div class="flex flex-wrap gap-4 mb-4">
-          <div class="flex-1 min-w-[150px]">
-            <label for="precio" class="block text-sm font-medium mb-1 text-black"
-              >Precio:</label
-            >
-            <input
-              type="number"
-              id="precio"
-              name="precio"
-              step="0.01"
-              required
-              class="w-full border border-[#8dc84b] rounded-md px-4 py-2 focus:outline-none focus:border-[#004d00] focus:ring-2 focus:ring-[#004d00]/40 transition-all text-sm"
-            />
-          </div>
+    <!-- Precio, unidad y categoría -->
+    <div class="!flex !flex-wrap !gap-4 !mb-4">
 
-          <div class="flex-1 min-w-[150px]">
-            <label for="unidad" class="block text-sm font-medium mb-1 text-black"
-              >Unidad de medida:</label
-            >
-            <select
-              id="unidad"
-              name="unidad"
-              class="w-full border border-[#8dc84b] rounded-md px-4 py-2 focus:outline-none focus:border-[#004d00] focus:ring-2 focus:ring-[#004d00]/40 transition-all text-sm"
-            >
-              <option value="">Medida</option>
-              <option value="kg">Kilogramos (kg)</option>
-              <option value="g">Gramos (g)</option>
-              <option value="lb">Libras (lb)</option>
-              <option value="unidad">Unidad (u)</option>
-              <option value="litro">Litros (L)</option>
-              <option value="ml">Mililitros (ml)</option>
-              <option value="docena">Docena</option>
-              <option value="paq">Paquete</option>
-              <option value="caja">Caja</option>
-              <option value="otro">Otro</option>
-            </select>
-          </div>
+      <div class="!flex-1 !min-w-[150px]">
+        <label for="precio" class="!block !text-sm !font-medium !mb-1 !text-black">
+          Precio:
+        </label>
+        <input
+          type="number"
+          id="precio"
+          name="precio"
+          step="0.01"
+          required
+          class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
+        />
+      </div>
 
-          <div class="flex-1 min-w-[150px]">
-            <label class="block text-sm font-medium mb-1 text-black"
-              >Categoría:</label
-            >
-            <select
-              class="w-full border border-[#8dc84b] rounded-md px-4 py-2 focus:outline-none focus:border-[#004d00] focus:ring-2 focus:ring-[#004d00]/40 transition-all text-sm"
-              name="categoria-producto"
-              id="categoria-producto"
-            >
-              <option value="">Seleccione la categoría</option>
-              <option value="frutas">Frutas</option>
-              <option value="verduras-hortalizas">Verduras y Hortalizas</option>
-              <option value="lacteos">Lácteos</option>
-              <option value="carnes-proteinas">Carnes y Proteínas</option>
-              <option value="cereales-granos">Cereales y Granos</option>
-              <option value="legumbres-secas">Legumbres Secas</option>
-              <option value="productos-organicos">Productos Orgánicos</option>
-              <option value="hierbas-especias">Hierbas y Especias</option>
-              <option value="miel-derivados">Miel y Derivados</option>
-              <option value="procesados-artesanales">
-                Procesados Artesanales
-              </option>
-              <option value="bebidas-naturales">Bebidas Naturales</option>
-              <option value="plantas-semillas">Plantas y Semillas</option>
-              <option value="cajas-combos">Cajas Mixtas o Combos</option>
-              <option value="otros">Otros</option>
-            </select>
-          </div>
-        </div>
-
-        <hr class="border border-[#8dc84b] mb-4" />
-
-        <!-- Imagen -->
-        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <label for="imagen" class="text-sm font-medium text-black"
-            >Imagen del producto:</label
-          >
-          <input
-            type="file"
-            id="imagen"
-            name="image_product"
-            accept="image/*"
-            required
-            hidden
-          />
-          <label
-            for="imagen"
-            class="bg-[#8dc84b] text-white px-4 py-2 rounded-md font-semibold cursor-pointer hover:bg-[#6ca52a] transition-all"
-          >
-            📁 Seleccionar imagen
-          </label>
-          <span id="file-name" class="text-[#8dc84b] font-medium text-sm"
-            >Ningún archivo seleccionado</span
-          >
-        </div>
-
-        <hr class="border border-[#8dc84b] mb-4" />
-
-        <!-- Descripción -->
-        <div class="mb-4">
-          <label for="descripcion" class="block text-sm font-medium mb-1 text-black"
-            >Descripción:</label
-          >
-          <textarea
-            id="descripcion"
-            name="descripcion"
-            rows="4"
-            class="w-full border border-[#8dc84b] rounded-md px-4 py-2 focus:outline-none focus:border-[#004d00] focus:ring-2 focus:ring-[#004d00]/40 transition-all text-sm"
-            required
-          ></textarea>
-        </div>
-
-        <!-- Botones -->
-        <!--   <div
-          class="container-button d-flex align-items-center justify-content-center gap-3"
+      <div class="!flex-1 !min-w-[150px]">
+        <label for="unidad" class="!block !text-sm !font-medium !mb-1 !text-black">
+          Unidad de medida:
+        </label>
+        <select
+          id="unidad"
+          name="unidad"
+          class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
         >
-        <a
-            class="btn-2 d-flex justify-content-center align-items-center botonIcon"
-            th:href="@{/index}"
-            >volver
-            <span class="material-symbols-outlined flecha"> arrow_back </span></a
-          >
-          
-          <button type="button" id="btn-visualizar" class="btn-2 botonIcon icono">
-            Visualizar
-            <span id="passwordOjo" class="material-symbols-outlined"
-              >visibility</span
-            >
-          </button>
-          
-          <button type="submit" class="btn-2 botonIcon">
-            Agregar
-            <span class="material-symbols-outlined"> arrow_forward </span>
-          </button>
-        </div> -->
-        <div class="flex justify-between items-center">
-          <a
-            th:href="@{/index}"
-            class="relative flex items-center justify-center gap-5 bg-[#8dc84b] hover:bg-[#004d00] text-white font-semibold text-sm uppercase tracking-wider px-8 py-3 rounded-md transition-all"
-          >
-            <span class="material-symbols-outlined flecha"> arrow_back </span>
-            Volver
-          </a>
+          <option value="">Medida</option>
+          <option value="kg">Kilogramos (kg)</option>
+          <option value="g">Gramos (g)</option>
+          <option value="lb">Libras (lb)</option>
+          <option value="unidad">Unidad (u)</option>
+          <option value="litro">Litros (L)</option>
+          <option value="ml">Mililitros (ml)</option>
+          <option value="docena">Docena</option>
+          <option value="paq">Paquete</option>
+          <option value="caja">Caja</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
 
-          <button
-            type="button"
-            id="btn-visualizar"
-            class="relative flex items-center justify-center !w[300px]  bg-[#8dc84b] hover:bg-[#004d00] text-white font-semibold text-sm uppercase tracking-wider px-8 py-3  rounded-md transition-all"
-          >
-            Visualizar
-            <span
-              id="passwordOjo"
-              class="material-symbols-outlined absolute right-5 text-white"
-              >visibility</span
-            >
-          </button>
-
-          <button
-            type="submit"
-            class="relative flex items-center justify-center gap-5 bg-[#8dc84b] hover:bg-[#004d00] text-white font-semibold text-sm uppercase tracking-wider px-8 py-3 rounded-md transition-all"
-          >
-            Agregar
-            <span class="material-symbols-outlined absolute !right-0    text-white"
-              >arrow_forward</span
-            >
-          </button>
-        </div>
-      </form>
-
-      <!-- Modal vista previa -->
-      <div
-        id="modalVistaPrevia"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[9999] flex justify-center items-center"
-      >
-        <div
-          class="bg-white p-5 rounded-2xl w-[400px] shadow-xl animate-[fadeIn_0.3s_ease-in-out]"
+      <div class="!flex-1 !min-w-[150px]">
+        <label class="!block !text-sm !font-medium !mb-1 !text-black">
+          Categoría:
+        </label>
+        <select
+          class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
+          name="categoria-producto"
+          id="categoria-producto"
         >
-          <div class="text-center flex flex-col items-center">
-            <h3 class="text-xl font-semibold mb-3">Vista previa</h3>
-            <img
-              id="prev-imagen"
-              class="w-[200px] rounded-lg mb-4"
-              src="../images/ImgenAgregarProducto1.png"
-              alt="Vista previa"
-            />
-            <div class="text-center space-y-2 text-sm">
-              <h3 id="prev-nombre" class="font-semibold text-lg">
-                Nombre del producto
-              </h3>
-              <p id="prev-precio" class="text-[#8dc84b] font-medium">
-                Precio $0.00
-              </p>
-              <p id="prev-unidad">Medida: —</p>
-              <p id="prev-categoria">Categoría: —</p>
-              <p id="prev-descripcion">Descripción: —</p>
-            </div>
-            <button
-              class="mt-4 bg-[#8dc84b] hover:bg-[#004d00] text-white px-8 py-2 rounded-md font-semibold transition-all"
-              id="cerrarModal"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
+          <option value="">Seleccione la categoría</option>
+          <option value="frutas">Frutas</option>
+          <option value="verduras-hortalizas">Verduras y Hortalizas</option>
+          <option value="lacteos">Lácteos</option>
+          <option value="carnes-proteinas">Carnes y Proteínas</option>
+          <option value="cereales-granos">Cereales y Granos</option>
+          <option value="legumbres-secas">Legumbres Secas</option>
+          <option value="productos-organicos">Productos Orgánicos</option>
+          <option value="hierbas-especias">Hierbas y Especias</option>
+          <option value="miel-derivados">Miel y Derivados</option>
+          <option value="procesados-artesanales">Procesados Artesanales</option>
+          <option value="bebidas-naturales">Bebidas Naturales</option>
+          <option value="plantas-semillas">Plantas y Semillas</option>
+          <option value="cajas-combos">Cajas Mixtas o Combos</option>
+          <option value="otros">Otros</option>
+        </select>
       </div>
     </div>
+
+    <hr class="!border !border-[#8dc84b] !mb-4" />
+
+    <!-- Imagen -->
+    <div class="!flex !items-center !justify-between !mb-4 !flex-wrap !gap-2">
+      <label for="imagen" class="!text-sm !font-medium !text-black">
+        Imagen del producto:
+      </label>
+      <input type="file" id="imagen" name="image_product" accept="image/*" required hidden />
+
+      <label
+        for="imagen"
+        class="!bg-[#8dc84b] !text-white !px-4 !py-2 !rounded-md !font-semibold !cursor-pointer !hover:bg-[#6ca52a] !transition-all"
+      >
+        📁 Seleccionar imagen
+      </label>
+
+      <span id="file-name" class="!text-[#8dc84b] !font-medium !text-sm">
+        Ningún archivo seleccionado
+      </span>
+    </div>
+
+    <hr class="!border !border-[#8dc84b] !mb-4" />
+
+    <!-- Descripción -->
+    <div class="!mb-4">
+      <label for="descripcion" class="!block !text-sm !font-medium !mb-1 !text-black">
+        Descripción:
+      </label>
+      <textarea
+        id="descripcion"
+        name="descripcion"
+        rows="4"
+        class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Botones -->
+    <div class="!flex !justify-between !items-center">
+
+      <a
+        th:href="@{/index}"
+        class="!relative !flex !items-center !justify-center !gap-5 !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !font-semibold !text-sm !uppercase !tracking-wider !px-8 !py-3 !rounded-md !transition-all"
+      >
+        <span class="material-symbols-outlined flecha"> arrow_back </span>
+        Volver
+      </a>
+
+      <button
+        type="button"
+        id="btn-visualizar"
+        class="!relative !flex !items-center !justify-center !w[300px] !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !font-semibold !text-sm !uppercase !tracking-wider !px-8 !py-3 !rounded-md !transition-all"
+      >
+        Visualizar
+        <span id="passwordOjo" class="material-symbols-outlined !absolute !right-5 !text-white">
+          visibility
+        </span>
+      </button>
+
+      <button
+        type="submit"
+        class="!relative !flex !items-center !justify-center !gap-5 !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !font-semibold !text-sm !uppercase !tracking-wider !px-8 !py-3 !rounded-md !transition-all"
+      >
+        Agregar
+        <span class="material-symbols-outlined !absolute !right-0 !text-white">
+          arrow_forward
+        </span>
+      </button>
+
+    </div>
+  </form>
+
+  <!-- Modal vista previa -->
+  <div
+    id="modalVistaPrevia"
+    class="!hidden !fixed !inset-0 !bg-black !bg-opacity-50 !z-[9999] !justify-center !items-center"
+  >
+    <div class="!bg-white !p-5 !rounded-2xl !w-[400px] !shadow-xl !animate-[fadeIn_0.3s_ease-in-out]">
+      <div class="!text-center !flex !flex-col !items-center">
+        <h3 class="!text-xl !font-semibold !mb-3">Vista previa</h3>
+
+        <img
+          id="prev-imagen"
+          class="!w-[200px] !rounded-lg !mb-4"
+          src="../images/ImgenAgregarProducto1.png"
+          alt="Vista previa"
+        />
+
+        <div class="!text-center !space-y-2 !text-sm">
+          <h3 id="prev-nombre" class="!font-semibold !text-lg">Nombre del producto</h3>
+          <p id="prev-precio" class="!text-[#8dc84b] !font-medium">Precio $0.00</p>
+          <p id="prev-unidad">Medida: —</p>
+          <p id="prev-categoria">Categoría: —</p>
+          <p id="prev-descripcion">Descripción: —</p>
+        </div>
+
+        <button
+          id="cerrarModal"
+          class="!mt-4 !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !px-8 !py-2 !rounded-md !font-semibold !transition-all"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
     
 
   </body>

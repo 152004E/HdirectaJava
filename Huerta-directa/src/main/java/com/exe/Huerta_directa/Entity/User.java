@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-
 import java.util.Set;
 
 @Entity
@@ -34,18 +33,23 @@ public class User {
     @Size(max = 250)
     private String password;
 
-    @Column(name = "phone", nullable = false, length = 15)
+    @Column(name = "phone", length = 15)
     @Size(max = 15)
     private String phone;
 
-    @Column(name = "address", nullable = false, length = 250)
+    @Column(name = "address", length = 250)
     @Size(max = 250)
     private String address;
 
     @Column(name = "creacion_date", nullable = false)
     private LocalDate creacionDate;
 
+    // NUEVOS CAMPOS
+    @Column(name = "gender", length = 1)
+    private String gender; // "M" = Masculino, "F" = Femenino, "O" = Otro, null = No especificado
 
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
@@ -54,6 +58,23 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Product> products;
 
+    // Método para calcular la edad
+    public Integer getAge() {
+        if (birthDate == null) {
+            return null;
+        }
+        return LocalDate.now().getYear() - birthDate.getYear();
+    }
 
-
+    // Método para obtener rango de edad
+    public String getAgeRange() {
+        Integer age = getAge();
+        if (age == null) return "No especificado";
+        
+        if (age <= 25) return "18-25";
+        if (age <= 35) return "26-35";
+        if (age <= 45) return "36-45";
+        if (age <= 55) return "46-55";
+        return "56+";
+    }
 }

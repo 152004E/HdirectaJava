@@ -50,6 +50,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -155,11 +156,13 @@ public class UserController {
             row.createCell(0).setCellValue(usuario.getId());
             row.createCell(1).setCellValue(usuario.getName());
             row.createCell(2).setCellValue(usuario.getEmail());
-            row.createCell(3).setCellValue(usuario.getIdRole() != null ? usuario.getIdRole() : 0);
+            row.createCell(3).setCellValue(obtenerGeneroTexto(usuario.getGender()));
+            row.createCell(4).setCellValue(calcularEdad(usuario.getBirthDate()));
+            row.createCell(5).setCellValue(usuario.getIdRole() != null ? usuario.getIdRole() : 0);
         }
 
         // Ajustar ancho de columnas
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             sheet.autoSizeColumn(i);
         }
 
@@ -239,11 +242,11 @@ public class UserController {
                 noData.setSpacingBefore(50);
                 document.add(noData);
             } else {
-                // Crear tabla con 4 columnas
-                com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(4);
+                // Crear tabla con 6 columnas
+                com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(6);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
-                float[] columnWidths = {1f, 3f, 4f, 2f};
+                float[] columnWidths = { 1f, 3f, 4f, 2f, 2f, 2f };
                 table.setWidths(columnWidths);
 
                 // Encabezados
@@ -252,6 +255,8 @@ public class UserController {
                 addTableHeaderPdf(table, "ID", headerFont);
                 addTableHeaderPdf(table, "Nombre", headerFont);
                 addTableHeaderPdf(table, "Email", headerFont);
+                addTableHeaderPdf(table, "Género", headerFont);
+                addTableHeaderPdf(table, "Edad", headerFont);
                 addTableHeaderPdf(table, "Rol", headerFont);
 
                 // Datos
@@ -269,6 +274,10 @@ public class UserController {
                             dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
                     addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
                             dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                    addTableCellPdf(table, obtenerGeneroTexto(usuario.getGender()), dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                    addTableCellPdf(table, String.valueOf(calcularEdad(usuario.getBirthDate())), dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
 
                     String roleName = obtenerNombreRol(usuario.getIdRole());
                     addTableCellPdf(table, roleName, dataFont, rowColor,
@@ -283,23 +292,54 @@ public class UserController {
                                 user -> obtenerNombreRol(user.getIdRole()),
                                 java.util.stream.Collectors.counting()));
 
-                if (!usersByRole.isEmpty()) {
+                // Estadísticas por género
+                java.util.Map<String, Long> usersByGender = usuarios.stream()
+                        .filter(u -> u.getGender() != null)
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                user -> obtenerGeneroTexto(user.getGender()),
+                                java.util.stream.Collectors.counting()));
+
+                if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
                     document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
 
                     com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
                             com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
                     com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
-                            "Estadísticas por Rol:", statsFont);
+                            "Estadísticas:", statsFont);
                     statsTitle.setSpacingBefore(20);
                     document.add(statsTitle);
 
                     com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
                             com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
-                    for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
-                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
-                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
-                        statLine.setIndentationLeft(20);
-                        document.add(statLine);
+
+                    // Estadísticas por rol
+                    if (!usersByRole.isEmpty()) {
+                        com.lowagie.text.Paragraph roleTitle = new com.lowagie.text.Paragraph(
+                                "Por Rol:", statsDataFont);
+                        roleTitle.setSpacingBefore(10);
+                        document.add(roleTitle);
+
+                        for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                            com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
+                    }
+
+                    // Estadísticas por género
+                    if (!usersByGender.isEmpty()) {
+                        com.lowagie.text.Paragraph genderTitle = new com.lowagie.text.Paragraph(
+                                "Por Género:", statsDataFont);
+                        genderTitle.setSpacingBefore(10);
+                        document.add(genderTitle);
+
+                        for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
+                            com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
                     }
                 }
             }
@@ -340,6 +380,17 @@ public class UserController {
         }
 
         try {
+            // Validar edad mínima (18 años)
+            if (userDTO.getBirthDate() != null) {
+                LocalDate today = LocalDate.now();
+                Period age = Period.between(userDTO.getBirthDate(), today);
+                if (age.getYears() < 18) {
+                    redirectAttributes.addFlashAttribute("error", "Debes ser mayor de 18 años para registrarte");
+                    redirectAttributes.addFlashAttribute("userDTO", userDTO);
+                    return "redirect:/login";
+                }
+            }
+
             // ❌ NO hashear aquí: quitar la siguiente línea si existe en tu controlador
             // userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
@@ -417,7 +468,7 @@ public class UserController {
                                             Conectando el campo con tu mesa
                                         </p>
                                     </div>
-                
+
                                     <!-- Contenido principal -->
                                     <div style="padding: 40px 30px;">
                                         <div style="text-align: center; margin-bottom: 30px;">
@@ -428,7 +479,7 @@ public class UserController {
                                                 ¡Registro Exitoso!
                                             </h2>
                                         </div>
-                
+
                                         <div style="text-align: center; margin-bottom: 30px;">
                                             <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
                                                 ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
@@ -467,7 +518,7 @@ public class UserController {
                                                 🌟 Comenzar a Explorar
                                             </a>
                                         </div>
-                
+
                                         <!-- Mensaje de agradecimiento -->
                                         <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
                                             <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
@@ -476,7 +527,7 @@ public class UserController {
                                             </p>
                                         </div>
                                     </div>
-                
+
                                     <!-- Footer -->
                                     <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
                                         <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
@@ -628,6 +679,8 @@ public class UserController {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setGender(user.getGender());
+        userDTO.setBirthDate(user.getBirthDate());
         userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
 
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -659,6 +712,9 @@ public class UserController {
                                     usuario.getEmail().toLowerCase().contains(valor.toLowerCase());
                         case "role":
                             return filtrarPorRol(usuario, valor);
+                        case "gender":
+                            return usuario.getGender() != null &&
+                                    obtenerGeneroTexto(usuario.getGender()).toLowerCase().contains(valor.toLowerCase());
                         default:
                             return false;
                     }
@@ -702,6 +758,27 @@ public class UserController {
             case 2 -> "Cliente";
             default -> "Otro";
         };
+    }
+
+    // Método para obtener texto del género
+    private String obtenerGeneroTexto(String gender) {
+        if (gender == null) {
+            return "No especificado";
+        }
+        return switch (gender) {
+            case "M" -> "Masculino";
+            case "F" -> "Femenino";
+            case "O" -> "Otro";
+            default -> "No especificado";
+        };
+    }
+
+    // Método para calcular edad
+    private int calcularEdad(LocalDate birthDate) {
+        if (birthDate == null) {
+            return 0;
+        }
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     private void addTableHeaderPdf(PdfPTable table, String headerTitle,

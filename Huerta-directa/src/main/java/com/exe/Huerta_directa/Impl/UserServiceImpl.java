@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -76,6 +75,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO crearUser(UserDTO userDTO) {
+        System.out.println("🔧 UserServiceImpl.crearUser() - Datos recibidos:");
+        System.out.println("   Género: " + userDTO.getGender());
+        System.out.println("   Fecha Nacimiento: " + userDTO.getBirthDate());
+        
         User user = convertirAEntity(userDTO);
 
         // ⭐ HASHEAR la contraseña antes de guardar
@@ -85,6 +88,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User nuevoUser = userRepository.save(user);
+        System.out.println("✅ Usuario guardado en BD con ID: " + nuevoUser.getId());
+        System.out.println("   Género guardado: " + nuevoUser.getGender());
+        System.out.println("   Fecha Nacimiento guardada: " + nuevoUser.getBirthDate());
+        
         return convertirADTO(nuevoUser);
     }
 
@@ -140,14 +147,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Convertir a DTO y devolver
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setPassword(null); // NUNCA devolver la contraseña
-        dto.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
-
-        return dto;
+        return convertirADTO(user);
     }
 
     @Override
@@ -169,7 +169,13 @@ public class UserServiceImpl implements UserService {
         userDTO.setEmail(user.getEmail());
         // NO incluir la contraseña en el DTO
         userDTO.setPassword(null);
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAddress(user.getAddress());
         userDTO.setCreacionDate(user.getCreacionDate());
+        
+        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        userDTO.setGender(user.getGender());
+        userDTO.setBirthDate(user.getBirthDate());
 
         if (user.getRole() != null) {
             userDTO.setIdRole(user.getRole().getIdRole());
@@ -185,6 +191,12 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword()); // Se hasheará en crearUser()
+        user.setPhone(userDTO.getPhone());
+        user.setAddress(userDTO.getAddress());
+        
+        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        user.setGender(userDTO.getGender());
+        user.setBirthDate(userDTO.getBirthDate());
 
         // CORRECCIÓN: Establecer fecha actual si no existe
         if (user.getCreacionDate() == null) {
@@ -209,6 +221,12 @@ public class UserServiceImpl implements UserService {
     private void actualizarDatosPersona(User user, UserDTO userDTO) {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+        user.setAddress(userDTO.getAddress());
+        
+        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        user.setGender(userDTO.getGender());
+        user.setBirthDate(userDTO.getBirthDate());
 
         // La contraseña se hasheará en actualizarUser() si no está vacía
         // NO hashear aquí para evitar hashear dos veces
@@ -233,8 +251,10 @@ public class UserServiceImpl implements UserService {
         headerRow.createCell(0).setCellValue("User ID");
         headerRow.createCell(1).setCellValue("Name");
         headerRow.createCell(2).setCellValue("Email");
-        headerRow.createCell(3).setCellValue("Password");
-        headerRow.createCell(4).setCellValue("Role");
+        headerRow.createCell(3).setCellValue("Género");
+        headerRow.createCell(4).setCellValue("Fecha Nacimiento");
+        headerRow.createCell(5).setCellValue("Teléfono");
+        headerRow.createCell(6).setCellValue("Role");
 
         List<User> users = obtenerTodos();
         int rowNum = 1;
@@ -243,13 +263,15 @@ public class UserServiceImpl implements UserService {
             row.createCell(0).setCellValue(user.getId());
             row.createCell(1).setCellValue(user.getName());
             row.createCell(2).setCellValue(user.getEmail());
-            row.createCell(3).setCellValue("●●●●●●●●"); // ⭐ Ocultar contraseña por seguridad
-
+            row.createCell(3).setCellValue(obtenerGeneroTexto(user.getGender()));
+            row.createCell(4).setCellValue(user.getBirthDate() != null ? user.getBirthDate().toString() : "N/A");
+            row.createCell(5).setCellValue(user.getPhone() != null ? user.getPhone() : "N/A");
+            
             String roleName = (user.getRole() != null) ? user.getRole().getName() : "No Role Assigned";
-            row.createCell(4).setCellValue(roleName);
+            row.createCell(6).setCellValue(roleName);
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 7; i++) {
             sheet.autoSizeColumn(i);
         }
 
@@ -300,12 +322,12 @@ public class UserServiceImpl implements UserService {
                 document.add(noData);
             } else {
                 // Tabla
-                PdfPTable table = new PdfPTable(5);
+                PdfPTable table = new PdfPTable(7);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
                 table.setSpacingAfter(10f);
 
-                float[] columnWidths = { 1f, 2.5f, 3f, 2f, 1.5f };
+                float[] columnWidths = { 1f, 2f, 3f, 1.5f, 2f, 2f, 1.5f };
                 table.setWidths(columnWidths);
 
                 Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.WHITE);
@@ -313,7 +335,9 @@ public class UserServiceImpl implements UserService {
                 addTableHeader(table, "ID", headerFont);
                 addTableHeader(table, "Nombre", headerFont);
                 addTableHeader(table, "Email", headerFont);
-                addTableHeader(table, "Contraseña", headerFont);
+                addTableHeader(table, "Género", headerFont);
+                addTableHeader(table, "Fecha Nac.", headerFont);
+                addTableHeader(table, "Teléfono", headerFont);
                 addTableHeader(table, "Rol", headerFont);
 
                 Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
@@ -328,7 +352,11 @@ public class UserServiceImpl implements UserService {
                             Element.ALIGN_LEFT);
                     addTableCell(table, user.getEmail() != null ? user.getEmail() : "N/A", dataFont, rowColor,
                             Element.ALIGN_LEFT);
-                    addTableCell(table, "●●●●●●●●", dataFont, rowColor, Element.ALIGN_CENTER); // ⭐ Ocultar
+                    addTableCell(table, obtenerGeneroTexto(user.getGender()), dataFont, rowColor, Element.ALIGN_CENTER);
+                    addTableCell(table, user.getBirthDate() != null ? user.getBirthDate().toString() : "N/A", dataFont, rowColor,
+                            Element.ALIGN_CENTER);
+                    addTableCell(table, user.getPhone() != null ? user.getPhone() : "N/A", dataFont, rowColor,
+                            Element.ALIGN_CENTER);
 
                     String roleName = (user.getRole() != null) ? user.getRole().getName() : "Sin Rol";
                     addTableCell(table, roleName, dataFont, rowColor, Element.ALIGN_CENTER);
@@ -344,20 +372,49 @@ public class UserServiceImpl implements UserService {
                                         : "Sin Rol",
                                 Collectors.counting()));
 
-                if (!usersByRole.isEmpty()) {
+                // Estadísticas por género
+                Map<String, Long> usersByGender = users.stream()
+                        .filter(u -> u.getGender() != null)
+                        .collect(Collectors.groupingBy(
+                                user -> obtenerGeneroTexto(user.getGender()),
+                                Collectors.counting()));
+
+                if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
                     document.add(new Paragraph(" "));
 
                     Font statsFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
-                    Paragraph statsTitle = new Paragraph("Estadísticas por Rol:", statsFont);
+                    Paragraph statsTitle = new Paragraph("Estadísticas:", statsFont);
                     statsTitle.setSpacingBefore(20);
                     document.add(statsTitle);
 
                     Font statsDataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-                    for (Map.Entry<String, Long> entry : usersByRole.entrySet()) {
-                        Paragraph statLine = new Paragraph(
-                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
-                        statLine.setIndentationLeft(20);
-                        document.add(statLine);
+                    
+                    // Estadísticas por rol
+                    if (!usersByRole.isEmpty()) {
+                        Paragraph roleTitle = new Paragraph("Por Rol:", statsDataFont);
+                        roleTitle.setSpacingBefore(10);
+                        document.add(roleTitle);
+                        
+                        for (Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                            Paragraph statLine = new Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
+                    }
+                    
+                    // Estadísticas por género
+                    if (!usersByGender.isEmpty()) {
+                        Paragraph genderTitle = new Paragraph("Por Género:", statsDataFont);
+                        genderTitle.setSpacingBefore(10);
+                        document.add(genderTitle);
+                        
+                        for (Map.Entry<String, Long> entry : usersByGender.entrySet()) {
+                            Paragraph statLine = new Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
                     }
                 }
             }
@@ -377,6 +434,19 @@ public class UserServiceImpl implements UserService {
                 document.close();
             }
         }
+    }
+
+    // Método auxiliar para obtener texto del género
+    private String obtenerGeneroTexto(String gender) {
+        if (gender == null) {
+            return "No especificado";
+        }
+        return switch (gender) {
+            case "M" -> "Masculino";
+            case "F" -> "Femenino";
+            case "O" -> "Otro";
+            default -> "No especificado";
+        };
     }
 
     private void addTableHeader(PdfPTable table, String headerTitle, Font font) {

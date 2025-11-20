@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensajes y comentarios -- HUERTA DIRECTA</title>
+
+    <!-- Link para el font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-overlay.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-email.active {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        /* Estilos mejorados para mejor espaciado */
+        .stats-section {
+            margin-bottom: 3rem !important;
+            padding: 2.5rem !important;
+        }
+
+        .stats-cards {
+            gap: 1.5rem !important;
+            margin-bottom: 2.5rem !important;
+        }
+
+        .stats-card {
+            padding: 2rem 1.5rem !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px) !important;
+        }
+
+        .charts-grid {
+            gap: 2rem !important;
+        }
+
+        .chart-container {
+            padding: 2rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .chart-title {
+            margin-bottom: 1.5rem !important;
+            padding-bottom: 1rem !important;
+            border-bottom: 2px solid #f3f4f6 !important;
+        }
+
+        .section-title {
+            margin-bottom: 2rem !important;
+        }
+
+        .icon-large {
+            margin-bottom: 1rem !important;
+        }
+
+        .stats-number {
+            margin: 0.5rem 0 !important;
+        }
+
+        .stats-description {
+            margin-top: 0.5rem !important;
+        }
+
+        .tab-link {
+            transition: all 0.3s ease;
+            padding-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .tab-link:hover {
+            color: #8bc34a !important;
+        }
+
+        .tab-content {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+  </head>
+
+  <body>
+    <div class="containerActualizarUcuario">
+      <div
+        th:replace="fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main>
+        <h1 class="!mt-[20px]">Análisis y gráficos de actividad</h1>
+        
+
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a class="tab-link !text-[#8bc34a] !border-b-4 !border-[#88ff002f]" href="#" data-tab="productos">
+            Tus productos
+          </a>
+          <a class="tab-link" href="#" data-tab="usuarios">
+            Tus usuarios
+          </a>
+          <a class="tab-link" href="#" data-tab="ventas">
+            Tus ventas
+          </a>
+        </div>
+
+        <!-- SECCIÓN DE ESTADÍSTICAS Y GRÁFICAS DE PRODUCTOS -->
+        <div id="tab-productos" class="tab-content stats-section bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl shadow-lg">
+            <h2 class="section-title text-3xl font-bold text-gray-800 text-center flex items-center justify-center gap-3">
+                <i class="fas fa-chart-line text-green-600"></i> 
+                Estadísticas de Productos
+            </h2>
+
+            <!-- Tarjetas de Estadísticas -->
+            <div class="stats-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Total Productos -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-green-500">
+                    <div class="icon-large text-5xl text-green-500 text-center">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Total Productos
+                    </h3>
+                    <div id="totalProducts" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">En el catálogo</div>
+                </div>
+
+                <!-- Unidades de Medida -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-emerald-600">
+                    <div class="icon-large text-5xl text-emerald-600 text-center">
+                        <i class="fas fa-weight-scale"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Unidades Diferentes
+                    </h3>
+                    <div id="unitsCount" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Tipos de medida</div>
+                </div>
+
+                <!-- Productos Activos -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500">
+                    <div class="icon-large text-5xl text-orange-500 text-center">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Productos Activos
+                    </h3>
+                    <div id="activeProducts" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Disponibles para venta</div>
+                </div>
+
+                <!-- Categorías -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-lime-500">
+                    <div class="icon-large text-5xl text-lime-500 text-center">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Categorías
+                    </h3>
+                    <div id="categoriesCount" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Diferentes categorías</div>
+                </div>
+            </div>
+
+            <!-- Gráficas -->
+            <div class="charts-grid grid grid-cols-1 lg:grid-cols-2">
+                <!-- Distribución por Unidades de Medida -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-balance-scale text-green-600"></i>
+                        Distribución por Unidades
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="unitsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Distribución por Categorías -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-green-600"></i>
+                        Productos por Categoría
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="categoriesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tendencia de Precios -->
+                <div class="chart-container bg-white rounded-xl shadow-md lg:col-span-2">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-green-600"></i>
+                        Análisis de Precios
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="pricesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE USUARIOS -->
+        <div id="tab-usuarios" class="tab-content hidden stats-section bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl shadow-lg">
+            <h2 class="section-title text-3xl font-bold text-gray-800 text-center flex items-center justify-center gap-3">
+                <i class="fas fa-users text-blue-600"></i> 
+                Estadísticas de Usuarios
+            </h2>
+
+            <!-- Tarjetas de Estadísticas de Usuarios -->
+            <div class="stats-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Total Usuarios -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-blue-500">
+                    <div class="icon-large text-5xl text-blue-500 text-center">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Total Usuarios
+                    </h3>
+                    <div id="totalUsers" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Registrados en el sistema</div>
+                </div>
+
+                <!-- Administradores -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-indigo-600">
+                    <div class="icon-large text-5xl text-indigo-600 text-center">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Administradores
+                    </h3>
+                    <div id="adminCount" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Con permisos especiales</div>
+                </div>
+
+                <!-- Clientes -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-green-600">
+                    <div class="icon-large text-5xl text-green-600 text-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Clientes
+                    </h3>
+                    <div id="clientCount" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Usuarios estándar</div>
+                </div>
+
+                <!-- Género -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-purple-500">
+                    <div class="icon-large text-5xl text-purple-500 text-center">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Género
+                    </h3>
+                    <div id="genderCount" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Datos registrados</div>
+                </div>
+            </div>
+
+            <!-- Gráficas de Usuarios -->
+            <div class="charts-grid grid grid-cols-1 lg:grid-cols-2">
+                <!-- Distribución por Roles -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-blue-600"></i>
+                        Distribución por Roles
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="rolesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Distribución por Género -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-venus-mars text-blue-600"></i>
+                        Distribución por Género
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Rango de Edades -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-user-friends text-blue-600"></i>
+                        Rango de Edades
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Actividad por Mes -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-blue-600"></i>
+                        Actividad por Mes
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE VENTAS -->
+        <div id="tab-ventas" class="tab-content hidden stats-section bg-gradient-to-br from-orange-50 to-red-100 rounded-2xl shadow-lg">
+            <h2 class="section-title text-3xl font-bold text-gray-800 text-center flex items-center justify-center gap-3">
+                <i class="fas fa-chart-line text-orange-600"></i> 
+                Estadísticas de Ventas
+            </h2>
+
+            <!-- Tarjetas de Estadísticas de Ventas -->
+            <div class="stats-cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Total Ventas -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500">
+                    <div class="icon-large text-5xl text-orange-500 text-center">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Total Ventas
+                    </h3>
+                    <div id="totalVentas" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Ventas realizadas</div>
+                </div>
+
+                <!-- Ingresos Totales -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-red-600">
+                    <div class="icon-large text-5xl text-red-600 text-center">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Ingresos Totales
+                    </h3>
+                    <div id="ingresosTotales" class="stats-number text-4xl font-bold text-gray-800 text-center">$0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Ingresos generados</div>
+                </div>
+
+                <!-- Productos Vendidos -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-yellow-500">
+                    <div class="icon-large text-5xl text-yellow-500 text-center">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Productos Vendidos
+                    </h3>
+                    <div id="productosVendidos" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Unidades vendidas</div>
+                </div>
+
+                <!-- Clientes Activos -->
+                <div class="stats-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-green-500">
+                    <div class="icon-large text-5xl text-green-500 text-center">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide text-center mb-2">
+                        Clientes Activos
+                    </h3>
+                    <div id="clientesActivos" class="stats-number text-4xl font-bold text-gray-800 text-center">0</div>
+                    <div class="stats-description text-xs text-gray-500 text-center">Clientes con compras</div>
+                </div>
+            </div>
+
+            <!-- Gráficas de Ventas -->
+            <div class="charts-grid grid grid-cols-1 lg:grid-cols-2">
+                <!-- Ventas por Mes -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-orange-600"></i>
+                        Ventas por Mes
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="ventasMesChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Productos Más Vendidos -->
+                <div class="chart-container bg-white rounded-xl shadow-md">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-star text-orange-600"></i>
+                        Productos Más Vendidos
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="topProductosChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tendencia de Ingresos -->
+                <div class="chart-container bg-white rounded-xl shadow-md lg:col-span-2">
+                    <h3 class="chart-title text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-orange-600"></i>
+                        Tendencia de Ingresos
+                    </h3>
+                    <div class="relative h-72">
+                        <canvas id="tendenciaIngresosChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN COMENTARIOS -->
+        <div class="mt-12">
+            <h2 class="section-title text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                <i class="fas fa-comments text-green-600"></i>
+                Tus Comentarios
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Iterar los comentarios --> 
+              <div
+                th:each="comment : ${comments}"
+                class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] ease-in-out cursor-pointer group"
+              >
+                <div class="flex items-start space-x-4 mb-4">
+                  <!-- Avatar con iniciales -->
+                  <div
+                    class="flex-shrink-0 bg-[#8bc34a] w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+                  >
+                    <span
+                      class="text-white text-xl font-bold uppercase"
+                      th:text="${#strings.substring(comment.user.name, 0, 1)}"
+                    >
+                      U
+                    </span>
+                  </div>
+
+                  <!-- Contenido del comentario -->
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                      <div>
+                        <!-- Tipo de comentario -->
+                        <p
+                          class="text-lg font-semibold text-gray-900 leading-tight"
+                          th:text="${comment.commentType.name() == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
+                        >
+                          Comentario del sitio
+                        </p>
+
+                        <!-- Nombre y correo -->
+                        <p class="text-lg text-gray-500 mt-2">
+                          <span class="mr-2"> Tú : </span>
+
+                          <span th:text="${comment.user.name}">
+                            María González
+                          </span>
+                          <span class="hidden sm:inline">
+                            •
+                            <span th:text="${comment.user.email}">
+                              maria.gonzalez@example.com
+                            </span>
+                          </span>
+                        </p>
+                      </div>
+
+                      <span
+                        class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                      >
+                        3p
+                      </span>
+                    </div>
+
+                    <!-- Texto del comentario -->
+                    <p
+                      class="mt-3 text-gray-700 line-clamp-3 break-all whitespace-normal max-w-[300px]"
+                      th:text="${comment.commentCommenter}"
+                    >
+                      ¡El servicio es increíble! La entrega fue súper rápida y los
+                      productos de una calidad excepcional.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="flex justify-around items-center pt-3 text-sm font-medium text-primary mt-8 border-t-2 border-black/10"
+                >
+                  <!-- Fecha -->
+                  <p
+                    class="text-[14px] text-gray-500"
+                    th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
+                  >
+                    22 de Octubre, 2025
+                  </p>
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      class="btn-actualizar"
+                      th:attr="onclick='abrirModalComentario(' + ${comment.idComment} + ', `' + ${comment.commentCommenter} + '`)'"
+                    >
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-eliminar"
+                      th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
+                    >
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!--modal para editar el comentario-->
+        <div
+          id="modalEditarComentario"
+          class="fixed inset-0 bg-black/50 bg-opacity-50 hidden justify-center items-center z-50"
+        >
+          <div
+            class="bg-white rounded-xl shadow-xl w-[600px] p-6 relative animate-fadeIn"
+          >
+            <!-- Botón cerrar -->
+            <button
+              onclick="cerrarModalComentario()"
+              class="absolute top-3 right-3 text-gray-700 hover:text-[#8bc34a] cursor-pointer transition-all duration-500 hover:scale-[1.05]"
+            >
+              ✕
+            </button>
+            <div class="flex justify-center items-center h-10">
+              <h2
+                class="text-2xl font-semibold text-gray-800 mb-10 text-center"
+              >
+                <span class="material-symbols-outlined mt-2">
+                  edit_arrow_down
+                </span>
+                Edita tu comentario
+              </h2>
+            </div>
+
+            <form id="formEditarComentario" method="post">
+              <input type="hidden" name="idComment" id="idComment" />
+
+              <textarea
+                id="commentCommenter"
+                name="commentCommenter"
+                rows="5"
+                placeholder="Escribe tu comentario..."
+                required
+                class="w-full p-3 border border-gray-400 rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-green-500"
+              ></textarea>
+
+              <div class="flex justify-end gap-3 mt-4">
+                <button
+                  type="button"
+                  onclick="cerrarModalComentario()"
+                  class="bg-gray-300 text-gray-700 flex justify-center items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-400 transition-all duration-500 hover:scale-[1.05]"
+                >
+                  <span class="material-symbols-outlined"> cancel </span>
+                  <p>Cancelar</p>
+                </button>
+                <button
+                  type="submit"
+                  class="bg-green-600 flex justify-center items-center gap-2 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-500 hover:scale-[1.05]"
+                >
+                  <span class="material-symbols-outlined"> save_as </span>
+                  <p class="text-white">Guardar</p>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+        <script>
+        // ===== DECLARACIÓN DE VARIABLES =====
+        let unitsChart, categoriesChart, pricesChart;
+        let rolesChart, genderChart, ageChart, activityChart;
+        let ventasMesChart, topProductosChart, tendenciaIngresosChart;
+
+        // ===== SISTEMA DE PESTAÑAS =====
+        function inicializarTabs() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Mostrar primera pestaña por defecto
+            mostrarTab('productos');
+            
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover clases activas de todos los tabs
+                    tabLinks.forEach(tab => {
+                        tab.classList.remove('!text-[#8bc34a]', '!border-b-4', '!border-[#88ff002f]');
+                    });
+                    
+                    // Agregar clases activas al tab clickeado
+                    this.classList.add('!text-[#8bc34a]', '!border-b-4', '!border-[#88ff002f]');
+                    
+                    // Mostrar el contenido correspondiente
+                    mostrarTab(tabId);
+                });
+            });
+        }
+
+        function mostrarTab(tabId) {
+            console.log('Mostrando tab:', tabId);
+            
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Mostrar el contenido seleccionado
+            const tabContent = document.getElementById(`tab-${tabId}`);
+            if (tabContent) {
+                tabContent.classList.remove('hidden');
+                
+                // Inicializar gráficas según la pestaña
+                switch(tabId) {
+                    case 'productos':
+                        if (!unitsChart) {
+                            console.log('Inicializando gráficas de productos');
+                            inicializarGraficasProductos();
+                        }
+                        break;
+                    case 'usuarios':
+                        if (!rolesChart) {
+                            console.log('Inicializando gráficas de usuarios');
+                            inicializarGraficasUsuarios();
+                        }
+                        break;
+                    case 'ventas':
+                        if (!ventasMesChart) {
+                            console.log('Inicializando gráficas de ventas');
+                            inicializarGraficasVentas();
+                        }
+                        break;
+                }
+            }
+        }
+
+        // ===== FUNCIONES PARA PRODUCTOS =====
+        async function obtenerDatosProductos() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) {
+                    throw new Error('Error al obtener productos');
+                }
+                const productos = await response.json();
+                console.log('Productos obtenidos:', productos);
+                return productos;
+            } catch (error) {
+                console.error('Error obteniendo productos:', error);
+                // Datos de ejemplo para testing
+                return [
+                    { name: 'Manzanas', category: 'Frutas', unit: 'Kilogramos (kg)', price: 5.99, active: true },
+                    { name: 'Zanahorias', category: 'Verduras', unit: 'Kilogramos (kg)', price: 3.50, active: true },
+                    { name: 'Lechuga', category: 'Verduras', unit: 'Unidad (u)', price: 2.00, active: true },
+                    { name: 'Tomates', category: 'Verduras', unit: 'Kilogramos (kg)', price: 4.25, active: true },
+                    { name: 'Bananos', category: 'Frutas', unit: 'Kilogramos (kg)', price: 2.99, active: true },
+                    { name: 'Cebolla', category: 'Verduras', unit: 'Kilogramos (kg)', price: 1.75, active: true }
+                ];
+            }
+        }
+
+        async function calcularEstadisticasProductos() {
+            const productos = await obtenerDatosProductos();
+            
+            let total = productos.length;
+            let activos = productos.filter(p => p.active !== false).length;
+            
+            const categoriasUnicas = [...new Set(productos.map(p => p.category))];
+            const categoriasCount = categoriasUnicas.length;
+            
+            const unidadesUnicas = [...new Set(productos.map(p => p.unit))];
+            const unidadesCount = unidadesUnicas.length;
+            
+            const productosPorCategoria = {};
+            categoriasUnicas.forEach(cat => {
+                productosPorCategoria[cat] = productos.filter(p => p.category === cat).length;
+            });
+
+            const productosPorUnidad = {};
+            unidadesUnicas.forEach(unidad => {
+                productosPorUnidad[unidad] = productos.filter(p => p.unit === unidad).length;
+            });
+
+            const precios = productos.map(p => p.price || 0);
+            const precioPromedio = precios.length > 0 ? 
+                precios.reduce((a, b) => a + b, 0) / precios.length : 0;
+            const precioMax = precios.length > 0 ? Math.max(...precios) : 0;
+            const precioMin = precios.length > 0 ? Math.min(...precios) : 0;
+
+            return {
+                total,
+                activos,
+                categoriasCount,
+                unidadesCount,
+                productosPorCategoria,
+                productosPorUnidad,
+                precios: {
+                    promedio: precioPromedio,
+                    maximo: precioMax,
+                    minimo: precioMin
+                },
+                productos
+            };
+        }
+
+        function actualizarTarjetasProductos(stats) {
+            document.getElementById('totalProducts').textContent = stats.total;
+            document.getElementById('activeProducts').textContent = stats.activos;
+            document.getElementById('categoriesCount').textContent = stats.categoriasCount;
+            document.getElementById('unitsCount').textContent = stats.unidadesCount;
+        }
+
+        async function inicializarGraficasProductos() {
+            try {
+                const stats = await calcularEstadisticasProductos();
+                actualizarTarjetasProductos(stats);
+
+                if (unitsChart) unitsChart.destroy();
+                if (categoriesChart) categoriesChart.destroy();
+                if (pricesChart) pricesChart.destroy();
+
+                const colors = {
+                    kilogramos: '#10b981', gramos: '#3b82f6', libras: '#f59e0b',
+                    unidad: '#ef4444', litros: '#8b5cf6', mililitros: '#06b6d4',
+                    docena: '#84cc16', paquete: '#f97316', atado: '#ec4899', otro: '#6b7280',
+                    frutas: '#ef4444', verduras: '#3b82f6', hierbas: '#8b5cf6',
+                    organicos: '#84cc16', lacteos: '#06b6d4', cereales: '#f97316'
+                };
+
+                const coloresUnidades = {
+                    'Kilogramos (kg)': colors.kilogramos, 'Gramos (g)': colors.gramos,
+                    'Libros (lb)': colors.libras, 'Unidad (u)': colors.unidad,
+                    'Litros (L)': colors.litros, 'Millilitros (ml)': colors.mililitros,
+                    'Docena': colors.docena, 'Paquete': colors.paquete,
+                    'Atado': colors.atado, 'Otro': colors.otro
+                };
+
+                const coloresCategorias = {
+                    'Frutas': colors.frutas, 'Verduras': colors.verduras,
+                    'Hierbas': colors.hierbas, 'Orgánicos': colors.organicos,
+                    'Lácteos': colors.lacteos, 'Cereales': colors.cereales
+                };
+
+                // Gráfica de unidades de medida
+                const unitsCtx = document.getElementById('unitsChart').getContext('2d');
+                const unidadesLabels = Object.keys(stats.productosPorUnidad);
+                const unidadesData = Object.values(stats.productosPorUnidad);
+                const unidadesColors = unidadesLabels.map(unidad => 
+                    coloresUnidades[unidad] || `#${Math.floor(Math.random()*16777215).toString(16)}`
+                );
+                
+                unitsChart = new Chart(unitsCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: unidadesLabels,
+                        datasets: [{
+                            data: unidadesData,
+                            backgroundColor: unidadesColors,
+                            borderWidth: 3,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                position: 'bottom', 
+                                labels: { padding: 15, font: { size: 11 }, usePointStyle: true }
+                            }
+                        }
+                    }
+                });
+
+                // Gráfica de categorías
+                const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+                const categoriasLabels = Object.keys(stats.productosPorCategoria);
+                const categoriasData = Object.values(stats.productosPorCategoria);
+                const categoriasColors = categoriasLabels.map(cat => 
+                    coloresCategorias[cat] || `#${Math.floor(Math.random()*16777215).toString(16)}`
+                );
+                
+                categoriesChart = new Chart(categoriesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categoriasLabels,
+                        datasets: [{
+                            label: 'Productos por Categoría',
+                            data: categoriasData,
+                            backgroundColor: categoriasColors,
+                            borderRadius: 8,
+                            borderWidth: 1,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+
+                // Gráfica de análisis de precios
+                const pricesCtx = document.getElementById('pricesChart').getContext('2d');
+                pricesChart = new Chart(pricesCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Precio Mínimo', 'Precio Promedio', 'Precio Máximo'],
+                        datasets: [{
+                            label: 'Análisis de Precios ($)',
+                            data: [stats.precios.minimo, stats.precios.promedio, stats.precios.maximo],
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 8,
+                            pointBackgroundColor: '#16a34a'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            } catch (error) {
+                console.error('Error inicializando gráficas de productos:', error);
+            }
+        }
+
+        // ===== FUNCIONES PARA USUARIOS =====
+        async function obtenerDatosUsuarios() {
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error('Error al obtener usuarios');
+                const usuarios = await response.json();
+                console.log('Usuarios reales obtenidos:', usuarios);
+                return usuarios;
+            } catch (error) {
+                console.error('Error obteniendo usuarios:', error);
+                // Datos de ejemplo mejorados para testing
+                return [
+                    { idRole: 1, gender: 'masculino', birthdate: '1990-05-15', creacionDate: '2024-01-15', name: 'Admin 1' },
+                    { idRole: 2, gender: 'femenino', birthdate: '1985-08-22', creacionDate: '2024-02-20', name: 'Cliente 1' },
+                    { idRole: 2, gender: 'masculino', birthdate: '1995-12-10', creacionDate: '2024-03-10', name: 'Cliente 2' },
+                    { idRole: 2, gender: 'femenino', birthdate: '1988-03-30', creacionDate: '2024-01-25', name: 'Cliente 3' },
+                    { idRole: 1, gender: 'masculino', birthdate: '1992-07-18', creacionDate: '2024-02-05', name: 'Admin 2' },
+                    { idRole: 2, gender: 'otro', birthdate: '1998-11-05', creacionDate: '2024-03-15', name: 'Cliente 4' },
+                    { idRole: 2, gender: 'femenino', birthdate: '1993-04-12', creacionDate: '2024-01-10', name: 'Cliente 5' },
+                    { idRole: 2, gender: '', birthdate: '1987-09-20', creacionDate: '2024-02-28', name: 'Cliente 6' }
+                ];
+            }
+        }
+
+        async function calcularEstadisticasUsuarios() {
+    const usuarios = await obtenerDatosUsuarios();
+    console.log('Calculando estadísticas para:', usuarios.length, 'usuarios');
+    
+    let total = usuarios.length;
+    let admins = usuarios.filter(u => u.idRole === 1).length;
+    let clientes = usuarios.filter(u => u.idRole === 2).length;
+    let otros = total - admins - clientes;
+
+    // CONTEO MANUAL Y VERBOSE PARA DEBUG
+    let masculino = 0, femenino = 0, otro = 0, noEspecificado = 0;
+    
+    usuarios.forEach((user, index) => {
+        const gender = String(user.gender || '').toLowerCase().trim();
+        console.log(`Usuario ${index}: gender="${user.gender}" -> normalized="${gender}"`);
+        
+        if (gender === 'masculino' || gender === 'male') {
+            masculino++;
+        } else if (gender === 'femenino' || gender === 'female') {
+            femenino++;
+        } else if (gender === 'otro' || gender === 'other' || gender === 'prefiero-no-decir') {
+            otro++;
+        } else if (gender === '' || !gender) {
+            noEspecificado++;
+        } else {
+            // Si no coincide con ninguno, contar como "otro"
+            console.log(`Género no reconocido: "${gender}", contando como "otro"`);
+            otro++;
+        }
+    });
+
+    const generoStats = {
+        masculino,
+        femenino,
+        otro,
+        noEspecificado
+    };
+
+    console.log('ESTADÍSTICAS FINALES DE GÉNERO:', generoStats);
+    console.log('Suma total:', Object.values(generoStats).reduce((a, b) => a + b, 0));
+    console.log('Total usuarios:', total);
+
+    const edades = calcularRangosEdadUsuarios(usuarios);
+    const actividad = calcularActividadUsuarios(usuarios);
+
+    return { 
+        total, 
+        admins, 
+        clientes, 
+        otros,
+        genero: generoStats, 
+        edades, 
+        actividad 
+    };
+}
+
+        function calcularRangosEdadUsuarios(usuarios) {
+            const rangos = { '18-25': 0, '26-35': 0, '36-45': 0, '46-55': 0, '56+': 0 };
+            const fechaActual = new Date();
+            
+            usuarios.forEach(usuario => {
+                if (usuario.birthdate) {
+                    const fechaNacimiento = new Date(usuario.birthdate);
+                    const edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+                    
+                    if (edad >= 18 && edad <= 25) rangos['18-25']++;
+                    else if (edad >= 26 && edad <= 35) rangos['26-35']++;
+                    else if (edad >= 36 && edad <= 45) rangos['36-45']++;
+                    else if (edad >= 46 && edad <= 55) rangos['46-55']++;
+                    else if (edad >= 56) rangos['56+']++;
+                }
+            });
+
+            // Si no hay datos, usar distribución simulada
+            if (Object.values(rangos).reduce((a, b) => a + b, 0) === 0) {
+                rangos['18-25'] = 2;
+                rangos['26-35'] = 3;
+                rangos['36-45'] = 1;
+            }
+
+            return rangos;
+        }
+
+        function calcularActividadUsuarios(usuarios) {
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const actividad = {};
+            meses.forEach(mes => actividad[mes] = 0);
+            
+            usuarios.forEach(usuario => {
+                if (usuario.creacionDate) {
+                    const fecha = new Date(usuario.creacionDate);
+                    const mes = meses[fecha.getMonth()];
+                    if (actividad[mes] !== undefined) actividad[mes]++;
+                }
+            });
+            
+            return actividad;
+        }
+
+        // ===== FUNCIONES PARA USUARIOS =====
+async function inicializarGraficasUsuarios() {
+    try {
+        const stats = await calcularEstadisticasUsuarios();
+        
+        console.log('Datos para gráfica de género:', stats.genero);
+        
+        // Actualizar tarjetas
+        document.getElementById('totalUsers').textContent = stats.total;
+        document.getElementById('adminCount').textContent = stats.admins;
+        document.getElementById('clientCount').textContent = stats.clientes;
+        
+        // Calcular usuarios con género registrado (excluyendo "no especificado")
+        const usuariosConGenero = stats.total - stats.genero.noEspecificado;
+        document.getElementById('genderCount').textContent = usuariosConGenero;
+
+        // Destruir gráficas existentes
+        if (rolesChart) rolesChart.destroy();
+        if (genderChart) genderChart.destroy();
+        if (ageChart) ageChart.destroy();
+        if (activityChart) activityChart.destroy();
+
+        const colors = {
+            admin: '#10b981', 
+            cliente: '#22c55e', 
+            otro: '#84cc16',
+            masculino: '#3b82f6', 
+            femenino: '#ec4899', 
+            otroGenero: '#f59e0b', 
+            noEspecificado: '#6b7280'
+        };
+
+        // 1. Gráfica de roles
+        const rolesCtx = document.getElementById('rolesChart').getContext('2d');
+        rolesChart = new Chart(rolesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Administradores', 'Clientes', 'Otros'],
+                datasets: [{
+                    data: [stats.admins, stats.clientes, stats.otros],
+                    backgroundColor: [colors.admin, colors.cliente, colors.otro],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { padding: 15 }
+                    }
+                }
+            }
+        });
+
+        // 2. Gráfica de género - VERSIÓN CORREGIDA
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        
+        // Verificar que el canvas existe y es accesible
+        if (!genderCtx) {
+            console.error('No se pudo obtener el contexto del canvas genderChart');
+            return;
+        }
+
+        // Preparar datos para la gráfica
+        const genderLabels = ['Masculino', 'Femenino', 'Otro', 'No especificado'];
+        const genderData = [
+            stats.genero.masculino, 
+            stats.genero.femenino, 
+            stats.genero.otro, 
+            stats.genero.noEspecificado
+        ];
+
+        console.log('Creando gráfica de género con datos:', {
+            labels: genderLabels,
+            data: genderData
+        });
+
+        genderChart = new Chart(genderCtx, {
+            type: 'pie',
+            data: {
+                labels: genderLabels,
+                datasets: [{
+                    data: genderData,
+                    backgroundColor: [
+                        colors.masculino, 
+                        colors.femenino, 
+                        colors.otroGenero, 
+                        colors.noEspecificado
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { 
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        // 3. Gráfica de edades
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        ageChart = new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.edades),
+                datasets: [{
+                    label: 'Usuarios por Edad',
+                    data: Object.values(stats.edades),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 8,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false } 
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // 4. Gráfica de actividad
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        activityChart = new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(stats.actividad),
+                datasets: [{
+                    label: 'Registros por Mes',
+                    data: Object.values(stats.actividad),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        console.log('Todas las gráficas de usuarios inicializadas correctamente');
+
+    } catch (error) {
+        console.error('Error inicializando gráficas de usuarios:', error);
+    }
+}
+
+        // ===== FUNCIONES PARA VENTAS =====
+        async function inicializarGraficasVentas() {
+            try {
+                // Datos de ejemplo para ventas
+                const stats = {
+                    total: 150,
+                    ingresos: 12500,
+                    productosVendidos: 450,
+                    clientesActivos: 89,
+                    ventasPorMes: {
+                        'Ene': 25, 'Feb': 30, 'Mar': 22, 'Abr': 35, 'May': 28, 'Jun': 40
+                    },
+                    topProductos: [
+                        { nombre: 'Manzanas', ventas: 45 },
+                        { nombre: 'Zanahorias', ventas: 38 },
+                        { nombre: 'Lechuga', ventas: 32 },
+                        { nombre: 'Tomates', ventas: 28 },
+                        { nombre: 'Bananos', ventas: 25 }
+                    ],
+                    tendenciaIngresos: [1200, 1500, 1800, 2000, 2200, 2500]
+                };
+
+                document.getElementById('totalVentas').textContent = stats.total;
+                document.getElementById('ingresosTotales').textContent = `$${stats.ingresos.toLocaleString()}`;
+                document.getElementById('productosVendidos').textContent = stats.productosVendidos;
+                document.getElementById('clientesActivos').textContent = stats.clientesActivos;
+
+                if (ventasMesChart) ventasMesChart.destroy();
+                if (topProductosChart) topProductosChart.destroy();
+                if (tendenciaIngresosChart) tendenciaIngresosChart.destroy();
+
+                // Gráfica de ventas por mes
+                const ventasCtx = document.getElementById('ventasMesChart').getContext('2d');
+                ventasMesChart = new Chart(ventasCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(stats.ventasPorMes),
+                        datasets: [{
+                            label: 'Ventas por Mes',
+                            data: Object.values(stats.ventasPorMes),
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                // Gráfica de productos más vendidos
+                const topCtx = document.getElementById('topProductosChart').getContext('2d');
+                topProductosChart = new Chart(topCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: stats.topProductos.map(p => p.nombre),
+                        datasets: [{
+                            data: stats.topProductos.map(p => p.ventas),
+                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                // Gráfica de tendencia de ingresos
+                const tendenciaCtx = document.getElementById('tendenciaIngresosChart').getContext('2d');
+                tendenciaIngresosChart = new Chart(tendenciaCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Ingresos ($)',
+                            data: stats.tendenciaIngresos,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            } catch (error) {
+                console.error('Error inicializando gráficas de ventas:', error);
+            }
+        }
+
+        // ===== FUNCIONES PARA COMENTARIOS =====
+        function abrirModalComentario(id, comentario) {
+            document.getElementById('idComment').value = id;
+            document.getElementById('commentCommenter').value = comentario;
+            document.getElementById('modalEditarComentario').classList.remove('hidden');
+        }
+
+        function cerrarModalComentario() {
+            document.getElementById('modalEditarComentario').classList.add('hidden');
+        }
+
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Aquí va la lógica para eliminar el comentario
+                    Swal.fire('Eliminado!', 'El comentario ha sido eliminado.', 'success');
+                }
+            });
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, inicializando...');
+            inicializarTabs();
+            // Inicializar gráficas de productos inmediatamente
+            inicializarGraficasProductos();
+        });
+    </script>
+  </body>
+</html>
