@@ -174,3 +174,14 @@ spring.servlet.multipart.max-request-size=10MB
 
 # Puerto salida
 server.port=8085
+
+# Access Token de PRUEBA (para desarrollo)
+mercadopago.access_token=TEST-2739771912434898-111023-440e0fc48167af26ffe666b77d3d947f-2272938327
+
+# URLs de retorno (ajusta el puerto si es necesario)
+mercadopago.success_url=http://localhost:8085/payment/success
+mercadopago.failure_url=http://localhost:8085/payment/failure
+mercadopago.pending_url=http://localhost:8085/payment/pending
+
+# IA
+token de grok = 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

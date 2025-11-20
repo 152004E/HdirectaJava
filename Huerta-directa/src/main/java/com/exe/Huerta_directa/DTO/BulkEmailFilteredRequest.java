@@ -1,7 +1,15 @@
 package com.exe.Huerta_directa.DTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class BulkEmailFilteredRequest extends BulkEmailRequest {
     private List<Long> userIds;
     private List<String> emails;

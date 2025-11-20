@@ -42,6 +42,7 @@
 
     <!-- Enlace al archivo CSS del dashboard -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
 </head>
 
@@ -117,7 +118,7 @@
                             </div>
 
                             <div class="p-6 hidden" id="personal-info">
-                                <form action="/api/users/update-profile" method="post" class="space-y-6 text-left">
+                                <form th:action="@{/api/users/actualizarDatos}" method="post" class="space-y-6 text-left">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="form-group">
                                             <label class="block text-gray-700 font-medium mb-2">
@@ -139,7 +140,7 @@
                                             <textarea name="address" rows="3"
                                                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring focus:ring-primary/20 transition-all duration-300 resize-none font-medium"
                                                       th:text="${currentUser != null ? currentUser.address : ''}"
-                                                      placeholder="Ingresa tu dirección completa"></textarea>
+                                                      placeholder="Ingresa tu dirección completa" required ></textarea>
                                         </div>
                                     </div>
 
@@ -168,7 +169,7 @@
                             </div>
 
                             <div class="p-6 hidden" id="contact-info">
-                                <form action="/api/users/update-contact" method="post" class="space-y-6 text-left">
+                                <form th:action="@{/api/users/ActualizarContacto}" method="post" class="space-y-6 text-left">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div class="form-group">
                                             <label class="block text-gray-700 font-medium mb-2">
@@ -190,7 +191,7 @@
                                             <input type="tel" name="phone"
                                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-500/20 transition-all duration-300 font-medium"
                                                    th:value="${currentUser != null ? currentUser.phone : ''}"
-                                                   placeholder="+57 300 123 4567">
+                                                   placeholder="Ej: 300 123 4567" maxlength="10" pattern="[0-9]{10}" title="Debe tener exactamente 10 dígitos" required >
                                         </div>
                                     </div>
 
@@ -398,6 +399,17 @@
             });
         }
 
+        //Validaciones para el telefono
+        document.querySelector('input[name="phone"]').addEventListener('input', function(e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Limitar a 10 caracteres
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+
         // Animaciones suaves para los formularios
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function(e) {
@@ -444,5 +456,7 @@
             });
         }, 5000);
     </script>
+        <script src="/JS/dashboar.js"></script>
+
 </body>
 </html>

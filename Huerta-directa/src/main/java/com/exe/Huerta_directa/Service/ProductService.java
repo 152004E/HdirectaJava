@@ -8,6 +8,8 @@ public interface ProductService {
 
     List<ProductDTO> listarProducts();
 
+    List<ProductDTO> listarProductosPorUsuario(Long userID);
+
     ProductDTO obtenerProductPorId(Long productId);
 
     ProductDTO crearProduct(ProductDTO productDTO, Long userId);
@@ -23,4 +25,8 @@ public interface ProductService {
     List<ProductDTO> buscarPorCategoria(String categoria);
 
     boolean existeProducto(String nombre, String categoria);
+
+    boolean existeProductoPorUsuario(String nombre, String Categoria, Long productId);
+
+    long contarTotalProductos();
 }

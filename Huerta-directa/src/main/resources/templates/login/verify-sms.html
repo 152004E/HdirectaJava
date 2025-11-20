@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verificación SMS</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <!-- CSRF -->
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}" />
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(180deg, #FFD600 0%, #FFC800 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #FFD600;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1a1a1a;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            max-width: 480px;
+            width: 100%;
+            padding: 40px;
+            margin-top: 60px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .phone-display {
+            color: #0051FF;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .input-group {
+            margin: 32px 0;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .digits-container {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .digit-input {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            color: #1a1a1a;
+            transition: all 0.2s ease;
+            cursor: text;
+        }
+
+        .digit-input:focus {
+            outline: none;
+            border-color: #0051FF;
+            box-shadow: 0 0 0 3px rgba(0, 81, 255, 0.1);
+        }
+
+        .digit-input.active {
+            border-color: #0051FF;
+        }
+
+        .digit-input.filled {
+            border-color: #0051FF;
+            background: #f0f5ff;
+        }
+
+        #recaptcha-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        button {
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #verifyBtn {
+            background: #0051FF;
+            color: white;
+            width: 100%;
+        }
+
+        #verifyBtn:hover:not(:disabled) {
+            background: #0040CC;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 81, 255, 0.3);
+        }
+
+        #verifyBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #resendBtn {
+            background: #e0e0e0;
+            color: #666;
+            width: 100%;
+            display: none;
+        }
+
+        #resendBtn:hover {
+            background: #d0d0d0;
+        }
+
+        .resend-info {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+        }
+
+        .timer {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .alternative-link {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .alternative-link a {
+            color: #0051FF;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .alternative-link a:hover {
+            color: #0040CC;
+            text-decoration: underline;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+            animation: shake 0.5s ease-out;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .success {
+            background: #efe;
+            color: #3c3;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .success.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #0051FF;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            font-size: 13px;
+            color: #0051FF;
+            text-align: center;
+            margin: 16px 0;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+                margin-top: 60px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .digit-input {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            .digits-container {
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header-top">
+    <div class="logo">
+        🛒 Huerta Directa
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>Ingresa el código de verificación</h1>
+        <p class="subtitle">
+            Se enviará un código a tu teléfono:
+            <span class="phone-display" id="userPhone"
+                  th:text="${session.pendingUser != null ? session.pendingUser.phone : ''}"
+                  th:attr="data-phone=${session.pendingUser != null ? session.pendingUser.phone : ''}"></span>
+        </p>
+    </div>
+
+    <div id="recaptcha-container"></div>
+
+    <div class="input-group">
+        <label class="input-label">Código de verificación</label>
+        <div class="digits-container" id="digitsContainer">
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+            <input type="text" class="digit-input" maxlength="1" inputmode="numeric" />
+        </div>
+        <div class="status-message" id="statusMessage">
+            <span class="spinner"></span><span id="statusText"></span>
+        </div>
+        <div class="error" id="errorMessage"></div>
+        <div class="success" id="successMessage"></div>
+    </div>
+
+    <div class="buttons-container">
+        <button id="verifyBtn" disabled>Continuar</button>
+        <button id="resendBtn">Reenviar código en <span class="timer" id="timer">00:60</span></button>
+    </div>
+
+    <div class="resend-info">
+        ¿No recibiste el código? Espera <span class="timer" id="timerSmall">60s</span> para reenviar
+    </div>
+
+    <div class="alternative-link">
+        <a href="#" onclick="event.preventDefault();">Usar otro método</a>
+    </div>
+</div>
+
+<script>
+    // Leemos el teléfono desde el atributo data
+    const phoneSpan = document.getElementById('userPhone');
+    let userPhone = phoneSpan ? (phoneSpan.dataset.phone || '') : '';
+
+    // ✅ Agregar +57 si no lo tiene
+    if (userPhone && !userPhone.startsWith('+')) {
+        userPhone = '+57' + userPhone.replace(/\D/g, '');
+    }
+
+    // Mostramos en la UI (sin el +57 para que se vea limpio)
+    const displayPhone = userPhone.replace('+57', '');
+    phoneSpan.innerText = displayPhone || '(no hay teléfono registrado)';
+
+    let resendTimer = 60;
+    let canResend = false;
+    let isVerifying = false;
+    const digitInputs = document.querySelectorAll('.digit-input');
+
+    if (!userPhone) {
+        showError('No hay número de teléfono registrado');
+    } else {
+        initializeFirebase();
+    }
+
+    // Manejo de inputs de dígitos
+    digitInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+
+            if (e.target.value) {
+                e.target.classList.add('filled');
+                if (index < digitInputs.length - 1) {
+                    digitInputs[index + 1].focus();
+                } else {
+                    verifyCode();
+                }
+            }
+
+            updateInputStates();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                digitInputs[index - 1].focus();
+            }
+        });
+
+        input.addEventListener('focus', (e) => {
+            e.target.classList.add('active');
+        });
+
+        input.addEventListener('blur', (e) => {
+            e.target.classList.remove('active');
+        });
+    });
+
+    function updateInputStates() {
+        const code = getFullCode();
+        document.getElementById('verifyBtn').disabled = code.length !== 6;
+    }
+
+    function getFullCode() {
+        return Array.from(digitInputs).map(input => input.value).join('');
+    }
+
+    function initializeFirebase() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjlirRzJ6WOi026TocVOiDQmUVmHGw2Kk",
+            authDomain: "huerta-directa-f3c99.firebaseapp.com",
+            projectId: "huerta-directa-f3c99",
+            storageBucket: "huerta-directa-f3c99.firebasestorage.app",
+            messagingSenderId: "438012103288",
+            appId: "1:438012103288:web:9b96cba76c2ab79bd97b8d",
+            measurementId: "G-PLMEZDS2TS"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'normal',
+            'callback': () => console.log('reCAPTCHA verificado'),
+            'expired-callback': () => showError('reCAPTCHA expiró, intenta de nuevo')
+        });
+
+        sendSMS(auth);
+    }
+
+    function sendSMS(auth) {
+        showStatus('Enviando código...');
+        auth.signInWithPhoneNumber(userPhone, window.recaptchaVerifier)
+            .then(confirmationResult => {
+                window.confirmationResult = confirmationResult;
+                hideStatus();
+                startResendTimer();
+                digitInputs[0].focus();
+                console.log('Código enviado');
+            })
+            .catch(error => {
+                console.error('Error enviando SMS:', error);
+                hideStatus();
+                showError(`Error enviando SMS: ${error.code}`);
+            });
+    }
+
+    function startResendTimer() {
+        resendTimer = 60;
+        canResend = false;
+        document.getElementById('resendBtn').style.display = 'none';
+
+        const timerInterval = setInterval(() => {
+            resendTimer--;
+            const minutes = Math.floor(resendTimer / 60);
+            const seconds = resendTimer % 60;
+            const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            document.getElementById('timer').innerText = timeStr;
+            document.getElementById('timerSmall').innerText = resendTimer + 's';
+
+            if (resendTimer <= 0) {
+                clearInterval(timerInterval);
+                canResend = true;
+                document.getElementById('resendBtn').style.display = 'block';
+            }
+        }, 1000);
+    }
+
+    document.getElementById('verifyBtn').addEventListener('click', verifyCode);
+
+    function verifyCode() {
+        if (isVerifying) return;
+
+        const code = getFullCode();
+
+        if (!code || code.length !== 6) {
+            showError('Ingresa los 6 dígitos del código');
+            return;
+        }
+
+        if (!window.confirmationResult) {
+            showError('No se pudo verificar: el código no fue enviado');
+            return;
+        }
+
+        isVerifying = true;
+        document.getElementById('verifyBtn').disabled = true;
+        showStatus('Verificando código...');
+
+        window.confirmationResult.confirm(code)
+            .then(() => {
+                hideStatus();
+                showSuccess('✅ Verificación exitosa');
+                console.log('Verificación SMS exitosa');
+
+                const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+                const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+                const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+                if (csrfTokenMeta && csrfHeaderMeta) {
+                    headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
+                }
+
+                setTimeout(() => {
+                    fetch('/api/users/complete-login', {
+                        method: 'POST',
+                        headers: headers,
+                        body: ''
+                    })
+                        .then(response => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else if (response.ok) {
+                                window.location.href = '/';
+                            } else {
+                                console.error('Error completando login, status:', response.status);
+                                showError('Error completando login');
+                                isVerifying = false;
+                                document.getElementById('verifyBtn').disabled = false;
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            showError('Error completando login. Intenta de nuevo.');
+                            isVerifying = false;
+                            document.getElementById('verifyBtn').disabled = false;
+                        });
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Código incorrecto o error de confirmación:', error);
+                hideStatus();
+                showError('Código incorrecto, intenta de nuevo');
+
+                digitInputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled', 'active');
+                });
+
+                isVerifying = false;
+                document.getElementById('verifyBtn').disabled = true;
+                digitInputs[0].focus();
+            });
+    }
+
+    document.getElementById('resendBtn').addEventListener('click', () => {
+        if (!canResend) return;
+
+        const auth = firebase.auth();
+
+        window.recaptchaVerifier.render().then(widgetId => {
+            grecaptcha.reset(widgetId);
+
+            digitInputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('filled');
+            });
+
+            sendSMS(auth);
+        });
+    });
+
+    function showStatus(message) {
+        const statusMsg = document.getElementById('statusMessage');
+        document.getElementById('statusText').innerText = message;
+        statusMsg.classList.add('show');
+    }
+
+    function hideStatus() {
+        document.getElementById('statusMessage').classList.remove('show');
+    }
+
+    function showError(message) {
+        hideStatus();
+        const errorEl = document.getElementById('errorMessage');
+        errorEl.innerText = '❌ ' + message;
+        errorEl.classList.add('show');
+        document.getElementById('successMessage').classList.remove('show');
+    }
+
+    function showSuccess(message) {
+        hideStatus();
+        const successEl = document.getElementById('successMessage');
+        successEl.innerText = message;
+        successEl.classList.add('show');
+        document.getElementById('errorMessage').classList.remove('show');
+    }
+</script>
+</body>
+</html>

@@ -1,67 +1,73 @@
-/*package com.exe.Huerta_directa.Controllers;
+/*
+// java
+package com.exe.Huerta_directa.Controllers;
 
-import com.exe.Huerta_directa.DTO.AuthTokenResponse;
 import com.exe.Huerta_directa.DTO.TokenRequest;
+import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.DecodedToken;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
+import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.UserRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.exe.Huerta_directa.DTO.UserDTO;
+import jakarta.servlet.http.HttpSession;
+
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin("*")
 public class AuthController {
 
-    private final FirebaseAuth firebaseAuth;
-
-    public AuthController(FirebaseAuth firebaseAuth) {
-        this.firebaseAuth = firebaseAuth;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyToken(@RequestBody TokenRequest tokenRequest, HttpSession session) {
+    public ResponseEntity<?> verifyToken(@RequestBody TokenRequest request, HttpSession session) {
         try {
-            // Validar que el token no sea nulo o vacío
-            if (tokenRequest.getToken() == null || tokenRequest.getToken().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new AuthTokenResponse(null, null, "Token requerido", false));
+            FirebaseToken decoded = FirebaseAuth.getInstance().verifyIdToken(request.getToken());
+            String uid = decoded.getUid();
+            String email = decoded.getEmail(); // puede ser null
+
+            UserRecord firebaseUser = FirebaseAuth.getInstance().getUser(uid);
+            String firebasePhone = firebaseUser.getPhoneNumber(); // puede ser null
+
+            // Buscar usuario local por email (ajusta si prefieres por phone/uid)
+            if (email != null) {
+                Optional<User> localOpt = userRepository.findByEmail(email);
+                if (localOpt.isPresent()) {
+                    User local = localOpt.get();
+
+                    // Validar teléfono solo si el usuario local tiene phone no vacío
+                    if (local.getPhone() != null && !local.getPhone().trim().isEmpty()) {
+                        if (firebasePhone == null || !firebasePhone.equals(local.getPhone())) {
+                            return ResponseEntity.status(401).body(Map.of("error", "Teléfono no validado con Firebase"));
+                        }
+                    }
+
+                    session.setAttribute("user", local);
+                    return ResponseEntity.ok(Map.of("uid", uid, "localUserId", local.getId()));
+                }
             }
+/*
+            // Fallback: si no hay email o no se encontró, intentar por phone (opcional)
+            if (firebasePhone != null) {
+                Optional<User> byPhone = userRepository.findByPhone(firebasePhone);
+                if (byPhone.isPresent()) {
+                    User local = byPhone.get();
+                    session.setAttribute("user", local);
+                    return ResponseEntity.ok(Map.of("uid", uid, "localUserId", local.getId()));
+                }
+            }
+*//*
+            // Si no existe usuario local, devolver uid (token válido)
+            return ResponseEntity.ok(Map.of("uid", uid));
 
-            // Verificar el token de Firebase
-            DecodedToken decodedToken = firebaseAuth.verifyIdToken(tokenRequest.getToken());
-
-            String uid = decodedToken.get();
-            String email = decodedToken.getEmail();
-            String displayName = decodedToken.getName();
-
-            // Crear objeto con datos del usuario
-            AuthTokenResponse response = new AuthTokenResponse(
-                    uid,
-                    email,
-                    "Token validado exitosamente",
-                    true
-            );
-
-            // Guardar datos en sesión (ejemplo de integración)
-            session.setAttribute("firebaseUid", uid);
-            session.setAttribute("userEmail", email);
-            session.setAttribute("userName", displayName);
-
-            return ResponseEntity.ok(response);
-
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthTokenResponse(null, null,
-                            "Token inválido o expirado: " + e.getMessage(), false));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new AuthTokenResponse(null, null,
-                            "Error en el servidor: " + e.getMessage(), false));
+            return ResponseEntity.status(401).body(Map.of("error", "Token inválido", "detail", e.getMessage()));
         }
     }
 }
-
 */

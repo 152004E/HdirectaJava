@@ -17,6 +17,7 @@
 
     <!-- Enlace al archivo CSS -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link href="/CSS/output.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
   </head>
   <body>
@@ -71,23 +72,7 @@
         display: block;
       }
 
-      .modal-email {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        width: 90%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-        z-index: 9999;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        animation: slideDown 0.3s;
-      }
+
 
       @keyframes fadeIn {
         from {
@@ -107,11 +92,6 @@
           opacity: 1;
           transform: translate(-50%, -50%);
         }
-      }
-
-      .modal-email.active,
-      .modal-overlay.active {
-        display: block;
       }
 
       .modal-header {
@@ -144,6 +124,7 @@
 
       .form-group {
         margin-bottom: 20px;
+        margin-right: 20px;
       }
 
       .form-group label {
@@ -341,7 +322,7 @@
             <span class="material-symbols-outlined">analytics</span>
             <div class="middle">
               <div class="left">
-                <h3>Ventas</h3>
+                <h3 class="font-bold">Ventas</h3>
                 <h1>$25,000</h1>
               </div>
               <div class="progress">
@@ -360,7 +341,7 @@
             <span class="material-symbols-outlined">bar_chart</span>
             <div class="middle">
               <div class="left">
-                <h3>Gastos</h3>
+                <h3 class="font-bold">Gastos</h3>
                 <h1>$15,567</h1>
               </div>
               <div class="progress">
@@ -379,7 +360,7 @@
             <span class="material-symbols-outlined">stacked_line_chart</span>
             <div class="middle">
               <div class="left">
-                <h3>Ingresos</h3>
+                <h3 class="font-bold">Ingresos</h3>
                 <h1>$10,240</h1>
               </div>
               <div class="progress">
@@ -396,7 +377,7 @@
         </div>
 
         <div class="recent-orders">
-          <h2>Gestión de Productos</h2>
+          <h2 class="font-bold">Gestión de Productos</h2>
 
           <!-- Total de productos -->
           <div class="total-productos" th:if="${totalProductos != null}">
@@ -418,7 +399,11 @@
 
             <div class="filtros">
               <div class="categoriaSelect">
-                <select class="CategoriaS" id="categoria" name="categoria">
+                <select
+                  class="CategoriaS"
+                  id="categoria"
+                  name="categoria"
+                >
                   <option value="">Por categoría</option>
                   <option
                     value="frutas"
@@ -531,10 +516,10 @@
           </form>
 
           <!-- Tabla de productos -->
-          <table border="1" cellpadding="10" cellspacing="0">
-            <thead>
-              <tr>
-                <th>Nombre</th>
+          <table class="bg-amber-800" border="1" cellpadding="10" cellspacing="0">
+            <thead class="text-md">
+              <tr class="">
+                <th class="">Nombre</th>
                 <th>Categoría</th>
                 <th>Precio</th>
                 <th>Unidad</th>
@@ -573,6 +558,7 @@
                   >
                     <span class="material-symbols-outlined">edit</span>
                   </button>
+                  
                   <button
                     type="button"
                     class="btn-eliminar"
@@ -613,11 +599,13 @@
         </div>
 
         <div class="recent-updates">
-          <h2>Actualizaciones</h2>
+          <h2 class="font-bold">Actualizaciones</h2>
           <div class="updates">
             <div class="update">
               <div class="message">
-                <p><b>Sistema</b> funcionando correctamente</p>
+                <p>
+                  <b class="font-bold">Sistema</b> funcionando correctamente
+                </p>
                 <small class="text-muted">Hace 1 hora</small>
               </div>
             </div>
@@ -625,14 +613,14 @@
         </div>
 
         <div class="sales-analytics">
-          <h2>Analiticas</h2>
+          <h2 class="font-bold">Analiticas</h2>
           <div class="item online">
             <div class="icon">
               <span class="material-symbols-outlined">shopping_cart</span>
             </div>
             <div class="right">
               <div class="info">
-                <h3>ORDENES</h3>
+                <h3 class="font-bold">ORDENES</h3>
                 <small class="text-muted">Ultimas 24 horas</small>
               </div>
               <h5 class="success">+39%</h5>
@@ -645,7 +633,7 @@
             </div>
             <div class="right">
               <div class="info">
-                <h3>OFFLINE ORDENES</h3>
+                <h3 class="font-bold">OFFLINE ORDENES</h3>
                 <small class="text-muted">Ultimas 24 horas</small>
               </div>
               <h5 class="danger">-17%</h5>
@@ -658,7 +646,7 @@
             </div>
             <div class="right">
               <div class="info">
-                <h3>NUEVOS CLIENTES</h3>
+                <h3 class="font-bold">NUEVOS CLIENTES</h3>
                 <small class="text-muted">Ultimas 24 horas</small>
               </div>
               <h5 class="success">+67%</h5>
@@ -670,7 +658,11 @@
     </div>
 
     <!-- Modal de carga de productos -->
-    <div class="modalOverlayCarga" id="modalOverlayCarga" onclick="cerrarModalCargaDatos()"></div>
+    <div
+      class="modalOverlayCarga"
+      id="modalOverlayCarga"
+      onclick="cerrarModalCargaDatos()"
+    ></div>
     <div class="modal-carga" id="modalCargaDatos">
       <div class="modal-header">
         <h2><i class="fas fa-box-open"></i> Carga Masiva de Productos</h2>
@@ -694,11 +686,12 @@
             name="archivo"
             accept=".csv,.xlsx,.xls"
             required
+
           />
           <div class="help-text">
             💡 <strong>Formato esperado:</strong><br />
             📋
-            <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen</em
+            <em>Nombre | Categoría | Precio | Unidad | Descripción | Imagen</em
             ><br />
             📁 Formatos: CSV, Excel (.xlsx, .xls)
           </div>
@@ -732,74 +725,78 @@
 
       <form id="formEditarProducto" method="post">
         <input type="hidden" id="idProduct" name="idProduct" />
+        <div class="form-groupCategoriaUnidad">
+          <div class="form-group">
+            <label for="nameProduct">Nombre del Producto</label>
+            <input type="text" id="nameProduct" name="nameProduct" required />
+          </div>
 
-        <div class="form-group">
-          <label for="nameProduct">Nombre del Producto</label>
-          <input type="text" id="nameProduct" name="nameProduct" required />
+          <div class="form-group">
+            <label for="price">Precio (COP)</label>
+            <input type="number" step="0.01" id="price" name="price" required />
+          </div>
         </div>
+        <!--div para la categoria y la unidad de medida-->
+        <div class="form-groupCategoriaUnidad">
+          <div class="form-group">
+            <label for="category">Categoría</label>
+            <select id="category" name="category" required>
+              <option value="">Seleccione una categoría</option>
+              <option value="frutas">Frutas</option>
+              <option value="verduras-hortalizas">Verduras y Hortalizas</option>
+              <option value="lacteos">Lácteos</option>
+              <option value="carnes-proteinas">Carnes y Proteínas</option>
+              <option value="cereales-granos">Cereales y Granos</option>
+              <option value="legumbres-secas">Legumbres Secas</option>
+              <option value="productos-organicos">Productos Orgánicos</option>
+              <option value="hierbas-especias">Hierbas y Especias</option>
+              <option value="miel-derivados">Miel y Derivados</option>
+              <option value="procesados-artesanales">
+                Procesados Artesanales
+              </option>
+              <option value="bebidas-naturales">Bebidas Naturales</option>
+              <option value="plantas-semillas">Plantas y Semillas</option>
+              <option value="cajas-combos">Cajas Mixtas o Combos</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="price">Precio (COP)</label>
-          <input type="number" step="0.01" id="price" name="price" required />
+          <div class="form-group">
+            <label for="unit">Unidad de Medida</label>
+            <select id="unit" name="unit" required>
+              <option value="">Seleccione una medida</option>
+              <option value="kg">Kilogramos (kg)</option>
+              <option value="g">Gramos (g)</option>
+              <option value="lb">Libras (lb)</option>
+              <option value="unidad">Unidad (u)</option>
+              <option value="litro">Litros (L)</option>
+              <option value="ml">Mililitros (ml)</option>
+              <option value="docena">Docena</option>
+              <option value="paq">Paquete</option>
+              <option value="caja">Caja</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="category">Categoría</label>
-          <select id="category" name="category" required>
-            <option value="">Seleccione una categoría</option>
-            <option value="frutas">Frutas</option>
-            <option value="verduras-hortalizas">Verduras y Hortalizas</option>
-            <option value="lacteos">Lácteos</option>
-            <option value="carnes-proteinas">Carnes y Proteínas</option>
-            <option value="cereales-granos">Cereales y Granos</option>
-            <option value="legumbres-secas">Legumbres Secas</option>
-            <option value="productos-organicos">Productos Orgánicos</option>
-            <option value="hierbas-especias">Hierbas y Especias</option>
-            <option value="miel-derivados">Miel y Derivados</option>
-            <option value="procesados-artesanales">
-              Procesados Artesanales
-            </option>
-            <option value="bebidas-naturales">Bebidas Naturales</option>
-            <option value="plantas-semillas">Plantas y Semillas</option>
-            <option value="cajas-combos">Cajas Mixtas o Combos</option>
-          </select>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="descriptionProduct">Descripción</label>
+            <textarea
+              id="descriptionProduct"
+              name="descriptionProduct"
+              rows="4"
+              required
+            ></textarea>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="unit">Unidad de Medida</label>
-          <select id="unit" name="unit" required>
-            <option value="">Seleccione una medida</option>
-            <option value="kg">Kilogramos (kg)</option>
-            <option value="g">Gramos (g)</option>
-            <option value="lb">Libras (lb)</option>
-            <option value="unidad">Unidad (u)</option>
-            <option value="litro">Litros (L)</option>
-            <option value="ml">Mililitros (ml)</option>
-            <option value="docena">Docena</option>
-            <option value="paq">Paquete</option>
-            <option value="caja">Caja</option>
-            <option value="otro">Otro</option>
-          </select>
+        <div class="form-groupDescripcionYImagen">
+          <div class="form-group">
+            <label for="imageProduct">Imagen</label>
+            <input type="text" id="imageProduct" name="imageProduct" readonly />
+            <small class="text-muted">
+              <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
+            </small>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="descriptionProduct">Descripción</label>
-          <textarea
-            id="descriptionProduct"
-            name="descriptionProduct"
-            rows="4"
-            required
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="imageProduct">Imagen</label>
-          <input type="text" id="imageProduct" name="imageProduct" readonly />
-          <small class="text-muted">
-            <i class="fas fa-info-circle"></i> La imagen actual se mantiene.
-          </small>
-        </div>
-
         <button type="submit" class="btn-send-email">
           <i class="fas fa-save"></i> Guardar Cambios
         </button>
@@ -814,5 +811,6 @@
     ></div>
 
     <script src="/JS/dashboar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>

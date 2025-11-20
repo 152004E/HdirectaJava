@@ -30,7 +30,7 @@ body {
     color: black;
 }
 
-.container {
+.container1 {
     display: grid;
     width: 96%;
     margin: 0 auto;
@@ -613,8 +613,13 @@ main .export-links hr {
 
 .right .top {
     display: flex;
-    justify-content: end;
-    gap: 2rem;
+    justify-content: space-around;
+    align-items: center;
+  
+}
+.dashboarRight{
+  right: 30px !important;
+  top: 70px;
 }
 
 .right .top button {
@@ -1793,7 +1798,7 @@ body.dark-theme .export-links a {
         resize: none;
         flex-grow: 1; /* Esto hace que el textarea ocupe el espacio restante */
         width: 100%;
-        font-family: ;
+        font-family: "Poppins", sans-serif !important;
     }
 
       .input-wrapper {

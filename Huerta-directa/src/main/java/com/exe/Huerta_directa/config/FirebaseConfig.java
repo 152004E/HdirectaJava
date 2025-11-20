@@ -1,34 +1,34 @@
+/*
+// java
 package com.exe.Huerta_directa.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.annotation.PostConstruct;
+import java.io.InputStream;
 
-@Configuration
+@Component
 public class FirebaseConfig {
 
-    @Bean
-    public FirebaseAuth firebaseAuth() throws IOException {
-        // Ruta del archivo de credenciales
-        String serviceAccountPath = "src/main/resources/firebase-service-account.json";
-
-        FileInputStream serviceAccount = new FileInputStream(serviceAccountPath);
-
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .build();
-
-        // Inicializar Firebase si no está inicializado
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options);
+    @PostConstruct
+    public void init() {
+        try {
+            if (FirebaseApp.getApps().isEmpty()) {
+                ClassPathResource resource = new ClassPathResource("firebase-service-account.json");
+                try (InputStream serviceAccount = resource.getInputStream()) {
+                    FirebaseOptions options = FirebaseOptions.builder()
+                            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                            .build();
+                    FirebaseApp.initializeApp(options);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo inicializar Firebase: " + e.getMessage(), e);
         }
-
-        return FirebaseAuth.getInstance();
     }
 }
+*/

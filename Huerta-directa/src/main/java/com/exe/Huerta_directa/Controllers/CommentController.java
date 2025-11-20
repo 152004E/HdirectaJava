@@ -29,6 +29,7 @@ import java.io.OutputStream;
 
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -95,7 +96,7 @@ public class CommentController {
         }
 
         // Obtener todos los comentarios o filtrar por usuario según necesites
-        List<CommentDTO> comments = commentService.listarCommentsPorUsuario(userSession.getId());
+        List<Comment> comments = commentService.obtenerComentariosPorUsuario(userSession.getId());
 
         // O si quieres todos: commentService.obtenerTodosLosComentarios();
 
@@ -116,6 +117,33 @@ public class CommentController {
         CommentDTO comment = commentService.obtenerCommentPorId(id);
         model.addAttribute("comment", comment);
         return "DashBoard/EditarComentario";
+    }
+
+    @PostMapping("/actualizarComentario/{id}")
+    public RedirectView actualizarCome(@PathVariable long id, @RequestParam("commentCommenter") String commentCommenter,
+            HttpSession session) {
+        try {
+            // verificar sesion
+            User userSesion = (User) session.getAttribute("user");
+            if (userSesion == null) {
+                return new RedirectView("redirect:/login?error=session&message=Debe+iniciar+sesión");
+            }
+
+            // crear dto con los datos actualizados
+
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setCommentCommenter(commentCommenter);
+            commentDTO.setCreationComment(java.time.LocalDate.now());
+
+            // llamar al servicio
+
+            commentService.actualizarComment(id, commentDTO);
+            return new RedirectView("/MensajesComentarios?success=Comentario+actualizado+correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("/MensajesComentarios?error=No+se+pudo+actualizar+el+comentario");
+        }
+
     }
 
     @GetMapping("/reporteFc")

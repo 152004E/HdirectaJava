@@ -143,6 +143,9 @@ aside .active {
   display: none;
 }
 
+main {
+  max-width:1200px ;
+}
 main .active {
   grid-column: 1 / -1;
 }
@@ -498,7 +501,7 @@ select:hover {
 }
 
 .CategoriaS {
-  width: 190px;
+  width: 155px !important;
   padding: 10px 35px 10px 15px;
   background-color: #8cc63f;
   color: white;
@@ -587,8 +590,13 @@ main .export-links hr {
 .right .top {
 
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.dashboarRight{
+  right: 30px !important;
+  top: 70px;
 }
 
 .right .top button {
@@ -899,7 +907,7 @@ main .export-links hr {
 
   .consulta-container table th,
   .consulta-container table td {
-    padding: 8px;
+    padding: 8px; 
   }
 }
 
@@ -1563,6 +1571,30 @@ body:has(.consulta-wrapper) {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.form-groupCategoriaUnidad{
+  width: 100%;
+  padding-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  background: #dbdbdb;
+  border-left:  solid 6px #8dc84b;
+  align-items: center;
+  justify-content: space-around;
+  display: flex;
+}
+.form-groupDescripcionYImagen{
+  width: 100%;
+  padding-top: 10px;
+  margin-bottom: 20px;
+  padding-left: 10px;
+  border-radius: 15px;
+  background: #dbdbdb;
+  border-left:  solid 6px #8dc84b;
+ 
+
+  
 }
 
 .alert-success {

@@ -26,5 +26,10 @@ public interface UserService {
     UserDTO autenticarUsuario(String email, String password);
     //obtener id para admin
     UserDTO crearAdmin(UserDTO userDTO);
+
+
+    // Nuevo: obtener teléfono o DTO por email
+   // String obtenerPhonePorEmail(String email);
+    //UserDTO obtenerUserPorEmail(String email);
 }
 

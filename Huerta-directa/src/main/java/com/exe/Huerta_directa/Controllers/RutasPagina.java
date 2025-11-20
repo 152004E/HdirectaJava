@@ -3,12 +3,14 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,16 +18,25 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 public class RutasPagina {
 
-    @Autowired
-    private ProductService productService;
 
-    @Autowired
-    private UserService userService;
+    private final ProductService productService;
+    private final UserService userService;
+    private final UserRepository userRepository;
+
+    public  RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+        this.productService = productService;
+        this.userService = userService;
+        this.userRepository = userRepository;
+
+    }
+
+
 
     /**
      * Método helper para obtener la página de inicio según el rol del usuario
@@ -56,14 +67,36 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model,
-            @ModelAttribute("success") String success) {
+            @ModelAttribute("success") String success,
+            HttpSession session) {
         // Log para debugging
         System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
 
-        // Obtener y agregar productos al modelo
+        // Obtener usuario de la sesión (igual que en dashboard)
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            // Si no hay sesión, redirigir al login
+            return "redirect:/login?message=Debes+iniciar+sesion+para+acceder";
+        }
+
+        // Obtener TODOS los productos para mostrar en el index
         List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos.size());
+
+        // Marcar productos del usuario actual con etiqueta
+        productos.forEach(producto -> {
+            if (producto.getUserId() != null && producto.getUserId().equals(userSession.getId())) {
+                producto.setEtiqueta("MI PRODUCTO"); // Agregar etiqueta a tus productos
+            } else {
+                producto.setEtiqueta("PRODUCTO DE OTRO USUARIO");
+            }
+        });
+
+        System.out.println("📦 Total productos cargados: " + productos.size());
+        System.out.println("👤 MIS PRODUCTOS del usuario " + userSession.getName() + ": " +
+            productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
+
         model.addAttribute("productos", productos);
+        model.addAttribute("currentUser", userSession);
 
         // Si hay un mensaje de éxito, agregarlo al modelo
         if (success != null && !success.isEmpty()) {
@@ -74,7 +107,35 @@ public class RutasPagina {
     }
 
     @GetMapping("/agregar_producto")
-    public String mostrarFormulario() {
+    public String mostrarFormulario(
+            HttpSession session,
+           RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe iniciar sesion para acceder");
+            return "redirect:/login";
+        }
+
+        //Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById (currentUser.getId())
+                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+
+        // Validar que tenga teléfono y dirección completos
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su número de teléfono en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su dirección en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        //Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
     }
 
@@ -164,13 +225,19 @@ public class RutasPagina {
 
         return "DashBoard/actualizacionUsuario";
     }
-    // @GetMapping("/MensajesComentarios")
+    /*@GetMapping("/MensajesComentarios")
     // public String MensajesComentarios() {
     //     return "DashBoard/MensajesComentarios";
-    // }
+     }
+    */
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
+    }
+
+    @GetMapping("/DashBoardGraficos")
+    public String DashBoardGraficos() {
+        return "DashBoard/GraficosDashboarCliente";
     }
 
     @GetMapping("/landing")
@@ -178,10 +245,11 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    // @GetMapping("/Quienes_somos")
+    /* @GetMapping("/Quienes_somos")
     // public String mostrarQuienes_somos() {
     //     return "Quienes_somos/quienes_somos";
     // }
+    */
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {
@@ -361,7 +429,9 @@ public class RutasPagina {
             userDTO.setIdRole(1L);
 
             // Establecer fecha de creación
-            userDTO.setCreacionDate(java.time.LocalDate.now());
+            userDTO.setCreacionDate(LocalDate.now());
+
+
 
             UserDTO adminCreado = userService.crearUser(userDTO);
 
@@ -384,7 +454,6 @@ public class RutasPagina {
     }
     @GetMapping("/ClientesDestacados")
     public String mostrarClientesDestacados(Model model) {
-
         return "Clientes_Destacados/ClientesDestacados";
     }
 
@@ -404,6 +473,32 @@ public class RutasPagina {
         // Lógica para generar y mostrar el reporte estadístico
         return "Reportes_estadisticos/commentFc";
     }
+
+
+    //verify por sms firebase
+    /*@GetMapping("/verify-sms")
+    public String showVerifySMS(HttpSession session, Model model) {
+        // Tomar el usuario de la sesión
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            // Si no hay usuario en sesión, redirigir al login
+            return "redirect:/login";
+        }
+
+        // Pasar el teléfono y rol al HTML
+        model.addAttribute("user", user);
+        return "verify-sms"; // Nombre del HTML sin extensión .html
+    }*/
+
+    @GetMapping("/verify-sms")
+    public String showSmsVerificationPage(HttpSession session) {
+        User pendingUser = (User) session.getAttribute("pendingUser");
+        if (pendingUser == null) {
+            return "redirect:/login";
+        }
+        return "login/verify-sms"; // Página para ingresar el código SMS
+    }
+
 
 
 

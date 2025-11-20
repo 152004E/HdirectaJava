@@ -6,11 +6,14 @@ import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
+import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
 import com.exe.Huerta_directa.Service.ProductService;
 
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Authenticator;
@@ -26,9 +29,13 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,16 +43,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
+
+
 
 @Controller
 @RequestMapping("/api/users")
 @CrossOrigin("*")
+
 public class UserController {
 
     private final UserService userService;
@@ -230,7 +243,7 @@ public class UserController {
                 com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(4);
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
-                float[] columnWidths = { 1f, 3f, 4f, 2f };
+                float[] columnWidths = {1f, 3f, 4f, 2f};
                 table.setWidths(columnWidths);
 
                 // Encabezados
@@ -312,6 +325,9 @@ public class UserController {
     }
 
     // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
+    @Autowired
+    private PasswordEncoder passwordEncoder; // o BCryptPasswordEncoder, pero mejor PasswordEncoder
+
     @PostMapping("/register")
     public String seveUserView(
             @Valid @ModelAttribute("userDTO") UserDTO userDTO,
@@ -319,52 +335,44 @@ public class UserController {
             RedirectAttributes redirectAttributes,
             HttpSession session) {
 
-        // 1) Si hay errores de validación (JSR-303), mejor renderizamos la vista sin
-        // redirect
-        // así BindingResult está disponible y Thymeleaf puede mostrar errores por
-        // campo.
         if (result.hasErrors()) {
-            return "login/login"; // renderiza la vista con errores (no redirect)
+            return "login/login";
         }
 
         try {
-            UserDTO usuarioCreado = userService.crearUser(userDTO);
+            // ❌ NO hashear aquí: quitar la siguiente línea si existe en tu controlador
+            // userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-            // Usar el repository para obtener la Entity User
+            // Dejar que el servicio se encargue de hashear:
+            UserDTO usuarioCreado = userService.crearUser(userDTO);
             User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
+
             if (userEntity != null) {
                 session.setAttribute("user", userEntity);
             } else {
-                // Si por alguna razón no se encuentra, crear un User básico del DTO
-                System.err.println("⚠️ No se pudo encontrar el usuario recién creado, creando sesión básica");
                 session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
             }
 
-            // Enviar correo de confirmación
             enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
 
-            // Si querés iniciar sesión automáticamente y redirigir:
             if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
-                redirectAttributes.addFlashAttribute("success",
-                        "¡Bienvenido Administrador! Tu cuenta ha sido creada exitosamente");
+                redirectAttributes.addFlashAttribute("success", "¡Bienvenido Administrador!");
                 return "redirect:/DashboardAdmin";
             } else {
-                redirectAttributes.addFlashAttribute("success", "¡Bienvenido! Tu cuenta ha sido creada exitosamente");
+                redirectAttributes.addFlashAttribute("success", "¡Bienvenido!");
                 return "redirect:/index";
             }
 
         } catch (DataIntegrityViolationException e) {
-            // Error de llave única (email duplicado)
             redirectAttributes.addFlashAttribute("error", "El correo electrónico ya está registrado");
-            // Reenviamos los datos del formulario para que se muestren en la vista
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta. Por favor, intente nuevamente");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta.");
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         }
-
     }
 
     // MÉTODO PARA ENVIAR EL CORREO
@@ -409,7 +417,7 @@ public class UserController {
                                             Conectando el campo con tu mesa
                                         </p>
                                     </div>
-
+                
                                     <!-- Contenido principal -->
                                     <div style="padding: 40px 30px;">
                                         <div style="text-align: center; margin-bottom: 30px;">
@@ -420,7 +428,7 @@ public class UserController {
                                                 ¡Registro Exitoso!
                                             </h2>
                                         </div>
-
+                
                                         <div style="text-align: center; margin-bottom: 30px;">
                                             <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
                                                 ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
@@ -431,7 +439,7 @@ public class UserController {
                                                 campesinos con consumidores como tú.
                                             </p>
                                         </div>
-
+                
                                         <!-- Beneficios -->
                                         <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
                                             <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
@@ -452,14 +460,14 @@ public class UserController {
                                                 </p>
                                             </div>
                                         </div>
-
+                
                                         <!-- Botón de acción -->
                                         <div style="text-align: center; margin-bottom: 30px;">
                                             <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
                                                 🌟 Comenzar a Explorar
                                             </a>
                                         </div>
-
+                
                                         <!-- Mensaje de agradecimiento -->
                                         <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
                                             <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
@@ -468,7 +476,7 @@ public class UserController {
                                             </p>
                                         </div>
                                     </div>
-
+                
                                     <!-- Footer -->
                                     <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
                                         <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
@@ -483,7 +491,7 @@ public class UserController {
                                             </span>
                                         </div>
                                     </div>
-
+                
                                 </div>
                             </td>
                         </tr>
@@ -509,30 +517,72 @@ public class UserController {
         });
     }
 
+
+    // ============================
+    //  LOGIN (NO MODIFICADO)
+    // ============================
     @PostMapping("/loginUser")
-    public String loginUser(@RequestParam String email,
+    public String loginUser(
+            @RequestParam String email,
             @RequestParam String password,
             Model model,
             HttpSession session) {
 
+        // Buscar el usuario por correo
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        // ⚠️ Validar si el usuario existe y si la contraseña coincide
+        if (user == null) {
             model.addAttribute("error", "Correo o contraseña incorrectos");
-            model.addAttribute("userDTO", new UserDTO()); // importante para no romper el form
+            model.addAttribute("userDTO", new UserDTO());
             return "login/login";
         }
 
-        // Guarda al usuario en sesión
+        // Verificar con BCrypt si la contraseña plana coincide con el hash
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            model.addAttribute("error", "Correo o contraseña incorrectos");
+            model.addAttribute("userDTO", new UserDTO());
+            return "login/login";
+        }
+
+           // ✅ GUARDAR EL USUARIO PRIMERO
         session.setAttribute("user", user);
 
-        // Redirige según el rol usando redirección inteligente
+        if (user.getPhone() == null || user.getPhone().isBlank()) {
+            return "redirect:/api/users/redirigirPorRol";
+        }
+        session.setAttribute("pendingUser", user);
+        return "login/verify-sms";  // ✅ Vista HTML
+    }
+
+
+    // =========================
+    // OPCIONAL: CONFIRMAR SMS
+    // =========================
+    @PostMapping("/complete-login")
+    public String completeLogin(HttpSession session) {
+        User user = (User) session.getAttribute("pendingUser");
+        if (user == null) return "redirect:/api/users/loginUser";
+
+        session.setAttribute("user", user);
+        session.removeAttribute("pendingUser");
+        return "redirect:/api/users/redirigirPorRol";
+    }
+
+    @GetMapping("/redirigirPorRol")
+    public String redirigirPorRol(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/api/users/loginUser";
+
         if (user.getRole().getIdRole() == 1) {
             return "redirect:/DashboardAdmin";
-        } else {
-            return "redirect:/index";
         }
+        return "redirect:/index";
     }
+
+
+
+
 
     @PostMapping("/FormAdmin")
     public String registrarAdmin(
@@ -550,6 +600,8 @@ public class UserController {
         redirect.addFlashAttribute("success", "Administrador creado con éxito");
         return "redirect:/DashboardAdmin"; // redirección al dashboard
     }
+
+
 
     /**
      * Método para cerrar sesión
@@ -652,12 +704,12 @@ public class UserController {
         };
     }
 
-    private void addTableHeaderPdf(com.lowagie.text.pdf.PdfPTable table, String headerTitle,
+    private void addTableHeaderPdf(PdfPTable table, String headerTitle,
             com.lowagie.text.Font font) {
-        com.lowagie.text.pdf.PdfPCell header = new com.lowagie.text.pdf.PdfPCell();
+        PdfPCell header = new PdfPCell();
         header.setBackgroundColor(java.awt.Color.decode("#689f38"));
         header.setBorderWidth(1);
-        header.setPhrase(new com.lowagie.text.Phrase(headerTitle, font));
+        header.setPhrase(new Phrase(headerTitle, font));
         header.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
         header.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
         header.setPadding(8);
@@ -665,10 +717,10 @@ public class UserController {
     }
 
     private void addTableCellPdf(PdfPTable table, String text,
-                                 com.lowagie.text.Font font, java.awt.Color backgroundColor,
-                                 int alignment) {
-        com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
-        cell.setPhrase(new com.lowagie.text.Phrase(text, font));
+            com.lowagie.text.Font font, java.awt.Color backgroundColor,
+            int alignment) {
+        PdfPCell cell = new PdfPCell();
+        cell.setPhrase(new Phrase(text, font));
         cell.setHorizontalAlignment(alignment);
         cell.setVerticalAlignment(com.lowagie.text.Element.ALIGN_MIDDLE);
         cell.setBackgroundColor(backgroundColor);
@@ -693,15 +745,13 @@ public class UserController {
 
         // Crear un Role básico si es necesario
         if (userDTO.getIdRole() != null) {
-            com.exe.Huerta_directa.Entity.Role role = new com.exe.Huerta_directa.Entity.Role();
+            com.exe.Huerta_directa.Entity.Role role = new Role();
             role.setIdRole(userDTO.getIdRole());
             user.setRole(role);
         }
 
         return user;
     }
-
-
 
     // ========== ENVÍO DE CORREOS MASIVOS ==========
 
@@ -721,10 +771,11 @@ public class UserController {
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
 
-                // Envío masivo real sin personalización individual
+            // Envío masivo real sin personalización individual
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios");
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " usuarios");
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo: " + e.getMessage());
@@ -768,7 +819,8 @@ public class UserController {
             // Envío masivo real sin personalización individual
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo filtrado: " + e.getMessage());
@@ -804,7 +856,8 @@ public class UserController {
             try {
                 enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
                 String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0, "Correo enviado masivamente a " + users.size() + " " + roleName);
+                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                        "Correo enviado masivamente a " + users.size() + " " + roleName);
                 return ResponseEntity.ok(response);
             } catch (Exception e) {
                 System.err.println("Error en envío masivo por rol: " + e.getMessage());
@@ -819,7 +872,8 @@ public class UserController {
     }
 
     /**
-     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola operación
+     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola
+     * operación
      */
     private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
         Session session = crearSesionCorreo();
@@ -853,30 +907,32 @@ public class UserController {
     /**
      * Método privado para enviar correo personalizado
      */
-    private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
-            throws MessagingException {
-        Session session = crearSesionCorreo();
 
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-        message.setSubject(asunto);
+    //  lo comente por que me daba error y sé que no se usa/////
+    // private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
+    //         throws MessagingException {
+    //     Session session = crearSesionCorreo();
 
-        // Detectar si el cuerpo es HTML o texto plano
-        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
-            message.setContent(cuerpo, "text/html; charset=utf-8");
-        } else {
-            message.setText(cuerpo, "utf-8");
-        }
+    //     MimeMessage message = new MimeMessage(session);
+    //     message.setFrom(new InternetAddress(SENDER_EMAIL));
+    //     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+    //     message.setSubject(asunto);
 
-        Transport.send(message);
-    }
+    //     // Detectar si el cuerpo es HTML o texto plano
+    //     if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+    //         message.setContent(cuerpo, "text/html; charset=utf-8");
+    //     } else {
+    //         message.setText(cuerpo, "utf-8");
+    //     }
 
+    //     Transport.send(message);
+    // }
 
     // ========== RECUPERACIÓN DE CONTRASEÑA ==========
 
     /**
-     * Endpoint para solicitar recuperación de contraseña - Versión simple como el registro
+     * Endpoint para solicitar recuperación de contraseña - Versión simple como el
+     * registro
      */
     @PostMapping("/forgot-password")
     public String solicitarRecuperacionContrasena(@RequestParam String email, RedirectAttributes redirectAttributes) {
@@ -884,17 +940,18 @@ public class UserController {
             User user = userRepository.findByEmail(email).orElse(null);
 
             if (user == null) {
-                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo mensaje
+                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo
+                // mensaje
                 redirectAttributes.addFlashAttribute("success",
-                    "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+                        "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
                 return "redirect:/forgot-password";
             }
 
             // Generar nueva contraseña aleatoria
             String nuevaContrasena = generarContrasenaAleatoria();
 
-            // Actualizar contraseña en la base de datos
-            user.setPassword(nuevaContrasena);
+            // Se hashea la nueva contraseña antes de guardarla
+            user.setPassword(passwordEncoder.encode(nuevaContrasena));
             userRepository.save(user);
 
             // Enviar correo con la nueva contraseña
@@ -903,13 +960,13 @@ public class UserController {
             System.out.println("🔐 Nueva contraseña generada para: " + email);
 
             redirectAttributes.addFlashAttribute("success",
-                "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
+                    "Si el correo existe, recibirás tu nueva contraseña en unos minutos");
             return "redirect:/forgot-password";
 
         } catch (Exception e) {
             System.err.println("❌ Error en recuperación de contraseña: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error",
-                "Error al procesar la solicitud. Por favor, intenta nuevamente");
+                    "Error al procesar la solicitud. Por favor, intenta nuevamente");
             return "redirect:/forgot-password";
         }
     }
@@ -919,7 +976,7 @@ public class UserController {
      */
     private String generarContrasenaAleatoria() {
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        java.util.Random random = new java.util.Random();
+        java.util.Random random = new Random();
         StringBuilder contrasena = new StringBuilder();
 
         for (int i = 0; i < 8; i++) {
@@ -933,7 +990,8 @@ public class UserController {
     /**
      * Método para enviar correo con la nueva contraseña
      */
-    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena) throws MessagingException {
+    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena)
+            throws MessagingException {
         Session session = crearSesionCorreo();
 
         MimeMessage message = new MimeMessage(session);
@@ -1073,24 +1131,24 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> cargarDatosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
         try {
+
+
             // Validar que se envió un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "No se ha seleccionado ningún archivo"
-                        ));
+                                "success", false,
+                                "message", "No se ha seleccionado ningún archivo"));
             }
 
             // Validar tipo de archivo
             String nombreArchivo = archivo.getOriginalFilename();
             if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
-                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                    !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
                 return ResponseEntity.badRequest()
                         .body(java.util.Map.of(
-                            "success", false,
-                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
-                        ));
+                                "success", false,
+                                "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
 
             List<UserDTO> usuariosCargados = new ArrayList<>();
@@ -1158,9 +1216,8 @@ public class UserController {
             System.err.println("Error al procesar archivo: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(java.util.Map.of(
-                        "success", false,
-                        "message", "Error al procesar el archivo: " + e.getMessage()
-                    ));
+                            "success", false,
+                            "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
 
@@ -1170,8 +1227,8 @@ public class UserController {
     private List<UserDTO> procesarArchivoCSV(InputStream inputStream) throws IOException {
         List<UserDTO> usuarios = new ArrayList<>();
 
-        try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, "UTF-8"))) {
 
             String linea;
             boolean primeraLinea = true;
@@ -1260,7 +1317,7 @@ public class UserController {
                     }
 
                     if (usuario.getName() != null && !usuario.getName().trim().isEmpty() &&
-                        usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
+                            usuario.getEmail() != null && !usuario.getEmail().trim().isEmpty()) {
                         usuarios.add(usuario);
                     }
                 }
@@ -1309,26 +1366,38 @@ public class UserController {
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo(@RequestParam("archivo") MultipartFile archivo) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo
+    (@RequestParam("archivo")
+     MultipartFile archivo,
+     HttpSession session) {
         try {
+            // OBTENER USUARIO DE LA SESIÓN
+            User userSession = (User) session.getAttribute("user");
+            if (userSession == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Sesion expirada. Debe iniciar sesion para cargar productos"));
+            }
+
+            Long currentUserId = userSession.getId();
+
             // Validar que se envió un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
-                        .body(java.util.Map.of(
-                            "success", false,
-                            "message", "No se ha seleccionado ningún archivo"
-                        ));
+                        .body(Map.of(
+                                "success", false,
+                                "message", "No se ha seleccionado ningún archivo"));
             }
 
             // Validar tipo de archivo
             String nombreArchivo = archivo.getOriginalFilename();
             if (nombreArchivo == null || (!nombreArchivo.endsWith(".csv") &&
-                !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
+                    !nombreArchivo.endsWith(".xlsx") && !nombreArchivo.endsWith(".xls"))) {
                 return ResponseEntity.badRequest()
-                        .body(java.util.Map.of(
-                            "success", false,
-                            "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"
-                        ));
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
 
             List<ProductDTO> productosCargados = new ArrayList<>();
@@ -1351,7 +1420,7 @@ public class UserController {
                         errores.add("Fila " + (i + 2) + ": Nombre del producto requerido");
                         continue;
                     }
-                    if (producto.getPrice() == null || producto.getPrice().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                    if (producto.getPrice() == null || producto.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
                         errores.add("Fila " + (i + 2) + ": Precio válido requerido");
                         continue;
                     }
@@ -1371,18 +1440,24 @@ public class UserController {
                         producto.setDescriptionProduct("Producto sin descripción");
                     }
                     if (producto.getPublicationDate() == null) {
-                        producto.setPublicationDate(java.time.LocalDate.now());
+                        producto.setPublicationDate(LocalDate.now());
                     }
-                    // ID de usuario por defecto (admin)
+                    // ASIGNAR USUARIO ACTUAL DE LA SESIÓN
                     if (producto.getUserId() == null) {
-                        producto.setUserId(1L);
+                        producto.setUserId(currentUserId);
                     }
 
-                    // Verificar si el producto ya existe (por nombre exacto y categoría)
-                    boolean existe = verificarProductoExistente(producto.getNameProduct().trim(), producto.getCategory().trim());
+                    // Verificar si el producto ya existe para este usuario
+                    boolean existe = verificarProductoExistente(
+                            producto.getNameProduct().trim(),
+                            producto.getCategory().trim(),
+                            currentUserId
+                    );
+
                     if (existe) {
                         productosDuplicados++;
-                        System.out.println("⚠️ Producto duplicado omitido: " + producto.getNameProduct() + " - " + producto.getCategory());
+                        System.out.println("⚠️ Producto duplicado omitido: " + currentUserId +
+                                ": " + producto.getNameProduct() + " - " + producto.getCategory());
                         continue;
                     }
 
@@ -1396,23 +1471,24 @@ public class UserController {
             }
 
             // Preparar respuesta
-            java.util.Map<String, Object> respuesta = new java.util.HashMap<>();
+            Map<String, Object> respuesta = new HashMap<>();
             respuesta.put("success", true);
             respuesta.put("message", "Procesamiento de productos completado");
             respuesta.put("productosCreados", productosCreados);
             respuesta.put("productosDuplicados", productosDuplicados);
             respuesta.put("totalProcesados", productosCargados.size());
             respuesta.put("errores", errores);
+            respuesta.put("needsRefresh", productosCreados > 0);
+            respuesta.put("timestamp", System.currentTimeMillis());
 
             return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
             System.err.println("Error al procesar archivo de productos: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(java.util.Map.of(
-                        "success", false,
-                        "message", "Error al procesar el archivo: " + e.getMessage()
-                    ));
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
 
@@ -1422,46 +1498,59 @@ public class UserController {
     private List<ProductDTO> procesarArchivoProductosCSV(InputStream inputStream) throws IOException {
         List<ProductDTO> productos = new ArrayList<>();
 
-        try (java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.InputStreamReader(inputStream, "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
             String linea;
             boolean primeraLinea = true;
+            int numeroLinea = 0;
+
+            System.out.println("📄 Procesando archivo CSV...");
 
             while ((linea = reader.readLine()) != null) {
+                numeroLinea++;
+
                 if (primeraLinea) {
                     primeraLinea = false; // Saltar encabezados
+                    System.out.println("⏭️ Línea " + numeroLinea + " (encabezado): " + linea);
                     continue;
                 }
 
+                System.out.println("📋 Línea " + numeroLinea + ": " + linea);
+
                 String[] campos = linea.split(",");
-                if (campos.length >= 4) { // Al menos nombre, precio, categoría, unidad
+                System.out.println("  📊 Campos encontrados: " + campos.length);
+
+                if (campos.length >= 6) {
                     ProductDTO producto = new ProductDTO();
                     producto.setNameProduct(campos[0].trim());
+                    System.out.println("  📝 Nombre: " + producto.getNameProduct());
 
-                    // Precio
                     try {
-                        producto.setPrice(new java.math.BigDecimal(campos[1].trim()));
+                        producto.setPrice(new BigDecimal(campos[1].trim()));
+                        System.out.println("  💰 Precio: " + producto.getPrice());
                     } catch (NumberFormatException e) {
+                        System.err.println("  ❌ Error parseando precio: " + e.getMessage());
                         continue; // Saltar fila con precio inválido
                     }
 
                     producto.setCategory(campos[2].trim());
-                    producto.setUnit(campos[3].trim());
+                    System.out.println("  📂 Categoría: " + producto.getCategory());
 
-                    // Campos opcionales
-                    if (campos.length > 4 && !campos[4].trim().isEmpty()) {
-                        producto.setDescriptionProduct(campos[4].trim());
-                    }
-                    if (campos.length > 5 && !campos[5].trim().isEmpty()) {
-                        producto.setImageProduct(campos[5].trim());
-                    }
+                    producto.setUnit(campos[3].trim());
+                    producto.setDescriptionProduct(campos[4].trim());
+                    producto.setImageProduct(campos[5].trim());
+                    producto.setPublicationDate(LocalDate.now());
 
                     productos.add(producto);
+                    System.out.println("  ✅ Producto agregado");
+                } else {
+                    System.out.println("  ⚠️ Línea con menos de 6 campos - omitida");
                 }
             }
-        }
 
+            System.out.println("📊 Total productos procesados del CSV: " + productos.size());
+        }
         return productos;
     }
 
@@ -1472,100 +1561,260 @@ public class UserController {
         List<ProductDTO> productos = new ArrayList<>();
 
         try (Workbook workbook = WorkbookFactory.create(inputStream)) {
-            Sheet sheet = workbook.getSheetAt(0); // Primera hoja
-
+            Sheet sheet = workbook.getSheetAt(0);
             boolean primeraFila = true;
-            for (Row fila : sheet) {
+
+            System.out.println("📄 Procesando Excel - Total filas: " + sheet.getPhysicalNumberOfRows());
+
+            for (Row row : sheet) {
                 if (primeraFila) {
                     primeraFila = false; // Saltar encabezados
+                    System.out.println("⏭️ Saltando fila de encabezados");
                     continue;
                 }
 
-                if (fila.getPhysicalNumberOfCells() >= 4) {
+                System.out.println("📋 Procesando fila " + row.getRowNum() + " - Celdas: " + row.getPhysicalNumberOfCells());
+
+                if (row.getPhysicalNumberOfCells() >= 6) {
                     ProductDTO producto = new ProductDTO();
 
-                    // Nombre del producto (columna A)
-                    Cell celdaNombre = fila.getCell(0);
-                    if (celdaNombre != null) {
-                        producto.setNameProduct(obtenerValorCelda(celdaNombre));
+                    Cell nombreCell = row.getCell(0);
+                    if (nombreCell != null) {
+                        producto.setNameProduct(obtenerValorCelda(nombreCell));
+                        System.out.println("  📝 Nombre: " + producto.getNameProduct());
                     }
 
-                    // Precio (columna B)
-                    Cell celdaPrecio = fila.getCell(1);
-                    if (celdaPrecio != null) {
+                    Cell precioCell = row.getCell(1);
+                    if (precioCell != null) {
                         try {
-                            String valorPrecio = obtenerValorCelda(celdaPrecio);
+                            String valorPrecio = obtenerValorCelda(precioCell);
                             if (!valorPrecio.trim().isEmpty()) {
-                                producto.setPrice(new java.math.BigDecimal(valorPrecio));
+                                producto.setPrice(new BigDecimal(valorPrecio));
+                                System.out.println("  💰 Precio: " + producto.getPrice());
                             }
                         } catch (NumberFormatException e) {
+                            System.err.println("  ❌ Error parseando precio: " + e.getMessage());
                             continue; // Saltar fila con precio inválido
                         }
                     }
 
-                    // Categoría (columna C)
-                    Cell celdaCategoria = fila.getCell(2);
-                    if (celdaCategoria != null) {
-                        producto.setCategory(obtenerValorCelda(celdaCategoria));
+                    Cell categoriaCell = row.getCell(2);
+                    if (categoriaCell != null) {
+                        producto.setCategory(obtenerValorCelda(categoriaCell));
+                        System.out.println("  📂 Categoría: " + producto.getCategory());
                     }
 
-                    // Unidad (columna D)
-                    Cell celdaUnidad = fila.getCell(3);
-                    if (celdaUnidad != null) {
-                        producto.setUnit(obtenerValorCelda(celdaUnidad));
+                    Cell unidadCell = row.getCell(3);
+                    if (unidadCell != null) {
+                        producto.setUnit(obtenerValorCelda(unidadCell));
                     }
 
-                    // Descripción (columna E) - opcional
-                    Cell celdaDescripcion = fila.getCell(4);
-                    if (celdaDescripcion != null && !obtenerValorCelda(celdaDescripcion).trim().isEmpty()) {
-                        producto.setDescriptionProduct(obtenerValorCelda(celdaDescripcion));
+                    Cell descripcionCell = row.getCell(4);
+                    if (descripcionCell != null) {
+                        producto.setDescriptionProduct(obtenerValorCelda(descripcionCell));
                     }
 
-                    // Imagen (columna F) - opcional
-                    Cell celdaImagen = fila.getCell(5);
-                    if (celdaImagen != null && !obtenerValorCelda(celdaImagen).trim().isEmpty()) {
-                        producto.setImageProduct(obtenerValorCelda(celdaImagen));
+                    Cell imagenCell = row.getCell(5);
+                    if (imagenCell != null) {
+                        producto.setImageProduct(obtenerValorCelda(imagenCell));
                     }
+
+                    producto.setPublicationDate(LocalDate.now());
 
                     // Validar que los campos obligatorios no estén vacíos
                     if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
-                        producto.getPrice() != null &&
-                        producto.getCategory() != null && !producto.getCategory().trim().isEmpty() &&
-                        producto.getUnit() != null && !producto.getUnit().trim().isEmpty()) {
+                            producto.getPrice() != null &&
+                            producto.getCategory() != null && !producto.getCategory().trim().isEmpty()) {
                         productos.add(producto);
+                        System.out.println("  ✅ Producto agregado a la lista");
+                    } else {
+                        System.out.println("  ⚠️ Producto NO agregado - falta información obligatoria");
                     }
+                } else {
+                    System.out.println("  ⚠️ Fila con menos de 6 celdas - omitida");
                 }
             }
-        }
 
+            System.out.println("📊 Total productos procesados del Excel: " + productos.size());
+        }
         return productos;
     }
 
     /**
-     * Verificar si un producto ya existe
+     * Verificar si un producto ya existe por nombre y categoría
      */
-    private boolean verificarProductoExistente(String nombre, String categoria) {
+    private boolean verificarProductoExistente(String nombre, String categoria, Long userId) {
         try {
-            // Usar método optimizado para verificar duplicados exactos
-            return productService.existeProducto(nombre, categoria);
+            return productService.existeProductoPorUsuario(nombre, categoria, userId);
         } catch (Exception e) {
-            System.err.println("Error verificando producto existente: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Crear producto desde DTO
+     * Crear producto desde DTO usando ProductService
      */
     private void crearProductoDesdeDTO(ProductDTO producto) {
         try {
             // Usar ProductService para crear el producto en la base de datos
             ProductDTO productoCreado = productService.crearProduct(producto, producto.getUserId());
-            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: " + productoCreado.getIdProduct() + ")");
+            System.out.println("✅ Producto creado exitosamente: " + productoCreado.getNameProduct() + " (ID: "
+                    + productoCreado.getIdProduct() + ")");
         } catch (Exception e) {
             System.err.println("❌ Error creando producto: " + producto.getNameProduct() + " - " + e.getMessage());
             throw e; // Re-lanzar la excepción para que sea manejada en el bucle principal
         }
     }
+
+    @GetMapping("/products/refresh")
+    @ResponseBody
+    public ResponseEntity<List<ProductDTO>> obtenerProductosActualizados() {
+        try {
+            List<ProductDTO> productos = productService.listarProducts();
+            return ResponseEntity.ok(productos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/admin/migrate-passwords")
+    public String migratePasswords() {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            // Solo hashear si NO está hasheada (BCrypt empieza con $2a$)
+            if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+                String hashedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(hashedPassword);
+                userRepository.save(user);
+                System.out.println("✅ Contraseña hasheada para: " + user.getEmail());
+            }
+        }
+
+        return "redirect:/DashboardAdmin";
+    }
+
+    @PostMapping("/actualizarDatos")
+    public String actualizarDatos(
+            @RequestParam String name,
+            @RequestParam String address,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Usuario no autenticado.");
+                return "redirect:/login";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+
+            user.setName(name);
+            user.setAddress(address);
+
+            userRepository.save(user);
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("success", "Información actualizada exitosamente.");
+            return "redirect:/actualizacionUsuario";
+
+        } catch (Exception e) {
+            System.err.println("Error al actualizar usuario: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar la información");
+            return "redirect:/actualizacionUsuario";
+        }
+    }
+
+    @PostMapping("/ActualizarContacto")
+    public String actualizarContacto(
+            @RequestParam String email,
+            @RequestParam(required = false) String phone,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
+                return "redirect:/login";
+            }
+
+            //Validar telefono
+            if (phone != null && !phone.trim().isEmpty()) {
+                //Esto eliminar espacion y caracteres no numericos
+                String phoneClean = phone.replaceAll("[^0-9]", "");
+
+                if (phoneClean.length() != 10){
+                    redirectAttributes.addFlashAttribute("error", "El número de teléfono debe tener 10 dígitos");
+                    return "redirect:/actualizacionUsuario";
+                }
+
+                phone = phoneClean; //Asignar el telefono limpio
+            }
+
+            //Verificar si el email ya está en uso por otro usuario
+            if (!currentUser.getEmail().equals(email) &&
+                    userRepository.findByEmail(email).isPresent()) {
+                redirectAttributes.addFlashAttribute("error", "El email ya está registrado");
+                return "redirect:/actualizacionUsuario";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            user.setEmail(email);
+            user.setPhone(phone);
+
+            userRepository.save(user);
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("success", "Contacto actualizado correctamente");
+            return "redirect:/actualizacionUsuario";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar contacto");
+            return "redirect:/actualizacionUsuario";
+        }
+    }
+
+
+    @PostMapping("/ActualizarContrasena")
+    public String actualizarContrasena(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User currentUser = (User) session.getAttribute("user");
+
+            if (currentUser == null) {
+                redirectAttributes.addFlashAttribute("error", "Sesion expirada");
+                return "redirect:/login";
+            }
+
+            if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
+                redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
+                return "redirect:/actualizacionUsuario";
+            }
+
+            User user = userRepository.findById(currentUser.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            session.setAttribute("user", user);
+
+            redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente");
+            return "redirect:/actualizacionUsuario";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseña");
+            return "redirect:/actualizacionUsuario";
+        }
+    }
+
+
 
 }

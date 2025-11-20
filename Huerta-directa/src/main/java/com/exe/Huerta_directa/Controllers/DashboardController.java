@@ -29,27 +29,42 @@ public class DashboardController {
 
         // Obtener usuario de la sesión para mostrar información dinámica
         User userSession = (User) session.getAttribute("user");
-        if (userSession != null) {
-            model.addAttribute("currentUser", userSession);
-            // Determinar el nombre del rol para mostrar
-            String roleName = "Usuario";
-            if (userSession.getRole() != null) {
-                roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
-            }
-            model.addAttribute("userRole", roleName);
+        if (userSession == null) {
+            // Si no hay sesión, redirigir al login
+            return "redirect:/login";
         }
+
+        model.addAttribute("currentUser", userSession);
+        // Determinar el nombre del rol para mostrar
+        String roleName = "Usuario";
+        if (userSession.getRole() != null) {
+            roleName = userSession.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
+        }
+        model.addAttribute("userRole", roleName);
 
         List<ProductDTO> productos;
         
-        // Lógica de filtrado mejorada
+        // ✅ NUEVO: Obtener solo productos del usuario logueado
+        Long userId = userSession.getId();
+
+        // Lógica de filtrado mejorada para productos del usuario
         if (buscar != null && !buscar.trim().isEmpty()) {
-            productos = productService.buscarPorNombre(buscar.trim());
+            // Buscar por nombre dentro de los productos del usuario
+            productos = productService.listarProductosPorUsuario(userId)
+                    .stream()
+                    .filter(p -> p.getNameProduct().toLowerCase().contains(buscar.trim().toLowerCase()))
+                    .toList();
             model.addAttribute("buscarActivo", buscar);
         } else if (categoria != null && !categoria.isEmpty() && !categoria.equals("Por categoría")) {
-            productos = productService.buscarPorCategoria(categoria);
+            // Buscar por categoría dentro de los productos del usuario
+            productos = productService.listarProductosPorUsuario(userId)
+                    .stream()
+                    .filter(p -> p.getCategory().equalsIgnoreCase(categoria))
+                    .toList();
             model.addAttribute("categoriaActiva", categoria);
         } else {
-            productos = productService.listarProducts();
+            // Mostrar todos los productos del usuario
+            productos = productService.listarProductosPorUsuario(userId);
         }
         
         model.addAttribute("productos", productos);

@@ -34,7 +34,6 @@ public interface CommentService {
     List<Comment> listarTodosComments();
 
 
-
-
-
+    //Este servicio es para implementarlo en el front de dashboard comentarios
+    List<Comment> obtenerComentariosPorUsuario(Long userId);
 }

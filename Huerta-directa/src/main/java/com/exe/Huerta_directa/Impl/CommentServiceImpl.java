@@ -172,6 +172,12 @@ public class CommentServiceImpl implements CommentService {
             comment.setUser(user);
         }
     }
+        //Este servicio es para implementarlo en el front de dashboard comentarios
+
+    @Override
+    public List<Comment> obtenerComentariosPorUsuario(Long userId) {
+        return commentRepository.findByUser_Id(userId);
+    }
 
     @Override
     public List<Comment> listarTodosComments() {

@@ -1,46 +1,53 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <body class="">
-    <aside th:fragment="insadeDashBoard">
-      <div class="top">
+<body class="">
+<aside th:fragment="insadeDashBoard">
+    <div class="top">
         <div class="logo">
-          <img src="/images/logo_huerta.png" alt="Logo" />
-          <h2 class="text-[20px] font-bold">
-            Huerta<span class="danger">Directa</span>
-          </h2>
+            <img src="/images/logo_huerta.png" alt="Logo" />
+            <h2 class="text-[20px] font-bold">
+                Huerta<span class="danger">Directa</span>
+            </h2>
         </div>
         <div class="close" id="close-btn">
-          <span class="material-symbols-outlined">close</span>
+            <span class="material-symbols-outlined">close</span>
         </div>
-      </div>
+    </div>
 
-      <div class="sidebar">
+    <div class="sidebar">
+
+
         <a th:href="@{/home}">
-          <span class="material-symbols-outlined">dashboard</span>
-          <h3>Dashboard</h3>
+            <span class="material-symbols-outlined">dashboard</span>
+            <h3>DashBoard</h3>
         </a>
 
-        <a href="#">
-          <span class="material-symbols-outlined">finance_mode</span>
-          <h3>Reportes</h3>
+        <a th:href="@{/DashBoardGraficos}">
+            <span class="material-symbols-outlined">finance_mode</span>
+            <h3>Graficos</h3>
         </a>
         <a th:href="@{/MensajesComentarios}">
-          <span class="material-symbols-outlined">mail</span>
-          <h3>Mensajes</h3>
+            <span class="material-symbols-outlined">mail</span>
+            <h3>Mensajes</h3>
         </a>
-        <a th:href="@{/DashBoardAgregarProducto}">
-          <span class="material-symbols-outlined">inventory</span>
-          <h3>Agregar Producto</h3>
+        <a th:href="${(session.user != null &&
+                      session.user.phone != null && !#strings.isEmpty(session.user.phone) &&
+                      session.user.address != null && !#strings.isEmpty(session.user.address))
+                      ? '/DashBoardAgregarProducto'
+                      : '/actualizacionUsuario?mensaje=Complete+su+teléfono+y+dirección+para+agregar+productos'}">
+            <span class="material-symbols-outlined">inventory</span>
+            <h3>Agregar Producto</h3>
         </a>
         <a th:href="@{/actualizacionUsuario}">
-          <span class="material-symbols-outlined">settings</span>
-          <h3>Configuracion</h3>
+            <span class="material-symbols-outlined">settings</span>
+            <h3>Mi Perfil</h3>
         </a>
+
         <a th:href="@{/index}">
-          <span class="material-symbols-outlined">logout</span>
-          <h3>Volver</h3>
+            <span class="material-symbols-outlined">logout</span>
+            <h3>Pagina Principal</h3>
         </a>
-      </div>
-    </aside>
-  </body>
+    </div>
+</aside>
+</body>
 </html>

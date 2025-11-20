@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "groq-sdk": "^0.34.0"
-  }
-}
