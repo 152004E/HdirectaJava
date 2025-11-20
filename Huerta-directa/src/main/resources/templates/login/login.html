@@ -190,6 +190,7 @@
       color: #333128;
       transition: all 0.3s ease;
       background-color: white;
+      appearance: none; /* Remueve el estilo nativo del select */
     }
 
     select:focus, input[type="date"]:focus {
@@ -224,6 +225,50 @@
 
     .sign-up form::-webkit-scrollbar-thumb:hover {
       background: #004d00;
+    }
+
+    /* CORRECCIONES ESPECÍFICAS */
+    
+    /* Iconos de género y fecha - posicionamiento correcto */
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* Ajuste de padding para inputs con iconos */
+    .input-with-icon input,
+    .input-with-icon select {
+      padding-left: 45px !important;
+      padding-right: 45px !important;
+    }
+
+    /* Solo un icono de contraseña visible */
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* Ocultar el segundo icono de contraseña */
+    .password-toggle.hidden {
+      display: none;
+    }
+
+    /* Asegurar que los iconos no se superpongan con el texto */
+    input, select {
+      z-index: 1;
+      position: relative;
     }
   </style>
 
@@ -296,18 +341,14 @@
           <!-- Nombre de usuario -->
           <div class="form-group">
             <label class="text-sm font-normal block">Nombre completo</label>
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >person</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">person</span>
               <input
                 type="text"
                 th:field="*{name}"
                 placeholder="Ejemplo: Santiago Puentes"
                 required
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
@@ -317,19 +358,14 @@
             <label class="text-sm font-normal block"
               >Correo electrónico</label
             >
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >mail</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">mail</span>
               <input
-                id="correoRegistr"
                 type="email"
                 th:field="*{email}"
                 placeholder="Ej: tunombre@correo.com"
                 required
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
@@ -339,16 +375,12 @@
             <!-- Género -->
             <div class="form-group">
               <label class="text-sm font-normal block">Género</label>
-              <div class="flex items-center min-w-full relative">
-                <div class="absolute left-2">
-                  <span class="material-symbols-outlined text-[#888] mt-1.5"
-                    >person</span
-                  >
-                </div>
+              <div class="input-with-icon">
+                <span class="input-icon material-symbols-outlined text-[#888]">person</span>
                 <select 
                   th:field="*{gender}" 
                   required
-                  class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                  class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
                 >
                   <option value="">Seleccione...</option>
                   <option value="M">Masculino</option>
@@ -361,32 +393,24 @@
             <!-- Fecha de Nacimiento -->
             <div class="form-group">
               <label class="text-sm font-normal block">Fecha de Nacimiento</label>
-              <div class="flex items-center min-w-full relative">
-                <div class="absolute left-2">
-                  <span class="material-symbols-outlined text-[#888] mt-1.5"
-                    >cake</span
-                  >
-                </div>
+              <div class="input-with-icon">
+                <span class="input-icon material-symbols-outlined text-[#888]">cake</span>
                 <input
                   type="date"
                   th:field="*{birthDate}"
                   required
                   max="2006-12-31" 
-                  class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                  class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
                 />
               </div>
             </div>
           </div>
 
-          <!-- Contraseña -->
+          <!-- Contraseña - CORREGIDO: Solo un icono -->
           <div class="form-group">
             <label class="text-sm font-normal block">Contraseña</label>
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >lock_person</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">lock_person</span>
               <input
                 type="password"
                 id="passwordRegistro"
@@ -394,37 +418,26 @@
                 placeholder="Contraseña"
                 required
                 minlength="6"
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
-              <div id="ojo" class="absolute right-5">
-                <span
-                  id="passwordOjoCrearCuenta"
-                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
-                  >visibility</span
-                >
-                <span
-                  id="passwordOjoOffCrearCuenta"
-                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
-                  >visibility_off</span
-                >
-              </div>
+              <span
+                id="togglePasswordRegistro"
+                class="password-toggle material-symbols-outlined text-[#888] cursor-pointer hover:text-[#333128]"
+                onclick="togglePassword('passwordRegistro', 'togglePasswordRegistro')"
+              >visibility</span>
             </div>
           </div>
 
           <!-- Teléfono (campo existente) -->
           <div class="form-group">
             <label class="text-sm font-normal block">Teléfono (opcional)</label>
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >phone</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">phone</span>
               <input
                 type="tel"
                 th:field="*{phone}"
                 placeholder="Ej: 3001234567"
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
@@ -454,54 +467,38 @@
             <label class="text-[15px] font-normal block"
               >Ingrese su correo electronico</label
             >
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >mail</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">mail</span>
               <input
-                id="correoRegistro"
                 type="email"
                 name="email"
                 placeholder="Ej: tunombre@correo.com"
                 required
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
 
-          <!-- Contraseña -->
+          <!-- Contraseña - CORREGIDO: Solo un icono -->
           <div class="w-full mb-2">
             <label class="text-[15px] font-normal block"
               >Ingrese su contraseña</label
             >
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >lock_person</span
-                >
-              </div>
+            <div class="input-with-icon">
+              <span class="input-icon material-symbols-outlined text-[#888]">lock_person</span>
               <input
                 id="passwordInput"
                 type="password"
                 name="password"
                 placeholder="ingrese su contraseña"
                 required
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
-              <div id="ojo" class="absolute right-5">
-                <span
-                  id="passwordOjo"
-                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
-                  >visibility</span
-                >
-                <span
-                  id="passwordOjoOff"
-                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
-                  >visibility_off</span
-                >
-              </div>
+              <span
+                id="togglePasswordLogin"
+                class="password-toggle material-symbols-outlined text-[#888] cursor-pointer hover:text-[#333128]"
+                onclick="togglePassword('passwordInput', 'togglePasswordLogin')"
+              >visibility</span>
             </div>
           </div>
 
@@ -555,7 +552,21 @@
     </div>
 
     <script>
-      // Script para manejar la visibilidad de contraseñas
+      // Función para alternar visibilidad de contraseña
+      function togglePassword(inputId, toggleId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(toggleId);
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleIcon.textContent = 'visibility_off';
+        } else {
+          passwordInput.type = 'password';
+          toggleIcon.textContent = 'visibility';
+        }
+      }
+
+      // Script para manejar la animación del formulario
       document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('container');
         const registerBtn = document.getElementById('register');
@@ -567,32 +578,6 @@
 
         loginBtn.addEventListener('click', () => {
           container.classList.remove('active');
-        });
-
-        // Manejo de visibilidad de contraseñas
-        const passwordInputs = document.querySelectorAll('input[type="password"]');
-        
-        passwordInputs.forEach(input => {
-          const parent = input.closest('.relative');
-          const showIcon = parent.querySelector('#passwordOjo, #passwordOjoCrearCuenta');
-          const hideIcon = parent.querySelector('#passwordOjoOff, #passwordOjoOffCrearCuenta');
-          
-          if (showIcon && hideIcon) {
-            showIcon.classList.remove('hidden');
-            hideIcon.classList.add('hidden');
-            
-            showIcon.addEventListener('click', () => {
-              input.type = 'text';
-              showIcon.classList.add('hidden');
-              hideIcon.classList.remove('hidden');
-            });
-            
-            hideIcon.addEventListener('click', () => {
-              input.type = 'password';
-              hideIcon.classList.add('hidden');
-              showIcon.classList.remove('hidden');
-            });
-          }
         });
 
         // Validación de fecha de nacimiento (mínimo 18 años)
