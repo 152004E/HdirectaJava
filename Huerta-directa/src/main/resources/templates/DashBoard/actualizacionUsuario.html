@@ -30,9 +30,13 @@
 
   <body class="min-h-screen">
     <div class="containerActualizarUcuario">
-      <div
-        th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard" 
-      ></div>
+      <!-- Cargar el aside correcto según el rol del usuario -->
+      <th:block th:if="${isAdmin == true}">
+        <div th:replace="~{fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard}"></div>
+      </th:block>
+      <th:block th:if="${isAdmin == false or isAdmin == null}">
+        <div th:replace="~{fragments/DashBoard/insadeDashBoard :: insadeDashBoard}"></div>
+      </th:block>
 
       <main
         class="!flex-1 !flex !items-center !justify-center !p-4 !m-0 min-h-screen"

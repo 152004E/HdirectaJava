@@ -244,14 +244,17 @@ public class RutasPagina {
 
             // Determinar el rol para mostrar
             String userRole = "Usuario";
-            if (currentUser.getRole() != null) {
-                userRole = currentUser.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
-            }
-            model.addAttribute("userRole", userRole);
+            boolean isAdmin = false;
 
-            System.out.println("🔍 Usuario en sesión: " + currentUser.getName() + " - " + currentUser.getEmail());
+            if (currentUser.getRole() != null) {
+                isAdmin = currentUser.getRole().getIdRole() == 1;
+                userRole = isAdmin ? "Administrador" : "Cliente";
+            }
+
+            model.addAttribute("userRole", userRole);
+            model.addAttribute("isAdmin", isAdmin);
         } else {
-            System.out.println("⚠️ No hay usuario en sesión");
+            model.addAttribute("isAdmin", false);
         }
 
         return "DashBoard/actualizacionUsuario";
