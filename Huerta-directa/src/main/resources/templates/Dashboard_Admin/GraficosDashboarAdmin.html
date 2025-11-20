@@ -925,46 +925,60 @@
         }
 
         async function calcularEstadisticasUsuarios() {
-            const usuarios = await obtenerDatosUsuarios();
-            console.log('Calculando estadísticas para:', usuarios.length, 'usuarios');
-            
-            let total = usuarios.length;
-            let admins = usuarios.filter(u => u.idRole === 1).length;
-            let clientes = usuarios.filter(u => u.idRole === 2).length;
-            let otros = total - admins - clientes;
+    const usuarios = await obtenerDatosUsuarios();
+    console.log('Calculando estadísticas para:', usuarios.length, 'usuarios');
+    
+    let total = usuarios.length;
+    let admins = usuarios.filter(u => u.idRole === 1).length;
+    let clientes = usuarios.filter(u => u.idRole === 2).length;
+    let otros = total - admins - clientes;
 
-            // ESTADÍSTICAS DE GÉNERO CORREGIDAS
-            const generoStats = {
-                masculino: usuarios.filter(u => 
-                    u.gender === 'masculino' || u.gender === 'male' || u.gender === 'Masculino'
-                ).length,
-                femenino: usuarios.filter(u => 
-                    u.gender === 'femenino' || u.gender === 'female' || u.gender === 'Femenino'
-                ).length,
-                otro: usuarios.filter(u => 
-                    u.gender === 'otro' || u.gender === 'other' || u.gender === 'Otro' || 
-                    u.gender === 'prefiero-no-decir' || u.gender === 'no especificado'
-                ).length,
-                noEspecificado: usuarios.filter(u => 
-                    !u.gender || u.gender === '' || u.gender === null || u.gender === undefined
-                ).length
-            };
-
-            console.log('Estadísticas de género:', generoStats);
-
-            const edades = calcularRangosEdadUsuarios(usuarios);
-            const actividad = calcularActividadUsuarios(usuarios);
-
-            return { 
-                total, 
-                admins, 
-                clientes, 
-                otros,
-                genero: generoStats, 
-                edades, 
-                actividad 
-            };
+    // CONTEO MANUAL Y VERBOSE PARA DEBUG
+    let masculino = 0, femenino = 0, otro = 0, noEspecificado = 0;
+    
+    usuarios.forEach((user, index) => {
+        const gender = String(user.gender || '').toLowerCase().trim();
+        console.log(`Usuario ${index}: gender="${user.gender}" -> normalized="${gender}"`);
+        
+        if (gender === 'masculino' || gender === 'male') {
+            masculino++;
+        } else if (gender === 'femenino' || gender === 'female') {
+            femenino++;
+        } else if (gender === 'otro' || gender === 'other' || gender === 'prefiero-no-decir') {
+            otro++;
+        } else if (gender === '' || !gender) {
+            noEspecificado++;
+        } else {
+            // Si no coincide con ninguno, contar como "otro"
+            console.log(`Género no reconocido: "${gender}", contando como "otro"`);
+            otro++;
         }
+    });
+
+    const generoStats = {
+        masculino,
+        femenino,
+        otro,
+        noEspecificado
+    };
+
+    console.log('ESTADÍSTICAS FINALES DE GÉNERO:', generoStats);
+    console.log('Suma total:', Object.values(generoStats).reduce((a, b) => a + b, 0));
+    console.log('Total usuarios:', total);
+
+    const edades = calcularRangosEdadUsuarios(usuarios);
+    const actividad = calcularActividadUsuarios(usuarios);
+
+    return { 
+        total, 
+        admins, 
+        clientes, 
+        otros,
+        genero: generoStats, 
+        edades, 
+        actividad 
+    };
+}
 
         function calcularRangosEdadUsuarios(usuarios) {
             const rangos = { '18-25': 0, '26-35': 0, '36-45': 0, '46-55': 0, '56+': 0 };
@@ -1009,158 +1023,200 @@
             return actividad;
         }
 
-        async function inicializarGraficasUsuarios() {
-            try {
-                const stats = await calcularEstadisticasUsuarios();
-                
-                // Actualizar tarjetas
-                document.getElementById('totalUsers').textContent = stats.total;
-                document.getElementById('adminCount').textContent = stats.admins;
-                document.getElementById('clientCount').textContent = stats.clientes;
-                
-                // Calcular usuarios con género registrado (excluyendo "no especificado")
-                const usuariosConGenero = stats.total - stats.genero.noEspecificado;
-                document.getElementById('genderCount').textContent = usuariosConGenero;
+        // ===== FUNCIONES PARA USUARIOS =====
+async function inicializarGraficasUsuarios() {
+    try {
+        const stats = await calcularEstadisticasUsuarios();
+        
+        console.log('Datos para gráfica de género:', stats.genero);
+        
+        // Actualizar tarjetas
+        document.getElementById('totalUsers').textContent = stats.total;
+        document.getElementById('adminCount').textContent = stats.admins;
+        document.getElementById('clientCount').textContent = stats.clientes;
+        
+        // Calcular usuarios con género registrado (excluyendo "no especificado")
+        const usuariosConGenero = stats.total - stats.genero.noEspecificado;
+        document.getElementById('genderCount').textContent = usuariosConGenero;
 
-                // Destruir gráficas existentes
-                if (rolesChart) rolesChart.destroy();
-                if (genderChart) genderChart.destroy();
-                if (ageChart) ageChart.destroy();
-                if (activityChart) activityChart.destroy();
+        // Destruir gráficas existentes
+        if (rolesChart) rolesChart.destroy();
+        if (genderChart) genderChart.destroy();
+        if (ageChart) ageChart.destroy();
+        if (activityChart) activityChart.destroy();
 
-                const colors = {
-                    admin: '#10b981', 
-                    cliente: '#22c55e', 
-                    otro: '#84cc16',
-                    masculino: '#3b82f6', 
-                    femenino: '#ec4899', 
-                    otroGenero: '#f59e0b', 
-                    noEspecificado: '#6b7280'
-                };
+        const colors = {
+            admin: '#10b981', 
+            cliente: '#22c55e', 
+            otro: '#84cc16',
+            masculino: '#3b82f6', 
+            femenino: '#ec4899', 
+            otroGenero: '#f59e0b', 
+            noEspecificado: '#6b7280'
+        };
 
-                // 1. Gráfica de roles
-                const rolesCtx = document.getElementById('rolesChart').getContext('2d');
-                rolesChart = new Chart(rolesCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Administradores', 'Clientes', 'Otros'],
-                        datasets: [{
-                            data: [stats.admins, stats.clientes, stats.otros],
-                            backgroundColor: [colors.admin, colors.cliente, colors.otro],
-                            borderWidth: 3,
-                            borderColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { 
-                                position: 'bottom', 
-                                labels: { padding: 15 }
-                            }
-                        }
+        // 1. Gráfica de roles
+        const rolesCtx = document.getElementById('rolesChart').getContext('2d');
+        rolesChart = new Chart(rolesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Administradores', 'Clientes', 'Otros'],
+                datasets: [{
+                    data: [stats.admins, stats.clientes, stats.otros],
+                    backgroundColor: [colors.admin, colors.cliente, colors.otro],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { padding: 15 }
                     }
-                });
-
-                // 2. Gráfica de género (CORREGIDA)
-                const genderCtx = document.getElementById('genderChart').getContext('2d');
-                genderChart = new Chart(genderCtx, {
-                    type: 'pie',
-                    data: {
-                        labels: ['Masculino', 'Femenino', 'Otro', 'No especificado'],
-                        datasets: [{
-                            data: [
-                                stats.genero.masculino, 
-                                stats.genero.femenino, 
-                                stats.genero.otro, 
-                                stats.genero.noEspecificado
-                            ],
-                            backgroundColor: [
-                                colors.masculino, 
-                                colors.femenino, 
-                                colors.otroGenero, 
-                                colors.noEspecificado
-                            ],
-                            borderWidth: 3,
-                            borderColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { 
-                                position: 'bottom', 
-                                labels: { padding: 15 }
-                            }
-                        }
-                    }
-                });
-
-                // 3. Gráfica de edades
-                const ageCtx = document.getElementById('ageChart').getContext('2d');
-                ageChart = new Chart(ageCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(stats.edades),
-                        datasets: [{
-                            label: 'Usuarios por Edad',
-                            data: Object.values(stats.edades),
-                            backgroundColor: '#3b82f6',
-                            borderRadius: 8,
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { 
-                            legend: { display: false } 
-                        },
-                        scales: { 
-                            y: { 
-                                beginAtZero: true, 
-                                ticks: { stepSize: 1 }
-                            }
-                        }
-                    }
-                });
-
-                // 4. Gráfica de actividad
-                const activityCtx = document.getElementById('activityChart').getContext('2d');
-                activityChart = new Chart(activityCtx, {
-                    type: 'line',
-                    data: {
-                        labels: Object.keys(stats.actividad),
-                        datasets: [{
-                            label: 'Registros por Mes',
-                            data: Object.values(stats.actividad),
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4,
-                            pointBackgroundColor: '#10b981',
-                            pointRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { 
-                            y: { 
-                                beginAtZero: true,
-                                ticks: { stepSize: 1 }
-                            }
-                        }
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error inicializando gráficas de usuarios:', error);
+                }
             }
+        });
+
+        // 2. Gráfica de género - VERSIÓN CORREGIDA
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        
+        // Verificar que el canvas existe y es accesible
+        if (!genderCtx) {
+            console.error('No se pudo obtener el contexto del canvas genderChart');
+            return;
         }
+
+        // Preparar datos para la gráfica
+        const genderLabels = ['Masculino', 'Femenino', 'Otro', 'No especificado'];
+        const genderData = [
+            stats.genero.masculino, 
+            stats.genero.femenino, 
+            stats.genero.otro, 
+            stats.genero.noEspecificado
+        ];
+
+        console.log('Creando gráfica de género con datos:', {
+            labels: genderLabels,
+            data: genderData
+        });
+
+        genderChart = new Chart(genderCtx, {
+            type: 'pie',
+            data: {
+                labels: genderLabels,
+                datasets: [{
+                    data: genderData,
+                    backgroundColor: [
+                        colors.masculino, 
+                        colors.femenino, 
+                        colors.otroGenero, 
+                        colors.noEspecificado
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { 
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        // 3. Gráfica de edades
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        ageChart = new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.edades),
+                datasets: [{
+                    label: 'Usuarios por Edad',
+                    data: Object.values(stats.edades),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 8,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false } 
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // 4. Gráfica de actividad
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        activityChart = new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(stats.actividad),
+                datasets: [{
+                    label: 'Registros por Mes',
+                    data: Object.values(stats.actividad),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        console.log('Todas las gráficas de usuarios inicializadas correctamente');
+
+    } catch (error) {
+        console.error('Error inicializando gráficas de usuarios:', error);
+    }
+}
 
         // ===== FUNCIONES PARA VENTAS =====
         async function inicializarGraficasVentas() {
