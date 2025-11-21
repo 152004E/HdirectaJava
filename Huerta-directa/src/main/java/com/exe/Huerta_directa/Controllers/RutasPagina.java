@@ -298,8 +298,12 @@ public class RutasPagina {
     public String DashBoardGraficos() {
         return "DashBoard/GraficosDashboarCliente";
     }
+    @GetMapping("/GraficosCategoriaAdmin")
+    public String GraficosCategoriaAdmin() {
+        return "Dashboard_Admin/GraficosCategoriaAdmin";
+    }
 
-     @GetMapping("/GraficosDashboarAdmin")
+     @GetMapping("/GraficosDashboarAdmin")  
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
     }
