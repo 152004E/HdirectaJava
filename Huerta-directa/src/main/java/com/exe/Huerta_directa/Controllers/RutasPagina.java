@@ -9,14 +9,22 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import org.apache.xmlbeans.impl.store.CharUtil;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class RutasPagina {
@@ -298,16 +306,51 @@ public class RutasPagina {
         return "DashBoard/GraficosDashboarCliente";
     }
 
-    @GetMapping("/GraficosCategoriaAdmin")
-    public String GraficosCategoriaAdmin(Model model) {
+   @GetMapping("/GraficosCategoriaAdmin")
+public String GraficosCategoriaAdmin(Model model) {
 
-        List<ProductDTO> productos = productService.listarProducts();
+    Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
+    model.addAttribute("datosCategoria", datosCategoria);
 
-        model.addAttribute("productosCategoria", productos);
+   
 
-        return "Dashboard_Admin/GraficosCategoriaAdmin";
+    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+    datosCategoria.forEach(dataset::setValue);
+
+    JFreeChart chart = ChartFactory.createRingChart(
+            "Productos por categoria",
+            dataset,
+            true,
+            true,
+            false);
+
+    // RUTA CORRECTA PARA SPRING BOOT
+    String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
+    File carpeta = new File(rutaCarpeta);
+    carpeta.mkdirs();
+
+    File outputFile = new File(carpeta, "productosPorCategoria.png");
+
+
+    
+    try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
+         try {
+        Thread.sleep(3000); // 3 segundos
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
+    model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
+
+    List<ProductDTO> productosCategoria = productService.listarProducts();
+    model.addAttribute("productosCategoria", productosCategoria);
+
+    return "Dashboard_Admin/GraficosCategoriaAdmin";
+}
     @GetMapping("/GraficosDashboarAdmin")
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
