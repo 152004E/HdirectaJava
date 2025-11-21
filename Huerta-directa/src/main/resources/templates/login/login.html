@@ -368,43 +368,7 @@
                 class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
-          </div>
-
-          <!-- Fila para Género y Fecha de Nacimiento -->
-          <div class="form-row">
-            <!-- Género -->
-            <div class="form-group">
-              <label class="text-sm font-normal block">Género</label>
-              <div class="input-with-icon">
-                <span class="input-icon material-symbols-outlined text-[#888]">person</span>
-                <select 
-                  th:field="*{gender}" 
-                  required
-                  class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-                >
-                  <option value="">Seleccione...</option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Femenino</option>
-                  <option value="O">Otro</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Fecha de Nacimiento -->
-            <div class="form-group">
-              <label class="text-sm font-normal block">Fecha de Nacimiento</label>
-              <div class="input-with-icon">
-                <span class="input-icon material-symbols-outlined text-[#888]">cake</span>
-                <input
-                  type="date"
-                  th:field="*{birthDate}"
-                  required
-                  max="2006-12-31" 
-                  class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-                />
-              </div>
-            </div>
-          </div>
+          </div>         
 
           <!-- Contraseña - CORREGIDO: Solo un icono -->
           <div class="form-group">
@@ -425,20 +389,6 @@
                 class="password-toggle material-symbols-outlined text-[#888] cursor-pointer hover:text-[#333128]"
                 onclick="togglePassword('passwordRegistro', 'togglePasswordRegistro')"
               >visibility</span>
-            </div>
-          </div>
-
-          <!-- Teléfono (campo existente) -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Teléfono (opcional)</label>
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">phone</span>
-              <input
-                type="tel"
-                th:field="*{phone}"
-                placeholder="Ej: 3001234567"
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-              />
             </div>
           </div>
 
