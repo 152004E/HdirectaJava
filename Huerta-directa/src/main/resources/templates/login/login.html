@@ -25,7 +25,7 @@
       width: 908px;
       max-width: 100%;
       min-height: 480px;
-      height: 600px; /* Aumentado para acomodar nuevos campos */
+      height: 500px;
     }
 
     .form-container {
@@ -163,113 +163,6 @@
       -webkit-font-smoothing: antialiased;
       transition: all 0.5s;
     }
-
-    /* Estilos para los nuevos campos */
-    .form-group {
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-    }
-
-    select, input[type="date"] {
-      padding: 0.625rem 0.75rem;
-      width: 100%;
-      border: 2px solid #8dc84b;
-      border-radius: 15px;
-      outline: none;
-      font-size: 1rem;
-      color: #333128;
-      transition: all 0.3s ease;
-      background-color: white;
-      appearance: none; /* Remueve el estilo nativo del select */
-    }
-
-    select:focus, input[type="date"]:focus {
-      border-color: #004d00;
-      box-shadow: 0 0 5px rgba(0, 77, 0, 0.5);
-    }
-
-    select {
-      cursor: pointer;
-    }
-
-    /* Ajustes para el formulario de registro */
-    .sign-up form {
-      padding: 1rem 2.5rem;
-      overflow-y: auto;
-      max-height: 100%;
-    }
-
-    .sign-up form::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .sign-up form::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .sign-up form::-webkit-scrollbar-thumb {
-      background: #8dc84b;
-      border-radius: 10px;
-    }
-
-    .sign-up form::-webkit-scrollbar-thumb:hover {
-      background: #004d00;
-    }
-
-    /* CORRECCIONES ESPECÍFICAS */
-    
-    /* Iconos de género y fecha - posicionamiento correcto */
-    .input-with-icon {
-      position: relative;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    /* Ajuste de padding para inputs con iconos */
-    .input-with-icon input,
-    .input-with-icon select {
-      padding-left: 45px !important;
-      padding-right: 45px !important;
-    }
-
-    /* Solo un icono de contraseña visible */
-    .password-toggle {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    /* Ocultar el segundo icono de contraseña */
-    .password-toggle.hidden {
-      display: none;
-    }
-
-    /* Asegurar que los iconos no se superpongan con el texto */
-    input, select {
-      z-index: 1;
-      position: relative;
-    }
   </style>
 
   <body
@@ -339,56 +232,76 @@
           <img class="w-[100px] mb-2" src="/images/logo.png" alt="logo" />
 
           <!-- Nombre de usuario -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Nombre completo</label>
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">person</span>
+          <div class="w-full mb-2">
+            <label class="text-sm font-normal block">Nombre de usuario</label>
+            <div class="flex items-center min-w-[320px] relative">
+              <div class="absolute left-2">
+                <span class="material-symbols-outlined text-[#888] mt-1.5"
+                  >person</span
+                >
+              </div>
               <input
                 type="text"
                 th:field="*{name}"
                 placeholder="Ejemplo: Santiago Puentes"
-                required
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
 
           <!-- Correo electrónico -->
-          <div class="form-group">
+          <div class="w-full mb-2">
             <label class="text-sm font-normal block"
-              >Correo electrónico</label
+              >Ingrese su correo electronico</label
             >
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">mail</span>
+            <div class="flex items-center min-w-[320px] relative">
+              <div class="absolute left-2">
+                <span class="material-symbols-outlined text-[#888] mt-1.5"
+                  >mail</span
+                >
+              </div>
               <input
+                id="correoRegistr"
                 type="email"
                 th:field="*{email}"
                 placeholder="Ej: tunombre@correo.com"
                 required
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
-          </div>         
+          </div>
 
-          <!-- Contraseña - CORREGIDO: Solo un icono -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Contraseña</label>
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">lock_person</span>
+          <!-- Contraseña -->
+          <div class="w-full mb-2">
+            <label class="text-sm font-normal block"
+              >Ingrese su contraseña</label
+            >
+            <div class="flex items-center min-w-[320px] relative">
+              <div class="absolute left-2">
+                <span class="material-symbols-outlined text-[#888] mt-1.5"
+                  >lock_person</span
+                >
+              </div>
               <input
                 type="password"
                 id="passwordRegistro"
                 th:field="*{password}"
                 placeholder="Contraseña"
                 required
-                minlength="6"
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
-              <span
-                id="togglePasswordRegistro"
-                class="password-toggle material-symbols-outlined text-[#888] cursor-pointer hover:text-[#333128]"
-                onclick="togglePassword('passwordRegistro', 'togglePasswordRegistro')"
-              >visibility</span>
+              <div id="ojo" class="absolute right-5">
+                <span
+                  id="passwordOjoCrearCuenta"
+                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
+                  >visibility</span
+                >
+                <span
+                  id="passwordOjoOffCrearCuenta"
+                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
+                  >visibility_off</span
+                >
+              </div>
             </div>
           </div>
 
@@ -400,7 +313,6 @@
           </button>
         </form>
       </div>
-
       <!-- FORMULARIO INICIAR SESIÓN -->
       <div class="form-container sign-in">
         <form
@@ -417,38 +329,54 @@
             <label class="text-[15px] font-normal block"
               >Ingrese su correo electronico</label
             >
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">mail</span>
+            <div class="flex items-center min-w-[320px] relative">
+              <div class="absolute left-2">
+                <span class="material-symbols-outlined text-[#888] mt-1.5"
+                  >mail</span
+                >
+              </div>
               <input
+                id="correoRegistro"
                 type="email"
                 name="email"
                 placeholder="Ej: tunombre@correo.com"
                 required
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
 
-          <!-- Contraseña - CORREGIDO: Solo un icono -->
+          <!-- Contraseña -->
           <div class="w-full mb-2">
             <label class="text-[15px] font-normal block"
               >Ingrese su contraseña</label
             >
-            <div class="input-with-icon">
-              <span class="input-icon material-symbols-outlined text-[#888]">lock_person</span>
+            <div class="flex items-center min-w-[320px] relative">
+              <div class="absolute left-2">
+                <span class="material-symbols-outlined text-[#888] mt-1.5"
+                  >lock_person</span
+                >
+              </div>
               <input
                 id="passwordInput"
                 type="password"
                 name="password"
                 placeholder="ingrese su contraseña"
                 required
-                class="py-2.5 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
+                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
-              <span
-                id="togglePasswordLogin"
-                class="password-toggle material-symbols-outlined text-[#888] cursor-pointer hover:text-[#333128]"
-                onclick="togglePassword('passwordInput', 'togglePasswordLogin')"
-              >visibility</span>
+              <div id="ojo" class="absolute right-5">
+                <span
+                  id="passwordOjo"
+                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
+                  >visibility</span
+                >
+                <span
+                  id="passwordOjoOff"
+                  class="material-symbols-outlined text-[#888] mt-1.5 cursor-pointer hover:text-[#333128] hidden"
+                  >visibility_off</span
+                >
+              </div>
             </div>
           </div>
 
@@ -491,6 +419,7 @@
               Registrate con tu informacion para ingresar
             </p>
             <button
+              
               class="bg-transparent border border-white text-[17px] inline-block py-3 px-8 text-white rounded-[10px] capitalize transition-all hover:bg-[#004d00] hover:border-white font-semibold text-xs tracking-wider !cursor-pointer"
               id="register"
             >
@@ -501,43 +430,6 @@
       </div>
     </div>
 
-    <script>
-      // Función para alternar visibilidad de contraseña
-      function togglePassword(inputId, toggleId) {
-        const passwordInput = document.getElementById(inputId);
-        const toggleIcon = document.getElementById(toggleId);
-        
-        if (passwordInput.type === 'password') {
-          passwordInput.type = 'text';
-          toggleIcon.textContent = 'visibility_off';
-        } else {
-          passwordInput.type = 'password';
-          toggleIcon.textContent = 'visibility';
-        }
-      }
-
-      // Script para manejar la animación del formulario
-      document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('container');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
-
-        registerBtn.addEventListener('click', () => {
-          container.classList.add('active');
-        });
-
-        loginBtn.addEventListener('click', () => {
-          container.classList.remove('active');
-        });
-
-        // Validación de fecha de nacimiento (mínimo 18 años)
-        const birthDateInput = document.querySelector('input[type="date"]');
-        if (birthDateInput) {
-          const today = new Date();
-          const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-          birthDateInput.max = minDate.toISOString().split('T')[0];
-        }
-      });
-    </script>
+    <script src="/JS/scriptLogIn.js"></script>
   </body>
 </html>

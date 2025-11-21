@@ -21,19 +21,16 @@ import java.util.List;
 @Controller
 public class RutasPagina {
 
-
     private final ProductService productService;
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public  RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+    public RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
         this.productService = productService;
         this.userService = userService;
         this.userRepository = userRepository;
 
     }
-
-
 
     /**
      * Método helper para obtener la página de inicio según el rol del usuario
@@ -90,7 +87,7 @@ public class RutasPagina {
 
         System.out.println("📦 Total productos cargados: " + productos.size());
         System.out.println("👤 MIS PRODUCTOS del usuario " + userSession.getName() + ": " +
-            productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
+                productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
 
         model.addAttribute("productos", productos);
         model.addAttribute("currentUser", userSession);
@@ -106,7 +103,7 @@ public class RutasPagina {
     @GetMapping("/agregar_producto")
     public String mostrarFormulario(
             HttpSession session,
-           RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
 
         User currentUser = (User) session.getAttribute("user");
 
@@ -115,9 +112,9 @@ public class RutasPagina {
             return "redirect:/login";
         }
 
-        //Obtiene el usuario actualizado de la base de datos
-        User user = userRepository.findById (currentUser.getId())
-                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Validar que tenga teléfono y dirección completos
         if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
@@ -132,7 +129,7 @@ public class RutasPagina {
             return "redirect:/actualizacionUsuario";
         }
 
-        //Si todo está bien, mostrar el formulario
+        // Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
     }
     // agregar producto desde agregar producto admin
@@ -140,7 +137,7 @@ public class RutasPagina {
     @GetMapping("/DashBoardAdminAgregarProducto")
     public String mostrarFormularioAdmin(
             HttpSession session,
-           RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
 
         User currentUser = (User) session.getAttribute("user");
 
@@ -149,9 +146,9 @@ public class RutasPagina {
             return "redirect:/login";
         }
 
-        //Obtiene el usuario actualizado de la base de datos
-        User user = userRepository.findById (currentUser.getId())
-                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Validar que tenga teléfono y dirección completos
         if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
@@ -166,7 +163,7 @@ public class RutasPagina {
             return "redirect:/actualizacionUsuario";
         }
 
-        //Si todo está bien, mostrar el formulario
+        // Si todo está bien, mostrar el formulario
         return "Dashboard_Admin/DashBoardAdminAgregarProducto";
     }
 
@@ -260,9 +257,9 @@ public class RutasPagina {
         return "DashBoard/actualizacionUsuario";
     }
 
-    //Este getMapping es para el dashboarAdmin
+    // Este getMapping es para el dashboarAdmin
 
-     @GetMapping("/actualizacionUsuarioAdmin")
+    @GetMapping("/actualizacionUsuarioAdmin")
     public String actualizacionUsuarioAdmin(HttpSession session, Model model) {
         // Obtener usuario desde la sesión
         User currentUser = (User) session.getAttribute("user");
@@ -284,11 +281,13 @@ public class RutasPagina {
 
         return "Dashboard_Admin/actualizacionUsuarioAdmin";
     }
-    /*@GetMapping("/MensajesComentarios")
-    // public String MensajesComentarios() {
-    //     return "DashBoard/MensajesComentarios";
-     }
-    */
+
+    /*
+     * @GetMapping("/MensajesComentarios")
+     * // public String MensajesComentarios() {
+     * // return "DashBoard/MensajesComentarios";
+     * }
+     */
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
@@ -298,12 +297,18 @@ public class RutasPagina {
     public String DashBoardGraficos() {
         return "DashBoard/GraficosDashboarCliente";
     }
+
     @GetMapping("/GraficosCategoriaAdmin")
-    public String GraficosCategoriaAdmin() {
+    public String GraficosCategoriaAdmin(Model model) {
+
+        List<ProductDTO> productos = productService.listarProducts();
+
+        model.addAttribute("productosCategoria", productos);
+
         return "Dashboard_Admin/GraficosCategoriaAdmin";
     }
 
-     @GetMapping("/GraficosDashboarAdmin")  
+    @GetMapping("/GraficosDashboarAdmin")
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
     }
@@ -313,11 +318,12 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    /* @GetMapping("/Quienes_somos")
-    // public String mostrarQuienes_somos() {
-    //     return "Quienes_somos/quienes_somos";
-    // }
-    */
+    /*
+     * @GetMapping("/Quienes_somos")
+     * // public String mostrarQuienes_somos() {
+     * // return "Quienes_somos/quienes_somos";
+     * // }
+     */
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {
@@ -499,8 +505,6 @@ public class RutasPagina {
             // Establecer fecha de creación
             userDTO.setCreacionDate(LocalDate.now());
 
-
-
             UserDTO adminCreado = userService.crearUser(userDTO);
 
             // Log de la acción para auditoria
@@ -521,6 +525,4 @@ public class RutasPagina {
         }
     }
 
-
 }
-
