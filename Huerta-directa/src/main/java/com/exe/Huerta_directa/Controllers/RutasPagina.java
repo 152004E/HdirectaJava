@@ -306,52 +306,51 @@ public class RutasPagina {
         return "DashBoard/GraficosDashboarCliente";
     }
 
-    @GetMapping("/GraficosCategoriaAdmin")
-    public String GraficosCategoriaAdmin(Model model) {
+   @GetMapping("/GraficosCategoriaAdmin")
+public String GraficosCategoriaAdmin(Model model) {
 
-        Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
-        model.addAttribute("datosCategoria", datosCategoria);
+    Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
+    model.addAttribute("datosCategoria", datosCategoria);
 
-        // delay para que se pueda recargar bien la imgagen
+   
 
-        try {
-            Thread.sleep(3000); // 3 segundos de espera
+    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+    datosCategoria.forEach(dataset::setValue);
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    JFreeChart chart = ChartFactory.createRingChart(
+            "Productos por categoria",
+            dataset,
+            true,
+            true,
+            false);
 
-        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
-        datosCategoria.forEach(dataset::setValue);
+    // RUTA CORRECTA PARA SPRING BOOT
+    String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
+    File carpeta = new File(rutaCarpeta);
+    carpeta.mkdirs();
 
-        JFreeChart chart = ChartFactory.createRingChart(
-                "Pruductos por categoria",
-                dataset,
-                true,
-                true,
-                false);
+    File outputFile = new File(carpeta, "productosPorCategoria.png");
 
-        // *** RUTA REAL EN TIEMPO DE EJECUCIÓN ***
-        String rutaCarpeta = new File("graficos").getAbsolutePath();
-        File carpeta = new File(rutaCarpeta);
-        carpeta.mkdirs(); // crea la carpeta si no existe
 
-        File outputFile = new File(carpeta, "productosPorCategoria.png");
-
-        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-            ChartUtils.writeChartAsPNG(fos, chart, 600, 400);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png");
-
-        List<ProductDTO> productosCategoria = productService.listarProducts();
-        model.addAttribute("productosCategoria", productosCategoria);
-
-        return "Dashboard_Admin/GraficosCategoriaAdmin";
+    
+    try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
+         try {
+        Thread.sleep(3000); // 3 segundos
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
+    model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
+
+    List<ProductDTO> productosCategoria = productService.listarProducts();
+    model.addAttribute("productosCategoria", productosCategoria);
+
+    return "Dashboard_Admin/GraficosCategoriaAdmin";
+}
     @GetMapping("/GraficosDashboarAdmin")
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
