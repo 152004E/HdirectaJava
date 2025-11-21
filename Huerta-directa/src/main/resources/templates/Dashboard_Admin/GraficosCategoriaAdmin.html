@@ -54,30 +54,43 @@
         </div>
         <div>
           <table
-            class="min-w-full border border-gray-200 rounded-lg overflow-hidden shadow-md"
+            class="!w-full !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200"
           >
-            <thead class="bg-[#8dc84b] text-white ">
+            <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
               <tr>
-                <th class="!px-4 !py-2 text-left text-xl font-semibold uppercase">
-                 nombre del producto
-                </th>
-                <th class="!px-4 !py-2 text-left text-xl font-semibold uppercase">
-                  Categoría
-                </th>
-                <th class="!px-4 !py-2 text-left text-xl font-semibold uppercase">Unidad de medida</th>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Nombre</th>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Categoría</th>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Unidad</th>
               </tr>
             </thead>
 
-            <tbody class="bg-white divide-y divide-gray-100">
-              <tr th:each="fila : ${datosCategorias}">
+            <tbody class="!divide-y !divide-gray-200">
+              <!-- Si NO hay productos -->
+              <tr
+                th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
+              >
                 <td
-                  class="px-4 py-2 text-sm font-medium text-gray-700"
-                  th:text="${fila[0]}"
-                >emerson</td>
+                  colspan="3"
+                  class="!text-center !py-6 !text-gray-500 !font-medium"
+                >
+                  No se encontraron productos
+                </td>
+              </tr>
+
+              <!-- Si SÍ hay productos -->
+              <tr
+                th:each="p : ${productosCategoria}"
+                class="hover:bg-gray-200 !transition-all !duration-500"
+              >
                 <td
-                  class="px-4 py-2 text-sm text-gray-700"
-                  th:text="${fila[1]}"
+                  class="!px-6 !py-3 !text-gray-800"
+                  th:text="${p.nameProduct}"
                 ></td>
+                <td
+                  class="!px-6 !py-3 !capitalize !text-gray-800"
+                  th:text="${p.category}"
+                ></td>
+                <td class="!px-6 !py-3 !text-gray-800" th:text="${p.unit}"></td>
               </tr>
             </tbody>
           </table>
