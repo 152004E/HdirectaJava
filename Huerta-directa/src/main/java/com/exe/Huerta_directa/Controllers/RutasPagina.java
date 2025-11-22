@@ -137,6 +137,7 @@ public class RutasPagina {
     }
     // agregar producto desde agregar producto admin
 
+
     @GetMapping("/DashBoardAdminAgregarProducto")
     public String mostrarFormularioAdmin(
             HttpSession session,
@@ -357,7 +358,7 @@ public class RutasPagina {
 
     @GetMapping("/Lacteos")
     public String mostrarLacteos(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
+                List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
         model.addAttribute("categoria", "Lácteos");
         return "ProductosCategorias/Lacteos";
