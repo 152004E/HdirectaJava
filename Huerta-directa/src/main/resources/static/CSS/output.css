@@ -95,7 +95,6 @@
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --blur-lg: 16px;
     --default-transition-duration: 150ms;
@@ -699,9 +698,6 @@
   .\!w-24 {
     width: calc(var(--spacing) * 24) !important;
   }
-  .\!w-96 {
-    width: calc(var(--spacing) * 96) !important;
-  }
   .\!w-\[200px\] {
     width: 200px !important;
   }
@@ -713,9 +709,6 @@
   }
   .\!w-\[700px\] {
     width: 700px !important;
-  }
-  .\!w-\[800px\] {
-    width: 800px !important;
   }
   .\!w-full {
     width: 100% !important;

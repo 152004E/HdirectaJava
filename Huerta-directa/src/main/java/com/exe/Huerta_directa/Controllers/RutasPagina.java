@@ -9,7 +9,6 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
-import org.apache.xmlbeans.impl.store.CharUtil;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -141,6 +140,7 @@ public class RutasPagina {
         return "Agreagar_producto/Agregar_producto";
     }
     // agregar producto desde agregar producto admin
+
 
     @GetMapping("/DashBoardAdminAgregarProducto")
     public String mostrarFormularioAdmin(
@@ -410,7 +410,7 @@ public String GraficosCategoriaAdmin(Model model) {
 
     @GetMapping("/Lacteos")
     public String mostrarLacteos(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
+                List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
         model.addAttribute("categoria", "Lácteos");
         return "ProductosCategorias/Lacteos";
