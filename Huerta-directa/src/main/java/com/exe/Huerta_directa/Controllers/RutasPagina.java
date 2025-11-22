@@ -9,7 +9,6 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
-import org.apache.xmlbeans.impl.store.CharUtil;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
