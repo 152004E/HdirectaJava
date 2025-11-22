@@ -3,6 +3,7 @@ package com.exe.Huerta_directa.Service;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
 
@@ -29,4 +30,7 @@ public interface ProductService {
     boolean existeProductoPorUsuario(String nombre, String Categoria, Long productId);
 
     long contarTotalProductos();
+    
+    //esto es para hacer los graficos por categorias
+    Map<String, Long> contarProductosPorCategoria();
 }

@@ -9,31 +9,36 @@ import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
+import org.apache.xmlbeans.impl.store.CharUtil;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class RutasPagina {
-
 
     private final ProductService productService;
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public  RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+    public RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
         this.productService = productService;
         this.userService = userService;
         this.userRepository = userRepository;
 
     }
-
-
 
     /**
      * Método helper para obtener la página de inicio según el rol del usuario
@@ -90,7 +95,7 @@ public class RutasPagina {
 
         System.out.println("📦 Total productos cargados: " + productos.size());
         System.out.println("👤 MIS PRODUCTOS del usuario " + userSession.getName() + ": " +
-            productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
+                productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
 
         model.addAttribute("productos", productos);
         model.addAttribute("currentUser", userSession);
@@ -106,7 +111,7 @@ public class RutasPagina {
     @GetMapping("/agregar_producto")
     public String mostrarFormulario(
             HttpSession session,
-           RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
 
         User currentUser = (User) session.getAttribute("user");
 
@@ -115,9 +120,9 @@ public class RutasPagina {
             return "redirect:/login";
         }
 
-        //Obtiene el usuario actualizado de la base de datos
-        User user = userRepository.findById (currentUser.getId())
-                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Validar que tenga teléfono y dirección completos
         if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
@@ -132,7 +137,7 @@ public class RutasPagina {
             return "redirect:/actualizacionUsuario";
         }
 
-        //Si todo está bien, mostrar el formulario
+        // Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
     }
     // agregar producto desde agregar producto admin
@@ -141,7 +146,7 @@ public class RutasPagina {
     @GetMapping("/DashBoardAdminAgregarProducto")
     public String mostrarFormularioAdmin(
             HttpSession session,
-           RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
 
         User currentUser = (User) session.getAttribute("user");
 
@@ -150,9 +155,9 @@ public class RutasPagina {
             return "redirect:/login";
         }
 
-        //Obtiene el usuario actualizado de la base de datos
-        User user = userRepository.findById (currentUser.getId())
-                .orElseThrow(() -> new  RuntimeException("Usuario no encontrado"));
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Validar que tenga teléfono y dirección completos
         if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
@@ -167,7 +172,7 @@ public class RutasPagina {
             return "redirect:/actualizacionUsuario";
         }
 
-        //Si todo está bien, mostrar el formulario
+        // Si todo está bien, mostrar el formulario
         return "Dashboard_Admin/DashBoardAdminAgregarProducto";
     }
 
@@ -261,9 +266,9 @@ public class RutasPagina {
         return "DashBoard/actualizacionUsuario";
     }
 
-    //Este getMapping es para el dashboarAdmin
+    // Este getMapping es para el dashboarAdmin
 
-     @GetMapping("/actualizacionUsuarioAdmin")
+    @GetMapping("/actualizacionUsuarioAdmin")
     public String actualizacionUsuarioAdmin(HttpSession session, Model model) {
         // Obtener usuario desde la sesión
         User currentUser = (User) session.getAttribute("user");
@@ -285,11 +290,13 @@ public class RutasPagina {
 
         return "Dashboard_Admin/actualizacionUsuarioAdmin";
     }
-    /*@GetMapping("/MensajesComentarios")
-    // public String MensajesComentarios() {
-    //     return "DashBoard/MensajesComentarios";
-     }
-    */
+
+    /*
+     * @GetMapping("/MensajesComentarios")
+     * // public String MensajesComentarios() {
+     * // return "DashBoard/MensajesComentarios";
+     * }
+     */
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
@@ -300,7 +307,52 @@ public class RutasPagina {
         return "DashBoard/GraficosDashboarCliente";
     }
 
-     @GetMapping("/GraficosDashboarAdmin")
+   @GetMapping("/GraficosCategoriaAdmin")
+public String GraficosCategoriaAdmin(Model model) {
+
+    Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
+    model.addAttribute("datosCategoria", datosCategoria);
+
+   
+
+    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+    datosCategoria.forEach(dataset::setValue);
+
+    JFreeChart chart = ChartFactory.createRingChart(
+            "Productos por categoria",
+            dataset,
+            true,
+            true,
+            false);
+
+    // RUTA CORRECTA PARA SPRING BOOT
+    String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
+    File carpeta = new File(rutaCarpeta);
+    carpeta.mkdirs();
+
+    File outputFile = new File(carpeta, "productosPorCategoria.png");
+
+
+    
+    try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
+         try {
+        Thread.sleep(3000); // 3 segundos
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
+
+    List<ProductDTO> productosCategoria = productService.listarProducts();
+    model.addAttribute("productosCategoria", productosCategoria);
+
+    return "Dashboard_Admin/GraficosCategoriaAdmin";
+}
+    @GetMapping("/GraficosDashboarAdmin")
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
     }
@@ -310,11 +362,12 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    /* @GetMapping("/Quienes_somos")
-    // public String mostrarQuienes_somos() {
-    //     return "Quienes_somos/quienes_somos";
-    // }
-    */
+    /*
+     * @GetMapping("/Quienes_somos")
+     * // public String mostrarQuienes_somos() {
+     * // return "Quienes_somos/quienes_somos";
+     * // }
+     */
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {
@@ -496,8 +549,6 @@ public class RutasPagina {
             // Establecer fecha de creación
             userDTO.setCreacionDate(LocalDate.now());
 
-
-
             UserDTO adminCreado = userService.crearUser(userDTO);
 
             // Log de la acción para auditoria
@@ -518,6 +569,4 @@ public class RutasPagina {
         }
     }
 
-
 }
-

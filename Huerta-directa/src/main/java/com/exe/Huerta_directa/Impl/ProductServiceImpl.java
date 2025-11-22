@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> listarProductosPorUsuario(Long userID){
+    public List<ProductDTO> listarProductosPorUsuario(Long userID) {
         return productRepository.findByUserId(userID)
                 .stream()
                 .map(this::convertirADTO)
@@ -78,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-     @Override
+    @Override
     public List<ProductDTO> buscarPorNombre(String nombre) {
         return productRepository.findByNameProductContainingIgnoreCase(nombre).stream()
                 .map(this::convertirADTO)
@@ -104,12 +105,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean existeProductoPorUsuario(String nombre, String categoria, Long userId) {
-        try{
+        try {
             List<Product> productos = productRepository.findAll();
             return productos.stream()
                     .anyMatch(p -> p.getNameProduct().trim().equalsIgnoreCase(nombre.trim()) &&
                             p.getCategory().trim().equalsIgnoreCase(categoria.trim()) &&
-                            p.getUser()  != null &&
+                            p.getUser() != null &&
                             p.getUser().getId().equals(userId));
         } catch (Exception e) {
             return false;
@@ -126,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-    //Convertir Entity a DTO
+    // Convertir Entity a DTO
     private ProductDTO convertirADTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setIdProduct(product.getIdProduct());
@@ -186,6 +187,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
+    // La implementacion para los graficos por categoria
+    @Override
+    public Map<String, Long> contarProductosPorCategoria() {
+        return listarProducts().stream()
+                .collect(Collectors.groupingBy(ProductDTO::getCategory, Collectors.counting()));
+    }
 
 }

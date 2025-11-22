@@ -25,7 +25,7 @@
       width: 908px;
       max-width: 100%;
       min-height: 480px;
-      height: 600px; /* Aumentado para acomodar nuevos campos */
+      height: 500px;
     }
 
     .form-container {
@@ -163,68 +163,6 @@
       -webkit-font-smoothing: antialiased;
       transition: all 0.5s;
     }
-
-    /* Estilos para los nuevos campos */
-    .form-group {
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-    }
-
-    select, input[type="date"] {
-      padding: 0.625rem 0.75rem;
-      width: 100%;
-      border: 2px solid #8dc84b;
-      border-radius: 15px;
-      outline: none;
-      font-size: 1rem;
-      color: #333128;
-      transition: all 0.3s ease;
-      background-color: white;
-    }
-
-    select:focus, input[type="date"]:focus {
-      border-color: #004d00;
-      box-shadow: 0 0 5px rgba(0, 77, 0, 0.5);
-    }
-
-    select {
-      cursor: pointer;
-    }
-
-    /* Ajustes para el formulario de registro */
-    .sign-up form {
-      padding: 1rem 2.5rem;
-      overflow-y: auto;
-      max-height: 100%;
-    }
-
-    .sign-up form::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .sign-up form::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    .sign-up form::-webkit-scrollbar-thumb {
-      background: #8dc84b;
-      border-radius: 10px;
-    }
-
-    .sign-up form::-webkit-scrollbar-thumb:hover {
-      background: #004d00;
-    }
   </style>
 
   <body
@@ -294,8 +232,8 @@
           <img class="w-[100px] mb-2" src="/images/logo.png" alt="logo" />
 
           <!-- Nombre de usuario -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Nombre completo</label>
+          <div class="w-full mb-2">
+            <label class="text-sm font-normal block">Nombre de usuario</label>
             <div class="flex items-center min-w-[320px] relative">
               <div class="absolute left-2">
                 <span class="material-symbols-outlined text-[#888] mt-1.5"
@@ -306,16 +244,15 @@
                 type="text"
                 th:field="*{name}"
                 placeholder="Ejemplo: Santiago Puentes"
-                required
                 class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
             </div>
           </div>
 
           <!-- Correo electrónico -->
-          <div class="form-group">
+          <div class="w-full mb-2">
             <label class="text-sm font-normal block"
-              >Correo electrónico</label
+              >Ingrese su correo electronico</label
             >
             <div class="flex items-center min-w-[320px] relative">
               <div class="absolute left-2">
@@ -334,53 +271,11 @@
             </div>
           </div>
 
-          <!-- Fila para Género y Fecha de Nacimiento -->
-          <div class="form-row">
-            <!-- Género -->
-            <div class="form-group">
-              <label class="text-sm font-normal block">Género</label>
-              <div class="flex items-center min-w-full relative">
-                <div class="absolute left-2">
-                  <span class="material-symbols-outlined text-[#888] mt-1.5"
-                    >person</span
-                  >
-                </div>
-                <select 
-                  th:field="*{gender}" 
-                  required
-                  class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-                >
-                  <option value="">Seleccione...</option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Femenino</option>
-                  <option value="O">Otro</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Fecha de Nacimiento -->
-            <div class="form-group">
-              <label class="text-sm font-normal block">Fecha de Nacimiento</label>
-              <div class="flex items-center min-w-full relative">
-                <div class="absolute left-2">
-                  <span class="material-symbols-outlined text-[#888] mt-1.5"
-                    >cake</span
-                  >
-                </div>
-                <input
-                  type="date"
-                  th:field="*{birthDate}"
-                  required
-                  max="2006-12-31" 
-                  class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-                />
-              </div>
-            </div>
-          </div>
-
           <!-- Contraseña -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Contraseña</label>
+          <div class="w-full mb-2">
+            <label class="text-sm font-normal block"
+              >Ingrese su contraseña</label
+            >
             <div class="flex items-center min-w-[320px] relative">
               <div class="absolute left-2">
                 <span class="material-symbols-outlined text-[#888] mt-1.5"
@@ -393,7 +288,6 @@
                 th:field="*{password}"
                 placeholder="Contraseña"
                 required
-                minlength="6"
                 class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
               />
               <div id="ojo" class="absolute right-5">
@@ -411,24 +305,6 @@
             </div>
           </div>
 
-          <!-- Teléfono (campo existente) -->
-          <div class="form-group">
-            <label class="text-sm font-normal block">Teléfono (opcional)</label>
-            <div class="flex items-center min-w-[320px] relative">
-              <div class="absolute left-2">
-                <span class="material-symbols-outlined text-[#888] mt-1.5"
-                  >phone</span
-                >
-              </div>
-              <input
-                type="tel"
-                th:field="*{phone}"
-                placeholder="Ej: 3001234567"
-                class="py-2.5 px-9 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-              />
-            </div>
-          </div>
-
           <button
             type="submit"
             class="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] transition-all duration-[1s] mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer"
@@ -437,7 +313,6 @@
           </button>
         </form>
       </div>
-
       <!-- FORMULARIO INICIAR SESIÓN -->
       <div class="form-container sign-in">
         <form
@@ -544,6 +419,7 @@
               Registrate con tu informacion para ingresar
             </p>
             <button
+              
               class="bg-transparent border border-white text-[17px] inline-block py-3 px-8 text-white rounded-[10px] capitalize transition-all hover:bg-[#004d00] hover:border-white font-semibold text-xs tracking-wider !cursor-pointer"
               id="register"
             >
@@ -554,55 +430,6 @@
       </div>
     </div>
 
-    <script>
-      // Script para manejar la visibilidad de contraseñas
-      document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('container');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
-
-        registerBtn.addEventListener('click', () => {
-          container.classList.add('active');
-        });
-
-        loginBtn.addEventListener('click', () => {
-          container.classList.remove('active');
-        });
-
-        // Manejo de visibilidad de contraseñas
-        const passwordInputs = document.querySelectorAll('input[type="password"]');
-        
-        passwordInputs.forEach(input => {
-          const parent = input.closest('.relative');
-          const showIcon = parent.querySelector('#passwordOjo, #passwordOjoCrearCuenta');
-          const hideIcon = parent.querySelector('#passwordOjoOff, #passwordOjoOffCrearCuenta');
-          
-          if (showIcon && hideIcon) {
-            showIcon.classList.remove('hidden');
-            hideIcon.classList.add('hidden');
-            
-            showIcon.addEventListener('click', () => {
-              input.type = 'text';
-              showIcon.classList.add('hidden');
-              hideIcon.classList.remove('hidden');
-            });
-            
-            hideIcon.addEventListener('click', () => {
-              input.type = 'password';
-              hideIcon.classList.add('hidden');
-              showIcon.classList.remove('hidden');
-            });
-          }
-        });
-
-        // Validación de fecha de nacimiento (mínimo 18 años)
-        const birthDateInput = document.querySelector('input[type="date"]');
-        if (birthDateInput) {
-          const today = new Date();
-          const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-          birthDateInput.max = minDate.toISOString().split('T')[0];
-        }
-      });
-    </script>
+    <script src="/JS/scriptLogIn.js"></script>
   </body>
 </html>
