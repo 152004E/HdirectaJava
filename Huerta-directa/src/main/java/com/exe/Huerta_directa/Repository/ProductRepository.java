@@ -14,10 +14,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findBynameProduct(String nameProduct);
 
-    
-    
-    // AGREGAR ESTOS DOS MÉTODOS:
+    // Metodo para buscar productos por el ID del usuario
+    List<Product> findByUserId(Long userId);
+
     List<Product> findByNameProductContainingIgnoreCase(String nameProduct);
     
     List<Product> findByCategoryIgnoreCase(String category);
+
+    // Método para verificar duplicados exactos
+    boolean existsByNameProductIgnoreCaseAndCategoryIgnoreCase(String nameProduct, String category);
 }

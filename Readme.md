@@ -127,4 +127,61 @@ mvn spring-boot:run
 
 ```bash
 http://localhost:8080
+
 ```
+
+### 🌐 application.properties
+
+
+spring.application.name=Huerta-directa
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/huerta_directa
+spring.datasource.username=postgres
+#spring.datasource.password=2424
+
+
+
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false
+# Desactiva cach? para ver cambios sin reiniciar
+spring.thymeleaf.cache=false
+
+# Ubicaci?n y extensi?n por defecto
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+# (Opcional) Modo de plantillas
+spring.thymeleaf.mode=HTML
+
+logging.level.org.thymeleaf=TRACE
+
+# Ruta para subir im�genes
+upload.path=C:/HuertaUploads
+
+# Tama�o m�ximo de archivo individual
+spring.servlet.multipart.max-file-size=10MB
+# Tama�o m�ximo de request completo
+spring.servlet.multipart.max-request-size=10MB
+
+# Puerto salida
+server.port=8085
+
+# Access Token de PRUEBA (para desarrollo)
+mercadopago.access_token=TEST-2739771912434898-111023-440e0fc48167af26ffe666b77d3d947f-2272938327
+
+# URLs de retorno (ajusta el puerto si es necesario)
+mercadopago.success_url=http://localhost:8085/payment/success
+mercadopago.failure_url=http://localhost:8085/payment/failure
+mercadopago.pending_url=http://localhost:8085/payment/pending
+
+# IA
+token de grok = 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

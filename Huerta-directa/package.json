@@ -9,8 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "@tailwindcss/cli": "^4.1.16",
     "tailwindcss": "^4.1.16"
+=======
+    "@tailwindcss/cli": "^4.1.17",
+    "tailwindcss": "^4.1.17"
+>>>>>>> 6b036c50063f1a866d8422be4e0a3dd95b1e9fa5
   },
   "description": ""
 }

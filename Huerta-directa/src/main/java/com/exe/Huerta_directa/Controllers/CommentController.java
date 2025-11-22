@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.ui.Model; // ✅ IMPORT CORRECTO
@@ -73,6 +74,85 @@ public class CommentController {
 
         // Renderiza la plantilla Quienes_somos.html
         return "Quienes_somos/quienes_somos";
+    }
+
+    @GetMapping("/MensajesComentarios")
+    public String mostrarMensajesComentarios(Model model, HttpSession session) {
+        // Obtener usuario de la sesión
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Debe+iniciar+sesión";
+        }
+
+        // Obtener todos los comentarios o filtrar por usuario según necesites
+        List<Comment> comments = commentService.obtenerComentariosPorUsuario(userSession.getId());
+
+        // O si quieres todos: commentService.obtenerTodosLosComentarios();
+
+        // Añadir comentarios al modelo
+        model.addAttribute("comments", comments);
+
+        return "DashBoard/MensajesComentarios";
+    }
+
+    //Este apartado esel get mappin de comentarios pero para le admin
+     @GetMapping("/MensajesComentariosAdmin")
+    public String mostrarMensajesComentariosAdmin(Model model, HttpSession session) {
+        // Obtener usuario de la sesión
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            return "redirect:/login?error=session&message=Debe+iniciar+sesión";
+        }
+
+        // Obtener todos los comentarios o filtrar por usuario según necesites
+        List<Comment> comments = commentService.obtenerComentariosPorUsuario(userSession.getId());
+
+        // O si quieres todos: commentService.obtenerTodosLosComentarios();
+
+        // Añadir comentarios al modelo
+        model.addAttribute("comments", comments);
+
+        return "Dashboard_Admin/MensajesComentariosAdmin";
+    }
+
+    @GetMapping("/deleteComment/{id}")
+    public RedirectView eliminarComentario(@PathVariable Long id) {
+        commentService.eliminarComment(id);
+        return new RedirectView("/MensajesComentarios?deleted=true");
+    }
+
+    @GetMapping("/editComment/{id}")
+    public String editarComentario(@PathVariable Long id, Model model) {
+        CommentDTO comment = commentService.obtenerCommentPorId(id);
+        model.addAttribute("comment", comment);
+        return "DashBoard/EditarComentario";
+    }
+
+    @PostMapping("/actualizarComentario/{id}")
+    public RedirectView actualizarCome(@PathVariable long id, @RequestParam("commentCommenter") String commentCommenter,
+            HttpSession session) {
+        try {
+            // verificar sesion
+            User userSesion = (User) session.getAttribute("user");
+            if (userSesion == null) {
+                return new RedirectView("redirect:/login?error=session&message=Debe+iniciar+sesión");
+            }
+
+            // crear dto con los datos actualizados
+
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setCommentCommenter(commentCommenter);
+            commentDTO.setCreationComment(java.time.LocalDate.now());
+
+            // llamar al servicio
+
+            commentService.actualizarComment(id, commentDTO);
+            return new RedirectView("/MensajesComentarios?success=Comentario+actualizado+correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("/MensajesComentarios?error=No+se+pudo+actualizar+el+comentario");
+        }
+
     }
 
 }

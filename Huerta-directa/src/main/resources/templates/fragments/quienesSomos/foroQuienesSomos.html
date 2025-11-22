@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <body class="min-h-screen flex flex-col">
-   <section
-   th:fragment="foroQuienesSomos"
-   class="bg-white w-[1400px] mx-auto my-20 p-8 rounded-xl shadow-lg">
+    <section
+      th:fragment="foroQuienesSomos"
+      class="bg-white w-[1400px] mx-auto my-20 p-8 rounded-xl shadow-lg"
+    >
       <div class="space-y-6">
         <h2
-          class="text-3xl font-bold text-gray-900 border-b border-gray-300 pb-4"
+          class="!text-3xl !font-bold text-gray-900 border-b border-gray-300 !pb-4"
         >
           Foro De Huerta Directa
         </h2>
@@ -38,7 +39,6 @@
                     <p
                       class="text-lg font-semibold text-gray-900 leading-tight"
                       th:text="${comment.commentType.name() == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
-
                     >
                       Comentario del sitio
                     </p>
@@ -74,7 +74,7 @@
 
                 <!-- Texto del comentario -->
                 <p
-                  class="mt-3 text-gray-700 line-clamp-3"
+                  class="mt-3 text-gray-700 line-clamp-3 break-all whitespace-normal max-w-[300px]"
                   th:text="${comment.commentCommenter}"
                 >
                   ¡El servicio es increíble! La entrega fue súper rápida y los
@@ -96,6 +96,10 @@
           </div>
         </div>
       </div>
+      <div
+        th:replace="fragments/quienesSomos/notaQuienesSomos :: notaQuienesSomos"
+      ></div>
+      
     </section>
   </body>
 </html>

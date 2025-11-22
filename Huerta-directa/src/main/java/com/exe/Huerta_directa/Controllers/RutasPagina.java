@@ -3,27 +3,42 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.apache.xmlbeans.impl.store.CharUtil;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class RutasPagina {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    public RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+        this.productService = productService;
+        this.userService = userService;
+        this.userRepository = userRepository;
+
+    }
 
     /**
      * Método helper para obtener la página de inicio según el rol del usuario
@@ -54,14 +69,36 @@ public class RutasPagina {
 
     @GetMapping({ "/", "/index" })
     public String mostrarIndex(Model model,
-            @ModelAttribute("success") String success) {
+            @ModelAttribute("success") String success,
+            HttpSession session) {
         // Log para debugging
         System.out.println("🔍 DEBUG: Mensaje de éxito recibido: " + success);
 
-        // Obtener y agregar productos al modelo
+        // Obtener usuario de la sesión (igual que en dashboard)
+        User userSession = (User) session.getAttribute("user");
+        if (userSession == null) {
+            // Si no hay sesión, redirigir al login
+            return "redirect:/login?message=Debes+iniciar+sesion+para+acceder";
+        }
+
+        // Obtener TODOS los productos para mostrar en el index
         List<ProductDTO> productos = productService.listarProducts();
-        System.out.println("Productos obtenidos: " + productos.size());
+
+        // Marcar productos del usuario actual con etiqueta
+        productos.forEach(producto -> {
+            if (producto.getUserId() != null && producto.getUserId().equals(userSession.getId())) {
+                producto.setEtiqueta("MI PRODUCTO"); // Agregar etiqueta a tus productos
+            } else {
+                producto.setEtiqueta("PRODUCTO DE OTRO USUARIO");
+            }
+        });
+
+        System.out.println("📦 Total productos cargados: " + productos.size());
+        System.out.println("👤 MIS PRODUCTOS del usuario " + userSession.getName() + ": " +
+                productos.stream().filter(p -> "MI PRODUCTO".equals(p.getEtiqueta())).count());
+
         model.addAttribute("productos", productos);
+        model.addAttribute("currentUser", userSession);
 
         // Si hay un mensaje de éxito, agregarlo al modelo
         if (success != null && !success.isEmpty()) {
@@ -72,8 +109,71 @@ public class RutasPagina {
     }
 
     @GetMapping("/agregar_producto")
-    public String mostrarFormulario() {
+    public String mostrarFormulario(
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe iniciar sesion para acceder");
+            return "redirect:/login";
+        }
+
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar que tenga teléfono y dirección completos
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su número de teléfono en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su dirección en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        // Si todo está bien, mostrar el formulario
         return "Agreagar_producto/Agregar_producto";
+    }
+    // agregar producto desde agregar producto admin
+
+
+    @GetMapping("/DashBoardAdminAgregarProducto")
+    public String mostrarFormularioAdmin(
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Debe iniciar sesion para acceder");
+            return "redirect:/login";
+        }
+
+        // Obtiene el usuario actualizado de la base de datos
+        User user = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar que tenga teléfono y dirección completos
+        if (user.getPhone() == null || user.getPhone().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su número de teléfono en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        if (user.getAddress() == null || user.getAddress().trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Debe completar su dirección en el perfil antes de agregar productos");
+            return "redirect:/actualizacionUsuario";
+        }
+
+        // Si todo está bien, mostrar el formulario
+        return "Dashboard_Admin/DashBoardAdminAgregarProducto";
     }
 
     @GetMapping("/login")
@@ -141,9 +241,120 @@ public class RutasPagina {
     }
 
     @GetMapping("/actualizacionUsuario")
-    public String actualizacionUsuario() {
-        // Busca: src/main/resources/templates/Agregar_producto/Agregar_producto.html
+    public String actualizacionUsuario(HttpSession session, Model model) {
+        // Obtener usuario desde la sesión
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser != null) {
+            model.addAttribute("currentUser", currentUser);
+
+            // Determinar el rol para mostrar
+            String userRole = "Usuario";
+            boolean isAdmin = false;
+
+            if (currentUser.getRole() != null) {
+                isAdmin = currentUser.getRole().getIdRole() == 1;
+                userRole = isAdmin ? "Administrador" : "Cliente";
+            }
+
+            model.addAttribute("userRole", userRole);
+            model.addAttribute("isAdmin", isAdmin);
+        } else {
+            model.addAttribute("isAdmin", false);
+        }
+
         return "DashBoard/actualizacionUsuario";
+    }
+
+    // Este getMapping es para el dashboarAdmin
+
+    @GetMapping("/actualizacionUsuarioAdmin")
+    public String actualizacionUsuarioAdmin(HttpSession session, Model model) {
+        // Obtener usuario desde la sesión
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser != null) {
+            model.addAttribute("currentUser", currentUser);
+
+            // Determinar el rol para mostrar
+            String userRole = "Usuario";
+            if (currentUser.getRole() != null) {
+                userRole = currentUser.getRole().getIdRole() == 1 ? "Administrador" : "Cliente";
+            }
+            model.addAttribute("userRole", userRole);
+
+            System.out.println("🔍 Usuario en sesión: " + currentUser.getName() + " - " + currentUser.getEmail());
+        } else {
+            System.out.println("⚠️ No hay usuario en sesión");
+        }
+
+        return "Dashboard_Admin/actualizacionUsuarioAdmin";
+    }
+
+    /*
+     * @GetMapping("/MensajesComentarios")
+     * // public String MensajesComentarios() {
+     * // return "DashBoard/MensajesComentarios";
+     * }
+     */
+    @GetMapping("/DashBoardAgregarProducto")
+    public String DashBoardAgregarProducto() {
+        return "DashBoard/DashBoardAgregarProducto";
+    }
+
+    @GetMapping("/DashBoardGraficos")
+    public String DashBoardGraficos() {
+        return "DashBoard/GraficosDashboarCliente";
+    }
+
+   @GetMapping("/GraficosCategoriaAdmin")
+public String GraficosCategoriaAdmin(Model model) {
+
+    Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
+    model.addAttribute("datosCategoria", datosCategoria);
+
+   
+
+    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+    datosCategoria.forEach(dataset::setValue);
+
+    JFreeChart chart = ChartFactory.createRingChart(
+            "Productos por categoria",
+            dataset,
+            true,
+            true,
+            false);
+
+    // RUTA CORRECTA PARA SPRING BOOT
+    String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
+    File carpeta = new File(rutaCarpeta);
+    carpeta.mkdirs();
+
+    File outputFile = new File(carpeta, "productosPorCategoria.png");
+
+
+    
+    try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+        ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
+         try {
+        Thread.sleep(3000); // 3 segundos
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
+
+    List<ProductDTO> productosCategoria = productService.listarProducts();
+    model.addAttribute("productosCategoria", productosCategoria);
+
+    return "Dashboard_Admin/GraficosCategoriaAdmin";
+}
+    @GetMapping("/GraficosDashboarAdmin")
+    public String DashBoardGraficosAdmin() {
+        return "Dashboard_Admin/GraficosDashboarAdmin";
     }
 
     @GetMapping("/landing")
@@ -151,10 +362,12 @@ public class RutasPagina {
         return "pagina_principal/landing";
     }
 
-    // @GetMapping("/Quienes_somos")
-    // public String mostrarQuienes_somos() {
-    //     return "Quienes_somos/quienes_somos";
-    // }
+    /*
+     * @GetMapping("/Quienes_somos")
+     * // public String mostrarQuienes_somos() {
+     * // return "Quienes_somos/quienes_somos";
+     * // }
+     */
 
     @GetMapping("/Frutas")
     public String mostrarFrutas(Model model) {
@@ -198,7 +411,7 @@ public class RutasPagina {
 
     @GetMapping("/Lacteos")
     public String mostrarLacteos(Model model) {
-        List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
+                List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
         model.addAttribute("categoria", "Lácteos");
         return "ProductosCategorias/Lacteos";
@@ -334,7 +547,7 @@ public class RutasPagina {
             userDTO.setIdRole(1L);
 
             // Establecer fecha de creación
-            userDTO.setCreacionDate(java.time.LocalDate.now());
+            userDTO.setCreacionDate(LocalDate.now());
 
             UserDTO adminCreado = userService.crearUser(userDTO);
 
@@ -355,10 +568,5 @@ public class RutasPagina {
             return "redirect:/agregar_admin";
         }
     }
-    @GetMapping("/ClientesDestacados")
-    public String mostrarClientesDestacados(Model model) {
-        return "Clientes_Destacados/ClientesDestacados";
-    }
 
 }
-

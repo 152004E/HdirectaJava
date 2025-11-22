@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <body class="">
+    <aside th:fragment="insadeDashBoard">
+      <div class="top">
+        <div class="logo font-bold">
+          <img src="/images/logo_huerta.png" alt="Logo" />
+          <h2>Huerta<span class="danger">Directa</span></h2>
+        </div>
+        <div class="close" id="close-btn">
+          <span class="material-symbols-outlined">close</span>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <a th:href="@{/DashboardAdmin}">
+          <span class="material-symbols-outlined">dashboard</span>
+          <h3>Dashboard</h3>
+        </a>
+        <a th:href="@{/consulta_usuarios}">
+          <span class="material-symbols-outlined">person</span>
+          <h3>Consultar Usuarios</h3>
+        </a>
+
+        <a href="#">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <h3>Ordenes</h3>
+        </a>
+        <a th:href="@{/GraficosDashboarAdmin}">
+          <span class="material-symbols-outlined">finance_mode</span>
+          <h3>Reportes</h3>
+        </a>
+        <a th:href="@{/MensajesComentariosAdmin}">
+          <span class="material-symbols-outlined">mail</span>
+          <h3>Mensajes</h3>
+        </a>
+        <a th:href="@{/DashBoardAdminAgregarProducto}">
+          <span class="material-symbols-outlined">inventory</span>
+          <h3>Agregar Producto</h3>
+        </a>
+        <a href="#">
+          <span class="material-symbols-outlined">report</span>
+          <h3>Novedades</h3>
+        </a>
+        <a th:href="@{/actualizacionUsuarioAdmin}">
+          <span class="material-symbols-outlined">settings</span>
+          <h3>Mi perfil</h3>
+        </a>
+        <a th:href="@{/agregar_admin}">
+          <span class="material-symbols-outlined">add</span>
+          <h3>Añadir Administrador</h3>
+        </a>
+        <a th:href="@{/index}">
+          <span class="material-symbols-outlined">logout</span>
+          <h3>Volver al Inicio</h3>
+        </a>
+      </div>
+    </aside>
+  </body>
+</html>

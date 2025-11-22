@@ -1,398 +1,441 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Admin</title>
     <!-- Link para el font -->
     <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
     />
 
     <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
 
     <!-- Enlace al archivo CSS -->
     <link rel="stylesheet" href="/CSS/dashboardAdmin.css" />
+    <link href="/CSS/output.css" rel="stylesheet" />
+
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
-</head>
+  </head>
 
-<body>
-<div class="container">
-    <aside>
-        <div class="top">
-            <div class="logo">
-                <img src="/images/logo_huerta.png" alt="Logo" />
-                <h2>Huerta<span class="danger">Directa</span></h2>
-            </div>
-            <div class="close" id="close-btn">
-                <span class="material-symbols-outlined">close</span>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <a th:href="@{/DashboardAdmin}">
-                <span class="material-symbols-outlined">dashboard</span>
-                <h3>Dashboard</h3>
-            </a>
-            <a th:href="@{/consulta_usuarios}">
-                <span class="material-symbols-outlined">person</span>
-                <h3>Consultar Usuarios</h3>
-            </a>
-
-            <a href="#">
-                <span class="material-symbols-outlined">receipt_long</span>
-                <h3>Ordenes</h3>
-            </a>
-            <a href="#">
-                <span class="material-symbols-outlined">finance_mode</span>
-                <h3>Reportes</h3>
-            </a>
-            <a href="#">
-                <span class="material-symbols-outlined">mail</span>
-                <h3>Mensajes</h3>
-            </a>
-            <a th:href="@{/agregar_producto}">
-                <span class="material-symbols-outlined">inventory</span>
-                <h3>Agregar Producto</h3>
-            </a>
-            <a href="#">
-                <span class="material-symbols-outlined">report</span>
-                <h3>Novedades</h3>
-            </a>
-            <a th:href="@{/actualizacionUsuario}">
-                <span class="material-symbols-outlined">settings</span>
-                <h3>Configuracion</h3>
-            </a>
-            <a th:href="@{/agregar_admin}">
-                <span class="material-symbols-outlined">add</span>
-                <h3>Añadir Administrador</h3>
-            </a>
-            <a th:href="@{/home}">
-                <span class="material-symbols-outlined">logout</span>
-                <h3>Volver al Inicio</h3>
-            </a>
-        </div>
-    </aside>
-    <!-- fin del asside -->
-    <main>
+  <body>
+    <div class="container1">
+      <div
+        th:replace="fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main class="">
         <h1>Dashboard Admin</h1>
 
         <!-- Alerta moderna de éxito/error -->
-        <div th:if="${success}" class="modern-alert success-alert" id="successAlert">
-            <div class="alert-content">
-                <div class="alert-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="alert-message">
-                    <h4>¡Éxito!</h4>
-                    <p th:text="${success}"></p>
-                </div>
-                <button class="alert-close" onclick="closeAlert('successAlert')">
-                    <i class="fas fa-times"></i>
-                </button>
+        <div
+          th:if="${success}"
+          class="modern-alert success-alert"
+          id="successAlert"
+        >
+          <div class="alert-content">
+            <div class="alert-icon">
+              <i class="fas fa-check-circle"></i>
             </div>
+            <div class="alert-message">
+              <h4>¡Éxito!</h4>
+              <p th:text="${success}"></p>
+            </div>
+            <button class="alert-close" onclick="closeAlert('successAlert')">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <div th:if="${error}" class="modern-alert error-alert" id="errorAlert">
-            <div class="alert-content">
-                <div class="alert-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="alert-message">
-                    <h4>Error</h4>
-                    <p th:text="${error}"></p>
-                </div>
-                <button class="alert-close" onclick="closeAlert('errorAlert')">
-                    <i class="fas fa-times"></i>
-                </button>
+          <div class="alert-content">
+            <div class="alert-icon">
+              <i class="fas fa-exclamation-triangle"></i>
             </div>
+            <div class="alert-message">
+              <h4>Error</h4>
+              <p th:text="${error}"></p>
+            </div>
+            <button class="alert-close" onclick="closeAlert('errorAlert')">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <div class="insights">
-            <div class="sales">
-                <span class="material-symbols-outlined">analytics</span>
-                <div class="middle">
-                    <div class="left">
-                        <h3>Clientes</h3>
-                        <h1>3590</h1>
-                    </div>
-                    <div class="progress">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="number">
-                            <p>80%</p>
-                        </div>
-                    </div>
+          <div class="sales">
+            <span class="material-symbols-outlined">analytics</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Clientes</h3>
+                <h1>3590</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>80%</p>
                 </div>
-                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
             </div>
-            <!---FIN DE VENTAS--->
-            <div class="expenses">
-                <span class="material-symbols-outlined">bar_chart</span>
-                <div class="middle">
-                    <div class="left">
-                        <h3>Gastos</h3>
-                        <h1>$15,567</h1>
-                    </div>
-                    <div class="progress">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="number">
-                            <p>62%</p>
-                        </div>
-                    </div>
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+          <!---FIN DE VENTAS--->
+          <div class="expenses">
+            <span class="material-symbols-outlined">bar_chart</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Gastos</h3>
+                <h1>$15,567</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>62%</p>
                 </div>
-                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
             </div>
-            <!---FIN DE GASTOS--->
-            <div class="income">
-                <span class="material-symbols-outlined">stacked_line_chart</span>
-                <div class="middle">
-                    <div class="left">
-                        <h3>Ingresos</h3>
-                        <h1>$10,240</h1>
-                    </div>
-                    <div class="progress">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="number">
-                            <p>31%</p>
-                        </div>
-                    </div>
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+          <!---FIN DE GASTOS--->
+          <div class="income">
+            <span class="material-symbols-outlined">stacked_line_chart</span>
+            <div class="middle">
+              <div class="left">
+                <h3>Ingresos</h3>
+                <h1>$10,240</h1>
+              </div>
+              <div class="progress">
+                <svg>
+                  <circle cx="38" cy="38" r="36"></circle>
+                </svg>
+                <div class="number">
+                  <p>31%</p>
                 </div>
-                <small class="text-muted">Ultimas 24 horas</small>
+              </div>
             </div>
-            <!---FIN DE INGRESOS--->
+            <small class="text-muted">Ultimas 24 horas</small>
+          </div>
+          <!---FIN DE INGRESOS--->
         </div>
         <!---------- fin de insights ------------->
 
-
         <!-- Accesos Directos Rápidos -->
         <div class="quick-actions">
-            <h2>Accesos Rápidos</h2>
-            <div class="actions-grid">
-                <a th:href="@{/agregar_admin}" class="action-card primary">
-                    <span class="material-symbols-outlined">person_add</span>
-                    <h3>Registrar Admin</h3>
-                    <p>Añadir nuevo administrador</p>
-                </a>
+          <h2>Accesos Rápidos</h2>
+          <div class="actions-grid">
+            <a th:href="@{/agregar_admin}" class="action-card primary">
+              <span class="material-symbols-outlined">person_add</span>
+              <h3>Registrar Admin</h3>
+              <p>Añadir nuevo administrador</p>
+            </a>
 
-                <a th:href="@{/consulta_usuarios}" class="action-card secondary">
-                    <span class="material-symbols-outlined">manage_accounts</span>
-                    <h3>Gestionar Usuarios</h3>
-                    <p>Ver y editar usuarios</p>
-                </a>
+            <a th:href="@{/consulta_usuarios}" class="action-card secondary">
+              <span class="material-symbols-outlined">manage_accounts</span>
+              <h3>Gestionar Usuarios</h3>
+              <p>Ver y editar usuarios</p>
+            </a>
 
-                <a th:href="@{/agregar_producto}" class="action-card success">
-                    <span class="material-symbols-outlined">add_box</span>
-                    <h3>Nuevo Producto</h3>
-                    <p>Agregar al catálogo</p>
-                </a>
+            <a th:href="@{/agregar_producto}" class="action-card success">
+              <span class="material-symbols-outlined">add_box</span>
+              <h3>Nuevo Producto</h3>
+              <p>Agregar al catálogo</p>
+            </a>
 
-                <a href="#" class="action-card warning">
-                    <span class="material-symbols-outlined">assessment</span>
-                    <h3>Reportes</h3>
-                    <p>Generar informes</p>
-                </a>
-            </div>
+            <a href="#" class="action-card warning">
+              <span class="material-symbols-outlined">assessment</span>
+              <h3>Reportes</h3>
+              <p>Generar informes</p>
+            </a>
+          </div>
         </div>
 
         <!-- Panel de Actividad Reciente -->
         <div class="recent-activity">
-            <h2>Actividad Reciente del Sistema</h2>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon admin">
-                        <span class="material-symbols-outlined">admin_panel_settings</span>
-                    </div>
-                    <div class="activity-content">
-                        <p><strong>Yeferson Sanchez</strong> registró un nuevo administrador: <strong>Luciana</strong></p>
-                        <small class="text-muted">Hace 2 horas</small>
-                    </div>
-                    <div class="activity-status success">
-                        <span class="material-symbols-outlined">check_circle</span>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon product">
-                        <span class="material-symbols-outlined">inventory</span>
-                    </div>
-                    <div class="activity-content">
-                        <p><strong>Luciana</strong> agregó el producto: <strong>Papa Criolla Orgánica</strong></p>
-                        <small class="text-muted">Hace 3 horas</small>
-                    </div>
-                    <div class="activity-status success">
-                        <span class="material-symbols-outlined">check_circle</span>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon user">
-                        <span class="material-symbols-outlined">person_remove</span>
-                    </div>
-                    <div class="activity-content">
-                        <p><strong>Sistema</strong> eliminó usuario inactivo: <strong>Juan Pérez</strong></p>
-                        <small class="text-muted">Hace 5 horas</small>
-                    </div>
-                    <div class="activity-status warning">
-                        <span class="material-symbols-outlined">warning</span>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon order">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                    </div>
-                    <div class="activity-content">
-                        <p><strong>Cliente nuevo</strong> realizó pedido por <strong>$45.000</strong></p>
-                        <small class="text-muted">Hace 1 día</small>
-                    </div>
-                    <div class="activity-status success">
-                        <span class="material-symbols-outlined">check_circle</span>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon system">
-                        <span class="material-symbols-outlined">system_update</span>
-                    </div>
-                    <div class="activity-content">
-                        <p><strong>Sistema</strong> actualizó precios de <strong>15 productos</strong></p>
-                        <small class="text-muted">Hace 2 días</small>
-                    </div>
-                    <div class="activity-status info">
-                        <span class="material-symbols-outlined">info</span>
-                    </div>
-                </div>
+          <h2>Actividad Reciente del Sistema</h2>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon admin">
+                <span class="material-symbols-outlined"
+                  >admin_panel_settings</span
+                >
+              </div>
+              <div class="activity-content">
+                <p>
+                  <strong>Yeferson Sanchez</strong> registró un nuevo
+                  administrador: <strong>Luciana</strong>
+                </p>
+                <small class="text-muted">Hace 2 horas</small>
+              </div>
+              <div class="activity-status success">
+                <span class="material-symbols-outlined">check_circle</span>
+              </div>
             </div>
 
-            <div class="view-all-activity">
-                <a href="#" class="btn-view-all">
-                    <span class="material-symbols-outlined">history</span>
-                    Ver todo el historial
-                </a>
+            <div class="activity-item">
+              <div class="activity-icon product">
+                <span class="material-symbols-outlined">inventory</span>
+              </div>
+              <div class="activity-content">
+                <p>
+                  <strong>Luciana</strong> agregó el producto:
+                  <strong>Papa Criolla Orgánica</strong>
+                </p>
+                <small class="text-muted">Hace 3 horas</small>
+              </div>
+              <div class="activity-status success">
+                <span class="material-symbols-outlined">check_circle</span>
+              </div>
             </div>
+
+            <div class="activity-item">
+              <div class="activity-icon user">
+                <span class="material-symbols-outlined">person_remove</span>
+              </div>
+              <div class="activity-content">
+                <p>
+                  <strong>Sistema</strong> eliminó usuario inactivo:
+                  <strong>Juan Pérez</strong>
+                </p>
+                <small class="text-muted">Hace 5 horas</small>
+              </div>
+              <div class="activity-status warning">
+                <span class="material-symbols-outlined">warning</span>
+              </div>
+            </div>
+
+            <div class="activity-item">
+              <div class="activity-icon order">
+                <span class="material-symbols-outlined">shopping_cart</span>
+              </div>
+              <div class="activity-content">
+                <p>
+                  <strong>Cliente nuevo</strong> realizó pedido por
+                  <strong>$45.000</strong>
+                </p>
+                <small class="text-muted">Hace 1 día</small>
+              </div>
+              <div class="activity-status success">
+                <span class="material-symbols-outlined">check_circle</span>
+              </div>
+            </div>
+
+            <div class="activity-item">
+              <div class="activity-icon system">
+                <span class="material-symbols-outlined">system_update</span>
+              </div>
+              <div class="activity-content">
+                <p>
+                  <strong>Sistema</strong> actualizó precios de
+                  <strong>15 productos</strong>
+                </p>
+                <small class="text-muted">Hace 2 días</small>
+              </div>
+              <div class="activity-status info">
+                <span class="material-symbols-outlined">info</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-all-activity">
+            <a href="#" class="btn-view-all">
+              <span class="material-symbols-outlined">history</span>
+              Ver todo el historial
+            </a>
+          </div>
         </div>
+      </main>
+      <!--FIN DEL MAIN 😜😝🤤-->
 
-    </main>
-    <!--FIN DEL MAIN 😜😝🤤-->
-
-
-    <div class="right">
+      <div class="right">
         <div class="top">
-            <div class="theme-toggler">
-                <span class="material-symbols-outlined active">light_mode</span>
-                <span class="material-symbols-outlined">dark_mode</span>
-            </div>
-            <div th:replace="fragments/profile :: profile"></div>
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
         </div>
         <!--FIN DEL TOP-->
         <div class="recent-updates">
-            <h2>Actualizaciones</h2>
-            <div class="updates">
-                <div class="update">
-                    <div class="profile-photo">
-                        <img src="imagesDashBoard/Emerson.png" alt="" />
-                    </div>
-                    <div class="message">
-                        <p><b>Emerson</b> recibio su orden de una yuca</p>
-                        <small class="text-muted">Hace 4 horas</small>
-                    </div>
-                </div>
-                <div class="update">
-                    <div class="profile-photo">
-                        <img src="imagesDashBoard/Jesus.png" alt="" />
-                    </div>
-                    <div class="message">
-                        <p><b>Jesus</b> recibio su orden de una manzana</p>
-                        <small class="text-muted">Hace 6 horas</small>
-                    </div>
-                </div>
-                <div class="update">
-                    <div class="profile-photo">
-                        <img src="imagesDashBoard/Yeferson.png" alt="" />
-                    </div>
-                    <div class="message">
-                        <p><b>Yeferson</b> recibio su orden de suero costeño</p>
-                        <small class="text-muted">Hace 9 horas</small>
-                    </div>
-                </div>
+          <h2>Actualizaciones</h2>
+          <div class="updates">
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Arvejas.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Emerson</b> recibio su orden de una libra de arvejas</p>
+                <small class="text-muted">Hace 4 horas</small>
+              </div>
             </div>
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Manzana.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Jesus</b> recibio su orden de una manzana</p>
+                <small class="text-muted">Hace 6 horas</small>
+              </div>
+            </div>
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Queso pera.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Yeferson</b> recibio su orden de queso pera</p>
+                <small class="text-muted">Hace 9 horas</small>
+              </div>
+            </div>
+          </div>
         </div>
         <!--FIN DE LAS ACTUALIZACIONES MY BROTA-->
         <div class="sales-analytics">
-            <h2>Resumen del Sistema</h2>
+          <h2>Resumen del Sistema</h2>
 
-            <!-- Tarjeta de Usuarios Totales -->
-            <div class="item online">
-                <div class="icon">
-                    <span class="material-symbols-outlined">group</span>
-                </div>
-                <div class="right">
-                    <div class="info">
-                        <h3>USUARIOS TOTALES</h3>
-                        <small class="text-muted">Clientes registrados</small>
-                    </div>
-                    <h5 class="success">+12%</h5>
-                    <h3 th:text="${usuarios != null ? usuarios.size() : 0}">0</h3>
-                </div>
+          <!-- Tarjeta de Usuarios Totales -->
+          <div class="item online">
+            <div class="icon">
+              <span class="material-symbols-outlined">group</span>
             </div>
+            <div class="right">
+              <div class="info">
+                <h3>USUARIOS TOTALES</h3>
+                <small class="text-muted">Clientes registrados</small>
+              </div>
+              <h5 class="success">+12%</h5>
+              <h3 th:text="${usuarios != null ? usuarios.size() : 0}">0</h3>
+            </div>
+          </div>
 
-            <!-- Tarjeta de Administradores -->
-            <div class="item offline">
-                <div class="icon">
-                    <span class="material-symbols-outlined">admin_panel_settings</span>
-                </div>
-                <div class="right">
-                    <div class="info">
-                        <h3>ADMINISTRADORES</h3>
-                        <small class="text-muted">Admins activos</small>
-                    </div>
-                    <h5 class="warning">+2</h5>
-                    <h3 th:text="${adminCount != null ? adminCount : 2}">2</h3>
-                </div>
+          <!-- Tarjeta de Administradores -->
+          <div class="item offline">
+            <div class="icon">
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
             </div>
+            <div class="right">
+              <div class="info">
+                <h3>ADMINISTRADORES</h3>
+                <small class="text-muted">Admins activos</small>
+              </div>
+              <h5 class="warning">+2</h5>
+              <h3 th:text="${adminCount != null ? adminCount : 2}">2</h3>
+            </div>
+          </div>
 
-            <!-- Tarjeta de Productos -->
-            <div class="item customers">
-                <div class="icon">
-                    <span class="material-symbols-outlined">inventory_2</span>
-                </div>
-                <div class="right">
-                    <div class="info">
-                        <h3>PRODUCTOS</h3>
-                        <small class="text-muted">En catálogo</small>
-                    </div>
-                    <h5 class="success">+5%</h5>
-                    <h3>247</h3>
-                </div>
+          <!-- Tarjeta de Productos -->
+          <div class="item customers">
+            <div class="icon">
+              <span class="material-symbols-outlined">inventory_2</span>
             </div>
+            <div class="right">
+              <div class="info">
+                <h3>PRODUCTOS</h3>
+                <small class="text-muted">En catálogo</small>
+              </div>
+              <h5 class="success">+5%</h5>
+              <h3>247</h3>
+            </div>
+          </div>
 
-            <!-- Tarjeta de Pedidos del Día -->
-            <div class="item online" style="border-left: 4px solid #9C27B0;">
-                <div class="icon" style="background: #9C27B0;">
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                </div>
-                <div class="right">
-                    <div class="info">
-                        <h3>PEDIDOS HOY</h3>
-                        <small class="text-muted">Pendientes: 3</small>
-                    </div>
-                    <h5 class="success">+8%</h5>
-                    <h3>18</h3>
-                </div>
+          <!-- Tarjeta de Pedidos del Día -->
+          <div class="item online" style="border-left: 4px solid #9c27b0">
+            <div class="icon" style="background: #9c27b0">
+              <span class="material-symbols-outlined">shopping_bag</span>
             </div>
+            <div class="right">
+              <div class="info">
+                <h3>PEDIDOS HOY</h3>
+                <small class="text-muted">Pendientes: 3</small>
+              </div>
+              <h5 class="success">+8%</h5>
+              <h3>18</h3>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-<script src="/JS/dashboar.js"></script>
-</body>
+    <div class="floating-chat-button" id="openChatBtn">
+      <span class="emoji">🤖</span>
+      <span class="text">Chat con IA</span>
+    </div>
+
+    <div class="chat-modal-overlay" id="chatModalOverlay">
+      <div class="chat-modal-content" id="chatModalContent">
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="header-left">
+              <div class="bot-avatar">🤖</div>
+              <div class="header-info">
+                <h1>Asistente Huerta</h1>
+                <p>Powered by Groq</p>
+              </div>
+            </div>
+            <div class="user-info">
+              <span
+                class="user-name"
+                th:text="${username} ? ${username} : 'Admin'"
+                >Usuario</span
+              >
+              <button class="btn-settings" id="btnSettings">⚙️</button>
+              <button
+                class="btn-settings"
+                id="btnCloseModal"
+                style="margin-left: 10px"
+              >
+                ❌
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-panel" id="settingsPanel">
+            <div class="setting-item">
+              <label for="apiKeyInput">Groq API Key</label>
+              <input
+                type="password"
+                id="apiKeyInput"
+                placeholder="Ingresa tu clave aquí"
+              />
+            </div>
+            <button id="btnSaveKey" class="btn-save">
+              Guardar Configuración
+            </button>
+          </div>
+
+          <div class="messages-container" id="messagesContainer">
+            <div class="messages-wrapper" id="messagesWrapper">
+              <div class="welcome-screen" id="welcomeScreen">
+                <span class="material-symbols-outlined emoji-large">👋</span>
+                <h2>¡Hola! Soy Huerta-IA</h2>
+                <small>Recuerda configurar tu Groq API Key en ⚙️</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-area">
+            <div class="input-wrapper">
+              <textarea
+                id="messageInput"
+                placeholder="Escribe tu mensaje..."
+                rows="1"
+              ></textarea>
+              <button id="btnSend">
+                <span class="material-symbols-outlined">📤</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/chat-ia.js"></script>
+    <script src="/JS/dashboar.js"></script>
+  </body>
 </html>

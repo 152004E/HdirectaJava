@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Checkout - Huerta Directa</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif !important;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #faf2dd; 
+      }
+      .checkout-container {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff; 
+      }
+      .product-info {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .total {
+        font-size: 24px;
+        font-weight: bold;
+        color: #0e942b;
+      }
+      .btn-pagar {
+        background: #8dc84b;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .btn-pagar:hover {
+        background: #004d00;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="checkout-container">
+      <h1>Confirmar Pedido</h1>
+
+      <div class="product-info">
+        <p><strong>Producto:</strong> <span th:text="${productName}"></span></p>
+        <p>
+          <strong>Precio unitario:</strong> $<span th:text="${price}"></span>
+        </p>
+        <p><strong>Cantidad:</strong> <span th:text="${quantity}"></span></p>
+        <hr />
+        <p class="total">Total: $<span th:text="${total}"></span></p>
+      </div>
+
+      <!-- Debe ser exactamente así: -->
+      <form action="/payment/create-preference" method="POST">
+        <input type="hidden" name="productName" th:value="${productName}" />
+        <input type="hidden" name="price" th:value="${price}" />
+        <input type="hidden" name="quantity" th:value="${quantity}" />
+
+        <button type="submit" class="btn-pagar">
+          Pagar con Mercado Pago
+        </button>
+      </form>
+
+      <p style="text-align: center; margin-top: 20px">
+        <a href="/index">← Volver al carrito</a>
+      </p>
+    </div>
+  </body>
+</html>

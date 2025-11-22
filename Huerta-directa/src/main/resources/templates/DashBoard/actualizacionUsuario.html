@@ -1,382 +1,442 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Actualización de datos -- HUERTA DIRECTA</title>
+    <title>Configuración de Usuario - HUERTA DIRECTA</title>
+    <link href="/CSS/output.css" rel="stylesheet" />
 
-    <!--instalacion de tailwind-->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-    <!--configuracion tailwind-->
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#137fec",
-              "background-light": "#f6f7f8",
-              "background-dark": "#101922",
-              "form-bg-light": "#ffffff",
-              "form-bg-dark": "#1e293b",
-              "summary-bg": "#6366f1",
-            },
-            fontFamily: {
-              display: ["Inter"],
-            },
-            borderRadius: {
-              DEFAULT: "0.25rem",
-              lg: "0.5rem",
-              xl: "0.75rem",
-              full: "9999px",
-            },
-          },
-        },
-      };
-    </script>
     <!-- Link para el font -->
-
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
     />
-
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
 
-    <!-- Enlace al archivo CSS -->
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Enlace al archivo CSS del dashboard -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
   </head>
 
-  <body>
+  <body class="min-h-screen">
     <div class="containerActualizarUcuario">
-      <aside>
-        <div class="top">
-          <div class="logo">
-            <img src="/images/logo_huerta.png" alt="Logo" />
-            <h2 class="text-[20px] font-bold">
-              Huerta<span class="danger">Directa</span>
-            </h2>
-          </div>
-          <div class="close" id="close-btn">
-            <span class="material-symbols-outlined">close</span>
-          </div>
-        </div>
+      <!-- Cargar el aside correcto según el rol del usuario -->
+      <th:block th:if="${isAdmin == true}">
+        <div th:replace="~{fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard}"></div>
+      </th:block>
+      <th:block th:if="${isAdmin == false or isAdmin == null}">
+        <div th:replace="~{fragments/DashBoard/insadeDashBoard :: insadeDashBoard}"></div>
+      </th:block>
 
-        <div class="sidebar">
-          <a th:href="@{/Dashboardd}">
-            <span class="material-symbols-outlined">dashboard</span>
-            <h3>Dashboard</h3>
-          </a>
-
-          <a href="#">
-            <span class="material-symbols-outlined">finance_mode</span>
-            <h3>Reportes</h3>
-          </a>
-          <a href="#">
-            <span class="material-symbols-outlined">mail</span>
-            <h3>Mensajes</h3>
-          </a>
-          <a th:href="@{/agregar_producto}">
-            <span class="material-symbols-outlined">inventory</span>
-            <h3>Agregar Producto</h3>
-          </a>
-          <a th:href="@{/actualizacionUsuario}">
-            <span class="material-symbols-outlined">settings</span>
-            <h3>Configuracion</h3>
-          </a>
-          <!--
-          <a href="../Consulta_usuarios/Consulta_usuario.php">
-            <span class="material-symbols-outlined">add</span>
-            <h3>Consultar Usuario</h3>
-          </a>
-          -->
-          <a th:href="@{/home}">
-            <span class="material-symbols-outlined">logout</span>
-            <h3>Volver al Dashboard</h3>
-          </a>
-        </div>
-      </aside>
-      <!-- fin del asside -->
-      <main>
-        <div class="flex h-[800px] justify-center p-4">
+      <main
+        class="!flex-1 !flex !items-center !justify-center !p-4 !m-0 min-h-screen"
+      >
+        <div class="!w-full !max-w-4xl">
+          <!-- Mensajes de éxito/error -->
           <div
-            class="flex flex-col md:flex-row w-full max-w-6xl rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-form-bg-dark"
+            th:if="${success}"
+            class="!mb-6 !bg-green-50 !border !border-green-200 !text-green-800 !px-4 !py-3 !rounded-lg !shadow-sm"
           >
-            <div
-              class="md:w-1/2 bg-gray-50 dark:bg-gray-800 p-8 space-y-6 flex flex-col justify-between"
-            >
-              <div>
-                <h2
-                  class="text-3xl font-bold text-gray-900 dark:text-white mb-6"
+            <div class="!flex !items-center">
+              <i class="fas fa-check-circle !mr-2"></i>
+              <span th:text="${success}"></span>
+            </div>
+          </div>
+
+          <div
+            th:if="${error}"
+            class="!mb-6 !bg-red-50 !border !border-red-200 !text-red-800 !px-4 !py-3 !rounded-lg !shadow-sm"
+          >
+            <div class="!flex !items-center">
+              <i class="fas fa-exclamation-triangle !mr-2"></i>
+              <span th:text="${error}"></span>
+            </div>
+          </div>
+
+          <div
+            class="!bg-form-bg !backdrop-blur-lg bg-amber-50 !border !border-white/20 !rounded-3xl !shadow-2xl !p-4 md:!p-12 !text-center"
+          >
+            <!-- Header -->
+            <div class="!mb-8">
+              <h1
+                class="!text-3xl md:!text-4xl !font-semibold !text-[#8DC84B] !mb-4 !flex !items-center !justify-center"
+              >
+                <i class="fas fa-user-cog !text-[#8DC84B] !mr-3"></i>
+                Configuración de Usuario
+              </h1>
+
+              <img
+                src="/images/logo_huerta.png"
+                alt="Logo Huerta Directa"
+                class="!w-24 !h-24 !mx-auto !rounded-full !shadow-lg  !border-primary/20 !mb-6"
+              />
+
+              <!-- Información del usuario actual -->
+              <div class="!bg-[#8DC84B]/20 !rounded-2xl !p-4 !mb-6 text-[15px]">
+                <div
+                  class="!flex !flex-col md:!flex-row !items-center !justify-center !gap-4 !text-gray-700"
                 >
-                  Información Actual del Usuario
-                </h2>
-                <div class="space-y-4">
-                  <div
-                    class="p-4 bg-white dark:bg-gray-700 shadow-gray-200 shadow-lg hover:scale-[1.05] hover:bg-gray-200 transition-all duration-[1s]"
-                  >
-                    <p
-                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                  <div class="!flex !items-center">
+                    <i class="fas fa-user !text-primary !mr-2"></i>
+                    <span
+                      class="!font-medium "
+                      th:text="${currentUser != null ? currentUser.name : 'Usuario'}"
+                      >Usuario</span
                     >
-                      Nombre Completo
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                      Juan Pérez
-                    </p>
                   </div>
+
                   <div
-                    class="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-gray-200 shadow-lg hover:scale-[1.05] hover:bg-gray-200 transition-all duration-[1s]"
-                  >
-                    <p
-                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    class="hidden md:!block !w-2 !h-2 !bg-primary !rounded-full"
+                  ></div>
+
+                  <div class="!flex !items-center">
+                    <i class="fas fa-envelope !text-primary !mr-2"></i>
+                    <span
+                      class="!font-medium"
+                      th:text="${currentUser != null ? currentUser.email : 'email@ejemplo.com'}"
                     >
-                      Dirección
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                      Calle Falsa 123, Ciudad, País
-                    </p>
+                      email@ejemplo.com
+                    </span>
                   </div>
+
                   <div
-                    class="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-gray-200 shadow-lg hover:scale-[1.05] hover:bg-gray-200 transition-all duration-[1s]"
-                  >
-                    <p
-                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    class="hidden md:!block !w-2 !h-2 !bg-primary !rounded-full"
+                  ></div>
+
+                  <div class="!flex !items-center">
+                    <i class="fas fa-shield-alt !text-primary !mr-2"></i>
+                    <span
+                      class="!font-medium"
+                      th:text="${userRole != null ? userRole : 'Usuario'}"
+                      >Usuario</span
                     >
-                      Teléfono
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                      +1 234 567 8900
-                    </p>
-                  </div>
-                  <div
-                    class="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-gray-200 shadow-lg hover:scale-[1.05] hover:bg-gray-200 transition-all duration-[1s]"
-                  >
-                    <p
-                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
-                    >
-                      Correo Electrónico
-                    </p>
-                    <p
-                      class="text-lg font-semibold text-gray-900 dark:text-gray-100"
-                    >
-                      juan.perez@example.com
-                    </p>
                   </div>
                 </div>
-              </div>
-              <div class="mt-8 text-center">
-                <img
-                  alt="Illustration"
-                  class="w-64 h-auto mx-auto rounded-lg shadow-md"
-                  src="/images/logo_huerta.png"
-                />
-                <p class="text-gray-600 dark:text-gray-400 mt-4 text-sm">
-                  Revisa tus datos actuales antes de realizar cualquier cambio.
-                  <br />
-                  No compartas tu información con otras personas.
-                </p>
               </div>
             </div>
 
-            <!--Actualizar información personal-->
-            <div class="md:w-1/2 p-8 space-y-6">
-              <!--titulos del container-->
-              <div class="text-center">
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                  Actualizar información personal
-                </h1>
-                <p class="text-gray-500 dark:text-gray-400 mt-2">
-                  Mantén tus datos actualizados.
-                </p>
-              </div>
-
-              <div class="space-y-6">
+            <!-- Pestañas -->
+            <div class="!space-y-6">
+              <!-- Información Personal -->
+              <div
+                class="!bg-white !rounded-2xl !shadow-lg !border !border-gray-100 !overflow-hidden"
+              >
                 <div
-                  class="hidden items-center gap-4 rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900/50 dark:text-green-300"
-                  id="success-message"
+                  class="!bg-gradient-to-r from-green-500 !to-green-800 !text-white !p-4 !cursor-pointer"
+                  onclick="toggleSection('personal-info')"
                 >
-                  <span class="material-symbols-outlined"> check_circle </span>
-                  <p class="text-sm font-medium">
-                    ¡Datos guardados correctamente!
-                  </p>
+                  <div class="!flex !items-center !justify-between">
+                    <div class="!flex !items-center">
+                      <i class="fas fa-user-edit !text-xl !mr-3"></i>
+                      <h2 class="!text-xl !font-semibold">
+                        Información Personal
+                      </h2>
+                    </div>
+                    <span
+                      class="material-symbols-outlined !transform !transition-transform !duration-300"
+                      id="personal-info-icon"
+                    >
+                      expand_more
+                    </span>
+                  </div>
                 </div>
 
-                <!-- Personal Details -->
-                <form
-                  class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark/50 shadow-sm p-4 space-y-4"
-                >
-                  <div
-                    class="flex items-center justify-between cursor-pointer"
-                    onclick="toggleCard('personal-details-content')"
+                <div class="!p-6 hidden" id="personal-info">
+                  <form
+                    th:action="@{/api/users/actualizarDatos}"
+                    method="post"
+                    class="!space-y-6 !text-left"
                   >
-                    <h2
-                      class="text-lg font-medium text-gray-900 dark:text-white"
-                    >
-                      Detalles Personales
-                    </h2>
-                    <span
-                      class="material-symbols-outlined text-gray-500 dark:text-gray-400"
-                    >
-                      expand_more
-                    </span>
-                  </div>
-                  <div class="space-y-4 hidden" id="personal-details-content">
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="name"
-                        >Nombre</label
-                      >
-                      <input
-                        class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary text-gray-900 dark:text-white"
-                        id="name"
-                        type="text"
-                        placeholder="Juan Pérez"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="address"
-                        >Dirección</label
-                      >
-                      <textarea
-                        class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary text-gray-900 dark:text-white"
-                        id="address"
-                        placeholder="Calle Falsa 123, Ciudad, País"
-                        rows="4"
-                      ></textarea
-                      >
-                    </div>
-                    <div class="flex justify-end pt-4">
-                      <button
-                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                        type="submit"
-                      >
-                        Guardar
-                      </button>
-                    </div>
-                  </div>
-                </form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 !gap-6">
+                      <div class="!mb-6">
+                        <label class="!block !text-gray-700 !font-medium !mb-2">
+                          <i class="fas fa-user !text-primary !mr-2"></i>
+                          Nombre Completo
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          class="!w-full !px-4 !py-3 !border-2 !border-gray-200 !rounded-lg focus:!border-primary focus:!ring focus:!ring-primary/20 !transition-all !duration-300 !font-medium"
+                          th:value="${currentUser != null ? currentUser.name : ''}"
+                          placeholder="Ingresa tu nombre completo"
+                          required
+                        />
+                      </div>
 
-                <!-- Contact Info -->
-                <form
-                  class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark/50 shadow-sm p-4 space-y-4"
-                >
-                  <div
-                    class="flex items-center justify-between cursor-pointer"
-                    onclick="toggleCard('contact-info-content')"
-                  >
-                    <h2
-                      class="text-lg font-medium text-gray-900 dark:text-white"
-                    >
-                      Informacion de Contacto
-                    </h2>
-                    <span
-                      class="material-symbols-outlined text-gray-500 dark:text-gray-400"
-                    >
-                      expand_more
-                    </span>
-                  </div>
-                  <div class="space-y-4 hidden" id="contact-info-content">
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="phone"
-                        >Teléfono</label
-                      >
-                      <input
-                        class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary text-gray-900 dark:text-white"
-                        id="phone"
-                        type="tel"
-                        placeholder="+1 234 567 8900"
-                      />
+                      <div class="md:col-span-2">
+                        <label class="!block !text-gray-700 !font-medium !mb-2">
+                          <i
+                            class="fas fa-map-marker-alt !text-primary !mr-2"
+                          ></i>
+                          Dirección
+                        </label>
+                        <textarea
+                          name="address"
+                          rows="3"
+                          class="!w-full !px-4 !py-3 !border-2 !border-gray-200 !rounded-lg focus:!border-primary focus:!ring focus:!ring-primary/20 !transition-all !duration-300 !resize-none !font-medium"
+                          th:text="${currentUser != null ? currentUser.address : ''}"
+                          placeholder="Ingresa tu dirección completa"
+                        ></textarea>
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="email"
-                        >Correo electrónico</label
-                      >
-                      <input
-                        class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary text-gray-900 dark:text-white"
-                        id="email"
-                        type="email"
-                        placeholder="juan.perez@example.com"
-                      />
-                    </div>
-                    <div class="flex justify-end pt-4">
-                      <button
-                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                        type="submit"
-                      >
-                        Guardar
-                      </button>
-                    </div>
-                  </div>
-                </form>
 
-                <!-- Security -->
-                <form
-                  class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-background-dark/50 shadow-sm p-4 space-y-4"
-                >
-                  <div
-                    class="flex items-center justify-between cursor-pointer"
-                    onclick="toggleCard('security-content')"
-                  >
-                    <h2
-                      class="text-lg font-medium text-gray-900 dark:text-white"
+                    <button
+                      type="submit"
+                      class="!w-full !bg-gradient-to-r from-green-500 to-green-800 !text-white !py-3 !px-6 !rounded-lg !font-semibold !hover:shadow-lg !transform hover:!-translate-y-1 !transition-all !duration-300 !flex !items-center !justify-center"
                     >
-                      Security
-                    </h2>
+                      <i class="fas fa-save !mr-2"></i>
+                      Guardar Cambios
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Información de Contacto -->
+              <div
+                class="!bg-white !rounded-2xl !shadow-lg !border !border-gray-100 !overflow-hidden"
+              >
+                <div
+                  class="!bg-gradient-to-r !from-blue-500 !to-blue-600 !text-white !p-4 !cursor-pointer"
+                  onclick="toggleSection('contact-info')"
+                >
+                  <div class="!flex !items-center !justify-between">
+                    <div class="!flex !items-center">
+                      <i class="fas fa-address-book !text-xl !mr-3"></i>
+                      <h2 class="!text-xl !font-semibold">
+                        Información de Contacto
+                      </h2>
+                    </div>
                     <span
-                      class="material-symbols-outlined text-gray-500 dark:text-gray-400"
+                      class="material-symbols-outlined !transform !transition-transform !duration-300"
+                      id="contact-info-icon"
                     >
                       expand_more
                     </span>
                   </div>
-                  <div class="space-y-4 hidden" id="security-content">
-                    <div>
-                      <label
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        for="password"
-                        >Contraseña</label
-                      >
-                      <input
-                        class="block w-full rounded-lg border-gray-300 dark:border-gray-600 bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary text-gray-900 dark:text-white"
-                        id="password"
-                        placeholder="••••••••"
-                        type="password"
-                      />
+                </div>
+
+                <div class="!p-6 hidden" id="contact-info">
+                  <form
+                    th:action="@{/api/users/ActualizarContacto}"
+                    method="post"
+                    class="!space-y-6 !text-left"
+                  >
+                    <div class="grid grid-cols-1 md:grid-cols-2 !gap-6">
+                      <div>
+                        <label class="!block !text-gray-700 !font-medium !mb-2">
+                          <i class="fas fa-envelope !text-blue-500 !mr-2"></i>
+                          Correo Electrónico
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          class="!w-full !px-4 !py-3 !border-2 !border-gray-200 !rounded-lg focus:!border-blue-500 focus:!ring focus:!ring-blue-500/20 !transition-all !duration-300 !font-medium"
+                          th:value="${currentUser != null ? currentUser.email : ''}"
+                          placeholder="ejemplo@correo.com"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label class="!block !text-gray-700 !font-medium !mb-2">
+                          <i class="fas fa-phone !text-blue-500 !mr-2"></i>
+                          Teléfono
+                        </label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          class="!w-full !px-4 !py-3 !border-2 !border-gray-200 !rounded-lg focus:!border-blue-500 focus:!ring focus:!ring-blue-500/20 !transition-all !duration-300 !font-medium"
+                          th:value="${currentUser != null ? currentUser.phone : ''}"
+                          placeholder="+57 300 123 4567"
+                        />
+                      </div>
                     </div>
-                    <div class="flex justify-end pt-4">
-                      <button
-                        class="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                        type="submit"
-                      >
-                        Guardar
-                      </button>
+
+                    <button
+                      type="submit"
+                      class="!w-full !bg-gradient-to-r !from-blue-500 !to-blue-600 !text-white !py-3 !px-6 !rounded-lg !font-semibold hover:!shadow-lg !transform hover:!-translate-y-1 !transition-all !duration-300 !flex !items-center !justify-center"
+                    >
+                      <i class="fas fa-save !mr-2"></i>
+                      Actualizar Contacto
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Seguridad -->
+              <div
+                class="!bg-white !rounded-2xl !shadow-lg !border !border-gray-100 !overflow-hidden"
+              >
+                <div
+                  class="!bg-gradient-to-r !from-red-500 !to-red-600 !text-white !p-4 !cursor-pointer"
+                  onclick="toggleSection('security')"
+                >
+                  <div class="!flex !items-center !justify-between">
+                    <div class="!flex !items-center">
+                      <i class="fas fa-shield-alt !text-xl !mr-3"></i>
+                      <h2 class="!text-xl !font-semibold">Seguridad</h2>
                     </div>
+                    <span
+                      class="material-symbols-outlined !transform !transition-transform !duration-300"
+                      id="security-icon"
+                    >
+                      expand_more
+                    </span>
                   </div>
-                </form>
+                </div>
+
+                <div class="!p-6 hidden" id="security">
+                  <form
+                    action="/api/users/change-password"
+                    method="post"
+                    class="!space-y-6 !text-left"
+                  >
+                    <div class="!space-y-4">
+                      <!-- Contraseña Actual -->
+                      <div>
+                        <label class="!block !text-gray-700 !font-medium !mb-2">
+                          <i class="fas fa-lock !text-red-500 !mr-2"></i>
+                          Contraseña Actual
+                        </label>
+
+                        <div class="!relative">
+                          <input
+                            type="password"
+                            name="currentPassword"
+                            id="current-password"
+                            class="!w-full !px-4 !py-3 !pr-12 !border-2 !border-gray-200 !rounded-lg focus:!border-red-500 focus:!ring focus:!ring-red-500/20 !transition-all !duration-300 !font-medium"
+                            placeholder="••••••••••"
+                            required
+                          />
+
+                          <div
+                            class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
+                          >
+                            <span
+                              id="currentPasswordVisible"
+                              class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
+                              onclick="togglePassword('current-password', 'currentPasswordVisible', 'currentPasswordHidden')"
+                            >
+                              visibility
+                            </span>
+
+                            <span
+                              id="currentPasswordHidden"
+                              class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
+                              onclick="togglePassword('current-password', 'currentPasswordVisible', 'currentPasswordHidden')"
+                            >
+                              visibility_off
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Nueva Contraseña + Confirmación -->
+                      <div class="grid grid-cols-1 md:grid-cols-2 !gap-4">
+                        <div>
+                          <label
+                            class="!block !text-gray-700 !font-medium !mb-2"
+                          >
+                            <i class="fas fa-key !text-red-500 !mr-2"></i>
+                            Nueva Contraseña
+                          </label>
+
+                          <div class="!relative">
+                            <input
+                              type="password"
+                              name="newPassword"
+                              id="new-password"
+                              class="!w-full !px-4 !py-3 !pr-12 !border-2 !border-gray-200 !rounded-lg focus:!border-red-500 focus:!ring focus:!ring-red-500/20 !transition-all !duration-300 !font-medium"
+                              minlength="6"
+                              placeholder="••••••••••"
+                              required
+                            />
+
+                            <div
+                              class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
+                            >
+                              <span
+                                id="newPasswordVisible"
+                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
+                                onclick="togglePassword('new-password', 'newPasswordVisible', 'newPasswordHidden')"
+                              >
+                                visibility
+                              </span>
+
+                              <span
+                                id="newPasswordHidden"
+                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
+                                onclick="togglePassword('new-password', 'newPasswordVisible', 'newPasswordHidden')"
+                              >
+                                visibility_off
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label
+                            class="!block !text-gray-700 !font-medium !mb-2"
+                          >
+                            <i
+                              class="fas fa-check-circle !text-red-500 !mr-2"
+                            ></i>
+                            Confirmar Nueva Contraseña
+                          </label>
+
+                          <div class="!relative">
+                            <input
+                              type="password"
+                              name="confirmPassword"
+                              id="confirm-password"
+                              class="!w-full !px-4 !py-3 !pr-12 !border-2 !border-gray-200 !rounded-lg focus:!border-red-500 focus:!ring focus:!ring-red-500/20 !transition-all !duration-300 !font-medium"
+                              placeholder="••••••••••"
+                              required
+                            />
+
+                            <div
+                              class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
+                            >
+                              <span
+                                id="confirmPasswordVisible"
+                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
+                                onclick="togglePassword('confirm-password', 'confirmPasswordVisible', 'confirmPasswordHidden')"
+                              >
+                                visibility
+                              </span>
+
+                              <span
+                                id="confirmPasswordHidden"
+                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
+                                onclick="togglePassword('confirm-password', 'confirmPasswordVisible', 'confirmPasswordHidden')"
+                              >
+                                visibility_off
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      class="!w-full !bg-gradient-to-r !from-red-500 !to-red-600 !text-white !py-3 !px-6 !rounded-lg !font-semibold hover:!shadow-lg !transform hover:!-translate-y-1 !transition-all !duration-300 !flex !items-center !justify-center"
+                    >
+                      <i class="fas fa-key !mr-2"></i>
+                      Cambiar Contraseña
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -384,15 +444,153 @@
       </main>
 
       <div class="right">
-        <div class="top ">
+        <div class="top">
           <div class="theme-toggler">
             <span class="material-symbols-outlined active">light_mode</span>
             <span class="material-symbols-outlined">dark_mode</span>
           </div>
-
+          <div th:replace="fragments/profile :: profile"></div>
         </div>
       </div>
     </div>
-    <script src="/JS/dashboard.js"></script>
+
+    <script>
+      function toggleSection(sectionId) {
+        const content = document.getElementById(sectionId);
+        const icon = document.getElementById(sectionId + "-icon");
+
+        // Toggle content visibility
+        content.classList.toggle("hidden");
+
+        // Rotate icon
+        if (content.classList.contains("hidden")) {
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+
+      // Función para mostrar/ocultar contraseñas
+      function togglePassword(inputId, visibleIconId, hiddenIconId) {
+        const passwordInput = document.getElementById(inputId);
+        const visibleIcon = document.getElementById(visibleIconId);
+        const hiddenIcon = document.getElementById(hiddenIconId);
+
+        if (passwordInput.type === "password") {
+          // Mostrar contraseña
+          passwordInput.type = "text";
+          visibleIcon.classList.add("hidden");
+          hiddenIcon.classList.remove("hidden");
+        } else {
+          // Ocultar contraseña
+          passwordInput.type = "password";
+          visibleIcon.classList.remove("hidden");
+          hiddenIcon.classList.add("hidden");
+        }
+      }
+
+      // Auto-abrir la primera sección al cargar la página
+      document.addEventListener("DOMContentLoaded", function () {
+        toggleSection("personal-info");
+      });
+
+      // Funcionalidad del theme toggler
+      const themeToggler = document.querySelector(".theme-toggler");
+
+      if (themeToggler) {
+        themeToggler.addEventListener("click", () => {
+          document.body.classList.toggle("dark-theme-variables");
+
+          themeToggler
+            .querySelector("span:nth-child(1)")
+            .classList.toggle("active");
+          themeToggler
+            .querySelector("span:nth-child(2)")
+            .classList.toggle("active");
+        });
+      }
+
+      // Cerrar sidebar en móvil
+      const menuBtn = document.querySelector("#menu-btn");
+      const closeBtn = document.querySelector("#close-btn");
+      const sideBar = document.querySelector("aside");
+
+      if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+          sideBar.style.display = "block";
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          sideBar.style.display = "none";
+        });
+      }
+
+      // Animaciones suaves para los formularios
+      document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+          const button = form.querySelector('button[type="submit"]');
+          if (button) {
+            const originalText = button.innerHTML;
+            button.innerHTML =
+              '<i class="fas fa-spinner fa-spin mr-2"></i>Guardando...';
+            button.disabled = true;
+
+            // Restaurar el botón después de un tiempo (en caso de error)
+            setTimeout(() => {
+              button.innerHTML = originalText;
+              button.disabled = false;
+            }, 5000);
+          }
+        });
+      });
+
+      // Validación básica de contraseñas
+      const newPasswordInput = document.getElementById("new-password");
+      const confirmPasswordInput = document.getElementById("confirm-password");
+
+      if (newPasswordInput && confirmPasswordInput) {
+        confirmPasswordInput.addEventListener("input", function () {
+          if (this.value !== newPasswordInput.value) {
+            this.setCustomValidity("Las contraseñas no coinciden");
+            this.classList.add("border-red-500");
+            this.classList.remove("border-gray-200");
+          } else {
+            this.setCustomValidity("");
+            this.classList.remove("border-red-500");
+            this.classList.add("border-gray-200");
+          }
+        });
+      }
+
+      // Ocultar alertas después de 5 segundos
+      setTimeout(() => {
+        const alerts = document.querySelectorAll(
+          '[class*="bg-green-50"], [class*="bg-red-50"]'
+        );
+        alerts.forEach((alert) => {
+          alert.style.transition = "opacity 0.5s";
+          alert.style.opacity = "0";
+          setTimeout(() => alert.remove(), 500);
+        });
+      }, 5000);
+      
+ function DesplegarProfile() {
+  console.log("click");
+  const MostrarInfo = document.getElementById("MostrarInfo");
+
+  if (MostrarInfo.classList.contains("hidden")) {
+    // Si está oculto, mostrarlo
+    MostrarInfo.classList.remove("hidden");
+    MostrarInfo.classList.add("flex");
+  } else {
+    // Si está visible, ocultarlo
+    MostrarInfo.classList.add("hidden");
+    MostrarInfo.classList.remove("flex");
+  }
+}
+    </script>
+   
   </body>
 </html>

@@ -31,4 +31,7 @@ public interface CommentService {
 
     //lista los comentarios por producto o sitio
     List<Comment> obtenerComentariosPorTipo(CommentType commentType);
+
+    //Este servicio es para implementarlo en el front de dashboard comentarios
+    List<Comment> obtenerComentariosPorUsuario(Long userId);
 }

@@ -3,10 +3,13 @@ package com.exe.Huerta_directa.Service;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
 
     List<ProductDTO> listarProducts();
+
+    List<ProductDTO> listarProductosPorUsuario(Long userID);
 
     ProductDTO obtenerProductPorId(Long productId);
 
@@ -21,4 +24,13 @@ public interface ProductService {
     List<ProductDTO> buscarPorNombre(String nombre);
     
     List<ProductDTO> buscarPorCategoria(String categoria);
+
+    boolean existeProducto(String nombre, String categoria);
+
+    boolean existeProductoPorUsuario(String nombre, String Categoria, Long productId);
+
+    long contarTotalProductos();
+    
+    //esto es para hacer los graficos por categorias
+    Map<String, Long> contarProductosPorCategoria();
 }
