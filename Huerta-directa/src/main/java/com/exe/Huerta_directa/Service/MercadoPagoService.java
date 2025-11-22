@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class MercadoPagoService {
 
-        @Value("${mercadopago.access_token}") // ⭐ Lee del properties
+        @Value("${mercadopago.access_token}") 
         private String accessToken;
 
         @Value("${mercadopago.success_url}")
@@ -34,39 +34,39 @@ public class MercadoPagoService {
         public Preference createPreference(PaymentRequestDTO paymentRequest, Long userId)
                         throws MPException, MPApiException {
 
-                MercadoPagoConfig.setAccessToken(accessToken);
+                try {
+                        MercadoPagoConfig.setAccessToken(accessToken);
 
-                PreferenceItemRequest item = PreferenceItemRequest.builder()
-                                .title(paymentRequest.getTitle())
-                                .quantity(paymentRequest.getQuantity())
-                                .currencyId("COP")
-                                .unitPrice(new BigDecimal("5000")) // Precio fijo para probar
-                                .build();
+                        PreferenceItemRequest item = PreferenceItemRequest.builder()
+                                        .title(paymentRequest.getTitle())
+                                        .quantity(paymentRequest.getQuantity())
+                                        .currencyId("COP")
+                                        .unitPrice(paymentRequest.getPrice())
+                                        .build();
 
-                PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                                .items(List.of(item))
-                                .build();
+                        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                                        .items(List.of(item))
+                                        .build();
 
-                PreferenceClient client = new PreferenceClient();
-                return client.create(preferenceRequest);
+                        PreferenceClient client = new PreferenceClient();
+                        return client.create(preferenceRequest);
+
+                } catch (MPApiException e) {
+                        System.err.println(" MPApiException capturada:");
+                        System.err.println(" - Status: " + e.getStatusCode());
+                        System.err.println(" - Message: " + e.getMessage());
+
+                        try {
+                                com.mercadopago.net.MPResponse response = e.getApiResponse();
+                                System.err.println(" - Response Content: " + response.getContent());
+                                System.err.println(" - Response Headers: " + response.getHeaders());
+                        } catch (Exception ex) {
+                                System.err.println(" - No se pudo extraer el contenido de la respuesta");
+                        }
+
+                        throw e;
+                }
+
+
         }
-
-        // }catch(
-
-        // MPApiException e)
-        // {
-        // System.err.println(" MPApiException capturada:");
-        // System.err.println(" - Status: " + e.getStatusCode());
-        // System.err.println(" - Message: " + e.getMessage());
-        //
-
-        // try {
-        // com.mercadopago.net.MPResponse response = e.getApiResponse();
-        // System.err.println(" - Response Content: " + response.getContent());
-        // System.err.println(" - Response Headers: " + response.getHeaders());
-        // } catch (Exception ex) {
-        // System.err.println(" - No se pudo extraer el contenido de la respuesta");
-        // }
-
-        // throw e;
 }
