@@ -1,4 +1,4 @@
-/*! tailwindcss v4.1.14 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.16 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -17,8 +17,6 @@
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-green-900: oklch(39.3% 0.095 152.535);
     --color-teal-500: oklch(70.4% 0.14 182.503);
-    --color-blue-600: oklch(54.6% 0.245 262.881);
-    --color-blue-800: oklch(42.4% 0.199 265.638);
     --color-gray-50: oklch(98.5% 0.002 247.839);
     --color-gray-100: oklch(96.7% 0.003 264.542);
     --color-gray-200: oklch(92.8% 0.006 264.531);
@@ -870,23 +868,11 @@
   .bg-\[\#dc3545\] {
     background-color: #dc3545;
   }
-  .bg-\[\#dff7d8\] {
-    background-color: #dff7d8;
-  }
-  .bg-\[\#e3f6dd\] {
-    background-color: #e3f6dd;
-  }
-  .bg-\[\#e5f5e0\] {
-    background-color: #e5f5e0;
-  }
   .bg-\[\#eaf5e7\] {
     background-color: #eaf5e7;
   }
   .bg-\[\#f7efd8\] {
     background-color: #f7efd8;
-  }
-  .bg-\[\#f7efd\] {
-    background-color: #f7efd;
   }
   .bg-\[\#f8d7da\] {
     background-color: #f8d7da;
@@ -900,15 +886,6 @@
   .bg-\[\#fff5dc\] {
     background-color: #fff5dc;
   }
-  .bg-\[8bc34a\] {
-    background-color: 8bc34a;
-  }
-  .bg-\[amber-400\] {
-    background-color: amber-400;
-  }
-  .bg-\[f7efd\] {
-    background-color: f7efd;
-  }
   .bg-\[var\(\&\#45\;\&\#45\;primary\)\] {
     background-color: var(&#45;&#45;primary);
   }
@@ -918,9 +895,6 @@
   .bg-\[var\(\&\#45\;\&\#45\;white\)\] {
     background-color: var(&#45;&#45;white);
   }
-  .bg-amber-400 {
-    background-color: var(--color-amber-400);
-  }
   .bg-black {
     background-color: var(--color-black);
   }
@@ -929,12 +903,6 @@
   }
   .bg-green-100 {
     background-color: var(--color-green-100);
-  }
-  .bg-orange-400 {
-    background-color: var(--color-orange-400);
-  }
-  .bg-teal-500 {
-    background-color: var(--color-teal-500);
   }
   .bg-transparent {
     background-color: transparent;
@@ -1398,14 +1366,14 @@
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   .transition-all {
-    transition-property: all !important;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)) !important;
-    transition-duration: var(--tw-duration, var(--default-transition-duration)) !important;
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   .transition-colors {
-    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to !important;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)) !important;
-    transition-duration: var(--tw-duration, var(--default-transition-duration)) !important;
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   .transition-opacity {
     transition-property: opacity;
@@ -1509,16 +1477,6 @@
       }
     }
   }
-  .hover\:scale-0 {
-    &:hover {
-      @media (hover: hover) {
-        --tw-scale-x: 0%;
-        --tw-scale-y: 0%;
-        --tw-scale-z: 0%;
-        scale: var(--tw-scale-x) var(--tw-scale-y);
-      }
-    }
-  }
   .hover\:scale-105 {
     &:hover {
       @media (hover: hover) {
@@ -1539,13 +1497,6 @@
       }
     }
   }
-  .hover\:scale-\[1\.1\] {
-    &:hover {
-      @media (hover: hover) {
-        scale: 1.1;
-      }
-    }
-  }
   .hover\:scale-\[1\.03\] {
     &:hover {
       @media (hover: hover) {
@@ -1557,20 +1508,6 @@
     &:hover {
       @media (hover: hover) {
         scale: 1.05;
-      }
-    }
-  }
-  .hover\:scale-\[1\.\] {
-    &:hover {
-      @media (hover: hover) {
-        scale: 1.;
-      }
-    }
-  }
-  .hover\:scale-\[2\] {
-    &:hover {
-      @media (hover: hover) {
-        scale: 2;
       }
     }
   }
