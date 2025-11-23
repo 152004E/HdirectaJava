@@ -680,6 +680,12 @@
   .h-\[200px\] {
     height: 200px;
   }
+  .h-\[500\] {
+    height: 500;
+  }
+  .h-\[500px\] {
+    height: 500px;
+  }
   .h-full {
     height: 100%;
   }
