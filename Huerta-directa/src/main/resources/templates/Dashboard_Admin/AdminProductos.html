@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos -- HUERTA DIRECTA</title>
+    <!-- Link para el font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+  </head>
+  <body>
+    <div class="containerActualizarUcuario">
+      <div
+        th:replace="fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main>
+        <h1 class="!mt-[20px]">
+          Revisa los prodcutos subidos por los usuarios.
+        </h1>
+        <div
+          class="bg-yellow-100 !border-l-4 !border-yellow-500 text-yellow-800 !p-4 rounded-md shadow-md !w-full h-18 mx-auto !mt-16 flex justify-between items-center hover:bg-yellow-100/80 transition-all duration-500"
+        >
+          <p class="text-md">
+            <strong>Nota:</strong> Para ver o agregar prodcutos debes ir a la
+            sección de <span class="font-semibold">Agregar Productos</span>.
+          </p>
+          <a
+            th:href="@{/DashBoardAdminAgregarProducto}"
+            class="bg-[#558b2f] text-white hover:bg-[#385c1e] !py-3 !px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer"
+          >
+            Ir a Productos
+          </a>
+        </div>
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]" href=""
+            >Procutos subidos por los usuarios</a
+          >
+          <a href="">Comentarios de los productos</a>
+        </div>
+        <main class="products container1" id="lista-1">
+          <h2 data-aos="zoom-in">Productos destacados</h2>
+          <!--Aca se hace el each para que itere todos los pruductos-->
+          <div
+            class="products-container"
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+              gap: 20px;
+            "
+          >
+            <!-- Producto iterado -->
+            <div
+              th:each="producto : ${productos}"
+              class="product bg-white rounded-xl shadow-lg p-4 flex flex-col justify-between hover:shadow-2xl transition-all duration-300"
+              data-aos="zoom-in"
+            >
+              <div class="relative">
+                <!-- Etiqueta para identificar productos del usuario -->
+                <div
+                  class="absolute top-2 left-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded"
+                  th:if="${producto.etiqueta != null}"
+                >
+                  <span th:text="${producto.etiqueta}"></span>
+                </div>
+
+                <img
+                  th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                  alt="Imagen de [[${producto.nameProduct}]]"
+                  class="w-full h-48 object-cover rounded-t-lg"
+                />
+              </div>
+
+              <div class="p-4 flex flex-col gap-2">
+                <h3
+                  class="text-xl font-bold text-gray-800"
+                  th:text="${producto.nameProduct}"
+                >
+                  Nombre Producto
+                </h3>
+
+                <div class="flex justify-between items-center">
+                  <p
+                    class="text-lg font-semibold text-green-700"
+                    th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')} + ' COP'"
+                  >
+                    Precio
+                  </p>
+                  <span
+                    class="text-sm text-gray-500"
+                    th:text="${producto.category}"
+                    >Categoría</span
+                  >
+                </div>
+
+                <div class="text-sm text-gray-600">
+                  <p>
+                    <strong>Publicado por:</strong>
+                    <span th:text="${producto.userId}">ID Usuario</span>
+                  </p>
+                  <!-- Si tuvieras el objeto usuario completo en el DTO podrías mostrar el nombre -->
+                </div>
+
+                <div class="flex gap-2 mt-4">
+                  <button
+                    class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-colors flex items-center justify-center gap-2"
+                    th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >delete</span
+                    >
+                    Eliminar
+                  </button>
+
+                  <button
+                    class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors flex items-center justify-center gap-2"
+                    th:onclick="'notificarUsuario(' + ${producto.userId} + ')'"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >notifications</span
+                    >
+                    Notificar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            function eliminarProducto(id) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: "No podrás revertir esto",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  fetch("/api/products/" + id, {
+                    method: "DELETE",
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        Swal.fire(
+                          "¡Eliminado!",
+                          "El producto ha sido eliminado.",
+                          "success"
+                        ).then(() => {
+                          location.reload();
+                        });
+                      } else {
+                        Swal.fire(
+                          "Error",
+                          "No se pudo eliminar el producto.",
+                          "error"
+                        );
+                      }
+                    })
+                    .catch((error) => {
+                      console.error("Error:", error);
+                      Swal.fire(
+                        "Error",
+                        "Ocurrió un error al procesar la solicitud.",
+                        "error"
+                      );
+                    });
+                }
+              });
+            }
+
+            function notificarUsuario(userId) {
+              // Placeholder para notificación
+              Swal.fire({
+                title: "Notificar Usuario",
+                text:
+                  "Funcionalidad de notificación para el usuario ID: " +
+                  userId +
+                  " en desarrollo.",
+                icon: "info",
+              });
+            }
+          </script>
+        </main>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 !gap-6">
+          <div
+            th:each="product : ${products}"
+            class="bg-white rounded-xl shadow-lg !p-6 flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] ease-in-out cursor-pointer group"
+          >
+            <div class="flex items-start !space-x-4 !mb-4">
+              <!-- Avatar con iniciales -->
+              <div
+                class="flex-shrink-0 bg-[#8bc34a] w-12 h-12 rounded-full bg-accent flex items-center justify-center"
+              >
+                <span
+                  class="text-white text-xl font-bold uppercase"
+                  th:text="${#strings.substring(product.user.name, 0, 1)}"
+                >
+                  U
+                </span>
+              </div>
+              <!-- Contenido del comentario -->
+              <div class="flex-1">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p
+                      class="text-lg font-semibold text-gray-900 !leading-tight"
+                      th:text="${product.commentType.name() == 'SITE' ? 'Comentario del sitio' : 'Comentario del producto'}"
+                    >
+                      Comentario del sitio
+                    </p>
+                    <!-- Nombre y correo -->
+                    <p class="!text-lg !text-gray-500 !mt-2">
+                      <span class="!mr-2"> Tú : </span>
+                      <span th:text="${product.user.name}">
+                        María González
+                      </span>
+                      <span class="hidden sm:inline">
+                        •
+                        <span th:text="${product.user.email}">
+                          maria.gonzalez@example.com
+                        </span>
+                      </span>
+                    </p>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-gray-400 ml-2 group-hover:text-primary"
+                  >
+                    3p
+                  </span>
+                </div>
+                <!-- Texto del comentario -->
+                <p
+                  class="mt-3 text-gray-700 line-clamp-3 break-all whitespace-normal max-w-[300px]"
+                  th:text="${comment.commentCommenter}"
+                >
+                  ¡El servicio es increíble! La entrega fue súper rápida y los
+                  productos de una calidad excepcional.
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex justify-around items-center !pt-3 text-sm font-medium text-primary !mt-8 !border-t-2 !border-black/10"
+            >
+              <!-- Fecha -->
+              <p
+                class="!text-[14px] !text-gray-500 !mt-2"
+                th:text="${#temporals.format(comment.creationComment, 'dd MMMM yyyy')}"
+              >
+                22 de Octubre, 2025
+              </p>
+              <div>
+                <button
+                  type="button"
+                  class="btn-actualizar"
+                  th:attr="onclick='abrirModalComentario(' + ${comment.idComment} + ', `' + ${comment.commentCommenter} + '`)'"
+                >
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button
+                  type="button"
+                  class="btn-eliminar"
+                  th:attr="onclick='confirmarEliminacion(' + ${comment.idComment} + '); return false;'"
+                >
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--modal para editar el comentario-->
+      </main>
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+        <!--FIN DEL TOP-->
+        <div class="recent-updates">
+          <h2>Actualizaciones</h2>
+          <div class="updates">
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Arvejas.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Emerson</b> recibio su orden de una libra de arvejas</p>
+                <small class="text-muted">Hace 4 horas</small>
+              </div>
+            </div>
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Manzana.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Jesus</b> recibio su orden de una manzana</p>
+                <small class="text-muted">Hace 6 horas</small>
+              </div>
+            </div>
+            <div class="update">
+              <div class="profile-photo">
+                <img src="/images/ImagenesPruebas/Queso pera.jpg" alt="" />
+              </div>
+              <div class="message">
+                <p><b>Yeferson</b> recibio su orden de queso pera</p>
+                <small class="text-muted">Hace 9 horas</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--FIN DE LAS ACTUALIZACIONES MY BROTA-->
+        <div class="sales-analytics">
+          <h2>Resumen del Sistema</h2>
+          <!-- Tarjeta de Usuarios Totales -->
+          <div class="item online">
+            <div class="icon">
+              <span class="material-symbols-outlined">group</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>USUARIOS TOTALES</h3>
+                <small class="text-muted">Clientes registrados</small>
+              </div>
+              <h5 class="success">+12%</h5>
+              <h3 th:text="${usuarios != null ? usuarios.size() : 0}">0</h3>
+            </div>
+          </div>
+          <!-- Tarjeta de Administradores -->
+          <div class="item offline">
+            <div class="icon">
+              <span class="material-symbols-outlined"
+                >admin_panel_settings</span
+              >
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>ADMINISTRADORES</h3>
+                <small class="text-muted">Admins activos</small>
+              </div>
+              <h5 class="warning">+2</h5>
+              <h3 th:text="${adminCount != null ? adminCount : 2}">2</h3>
+            </div>
+          </div>
+          <!-- Tarjeta de Productos -->
+          <div class="item customers">
+            <div class="icon">
+              <span class="material-symbols-outlined">inventory_2</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>PRODUCTOS</h3>
+                <small class="text-muted">En catálogo</small>
+              </div>
+              <h5 class="success">+5%</h5>
+              <h3>247</h3>
+            </div>
+          </div>
+          <!-- Tarjeta de Pedidos del Día -->
+          <div class="item online" style="border-left: 4px solid #9c27b0">
+            <div class="icon" style="background: #9c27b0">
+              <span class="material-symbols-outlined">shopping_bag</span>
+            </div>
+            <div class="right">
+              <div class="info">
+                <h3>PEDIDOS HOY</h3>
+                <small class="text-muted">Pendientes: 3</small>
+              </div>
+              <h5 class="success">+8%</h5>
+              <h3>18</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
