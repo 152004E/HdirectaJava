@@ -142,7 +142,6 @@ public class RutasPagina {
     }
     // agregar producto desde agregar producto admin
 
-
     @GetMapping("/DashBoardAdminAgregarProducto")
     public String mostrarFormularioAdmin(
             HttpSession session,
@@ -307,54 +306,58 @@ public class RutasPagina {
         return "DashBoard/GraficosDashboarCliente";
     }
 
-   @GetMapping("/GraficosCategoriaAdmin")
-public String GraficosCategoriaAdmin(Model model) {
+    @GetMapping("/GraficosCategoriaAdmin")
+    public String GraficosCategoriaAdmin(Model model) {
 
-    Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
-    model.addAttribute("datosCategoria", datosCategoria);
+        Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
+        model.addAttribute("datosCategoria", datosCategoria);
 
-   
+        DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
+        datosCategoria.forEach(dataset::setValue);
 
-    DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
-    datosCategoria.forEach(dataset::setValue);
+        JFreeChart chart = ChartFactory.createRingChart(
+                "Productos por categoria",
+                dataset,
+                true,
+                true,
+                false);
 
-    JFreeChart chart = ChartFactory.createRingChart(
-            "Productos por categoria",
-            dataset,
-            true,
-            true,
-            false);
+        // RUTA CORRECTA PARA SPRING BOOT
+        String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
+        File carpeta = new File(rutaCarpeta);
+        carpeta.mkdirs();
 
-    // RUTA CORRECTA PARA SPRING BOOT
-    String rutaCarpeta = new File("src/main/resources/static/graficos").getAbsolutePath();
-    File carpeta = new File(rutaCarpeta);
-    carpeta.mkdirs();
+        File outputFile = new File(carpeta, "productosPorCategoria.png");
 
-    File outputFile = new File(carpeta, "productosPorCategoria.png");
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
+            try {
+                Thread.sleep(3000); // 3 segundos
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
 
-    
-    try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-        ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
-         try {
-        Thread.sleep(3000); // 3 segundos
-    } catch (InterruptedException e) {
-        e.printStackTrace();
+        List<ProductDTO> productosCategoria = productService.listarProducts();
+        model.addAttribute("productosCategoria", productosCategoria);
+
+        return "Dashboard_Admin/GraficosCategoriaAdmin";
     }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    model.addAttribute("graficosCategoria", "/graficos/productosPorCategoria.png?v=" + System.currentTimeMillis());
-
-    List<ProductDTO> productosCategoria = productService.listarProducts();
-    model.addAttribute("productosCategoria", productosCategoria);
-
-    return "Dashboard_Admin/GraficosCategoriaAdmin";
-}
     @GetMapping("/GraficosDashboarAdmin")
     public String DashBoardGraficosAdmin() {
         return "Dashboard_Admin/GraficosDashboarAdmin";
+    }
+
+    @GetMapping("/AdminProductos")
+    public String AdminProductos(Model model) {
+        List<ProductDTO> productos = productService.listarProducts();
+        model.addAttribute("productos", productos);
+        return "Dashboard_Admin/AdminProductos";
     }
 
     @GetMapping("/landing")
@@ -411,7 +414,7 @@ public String GraficosCategoriaAdmin(Model model) {
 
     @GetMapping("/Lacteos")
     public String mostrarLacteos(Model model) {
-                List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
+        List<ProductDTO> productos = productService.listarProductsPorCategoria("lacteos");
         model.addAttribute("productos", productos);
         model.addAttribute("categoria", "Lácteos");
         return "ProductosCategorias/Lacteos";
