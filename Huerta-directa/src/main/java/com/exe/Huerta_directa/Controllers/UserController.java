@@ -1861,6 +1861,7 @@ public class UserController {
     public String actualizarContrasena(
             @RequestParam String currentPassword,
             @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         try {
@@ -1871,9 +1872,19 @@ public class UserController {
                 return "redirect:/login";
             }
 
+            // Determinar la página de redirección según el rol
+            String redirectPage = currentUser.getRole().getName().equals("Admin") ?
+                "/actualizacionUsuarioAdmin" : "/actualizacionUsuario";
+
+            // Validar que las contraseñas nuevas coincidan
+            if (!newPassword.equals(confirmPassword)) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
+                return "redirect:" + redirectPage;
+            }
+
             if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
                 redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
-                return "redirect:/actualizacionUsuario";
+                return "redirect:" + redirectPage;
             }
 
             User user = userRepository.findById(currentUser.getId())
@@ -1884,11 +1895,15 @@ public class UserController {
             session.setAttribute("user", user);
 
             redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente");
-            return "redirect:/actualizacionUsuario";
+            return "redirect:" + redirectPage;
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseña");
-            return "redirect:/actualizacionUsuario";
+            // En caso de error, intentar determinar el rol para redirigir correctamente
+            User currentUser = (User) session.getAttribute("user");
+            String redirectPage = (currentUser != null && currentUser.getRole().getName().equals("Admin")) ?
+                "/actualizacionUsuarioAdmin" : "/actualizacionUsuario";
+            return "redirect:" + redirectPage;
         }
     }
 

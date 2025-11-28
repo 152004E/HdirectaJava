@@ -24,7 +24,8 @@ public class ProductDTO {
     private String descriptionProduct;
     private Long userId;
     private String etiqueta;
+    private String userName;
+    private Integer stock; // ⭐ NUEVO
+
 
 }
-
-

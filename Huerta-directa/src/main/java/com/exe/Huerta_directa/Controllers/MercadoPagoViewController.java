@@ -22,4 +22,12 @@ public  class MercadoPagoViewController {
     public String failure() {
         return "MercadoPago/failure";
     }
+
+
+    //Controller vistas Modulo pagos
+
+    @GetMapping("/modulo-pagos")
+    public String moduloPagos() {
+        return "MercadoPago/Resumen_Pago";
+    }
 }

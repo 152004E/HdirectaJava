@@ -55,7 +55,7 @@
         <div class="flex  gap-10">
         <img th:src="@{/graficos/productosPorCategoria.png}" 
      alt="Gráfico por categorías" 
-     class="!w-[700px] !mx-auto">
+     class="!w-[500px] h-[350px] !mx-auto">
           <table
             class="!w-full !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200"
           >
@@ -74,7 +74,7 @@
               >
                 <td
                   colspan="3"
-                  class="!text-center !py-6 !text-gray-500 !font-medium"
+                  class="!text-center !py-6 !text-gray-500 !font-medium"0
                 >
                   No se encontraron productos
                 </td>
@@ -107,6 +107,13 @@
             <span class="material-symbols-outlined">dark_mode</span>
           </div>
           <div th:replace="fragments/profile :: profile"></div>
+        </div>
+        <div class="recent-updates !border-t !border-black/30 !rounded-xl">
+          <h2 class="text-center !mt-4">Visión General de Productos por Categoría</h2>
+          <div class="w-full h-20px bg-white">
+            hola
+          </div>
+          </div>
         </div>
       </div>
     </div>

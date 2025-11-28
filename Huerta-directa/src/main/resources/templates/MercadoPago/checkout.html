@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -163,16 +163,40 @@
 
     <div class="order-summary">
         <h2>📦 Resumen de tu pedido</h2>
-        <div class="order-item">
+
+        <!-- Listar todos los productos del carrito -->
+        <div th:each="producto : ${productos}" class="order-item">
             <div>
-                <div class="name">Productos del carrito</div>
-                <div style="color: #666; font-size: 14px;">Envío incluido</div>
+                <div class="name" th:text="${producto.nombre}">Producto</div>
+                <div style="color: #666; font-size: 14px;">
+                    Cantidad: <span th:text="${producto.cantidad}">1</span> x
+                    $<span th:text="${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 0, 'POINT')}">0</span>
+                </div>
             </div>
-            <div class="price">$10.000 COP</div>
+            <div class="price">
+                $<span th:text="${#numbers.formatDecimal(producto.subtotal, 0, 'COMMA', 0, 'POINT')}">0</span> COP
+            </div>
         </div>
+
+        <!-- Resumen de totales -->
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #666;">
+                <span>Subtotal</span>
+                <span>$<span th:text="${#numbers.formatDecimal(subtotal, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #28a745;">
+                <span>Descuento (10%)</span>
+                <span>-$<span th:text="${#numbers.formatDecimal(descuento, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #666;">
+                <span>IVA (19%)</span>
+                <span>+$<span th:text="${#numbers.formatDecimal(iva, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+        </div>
+
         <div class="total">
             <span>Total a pagar:</span>
-            <span>$10.000 COP</span>
+            <span>$<span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">0</span> COP</span>
         </div>
     </div>
 
@@ -197,23 +221,28 @@
     </div>
 </div>
 
-<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
+    // ✅ CORREGIDO: Variables con manejo correcto de Thymeleaf
+    const AMOUNT = /*[[${total}]]*/ 0;
+    const DESCRIPTION = /*[[${descripcion}]]*/ "Productos de Huerta Directa";
 
-<script>
-    // ⚠️ CONFIGURACIÓN - REEMPLAZA ESTOS VALORES
+    console.log("💵 Total a pagar:", AMOUNT);
+    console.log("📝 Descripción:", DESCRIPTION);
+
     const CONFIG = {
-        PUBLIC_KEY: 'TEST-4d1be8e9-6270-47e0-b83b-b8d27d41bcfe', // Tu PUBLIC KEY de Mercado Pago
-        BACKEND_URL: 'http://localhost:8085', // URL de tu backend Spring Boot
-        AMOUNT: 10000, // Monto en COP
-        DESCRIPTION: 'Compra en Huerta Directa',
-        PAYER_EMAIL: 'test_user_123@test.com' // Email del comprador (puedes hacerlo dinámico)
+        PUBLIC_KEY: 'TEST-4d1be8e9-6270-47e0-b83b-b8d27d41bcfe',
+        BACKEND_URL: 'http://localhost:8085',
+        AMOUNT: AMOUNT,
+        DESCRIPTION: DESCRIPTION,
+        PAYER_EMAIL: 'test_user_123@test.com'
     };
 
     // Inicializar Mercado Pago
     const mp = new MercadoPago(CONFIG.PUBLIC_KEY, {
         locale: 'es-CO',
-        advancedFraudPrevention: true // Importante para TEST
+        advancedFraudPrevention: true
     });
 
     const bricksBuilder = mp.bricks();
@@ -222,10 +251,10 @@
     function showError(message) {
         const errorContainer = document.getElementById('error-container');
         errorContainer.innerHTML = `
-                <div class="error-message">
-                    <strong>⚠️ Error:</strong> ${message}
-                </div>
-            `;
+            <div class="error-message">
+                <strong>⚠️ Error:</strong> ${message}
+            </div>
+        `;
     }
 
     // Función para ocultar el loading
@@ -241,8 +270,6 @@
                     amount: CONFIG.AMOUNT,
                     payer: {
                         email: CONFIG.PAYER_EMAIL,
-
-
                     },
                 },
                 customization: {
@@ -269,7 +296,6 @@
                         console.log('📤 Enviando pago:', { selectedPaymentMethod, formData });
 
                         try {
-                            // Preparar el payload para tu backend
                             const paymentData = {
                                 transaction_amount: formData.transaction_amount,
                                 token: formData.token,
@@ -287,7 +313,6 @@
                                 external_reference: 'ORDER-' + Date.now(),
                             };
 
-                            // Enviar al backend Spring Boot
                             const response = await fetch(`${CONFIG.BACKEND_URL}/api/payments/process`, {
                                 method: 'POST',
                                 headers: {
@@ -303,7 +328,6 @@
                                 throw new Error(result.message || 'Error al procesar el pago');
                             }
 
-                            // Manejar la respuesta según el estado del pago
                             handlePaymentResponse(result);
 
                         } catch (error) {
@@ -323,7 +347,6 @@
                 'payment',
                 'paymentBrick_container',
                 settings
-
             );
 
         } catch (error) {
@@ -358,6 +381,8 @@
     window.addEventListener('load', () => {
         renderPaymentBrick();
     });
+
+    /*]]>*/
 </script>
 </body>
 </html>
