@@ -163,14 +163,55 @@ if (toggle && sidebar && main) {
 }
 
 
-  async function crearPago() {
-  // Obtener productos del carrito
-  const filas = document.querySelectorAll("#lista-carrito tbody tr");
-  
-  if (filas.length === 0) {
-    alert("⚠️ Tu carrito está vacío. Agrega productos primero.");
-    return;
-  }
+async function crearPago() {
+    // Obtener productos del carrito
+    const filas = document.querySelectorAll("#lista-carrito tbody tr");
+
+    if (filas.length === 0) {
+        alert("⚠️ Tu carrito está vacío. Agrega productos primero.");
+        return;
+    }
+
+    // Extraer todos los productos del carrito
+    const productos = [];
+    filas.forEach(fila => {
+        const titulo = fila.querySelector("td:nth-child(2)").textContent.trim();
+        const precioTexto = fila.querySelector("td:nth-child(3)").textContent;
+        const precio = parseFloat(precioTexto.replace(/[^0-9.]/g, ""));
+        const id = fila.querySelector("a.borrar").getAttribute("data-id");
+        const imagen = fila.querySelector("img").src;
+
+        productos.push({
+            id: id,
+            nombre: titulo,
+            precio: precio,
+            cantidad: 1, // Por ahora 1, luego puedes agregar input de cantidad
+            imagen: imagen
+        });
+    });
+
+    // Enviar al backend vía POST (AJAX)
+    try {
+        const response = await fetch('/carrito/guardar-sesion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productos)
+        });
+
+        if (response.ok) {
+            // Redirigir a la página de resumen
+            window.location.href = '/carrito/resumen';
+        } else {
+            alert('❌ Error al procesar el carrito');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error de conexión');
+    }
+}
+
 
   // Calcular total
   let total = 0;
@@ -211,7 +252,7 @@ if (toggle && sidebar && main) {
   // Enviar formulario
   document.body.appendChild(form);
   form.submit();
-}
+
 
 // para el boton de profile
  function DesplegarProfile() {

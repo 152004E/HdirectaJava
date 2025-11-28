@@ -1,6 +1,30 @@
 package com.exe.Huerta_directa.Controllers;
 
-import com.exe.Huerta_directa.DTO.PaymentRequestDTO;
+
+import com.exe.Huerta_directa.DTO.PaymentRequest;
+import com.exe.Huerta_directa.Service.MercadoPagoServicePaymentRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+
+    @Autowired
+    private MercadoPagoServicePaymentRequest mercadoPagoService;
+
+    @PostMapping("/process")
+    public String processPayment(@RequestBody PaymentRequest paymentRequest) {
+        return mercadoPagoService.processPayment(paymentRequest);
+    }
+}
+
+
+
+
+
+
+/*import com.exe.Huerta_directa.DTO.PaymentRequestDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Service.MercadoPagoService;
 //import com.mercadopago.exceptions.MPApiException;
@@ -16,7 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 
 /*@Controller
-@RequestMapping("/payment") 
+@RequestMapping("/payment")
 public class PaymentController {
 
     @Autowired
@@ -34,7 +58,7 @@ public class PaymentController {
             @RequestParam(defaultValue = "1") Integer quantity,
             HttpSession session,
             Model model) {
-        
+
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -46,7 +70,7 @@ public class PaymentController {
         model.addAttribute("total", price.multiply(BigDecimal.valueOf(quantity)));
         model.addAttribute("userEmail", user.getEmail());
 
-        return "Pasarela_Pagos/checkout";  
+        return "Pasarela_Pagos/checkout";
     }
 
 
@@ -57,23 +81,23 @@ public String createPreference(
         @RequestParam Integer quantity,
         HttpSession session,
         RedirectAttributes redirectAttributes) {
-    
+
     System.out.println("\nINICIO CREATE PREFERENCE");
     System.out.println(" Sesión ID: " + session.getId());
-    
+
     User user = (User) session.getAttribute("user");
-    
+
     if (user == null) {
         System.err.println("ERROR: Usuario no encontrado en sesión");
         System.err.println("   Redirigiendo a /login");
         return "redirect:/login";
     }
-    
+
     System.out.println(" Usuario encontrado:");
     System.out.println("   - ID: " + user.getId());
     System.out.println("   - Email: " + user.getEmail());
     System.out.println("   - Nombre: " + user.getName());
-    
+
     System.out.println("\n Datos del producto:");
     System.out.println("   - Producto: " + productName);
     System.out.println("   - Precio: $" + price);
@@ -89,7 +113,7 @@ public String createPreference(
 
         System.out.println("\n Llamando a MercadoPagoService.createPreference()...");
         Preference preference = mercadoPagoService.createPreference(paymentRequest, user.getId());
-        
+
         System.out.println("\nÉXITO");
         System.out.println("   - Preference ID: " + preference.getId());
         System.out.println("   - Init Point: " + preference.getSandboxInitPoint());
@@ -105,7 +129,7 @@ public String createPreference(
         System.err.println("\n Stack trace completo:");
         e.printStackTrace();
         System.err.println(" FIN DEL ERROR\n");
-        
+
         redirectAttributes.addFlashAttribute("error", "Error al procesar el pago: " + e.getMessage());
         return "redirect:/index";
     }
@@ -116,7 +140,7 @@ public String createPreference(
             @RequestParam(required = false) String payment_id,
             HttpSession session,
             Model model) {
-        
+
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -125,7 +149,7 @@ public String createPreference(
         model.addAttribute("paymentId", payment_id);
         model.addAttribute("userName", user.getName());
 
-        return "Pasarela_Pagos/success";  
+        return "Pasarela_Pagos/success";
     }
 
     @GetMapping("/failure")
@@ -133,7 +157,7 @@ public String createPreference(
             @RequestParam(required = false) String payment_id,
             HttpSession session,
             Model model) {
-        
+
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -142,7 +166,7 @@ public String createPreference(
         model.addAttribute("paymentId", payment_id);
         model.addAttribute("userName", user.getName());
 
-        return "Pasarela_Pagos/failure"; 
+        return "Pasarela_Pagos/failure";
     }
 
     @GetMapping("/pending")
@@ -150,7 +174,7 @@ public String createPreference(
             @RequestParam(required = false) String payment_id,
             HttpSession session,
             Model model) {
-        
+
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -159,7 +183,7 @@ public String createPreference(
         model.addAttribute("paymentId", payment_id);
         model.addAttribute("userName", user.getName());
 
-        return "Pasarela_Pagos/pending";  
+        return "Pasarela_Pagos/pending";
     }
 
 }

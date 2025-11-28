@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Exitoso</title>
+</head>
+<body style="font-family: Arial; text-align: center; padding: 50px;">
+<h1 style="color: #00a650;">✅ ¡Pago Aprobado!</h1>
+<p>Tu pago ha sido procesado exitosamente.</p>
+<p>ID de pago: <span id="payment-id"></span></p>
+<button onclick="window.location.href='/checkout'">Volver al inicio</button>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('payment-id').textContent = params.get('payment_id');
+</script>
+</body>
+</html>

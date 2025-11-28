@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensajes y comentarios -- HUERTA DIRECTA</title>
+
+    <!-- Link para el font -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+  </head>
+
+  <body>
+    <div class="containerActualizarUcuario">
+      <div
+        th:replace="fragments/DashBoardAdmin/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main>
+        <h1 class="!mt-[20px]">Análisis y gráficos de actividad</h1>
+
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a
+            class="tab-link !text-[#8bc34a] !border-b-4 !border-[#88ff002f]"
+            href="#"
+            data-tab="productos"
+          >
+            Tus productos
+          </a>
+          <a class="tab-link" href="#" data-tab="usuarios"> Tus usuarios </a>
+          <a class="tab-link" href="#" data-tab="ventas"> Tus ventas </a>
+          <a class="" href="#"> Graficos por categorias </a>
+        </div>
+        <div class="flex  gap-10">
+        <img th:src="@{/graficos/productosPorCategoria.png}" 
+     alt="Gráfico por categorías" 
+     class="!w-[700px] !mx-auto">
+          <table
+            class="!w-full !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200"
+          >
+            <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
+              <tr>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Nombre</th>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Categoría</th>
+                <th class="!px-6 !py-3 !text-sm !font-semibold">Unidad</th>
+              </tr>
+            </thead>
+
+            <tbody class="!divide-y !divide-gray-200">
+              <!-- Si NO hay productos -->
+              <tr
+                th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
+              >
+                <td
+                  colspan="3"
+                  class="!text-center !py-6 !text-gray-500 !font-medium"
+                >
+                  No se encontraron productos
+                </td>
+              </tr>
+
+              <!-- Si SÍ hay productos -->
+              <tr
+                th:each="p : ${productosCategoria}"
+                class="hover:bg-gray-200 !transition-all !duration-500"
+              >
+                <td
+                  class="!px-6 !py-3 !text-gray-800"
+                  th:text="${p.nameProduct}"
+                ></td>
+                <td
+                  class="!px-6 !py-3 !capitalize !text-gray-800"
+                  th:text="${p.category}"
+                ></td>
+                <td class="!px-6 !py-3 !text-gray-800" th:text="${p.unit}"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
