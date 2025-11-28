@@ -258,7 +258,7 @@ public class RutasPagina {
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
             try {
-                Thread.sleep(3000); // 3 segundos
+                Thread.sleep(100); // 3 segundos
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -688,6 +688,9 @@
   .h-\[200px\] {
     height: 200px;
   }
+  .h-\[500\] {
+    height: 500;
+  }
   .h-\[500px\] {
     height: 500px;
   }
@@ -1112,7 +1115,7 @@
     border-radius: 50px;
   }
   .rounded-full {
-    border-radius: calc(infinity * 1px);
+    border-radius: calc(infinity * 1px) !important;
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
@@ -2275,9 +2278,9 @@
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
   .transition-transform {
-    transition-property: transform, translate, scale, rotate;
-    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    transition-property: transform, translate, scale, rotate !important;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)) !important;
+    transition-duration: var(--tw-duration, var(--default-transition-duration)) !important;
   }
   .\!duration-300 {
     --tw-duration: 300ms !important;
