@@ -15,7 +15,6 @@ function cargarEvenetListeners() {
 function comprarElemento(e) {
   e.preventDefault();
   if (e.target.classList.contains("agregar-carrito")) {
-    console.log("¡Click en botón agregar!");
     const elemento = e.target.closest(".product");
     leerDatosElemento(elemento);
   }
@@ -158,7 +157,6 @@ if (toggle && sidebar && main) {
   toggle.onclick = function () {
     sidebar.classList.toggle("active");
     main.classList.toggle("active");
-    console.log("Sidebar toggled");
   };
 }
 
@@ -215,7 +213,6 @@ if (toggle && sidebar && main) {
 
 // para el boton de profile
  function DesplegarProfile() {
-  console.log("click");
   const MostrarInfo = document.getElementById("MostrarInfo");
 
   if (MostrarInfo.classList.contains("hidden")) {
