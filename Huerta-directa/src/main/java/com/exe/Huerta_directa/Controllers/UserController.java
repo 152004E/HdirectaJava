@@ -142,6 +142,9 @@ public class UserController {
         headerRow.createCell(2).setCellValue("Email");
         headerRow.createCell(3).setCellValue("Rol ID");
 
+        headerRow.createCell(3).setCellValue("GÃ©nero");
+        headerRow.createCell(4).setCellValue("Edad");
+        headerRow.createCell(5).setCellValue("Rol ID");
         // Si hay filtro, agregar fila informativa
         if (dato != null && valor != null && !valor.isEmpty()) {
             org.apache.poi.ss.usermodel.Row filterRow = sheet.createRow(1);
@@ -318,7 +321,7 @@ public class UserController {
                                 "Por Rol:", statsDataFont);
                         roleTitle.setSpacingBefore(10);
                         document.add(roleTitle);
-
+                        
                         for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
                             com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
                                     "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
@@ -333,7 +336,7 @@ public class UserController {
                                 "Por Género:", statsDataFont);
                         genderTitle.setSpacingBefore(10);
                         document.add(genderTitle);
-
+                        
                         for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
                             com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
                                     "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
@@ -490,7 +493,7 @@ public class UserController {
                                                 campesinos con consumidores como tú.
                                             </p>
                                         </div>
-                
+
                                         <!-- Beneficios -->
                                         <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
                                             <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
@@ -511,8 +514,7 @@ public class UserController {
                                                 </p>
                                             </div>
                                         </div>
-                
-                                        <!-- Botón de acción -->
+                                        <!-- BotÃ³n de acciÃ³n -->
                                         <div style="text-align: center; margin-bottom: 30px;">
                                             <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
                                                 🌟 Comenzar a Explorar
@@ -542,7 +544,7 @@ public class UserController {
                                             </span>
                                         </div>
                                     </div>
-                
+
                                 </div>
                             </td>
                         </tr>
@@ -627,8 +629,9 @@ public class UserController {
 
         if (user.getRole().getIdRole() == 1) {
             return "redirect:/DashboardAdmin";
+        } else {
+            return "redirect:/index";
         }
-        return "redirect:/index";
     }
 
 
@@ -651,8 +654,6 @@ public class UserController {
         redirect.addFlashAttribute("success", "Administrador creado con éxito");
         return "redirect:/DashboardAdmin"; // redirección al dashboard
     }
-
-
 
     /**
      * Método para cerrar sesión

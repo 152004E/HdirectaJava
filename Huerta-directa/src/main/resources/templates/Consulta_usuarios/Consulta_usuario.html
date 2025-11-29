@@ -398,9 +398,7 @@
                 }
                 const usuarios = await response.json();
                 return usuarios;
-            } catch (error) {
-                console.error('Error obteniendo usuarios:', error);
-                return [];
+            } catch (error) {return [];
             }
         }
 
@@ -425,9 +423,7 @@ async function calcularEstadisticas() {
     };
 
     // Si no hay datos de género, usar datos simulados temporalmente
-    if (generoStats.masculino === 0 && generoStats.femenino === 0 && generoStats.otro === 0) {
-        console.warn('No se encontraron datos de género reales, usando datos simulados');
-        generoStats.masculino = Math.floor(total * 0.4);
+    if (generoStats.masculino === 0 && generoStats.femenino === 0 && generoStats.otro === 0) {generoStats.masculino = Math.floor(total * 0.4);
         generoStats.femenino = Math.floor(total * 0.45);
         generoStats.otro = Math.floor(total * 0.05);
         generoStats.noEspecificado = total - generoStats.masculino - generoStats.femenino - generoStats.otro;
@@ -513,16 +509,13 @@ function calcularRangosEdad(usuarios) {
 
     // Si no hay datos de edad, usar distribución simulada
     if (usuariosConEdad === 0) {
-        console.log('No se encontraron datos de edad válidos, usando datos simulados');
         const total = usuarios.length;
         rangos['18-25'] = Math.floor(total * 0.25);
         rangos['26-35'] = Math.floor(total * 0.35);
         rangos['36-45'] = Math.floor(total * 0.20);
         rangos['46-55'] = Math.floor(total * 0.12);
         rangos['56+'] = total - rangos['18-25'] - rangos['26-35'] - rangos['36-45'] - rangos['46-55'];
-    } else {
-        console.log(`${usuariosConEdad} usuarios tienen datos de edad válidos`);
-    }
+    } else {}
 
     return rangos;
 }
@@ -722,29 +715,18 @@ ageChart = new Chart(ageCtx, {
         }
 
         // Función para debug - ver qué datos tienen los usuarios (TEMPORAL)
-function verificarDatosUsuarios(usuarios) {
-    console.log("=== DATOS DE USUARIOS DISPONIBLES ===");
-    if (usuarios.length > 0) {
-        console.log("Total usuarios:", usuarios.length);
-        console.log("Primer usuario:", usuarios[0]);
-        console.log("Campos disponibles:", Object.keys(usuarios[0]));
-        
+function verificarDatosUsuarios(usuarios) {if (usuarios.length > 0) {
+
         // Verificar campos de fecha
         const camposFecha = ['birthdate', 'fechaNacimiento', 'birthDate', 'fecha_nacimiento', 'dateOfBirth'];
         let tieneFecha = false;
         camposFecha.forEach(campo => {
-            if (usuarios[0].hasOwnProperty(campo)) {
-                console.log(`✓ Campo ${campo} encontrado:`, usuarios[0][campo]);
-                tieneFecha = true;
+            if (usuarios[0].hasOwnProperty(campo)) {tieneFecha = true;
             }
         });
         
-        if (!tieneFecha) {
-            console.log("✗ No se encontraron campos de fecha de nacimiento");
-        }
-    }
-    console.log("=====================================");
-}
+        if (!tieneFecha) {}
+    }}
 
         // Las demás funciones se mantienen igual
         function abrirModalEmail() {
@@ -831,9 +813,7 @@ function verificarDatosUsuarios(usuarios) {
                     <strong>Error de conexión</strong><br>
                     No se pudo conectar con el servidor
                 `;
-                resultMessage.classList.remove('hidden');
-                console.error('Error:', error);
-            }
+                resultMessage.classList.remove('hidden');}
         }
 
         function exportarUsuariosExcel() {
@@ -861,9 +841,7 @@ function verificarDatosUsuarios(usuarios) {
                         alert('Error al eliminar usuario');
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al eliminar usuario');
+                .catch(error => {alert('Error al eliminar usuario');
                 });
             }
         }

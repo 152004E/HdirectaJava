@@ -1,11 +1,13 @@
 package com.exe.Huerta_directa.Service;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+@Service
 public interface UserService {
 
     List<UserDTO> listarUsers();

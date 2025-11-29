@@ -1,5 +1,4 @@
 package com.exe.Huerta_directa.Impl;
-
 import com.exe.Huerta_directa.DTO.RoleDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.Role;
@@ -8,7 +7,6 @@ import com.exe.Huerta_directa.Repository.RoleRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.RoleService;
 import com.exe.Huerta_directa.Service.UserService;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -19,16 +17,13 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
 import jakarta.transaction.Transactional;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,26 +33,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
-
     public List<User> obtenerTodos() {
         return userRepository.findAll();
     }
-
     @Override
     public List<UserDTO> listarUsers() {
         return userRepository.findAll()
@@ -65,144 +55,109 @@ public class UserServiceImpl implements UserService {
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
-
     @Override
     public UserDTO obtenerUserPorId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + userId));
         return convertirADTO(user);
     }
-
     @Override
     public UserDTO crearUser(UserDTO userDTO) {
-        System.out.println("🔧 UserServiceImpl.crearUser() - Datos recibidos:");
-        System.out.println("   Género: " + userDTO.getGender());
-        System.out.println("   Fecha Nacimiento: " + userDTO.getBirthDate());
-        
         User user = convertirAEntity(userDTO);
-
-        // ⭐ HASHEAR la contraseña antes de guardar
+        // â­ HASHEAR la contraseÃ±a antes de guardar
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
             user.setPassword(hashedPassword);
         }
-
         User nuevoUser = userRepository.save(user);
-        System.out.println("✅ Usuario guardado en BD con ID: " + nuevoUser.getId());
-        System.out.println("   Género guardado: " + nuevoUser.getGender());
-        System.out.println("   Fecha Nacimiento guardada: " + nuevoUser.getBirthDate());
-        
         return convertirADTO(nuevoUser);
     }
-
     @Override
     public UserDTO actualizarUser(Long userId, UserDTO userDTO) {
         User userExistente = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + userId));
-
         actualizarDatosPersona(userExistente, userDTO);
-
-        // ⭐ Solo hashear si la contraseña cambió (no está vacía)
+        // â­ Solo hashear si la contraseÃ±a cambiÃ³ (no estÃ¡ vacÃ­a)
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
             userExistente.setPassword(hashedPassword);
         }
-
         User userActualizado = userRepository.save(userExistente);
         return convertirADTO(userActualizado);
     }
-
     @Override
     @Transactional
     public void eliminarUserPorId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("Usuario no encontrado por id: " + userId);
         }
-
         User user = userRepository.findById(userId).get();
-
         if (user.getProducts() != null && !user.getProducts().isEmpty()) {
             throw new RuntimeException("No se puede eliminar este usuario porque tiene " +
                     user.getProducts().size() + " producto(s) asociado(s). " +
-                    "Elimine primero los productos o reasígnelos a otro usuario.");
+                    "Elimine primero los productos o reasÃ­gnelos a otro usuario.");
         }
-
         userRepository.deleteById(userId);
     }
-
-    // ⭐ MÉTODO DE AUTENTICACIÓN CON BCRYPT
+    // â­ MÃ‰TODO DE AUTENTICACIÃ“N CON BCRYPT
     @Override
     public UserDTO autenticarUsuario(String email, String password) {
         // Buscar usuario por email
         User user = userRepository.findByEmail(email)
                 .orElse(null);
-
         if (user == null) {
             return null;
         }
-
-        // ⭐ Verificar la contraseña hasheada con BCrypt
+        // â­ Verificar la contraseÃ±a hasheada con BCrypt
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return null;
         }
-
         // Convertir a DTO y devolver
         return convertirADTO(user);
     }
-
     @Override
     public UserDTO crearAdmin(UserDTO userDTO) {
         // Obtener el rol admin (id = 1)
         RoleDTO roleAdmin = roleService.obtenerRolePorId(1L);
         userDTO.setIdRole(roleAdmin.getIdRole());
-
-        // ⭐ La contraseña se hasheará automáticamente en crearUser()
+        // â­ La contraseÃ±a se hashearÃ¡ automÃ¡ticamente en crearUser()
         return crearUser(userDTO);
     }
-
-    // ========== MÉTODOS PRIVADOS ==========
-
+    // ========== MÃ‰TODOS PRIVADOS ==========
     private UserDTO convertirADTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
-        // NO incluir la contraseña en el DTO
+        // NO incluir la contraseÃ±a en el DTO
         userDTO.setPassword(null);
         userDTO.setPhone(user.getPhone());
         userDTO.setAddress(user.getAddress());
         userDTO.setCreacionDate(user.getCreacionDate());
-        
-        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        // âœ… NUEVOS CAMPOS - IMPORTANTE
         userDTO.setGender(user.getGender());
         userDTO.setBirthDate(user.getBirthDate());
-
         if (user.getRole() != null) {
             userDTO.setIdRole(user.getRole().getIdRole());
         } else {
             userDTO.setIdRole(null);
         }
-
         return userDTO;
     }
-
     private User convertirAEntity(UserDTO userDTO) {
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword()); // Se hasheará en crearUser()
+        user.setPassword(userDTO.getPassword()); // Se hashearÃ¡ en crearUser()
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        
-        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        // âœ… NUEVOS CAMPOS - IMPORTANTE
         user.setGender(userDTO.getGender());
         user.setBirthDate(userDTO.getBirthDate());
-
-        // CORRECCIÓN: Establecer fecha actual si no existe
+        // CORRECCIÃ“N: Establecer fecha actual si no existe
         if (user.getCreacionDate() == null) {
             user.setCreacionDate(LocalDate.now());
         }
-
         if (userDTO.getIdRole() != null) {
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
@@ -214,23 +169,18 @@ public class UserServiceImpl implements UserService {
                             "Rol por defecto con ID 2 ('cliente') no encontrado."));
             user.setRole(defaultRole);
         }
-
         return user;
     }
-
     private void actualizarDatosPersona(User user, UserDTO userDTO) {
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        
-        // ✅ NUEVOS CAMPOS - IMPORTANTE
+        // âœ… NUEVOS CAMPOS - IMPORTANTE
         user.setGender(userDTO.getGender());
         user.setBirthDate(userDTO.getBirthDate());
-
-        // La contraseña se hasheará en actualizarUser() si no está vacía
-        // NO hashear aquí para evitar hashear dos veces
-
+        // La contraseÃ±a se hashearÃ¡ en actualizarUser() si no estÃ¡ vacÃ­a
+        // NO hashear aquÃ­ para evitar hashear dos veces
         if (userDTO.getIdRole() != null) {
             Role role = roleRepository.findById(userDTO.getIdRole())
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado con id: " + userDTO.getIdRole()));
@@ -239,23 +189,19 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("El idRole no puede ser nulo");
         }
     }
-
-    // ========== EXPORTACIÓN ==========
-
+    // ========== EXPORTACIÃ“N ==========
     @Override
     public void exporUserstToExcel(OutputStream outputStream) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Users");
-
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("User ID");
         headerRow.createCell(1).setCellValue("Name");
         headerRow.createCell(2).setCellValue("Email");
-        headerRow.createCell(3).setCellValue("Género");
+        headerRow.createCell(3).setCellValue("GÃ©nero");
         headerRow.createCell(4).setCellValue("Fecha Nacimiento");
-        headerRow.createCell(5).setCellValue("Teléfono");
+        headerRow.createCell(5).setCellValue("TelÃ©fono");
         headerRow.createCell(6).setCellValue("Role");
-
         List<User> users = obtenerTodos();
         int rowNum = 1;
         for (User user : users) {
@@ -266,54 +212,44 @@ public class UserServiceImpl implements UserService {
             row.createCell(3).setCellValue(obtenerGeneroTexto(user.getGender()));
             row.createCell(4).setCellValue(user.getBirthDate() != null ? user.getBirthDate().toString() : "N/A");
             row.createCell(5).setCellValue(user.getPhone() != null ? user.getPhone() : "N/A");
-            
             String roleName = (user.getRole() != null) ? user.getRole().getName() : "No Role Assigned";
             row.createCell(6).setCellValue(roleName);
         }
-
         for (int i = 0; i < 7; i++) {
             sheet.autoSizeColumn(i);
         }
-
         try {
             workbook.write(outputStream);
         } finally {
             workbook.close();
         }
     }
-
     @Override
     public void exportUsersToPdf(OutputStream outputStream) throws IOException {
         Document document = new Document();
-
         try {
             PdfWriter.getInstance(document, outputStream);
             document.open();
-
-            // Título
+            // TÃ­tulo
             Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, Color.GREEN.darker());
             Paragraph title = new Paragraph("HUERTA DIRECTA", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
-
-            // Subtítulo
+            // SubtÃ­tulo
             Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, Color.BLACK);
             Paragraph subtitle = new Paragraph("Reporte de Usuarios", subtitleFont);
             subtitle.setAlignment(Element.ALIGN_CENTER);
             subtitle.setSpacingAfter(10);
             document.add(subtitle);
-
             // Info del reporte
             Font infoFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.GRAY);
             String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-
             List<User> users = obtenerTodos();
-            Paragraph reportInfo = new Paragraph("Fecha de generación: " + currentDate +
+            Paragraph reportInfo = new Paragraph("Fecha de generaciÃ³n: " + currentDate +
                     " | Total de registros: " + users.size(), infoFont);
             reportInfo.setAlignment(Element.ALIGN_RIGHT);
             reportInfo.setSpacingAfter(20);
             document.add(reportInfo);
-
             if (users.isEmpty()) {
                 Font noDataFont = FontFactory.getFont(FontFactory.HELVETICA, 12, Color.RED);
                 Paragraph noData = new Paragraph("No se encontraron usuarios registrados.", noDataFont);
@@ -326,27 +262,21 @@ public class UserServiceImpl implements UserService {
                 table.setWidthPercentage(100);
                 table.setSpacingBefore(10f);
                 table.setSpacingAfter(10f);
-
                 float[] columnWidths = { 1f, 2f, 3f, 1.5f, 2f, 2f, 1.5f };
                 table.setWidths(columnWidths);
-
                 Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.WHITE);
-
                 addTableHeader(table, "ID", headerFont);
                 addTableHeader(table, "Nombre", headerFont);
                 addTableHeader(table, "Email", headerFont);
-                addTableHeader(table, "Género", headerFont);
+                addTableHeader(table, "GÃ©nero", headerFont);
                 addTableHeader(table, "Fecha Nac.", headerFont);
-                addTableHeader(table, "Teléfono", headerFont);
+                addTableHeader(table, "TelÃ©fono", headerFont);
                 addTableHeader(table, "Rol", headerFont);
-
                 Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-
                 int rowCount = 0;
                 for (User user : users) {
                     rowCount++;
                     Color rowColor = (rowCount % 2 == 0) ? new Color(240, 240, 240) : Color.WHITE;
-
                     addTableCell(table, String.valueOf(user.getId()), dataFont, rowColor, Element.ALIGN_CENTER);
                     addTableCell(table, user.getName() != null ? user.getName() : "N/A", dataFont, rowColor,
                             Element.ALIGN_LEFT);
@@ -357,76 +287,63 @@ public class UserServiceImpl implements UserService {
                             Element.ALIGN_CENTER);
                     addTableCell(table, user.getPhone() != null ? user.getPhone() : "N/A", dataFont, rowColor,
                             Element.ALIGN_CENTER);
-
                     String roleName = (user.getRole() != null) ? user.getRole().getName() : "Sin Rol";
                     addTableCell(table, roleName, dataFont, rowColor, Element.ALIGN_CENTER);
                 }
-
                 document.add(table);
-
-                // Estadísticas
+                // EstadÃ­sticas
                 Map<String, Long> usersByRole = users.stream()
                         .collect(Collectors.groupingBy(
                                 user -> user.getRole() != null && user.getRole().getName() != null
                                         ? user.getRole().getName()
                                         : "Sin Rol",
                                 Collectors.counting()));
-
-                // Estadísticas por género
+                // EstadÃ­sticas por gÃ©nero
                 Map<String, Long> usersByGender = users.stream()
                         .filter(u -> u.getGender() != null)
                         .collect(Collectors.groupingBy(
                                 user -> obtenerGeneroTexto(user.getGender()),
                                 Collectors.counting()));
-
                 if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
                     document.add(new Paragraph(" "));
-
                     Font statsFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.BLACK);
-                    Paragraph statsTitle = new Paragraph("Estadísticas:", statsFont);
+                    Paragraph statsTitle = new Paragraph("EstadÃ­sticas:", statsFont);
                     statsTitle.setSpacingBefore(20);
                     document.add(statsTitle);
-
                     Font statsDataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-                    
-                    // Estadísticas por rol
+                    // EstadÃ­sticas por rol
                     if (!usersByRole.isEmpty()) {
                         Paragraph roleTitle = new Paragraph("Por Rol:", statsDataFont);
                         roleTitle.setSpacingBefore(10);
                         document.add(roleTitle);
-                        
                         for (Map.Entry<String, Long> entry : usersByRole.entrySet()) {
                             Paragraph statLine = new Paragraph(
-                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                                    "â€¢ " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
                             statLine.setIndentationLeft(20);
                             document.add(statLine);
                         }
                     }
-                    
-                    // Estadísticas por género
+                    // EstadÃ­sticas por gÃ©nero
                     if (!usersByGender.isEmpty()) {
-                        Paragraph genderTitle = new Paragraph("Por Género:", statsDataFont);
+                        Paragraph genderTitle = new Paragraph("Por GÃ©nero:", statsDataFont);
                         genderTitle.setSpacingBefore(10);
                         document.add(genderTitle);
-                        
                         for (Map.Entry<String, Long> entry : usersByGender.entrySet()) {
                             Paragraph statLine = new Paragraph(
-                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                                    "â€¢ " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
                             statLine.setIndentationLeft(20);
                             document.add(statLine);
                         }
                     }
                 }
             }
-
             // Footer
             Font footerFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 8, Color.GRAY);
-            Paragraph footer = new Paragraph("Reporte generado automáticamente por el sistema Huerta Directa",
+            Paragraph footer = new Paragraph("Reporte generado automÃ¡ticamente por el sistema Huerta Directa",
                     footerFont);
             footer.setAlignment(Element.ALIGN_CENTER);
             footer.setSpacingBefore(30);
             document.add(footer);
-
         } catch (DocumentException e) {
             throw new IOException("Error al crear el documento PDF: " + e.getMessage(), e);
         } finally {
@@ -435,8 +352,7 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
-
-    // Método auxiliar para obtener texto del género
+    // MÃ©todo auxiliar para obtener texto del gÃ©nero
     private String obtenerGeneroTexto(String gender) {
         if (gender == null) {
             return "No especificado";
@@ -448,7 +364,6 @@ public class UserServiceImpl implements UserService {
             default -> "No especificado";
         };
     }
-
     private void addTableHeader(PdfPTable table, String headerTitle, Font font) {
         PdfPCell header = new PdfPCell();
         header.setBackgroundColor(new Color(67, 160, 71));
@@ -459,7 +374,6 @@ public class UserServiceImpl implements UserService {
         header.setPadding(8);
         table.addCell(header);
     }
-
     private void addTableCell(PdfPTable table, String text, Font font, Color backgroundColor, int alignment) {
         PdfPCell cell = new PdfPCell();
         cell.setPhrase(new Phrase(text, font));
@@ -470,7 +384,6 @@ public class UserServiceImpl implements UserService {
         cell.setBorderWidth(1);
         table.addCell(cell);
     }
-
     public void exportarUsersToPDF(OutputStream outputStream) throws IOException {
         exportUsersToPdf(outputStream);
     }

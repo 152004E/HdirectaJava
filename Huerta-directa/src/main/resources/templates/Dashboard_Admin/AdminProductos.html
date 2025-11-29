@@ -177,9 +177,7 @@
                         );
                       }
                     })
-                    .catch((error) => {
-                      console.error("Error:", error);
-                      Swal.fire(
+                    .catch((error) => {Swal.fire(
                         "Error",
                         "Ocurrió un error al procesar la solicitud.",
                         "error"
@@ -400,3 +398,4 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
+

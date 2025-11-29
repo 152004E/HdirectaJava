@@ -154,7 +154,6 @@
           addMessage("assistant", aiResponse);
         } catch (error) {
           hideTypingIndicator();
-          console.error("Error:", error);
           addMessage(
             "assistant",
             `❌ Error: ${error.message}. Por favor verifica tu API key y que el modelo 'llama3-8b-8192' esté disponible en Groq.`

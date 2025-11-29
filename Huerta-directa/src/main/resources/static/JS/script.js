@@ -318,3 +318,18 @@ if (toggle && sidebar && main) {
         console.log("Sidebar toggled");
     };
 }
+
+//  para  el  botón  de  perfil
+function  DesplegarProfile()  {
+    console.log("click");
+    const  MostrarInfo  =  document.getElementById("MostrarInfo");
+
+    if  (MostrarInfo.classList.contains("hidden"))  {
+        //  Si  está  oculto,  mostrarlo
+        MostrarInfo.classList.remove("hidden");
+        MostrarInfo.classList.add("flex");
+    }  else  {
+        //  Si  está  visible,  ocultarlo
+        MostrarInfo.classList.add("hidden");
+        MostrarInfo.classList.remove("flex");
+    } }
