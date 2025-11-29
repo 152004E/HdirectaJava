@@ -40,6 +40,10 @@ public class Product {
     @Size(max = 250)
     private String imageProduct = "sin nombre";
 
+    // ⭐ NUEVO: Campo de stock
+    @Column(name = "stock", nullable = false)
+    private Integer stock = 0; // Por defecto 0
+
     @Column (name = "unit", nullable = false, length = 250)
     @NotBlank
     @Size(max = 250)
@@ -57,5 +61,6 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn (name = "user_id", nullable = false)
     private User user;
+
 
 }

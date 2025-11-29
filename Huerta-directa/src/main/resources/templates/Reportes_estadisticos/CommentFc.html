@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Actividad Comentarios</title>
+    <meta charset="UTF-8" />
+    <script src=""></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-green': '#8bc34a',
+                        'primary-dark-green': '#689f38',
+                        'primary-beige': '#faf2dd',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#faf2dd] min-h-screen p-5">
+
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-[#8bc34a] text-4xl font-bold text-center mb-8 drop-shadow-lg">
+        Reporte Comparativo Comentarios PRODUCT vs SITE
+    </h1>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:transform hover:-translate-y-1 transition-all">
+            <p class="text-gray-600 text-lg mb-2 font-semibold">Total Comentarios PRODUCT:</p>
+            <span class="text-5xl font-bold text-[#8bc34a]" th:text="${totalProductComments}">0</span>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] hover:transform hover:-translate-y-1 transition-all">
+            <p class="text-gray-600 text-lg mb-2 font-semibold">Total Comentarios SITE:</p>
+            <span class="text-5xl font-bold text-[#8bc34a]" th:text="${totalSiteComments}">0</span>
+        </div>
+    </div>
+
+    <!-- Gráfico -->
+    <div class="bg-white p-8 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] mb-8 text-center">
+        <img th:src="@{${grafico}}" alt="Gráfico Comparativo Comentarios"
+             class="max-w-full h-auto rounded-lg mx-auto"
+             style="max-width:650px; max-height:450px;" />
+    </div>
+
+    <!-- Botón -->
+    <div class="text-center mb-8">
+        <form action="#" method="get" th:action="@{/reporteFc}">
+            <button type="submit"
+                    class="bg-gradient-to-br from-[#8bc34a] to-[#689f38] text-white px-10 py-3 rounded-lg text-base font-semibold shadow-lg hover:shadow-[0_5px_15px_rgba(139,195,74,0.3)] hover:transform hover:-translate-y-0.5 transition-all">
+                Generar gráfico
+            </button>
+        </form>
+    </div>
+
+    <!-- Lista de comentarios -->
+    <div class="bg-white p-8 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+        <h2 class="text-[#8bc34a] text-3xl font-bold mb-6 border-b-4 border-[#8bc34a] pb-3">
+            Lista de comentarios (todos):
+        </h2>
+        <ul class="space-y-3">
+            <li th:each="comentario : ${comentarios}"
+                class="bg-gray-50 p-4 rounded-lg border-l-4 border-[#8bc34a] hover:bg-gray-100 hover:translate-x-2 transition-all">
+                <span th:text="${comentario.commentCommenter}" class="text-gray-800 font-medium">Comentario</span> -
+                <strong th:text="${comentario.commentType}" class="text-[#689f38] uppercase text-sm font-semibold">Tipo</strong> -
+                <em th:text="${comentario.creationComment}" class="text-gray-500 text-sm not-italic">Fecha</em>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
+

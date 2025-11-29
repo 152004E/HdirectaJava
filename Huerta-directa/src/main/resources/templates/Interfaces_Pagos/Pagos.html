@@ -1,0 +1,190 @@
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Tag, FileText, CreditCard } from 'lucide-react';
+
+export default function ResumenCarrito() {
+// Simulación de datos de sesión que vendrían del backend
+const [productos, setProductos] = useState([]);
+const [config, setConfig] = useState({
+ivaPercent: 19, // IVA del 19%
+descuentoPercent: 10 // Descuento del 10%
+});
+const [loading, setLoading] = useState(true);
+
+// Simula la carga de productos desde el backend/sesión
+useEffect(() => {
+// En producción, esto sería una llamada API: fetch('/api/carrito')
+setTimeout(() => {
+const productosSimulados = [
+{
+id: 1,
+nombre: "Laptop HP Pavilion 15",
+descripcion: "Intel Core i5, 8GB RAM, 512GB SSD",
+precio: 2500000,
+cantidad: 1
+},
+{
+id: 2,
+nombre: "Mouse Logitech MX Master 3",
+descripcion: "Inalámbrico, ergonómico, alta precisión",
+precio: 320000,
+cantidad: 2
+},
+{
+id: 3,
+nombre: "Teclado Mecánico Keychron K2",
+descripcion: "Switches Blue, RGB, Bluetooth",
+precio: 450000,
+cantidad: 1
+}
+];
+setProductos(productosSimulados);
+setLoading(false);
+}, 800);
+}, []);
+
+// Cálculos
+const calcularSubtotal = () => {
+return productos.reduce((total, prod) => total + (prod.precio * prod.cantidad), 0);
+};
+
+const subtotal = calcularSubtotal();
+const descuento = subtotal * (config.descuentoPercent / 100);
+const subtotalConDescuento = subtotal - descuento;
+const iva = subtotalConDescuento * (config.ivaPercent / 100);
+const total = subtotalConDescuento + iva;
+
+// Formato de moneda colombiana
+const formatearPrecio = (precio) => {
+return new Intl.NumberFormat('es-CO', {
+style: 'currency',
+currency: 'COP',
+minimumFractionDigits: 0
+}).format(precio);
+};
+
+// Función para proceder al pago (aquí se integraría MercadoPago)
+const procederAlPago = () => {
+// En producción, enviaría los datos al backend para generar el link de MercadoPago
+const datosParaPago = {
+productos: productos,
+subtotal: subtotal,
+descuento: descuento,
+iva: iva,
+total: total
+};
+
+console.log('Datos para MercadoPago:', datosParaPago);
+alert(`Total a pagar: ${formatearPrecio(total)}\n\nEn producción, aquí se redigiría a MercadoPago`);
+
+// fetch('/api/crear-pago-mercadopago', {
+//   method: 'POST',
+//   body: JSON.stringify(datosParaPago)
+// }).then(res => res.json()).then(data => {
+//   window.location.href = data.payment_url;
+// });
+};
+
+if (loading) {
+return (
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+    <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600 font-medium">Cargando productos...</p>
+    </div>
+</div>
+);
+}
+
+return (
+<div className="min-h-screen bg-[#F5F0E8] py-8 px-4">
+    <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-t-2xl shadow-lg p-6 border-b-2 border-[#8BC34A]">
+            <div className="flex items-center gap-3">
+                <ShoppingCart className="w-8 h-8 text-[#8BC34A]" />
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800">Resumen de Compra</h1>
+                    <p className="text-sm text-gray-600">Verifica tus productos antes de pagar</p>
+                </div>
+            </div>
+        </div>
+
+        {/* Lista de Productos */}
+        <div className="bg-white shadow-lg p-6">
+            <div className="flex items-center gap-2 mb-4">
+                <FileText className="w-5 h-5 text-gray-600" />
+                <h2 className="text-lg font-semibold text-gray-700">Productos</h2>
+            </div>
+
+            <div className="space-y-4">
+                {productos.map((producto) => (
+                <div key={producto.id} className="border border-gray-200 rounded-lg p-4 hover:border-[#8BC34A] transition-colors">
+                    <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                            <h3 className="font-semibold text-gray-800">{producto.nombre}</h3>
+                            <p className="text-sm text-gray-600 mt-1">{producto.descripcion}</p>
+                            <p className="text-sm text-gray-700 mt-2">Cantidad: <span className="font-medium">{producto.cantidad}</span></p>
+                        </div>
+                        <div className="text-right ml-4">
+                            <p className="text-sm text-gray-600">Precio unit.</p>
+                            <p className="font-semibold text-gray-800">{formatearPrecio(producto.precio)}</p>
+                            <p className="text-sm text-[#8BC34A] font-medium mt-1">
+                                {formatearPrecio(producto.precio * producto.cantidad)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Resumen de Costos */}
+        <div className="bg-white shadow-lg p-6 border-t-2 border-gray-100">
+            <div className="flex items-center gap-2 mb-4">
+                <Tag className="w-5 h-5 text-gray-600" />
+                <h2 className="text-lg font-semibold text-gray-700">Resumen de Pago</h2>
+            </div>
+
+            <div className="space-y-3">
+                <div className="flex justify-between text-gray-700">
+                    <span>Subtotal</span>
+                    <span className="font-medium">{formatearPrecio(subtotal)}</span>
+                </div>
+
+                <div className="flex justify-between text-green-600">
+              <span className="flex items-center gap-1">
+                <Tag className="w-4 h-4" />
+                Descuento ({config.descuentoPercent}%)
+              </span>
+                    <span className="font-medium">-{formatearPrecio(descuento)}</span>
+                </div>
+
+                <div className="flex justify-between text-gray-700 pb-3 border-b border-gray-200">
+                    <span>IVA ({config.ivaPercent}%)</span>
+                    <span className="font-medium">+{formatearPrecio(iva)}</span>
+                </div>
+
+                <div className="flex justify-between text-xl font-bold text-gray-900 pt-2">
+                    <span>Total a Pagar</span>
+                    <span className="text-indigo-600">{formatearPrecio(total)}</span>
+                </div>
+            </div>
+        </div>
+
+        {/* Botón de Pago */}
+        <div className="bg-white rounded-b-2xl shadow-lg p-6">
+            <button
+                    onClick={procederAlPago}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+            >
+                <CreditCard className="w-5 h-5" />
+                Proceder al Pago con MercadoPago
+            </button>
+            <p className="text-center text-xs text-gray-500 mt-3">
+                Serás redirigido a la pasarela de pago segura
+            </p>
+        </div>
+    </div>
+</div>
+);
+}
