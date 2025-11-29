@@ -70,7 +70,7 @@ public class UserController {
     }
     // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
     // Metodo para listar todos los usuarios
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<UserDTO>> listarUsers() {
         return new ResponseEntity<>(userService.listarUsers(), HttpStatus.OK);
     }
@@ -340,11 +340,8 @@ public class UserController {
             // Dejar que el servicio se encargue de hashear:
             UserDTO usuarioCreado = userService.crearUser(userDTO);
             User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
-            if (userEntity != null) {
-                session.setAttribute("user", userEntity);
-            } else {
-                session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
-            }
+            User userToSession = Objects.requireNonNullElseGet(userEntity, () -> convertirDTOaEntity(usuarioCreado));
+            session.setAttribute("user", userToSession);
             enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
             if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
                 redirectAttributes.addFlashAttribute("success", "Â¡Bienvenido Administrador!");
@@ -358,7 +355,8 @@ public class UserController {
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
         } catch (Exception e) {
-            e.printStackTrace();
+            // Log del error sin mostrar detalles sensibles
+            System.err.println("Error al crear cuenta de usuario: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta.");
             redirectAttributes.addFlashAttribute("userDTO", userDTO);
             return "redirect:/login";
@@ -608,9 +606,11 @@ public class UserController {
         } catch (NumberFormatException e) {
             // No es un nÃºmero, continuar con bÃºsqueda por nombre
         }
-        // Buscar por nombre del rol (comprobaciÃ³n combinada)
-        if ((roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador")))
-                || (roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario")))) {
+        // Buscar por nombre del rol (comprobación combinada)
+        boolean esAdminRole = roleId == 1 && (valorLower.contains("admin") || valorLower.contains("administrador"));
+        boolean esClienteRole = roleId == 2 && (valorLower.contains("client") || valorLower.contains("usuario"));
+
+        if (esAdminRole || esClienteRole) {
             return true;
         }
         return false;
@@ -724,7 +724,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<BulkEmailResponse> enviarCorreoMasivoFiltrado(@RequestBody BulkEmailFilteredRequest request) {
         try {
-            List<User> users = new java.util.ArrayList<>();
+            List<User> users = new ArrayList<>();
             if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
                 users = userRepository.findAllById(request.getUserIds());
             } else if (request.getEmails() != null && !request.getEmails().isEmpty()) {
@@ -809,13 +809,11 @@ public class UserController {
         } else {
             message.setText(cuerpo, "utf-8");
         }
-        // Enviar el correo masivo en una sola operaciÃ³n
+        // Enviar el correo masivo en una sola operación
         Transport.send(message);
     }
-    /**
-     * MÃ©todo privado para enviar correo personalizado
-     */
-    //  lo comente por que me daba error y sÃ© que no se usa/////
+
+    // Método privado para enviar correo personalizado (comentado porque no se usa)
     // private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
     //         throws MessagingException {
     //     Session session = crearSesionCorreo();
@@ -1022,7 +1020,7 @@ public class UserController {
                                 "success", false,
                                 "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
-            List<UserDTO> usuariosCargados = new ArrayList<>();
+            List<UserDTO> usuariosCargados;
             int usuariosCreados = 0;
             int usuariosDuplicados = 0;
             List<String> errores = new ArrayList<>();
@@ -1235,7 +1233,7 @@ public class UserController {
                                 "success", false,
                                 "message", "Formato de archivo no soportado. Use CSV o Excel (.xlsx, .xls)"));
             }
-            List<ProductDTO> productosCargados = new ArrayList<>();
+            List<ProductDTO> productosCargados;
             int productosCreados = 0;
             int productosDuplicados = 0;
             List<String> errores = new ArrayList<>();
@@ -1420,13 +1418,13 @@ public class UserController {
     /**
      * Crear producto desde DTO usando ProductService
      */
+    /**
+     * Crear producto desde DTO usando ProductService
+     */
     private void crearProductoDesdeDTO(ProductDTO producto) {
-        try {
-            // Usar ProductService para crear el producto en la base de datos
-            productService.crearProduct(producto, producto.getUserId());
-        } catch (Exception e) {
-            throw e; // Re-lanzar la excepciÃ³n para que sea manejada en el bucle principal
-        }
+        // Usar ProductService para crear el producto en la base de datos
+        // Las excepciones se propagan automáticamente al método que llama
+        productService.crearProduct(producto, producto.getUserId());
     }
     @GetMapping("/products/refresh")
     @ResponseBody

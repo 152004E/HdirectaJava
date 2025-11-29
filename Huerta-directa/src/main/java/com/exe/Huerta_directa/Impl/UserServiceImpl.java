@@ -91,7 +91,8 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("Usuario no encontrado por id: " + userId);
         }
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado por id: " + userId));
         if (user.getProducts() != null && !user.getProducts().isEmpty()) {
             throw new RuntimeException("No se puede eliminar este usuario porque tiene " +
                     user.getProducts().size() + " producto(s) asociado(s). " +
@@ -383,8 +384,5 @@ public class UserServiceImpl implements UserService {
         cell.setPadding(5);
         cell.setBorderWidth(1);
         table.addCell(cell);
-    }
-    public void exportarUsersToPDF(OutputStream outputStream) throws IOException {
-        exportUsersToPdf(outputStream);
     }
 }
