@@ -19,16 +19,16 @@ import java.util.List;
 @Service
 public class MercadoPagoService {
 
-        @Value("${mercadopago.access_token}") // ⭐ Lee del properties
+        @Value("${mercadopago.access.token}")
         private String accessToken;
 
-        @Value("${mercadopago.success_url}")
+        @Value("${mercadopago.success.url}")
         private String successUrl;
 
-        @Value("${mercadopago.failure_url}")
+        @Value("${mercadopago.failure.url}")
         private String failureUrl;
 
-        @Value("${mercadopago.pending_url}")
+        @Value("${mercadopago.pending.url}")
         private String pendingUrl;
 
         public Preference createPreference(PaymentRequestDTO paymentRequest, Long userId)
