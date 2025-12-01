@@ -5,18 +5,14 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.PaymentRequest;
 import com.exe.Huerta_directa.Service.MercadoPagoServicePaymentRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
         import com.exe.Huerta_directa.DTO.CarritoItem;
-import com.exe.Huerta_directa.DTO.PaymentRequest;
-import com.exe.Huerta_directa.Service.MercadoPagoServicePaymentRequest;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
         import java.util.HashMap;
 import java.util.List;

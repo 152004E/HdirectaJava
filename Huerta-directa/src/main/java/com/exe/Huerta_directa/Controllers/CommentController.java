@@ -1,15 +1,12 @@
 package com.exe.Huerta_directa.Controllers;
 
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -24,7 +21,6 @@ import com.exe.Huerta_directa.Service.CommentService;
 import org.jfree.chart.ChartUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 
 
