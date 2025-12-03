@@ -40,10 +40,10 @@ public class Product {
     @Size(max = 250)
     private String imageProduct = "sin nombre";
 
-    /*
-    @Column( name = "stock", nullable = false)
-    private Integer stock = 0;
-    */
+
+    @Column( name = "stock", nullable = true, length = 100)
+    private Integer stock;
+
 
     @Column (name = "unit", nullable = false, length = 250)
     @NotBlank

@@ -16,9 +16,10 @@ public class Venta {
 
     @Column(name = "Amount", nullable = false)
     private Double Amount;
-
+    /*
     @Column(name = "Stock", nullable = false)
     private Integer stock;
+    */
 
     @Column(name= "Discount", nullable = false)
     private Double discount;

@@ -194,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.groupingBy(ProductDTO::getCategory, Collectors.counting()));
     }
 
-    /*
+
     @Override
     @Transactional
     public void descontarStock(Long productId, Integer cantidad) {
@@ -216,12 +216,14 @@ public class ProductServiceImpl implements ProductService {
         producto.setStock(producto.getStock() - cantidad);
         productRepository.save(producto);
 
+
+        //Eliminar esto despues de probar
         // Logging mejorado (más fácil de leer en consola)
         System.out.println("✅ Stock actualizado:");
         System.out.println("   - Producto: " + producto.getNameProduct());
         System.out.println("   - Cantidad descontada: " + cantidad);
         System.out.println("   - Stock restante: " + producto.getStock());
-    }*/
     }
+}
 
 
