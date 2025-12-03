@@ -577,7 +577,7 @@ public class RutasPagina {
         return "Clientes_Destacados/ClientesDestacados";
     }
 
-    @Value("${mercadopago.public.key}")
+    @Value("${mercadopago.public_key}")
     private String mercadoPagoPublicKey;
 
 

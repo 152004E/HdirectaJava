@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class MercadoPagoServicePaymentRequest {
 
-    @Value("${mercadopago.access.token}")
+    @Value("${mercadopago.access_token}")
     private String accessToken;
 
     // Métodos de pago que NO requieren token (efectivo, PSE, transferencias)

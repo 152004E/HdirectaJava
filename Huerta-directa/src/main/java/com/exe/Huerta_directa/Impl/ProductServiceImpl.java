@@ -194,6 +194,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.groupingBy(ProductDTO::getCategory, Collectors.counting()));
     }
 
+    /*
     @Override
     @Transactional
     public void descontarStock(Long productId, Integer cantidad) {
@@ -220,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
         System.out.println("   - Producto: " + producto.getNameProduct());
         System.out.println("   - Cantidad descontada: " + cantidad);
         System.out.println("   - Stock restante: " + producto.getStock());
-    }
+    }*/
     }
 
 

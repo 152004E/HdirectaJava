@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.DTO;
+/*package com.exe.Huerta_directa.DTO;
 
 public class ProductItemDTO {
     private String id;
@@ -18,3 +18,4 @@ public class ProductItemDTO {
     public Double getUnitPrice() { return unitPrice; }
     public void setUnitPrice(Double unitPrice) { this.unitPrice = unitPrice; }
 }
+*/

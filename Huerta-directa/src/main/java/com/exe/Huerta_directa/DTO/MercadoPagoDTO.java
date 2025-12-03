@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.DTO;
+/*package com.exe.Huerta_directa.DTO;
 
 import java.util.List;
 
@@ -19,3 +19,4 @@ public class MercadoPagoDTO {
     public List<ItemDTO> getItems() { return items; }
     public void setItems(List<ItemDTO> items) { this.items = items; }
 }
+*/

@@ -1,4 +1,5 @@
-package com.exe.Huerta_directa.Controllers;
+
+/*package com.exe.Huerta_directa.Controllers;
 
 
 
@@ -89,9 +90,7 @@ public class PaymentController {
         }
     }
 
-    /**
-     * 🔹 Descontar stock después del pago aprobado
-     */
+
     private void descontarStockDelCarrito(HttpSession session) {
         try {
             @SuppressWarnings("unchecked")
@@ -125,9 +124,7 @@ public class PaymentController {
         }
     }
 
-    /**
-     * 🔹 Crear respuesta de error estandarizada
-     */
+
     private Map<String, Object> crearRespuestaError(String mensaje) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("status", "error");
@@ -136,7 +133,7 @@ public class PaymentController {
         return errorResponse;
     }
 }
-
+*/
 
 
 

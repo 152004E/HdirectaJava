@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.DTO;
+/*package com.exe.Huerta_directa.DTO;
 
 import java.math.BigDecimal;
 
@@ -54,3 +54,4 @@ public class PaymentRequestDTO {
         this.currency = currency;
     }
 }
+*/

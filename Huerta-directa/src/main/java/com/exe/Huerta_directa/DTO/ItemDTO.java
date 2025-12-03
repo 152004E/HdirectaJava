@@ -1,8 +1,10 @@
-package com.exe.Huerta_directa.DTO;
+
+/*package com.exe.Huerta_directa.DTO;
 
 import java.math.BigDecimal;
 
 public class ItemDTO {
+
     private String title;
     private Integer quantity;
     private BigDecimal unitPrice;
@@ -25,3 +27,4 @@ public class ItemDTO {
     public BigDecimal getUnitPrice() { return unitPrice; }
     public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
 }
+*/
