@@ -1,6 +1,3 @@
-// verificar.js
-import { auth } from "./firebase-config.js";
-
 document.getElementById("btnVerificar").addEventListener("click", async () => {
     const code = document.getElementById("codigo").value;
 

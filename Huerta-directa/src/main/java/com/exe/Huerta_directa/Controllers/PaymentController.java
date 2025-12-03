@@ -15,7 +15,6 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/api/payments")
-
 public class PaymentController {
 
     private final MercadoPagoServicePaymentRequest mercadoPagoService;
@@ -42,7 +41,7 @@ public class PaymentController {
 
             System.out.println("📤 Respuesta de MercadoPago (JSON): " + responseJson);
 
-            // ⭐ Parsear el JSON a Map usando Jackson
+            // Parsear el JSON a Map usando Jackson
             Map<String, Object> paymentResult = objectMapper.readValue(responseJson, Map.class);
 
             // Extraer información importante

@@ -9,7 +9,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
@@ -30,8 +31,8 @@ public class MercadoPagoServicePaymentRequest {
 
     public String processPayment(PaymentRequest request) {
         try {
-            URL url = new URL("https://api.mercadopago.com/v1/payments");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            URI uri = URI.create("https://api.mercadopago.com/v1/payments");
+            HttpURLConnection con = (HttpURLConnection) uri.toURL().openConnection();
 
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
@@ -45,10 +46,8 @@ public class MercadoPagoServicePaymentRequest {
             ObjectMapper mapper = new ObjectMapper();
             String jsonInput = mapper.writeValueAsString(mpPayload);
 
-            System.out.println("Payload enviado a MP: " + jsonInput); // Para debugging
-
             try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInput.getBytes("utf-8");
+                byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
@@ -56,9 +55,9 @@ public class MercadoPagoServicePaymentRequest {
             BufferedReader br;
 
             if (responseCode >= 200 && responseCode < 300) {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+                br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             } else {
-                br = new BufferedReader(new InputStreamReader(con.getErrorStream(), "utf-8"));
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8));
             }
 
             StringBuilder response = new StringBuilder();
@@ -69,7 +68,7 @@ public class MercadoPagoServicePaymentRequest {
             br.close();
 
             if (responseCode >= 400) {
-                throw new RuntimeException("Error de Mercado Pago: " + response.toString());
+                throw new RuntimeException("Error de Mercado Pago: " + response);
             }
 
             return response.toString();
