@@ -1876,6 +1876,9 @@
   .bg-center {
     background-position: center;
   }
+  .\!object-cover {
+    object-fit: cover !important;
+  }
   .object-cover {
     object-fit: cover;
   }
