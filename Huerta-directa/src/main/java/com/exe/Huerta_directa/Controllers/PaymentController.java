@@ -1,30 +1,27 @@
 
 package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.PaymentRequest;
-import com.exe.Huerta_directa.Service.MercadoPagoServicePaymentRequest;
-import org.springframework.stereotype.Controller;
+import com.exe.Huerta_directa.Impl.MercadoPagoServicePaymentRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.exe.Huerta_directa.DTO.CarritoItem;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/payments")
+@RequiredArgsConstructor
 public class PaymentController {
 
     private final MercadoPagoServicePaymentRequest mercadoPagoService;
     private final ProductService productService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public PaymentController(MercadoPagoServicePaymentRequest mercadoPagoService, ProductService productService) {
-        this.mercadoPagoService = mercadoPagoService;
-        this.productService = productService;
-    }
 
     @PostMapping("/process")
     public Map<String, Object> processPayment(
