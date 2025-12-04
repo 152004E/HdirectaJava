@@ -7,7 +7,7 @@
     >
       <div class="w-[1000px] h-[620px] flex">
         <form
-          class="!bg-white !w-[700px] !p-6 !rounded-l-xl !shadow-md border-r border-gray-800/35"
+          class="!bg-white !w-[700px] !p-6 !rounded-l-xl !shadow-md !border-r !border-gray-800/35"
           action="http://localhost:8085/api/products/create"
           method="POST"
           enctype="multipart/form-data"
@@ -18,7 +18,9 @@
               Registro de Producto
             </h2>
           </div>
+
           <hr class="!border !border-[#8dc84b] !mb-4" />
+
           <div class="!flex !justify-between !flex-wrap !gap-2 !mb-4">
             <!-- Nombre -->
             <div class="!mb-2 !w-[220px]">
@@ -28,6 +30,7 @@
               >
                 Nombre del producto:
               </label>
+
               <input
                 type="text"
                 id="nombre"
@@ -66,6 +69,7 @@
               >
                 Unidad de medida:
               </label>
+
               <select
                 id="unidad"
                 name="unidad"
@@ -89,6 +93,7 @@
               <label class="!block !text-sm !font-medium !mb-1 !text-black">
                 Categoría:
               </label>
+
               <select
                 class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
                 name="categoria-producto"
@@ -118,20 +123,22 @@
           </div>
 
           <hr class="!border !border-[#8dc84b] !mb-4" />
-          <div class="!flex justify-between !flex-wrap !gap-4 !mb-4">
+
+          <div class="!flex !justify-between !flex-wrap !gap-4 !mb-4">
             <!-- Descripción -->
-            <div class="!mb-2 w-[300px]">
+            <div class="!mb-2 !w-[300px]">
               <label
                 for="descripcion"
                 class="!block !text-sm !font-medium !mb-1 !text-black"
               >
                 Descripción:
               </label>
+
               <textarea
                 id="descripcion"
                 name="descripcion"
                 rows="4"
-                class="!w-full !border h-[40px] !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
+                class="!w-full !border !h-[40px] !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
                 required
               ></textarea>
             </div>
@@ -143,6 +150,7 @@
               >
                 Stock:
               </label>
+
               <input
                 type="number"
                 id="precio"
@@ -153,14 +161,16 @@
               />
             </div>
           </div>
+
           <hr class="!border !border-[#8dc84b] !mb-4" />
 
           <!-- Imagen -->
           <label for="imagen" class="!text-sm !font-medium !text-black">
             Imagen del producto:
           </label>
+
           <div
-            class="!flex !flex-col items-center !my-2 !flex-wrap !gap-4 border-4 border-dashed border-gray-400 !p-4"
+            class="!flex !flex-col !items-center !my-2 !flex-wrap !gap-4 !border-4 !border-dashed !border-gray-400 !p-4"
           >
             <input
               type="file"
@@ -173,7 +183,7 @@
 
             <label
               for="imagen"
-              class="!bg-[#8dc84b] w-[250px] !text-white !px-4 !py-2 !rounded-md !font-semibold !cursor-pointer !hover:bg-[#6ca52a] !transition-all"
+              class="!bg-[#8dc84b] !w-[250px] !text-white !px-4 !py-2 !rounded-md !font-semibold !cursor-pointer !hover:bg-[#6ca52a] !transition-all"
             >
               📁 Seleccionar imagen
             </label>
@@ -189,20 +199,9 @@
               th:href="@{/index}"
               class="!relative !flex !items-center !justify-center !gap-5 !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !font-semibold !text-sm !uppercase !tracking-wider !px-8 !py-3 !rounded-md !transition-all"
             >
-              <span class="material-symbols-outlined flecha"> arrow_back </span>
+              <span class="material-symbols-outlined flecha">arrow_back</span>
               Volver
             </a>
-
-            <!-- <button
-            type="button"
-            id="btn-visualizar"
-            class="!relative !flex !items-center !justify-center !w[300px] !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !font-semibold !text-sm !uppercase !tracking-wider !px-8 !py-3 !rounded-md !transition-all"
-          >
-            Visualizar
-            <span id="passwordOjo" class="material-symbols-outlined !absolute !right-5 !text-white">
-              visibility
-            </span>
-          </button> -->
 
             <button
               type="submit"
@@ -217,45 +216,49 @@
             </button>
           </div>
         </form>
-        <div class="!w-[700px] rounded-r-xl !h-full !bg-[#F9FAFB]">
+
+        <div class="!w-[700px] !rounded-r-xl !h-full !bg-[#F9FAFB]">
           <div
-            class="bg-gray-50 p-8 flex flex-col items-center justify-center border-l border-border-light lg:min-h-full"
+            class="!bg-gray-50 !p-8 !flex !flex-col !items-center !justify-center !border-l !border-border-light !lg:min-h-full"
           >
-            <h2 class="text-xl font-bold mb-6 text-text-light">
+            <h2 class="!text-xl !font-bold !mb-6 !text-text-light">
               PREVISUALIZACIÓN DEL PRODUCTO
             </h2>
 
             <div
-              class="w-full max-w-sm bg-surface-light rounded-lg shadow-xl p-6 border border-border-light space-y-4"
+              class="!w-full !max-w-sm !bg-surface-light !rounded-lg !shadow-xl !p-6 !border !border-border-light !space-y-4"
             >
               <div
-                class="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center overflow-hidden"
+                class="!w-full !h-48 !bg-gray-200 !rounded-md !flex !items-center !justify-center !overflow-hidden"
               >
                 <span
-                  class="material-icons-outlined text-7xl text-subtle-text-light"
+                  class="!material-icons-outlined !text-7xl !text-subtle-text-light"
                 >
                   image
                 </span>
               </div>
 
               <h3
-                class="text-xl font-semibold text-text-light"
+                class="!text-xl !font-semibold !text-text-light"
                 id="prev-nombre"
               >
                 Nombre del Producto
               </h3>
 
-              <p class="text-sm text-subtle-text-light" id="prev-descripcion">
+              <p class="!text-sm !text-subtle-text-light" id="prev-descripcion">
                 Breve descripción del producto que se mostrará aquí.
               </p>
 
               <div
-                class="flex items-center justify-between pt-2 border-t border-border-light"
+                class="!flex !items-center !justify-between !pt-2 !border-t !border-border-light"
               >
-                <span class="text-lg font-bold text-primary" id="prev-precio">
+                <span
+                  class="!text-lg !font-bold !text-primary"
+                  id="prev-precio"
+                >
                   $2.50
                   <span
-                    class="text-sm text-text-light font-normal"
+                    class="!text-sm !text-text-light !font-normal"
                     id="prev-unidad"
                   >
                     / Unidad
@@ -263,7 +266,7 @@
                 </span>
 
                 <span
-                  class="text-xs px-2 py-1 bg-lime-100 text-lime-800 rounded-full font-medium"
+                  class="!text-xs !px-2 !py-1 !bg-lime-100 !text-lime-800 !rounded-full !font-medium"
                   id="prev-categoria"
                 >
                   Categoría
@@ -314,6 +317,5 @@
         </div>
       </div>
     </div>
-   
   </body>
 </html>
