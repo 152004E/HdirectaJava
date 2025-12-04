@@ -8,6 +8,7 @@ import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -331,7 +333,7 @@ public class RutasPagina {
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             ChartUtils.writeChartAsPNG(fos, chart, 700, 400);
             try {
-                Thread.sleep(3000); // 3 segundos
+                Thread.sleep(100); // 3 segundos
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -570,5 +572,58 @@ public class RutasPagina {
             return "redirect:/agregar_admin";
         }
     }
+    @GetMapping("/ClientesDestacados")
+    public String mostrarClientesDestacados(Model model) {
+        return "Clientes_Destacados/ClientesDestacados";
+    }
+
+    @Value("${mercadopago.public_key}")
+    private String mercadoPagoPublicKey;
+
+
+    @GetMapping("/checkout")
+    public String mostrarCheckout(Model model) {
+        model.addAttribute("publicKey", mercadoPagoPublicKey);
+        return "MercadoPago/checkout"; // ✅ Correcto // Ajusta la ruta según tu estructura de templates
+    }
+
+
+    @GetMapping("/reportes/comment")
+    public String mostrarReporteEstadistico() {
+        // Lógica para generar y mostrar el reporte estadístico
+        return "Reportes_estadisticos/commentFc";
+    }
+
+
+    //verify por sms firebase
+    /*@GetMapping("/verify-sms")
+    public String showVerifySMS(HttpSession session, Model model) {
+        // Tomar el usuario de la sesión
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            // Si no hay usuario en sesión, redirigir al login
+            return "redirect:/login";
+        }
+
+        // Pasar el teléfono y rol al HTML
+        model.addAttribute("user", user);
+        return "verify-sms"; // Nombre del HTML sin extensión .html
+    }*/
+
+    @GetMapping("/verify-sms")
+    public String showSmsVerificationPage(HttpSession session) {
+        User pendingUser = (User) session.getAttribute("pendingUser");
+        if (pendingUser == null) {
+            return "redirect:/login";
+        }
+        return "login/verify-sms"; // Página para ingresar el código SMS
+    }
+
+
+
+
+
+
+
 
 }

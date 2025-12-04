@@ -223,7 +223,7 @@
       <!-- FORMULARIO CREAR CUENTA -->
       <div class="form-container sign-up">
         <form
-          th:action="@{/api/users/register}"
+          th:action="@{/api/login/register}"
           th:object="${userDTO}"
           th:method="post"
           class="bg-white w-[400px] flex items-center justify-center flex-col px-10 h-full"
@@ -316,7 +316,7 @@
       <!-- FORMULARIO INICIAR SESIÓN -->
       <div class="form-container sign-in">
         <form
-          th:action="@{/api/users/loginUser}"
+          th:action="@{/api/login/loginUser}"
           th:method="post"
           class="bg-white w-[400px] flex items-center justify-center flex-col px-10 h-full"
         >

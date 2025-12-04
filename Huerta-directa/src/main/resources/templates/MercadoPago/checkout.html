@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Mercado Pago</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #F5F0E8 0%, #F5F0E8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00842e 0%, #8BC34A 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .order-summary {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .order-summary h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .order-item .name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-item .price {
+            font-weight: 700;
+            color: #3c3;
+        }
+
+        .total {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            border-top: 2px solid #3c3;
+            margin-top: 10px;
+        }
+
+        .payment-section {
+            padding: 30px;
+        }
+
+        .payment-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3c3;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #c33;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3c3;
+        }
+
+        #paymentBrick_container {
+            margin-top: 20px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🛒 Finalizar Compra</h1>
+        <p>Huerta Directa - Pago Seguro con Mercado Pago</p>
+    </div>
+
+    <div class="order-summary">
+        <h2>📦 Resumen de tu pedido</h2>
+
+        <!-- Listar todos los productos del carrito -->
+        <div th:each="producto : ${productos}" class="order-item">
+            <div>
+                <div class="name" th:text="${producto.nombre}">Producto</div>
+                <div style="color: #666; font-size: 14px;">
+                    Cantidad: <span th:text="${producto.cantidad}">1</span> x
+                    $<span th:text="${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 0, 'POINT')}">0</span>
+                </div>
+            </div>
+            <div class="price">
+                $<span th:text="${#numbers.formatDecimal(producto.subtotal, 0, 'COMMA', 0, 'POINT')}">0</span> COP
+            </div>
+        </div>
+
+        <!-- Resumen de totales -->
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #666;">
+                <span>Subtotal</span>
+                <span>$<span th:text="${#numbers.formatDecimal(subtotal, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #28a745;">
+                <span>Descuento (10%)</span>
+                <span>-$<span th:text="${#numbers.formatDecimal(descuento, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 15px; font-size: 14px; color: #666;">
+                <span>IVA (19%)</span>
+                <span>+$<span th:text="${#numbers.formatDecimal(iva, 0, 'COMMA', 0, 'POINT')}">0</span></span>
+            </div>
+        </div>
+
+        <div class="total">
+            <span>Total a pagar:</span>
+            <span>$<span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">0</span> COP</span>
+        </div>
+    </div>
+
+    <div class="payment-section">
+        <h2>💳 Método de pago</h2>
+
+        <div class="info-box">
+            <p><strong>✓</strong> Paga con tarjeta de crédito o débito</p>
+            <p><strong>✓</strong> PSE (transferencia bancaria)</p>
+            <p><strong>✓</strong> Efectivo (Efecty, Baloto, etc.)</p>
+            <p><strong>✓</strong> Cuenta de Mercado Pago</p>
+        </div>
+
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Cargando métodos de pago...</p>
+        </div>
+
+        <div id="error-container"></div>
+
+        <div id="paymentBrick_container"></div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // ✅ CORREGIDO: Variables con manejo correcto de Thymeleaf
+    const AMOUNT = /*[[${total}]]*/ 0;
+    const DESCRIPTION = /*[[${descripcion}]]*/ "Productos de Huerta Directa";
+
+    console.log("💵 Total a pagar:", AMOUNT);
+    console.log("📝 Descripción:", DESCRIPTION);
+
+    const CONFIG = {
+        PUBLIC_KEY: 'TEST-4d1be8e9-6270-47e0-b83b-b8d27d41bcfe',
+        BACKEND_URL: 'http://localhost:8085',
+        AMOUNT: AMOUNT,
+        DESCRIPTION: DESCRIPTION,
+        PAYER_EMAIL: 'test_user_123@test.com'
+    };
+
+    // Inicializar Mercado Pago
+    const mp = new MercadoPago(CONFIG.PUBLIC_KEY, {
+        locale: 'es-CO',
+        advancedFraudPrevention: true
+    });
+
+    const bricksBuilder = mp.bricks();
+
+    // Función para mostrar errores
+    function showError(message) {
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.innerHTML = `
+            <div class="error-message">
+                <strong>⚠️ Error:</strong> ${message}
+            </div>
+        `;
+    }
+
+    // Función para ocultar el loading
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    // Renderizar el Payment Brick
+    async function renderPaymentBrick() {
+        try {
+            const settings = {
+                initialization: {
+                    amount: CONFIG.AMOUNT,
+                    payer: {
+                        email: CONFIG.PAYER_EMAIL,
+                    },
+                },
+                customization: {
+                    visual: {
+                        style: {
+                            theme: 'default',
+                        },
+                    },
+                    paymentMethods: {
+                        creditCard: 'all',
+                        debitCard: 'all',
+                        ticket: 'all',
+                        bankTransfer: 'all',
+                        mercadoPago: 'all',
+                        maxInstallments: 12
+                    },
+                },
+                callbacks: {
+                    onReady: () => {
+                        console.log('✅ Payment Brick listo');
+                        hideLoading();
+                    },
+                    onSubmit: async ({ selectedPaymentMethod, formData }) => {
+                        console.log('📤 Enviando pago:', { selectedPaymentMethod, formData });
+
+                        try {
+                            const paymentData = {
+                                transaction_amount: formData.transaction_amount,
+                                token: formData.token,
+                                installments: formData.installments,
+                                payment_method_id: formData.payment_method_id,
+                                issuer_id: formData.issuer_id,
+                                payer: {
+                                    email: formData.payer.email,
+                                    identification: {
+                                        type: formData.payer.identification?.type,
+                                        number: formData.payer.identification?.number
+                                    }
+                                },
+                                description: CONFIG.DESCRIPTION,
+                                external_reference: 'ORDER-' + Date.now(),
+                            };
+
+                            const response = await fetch(`${CONFIG.BACKEND_URL}/api/payments/process`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(paymentData)
+                            });
+
+                            const result = await response.json();
+                            console.log('📥 Respuesta del backend:', result);
+
+                            if (!response.ok) {
+                                throw new Error(result.message || 'Error al procesar el pago');
+                            }
+
+                            handlePaymentResponse(result);
+
+                        } catch (error) {
+                            console.error('❌ Error:', error);
+                            showError('No se pudo procesar el pago. Por favor, intenta nuevamente.');
+                            throw error;
+                        }
+                    },
+                    onError: (error) => {
+                        console.error('❌ Error en Payment Brick:', error);
+                        showError('Ocurrió un error al cargar el formulario de pago.');
+                    },
+                },
+            };
+
+            window.paymentBrickController = await bricksBuilder.create(
+                'payment',
+                'paymentBrick_container',
+                settings
+            );
+
+        } catch (error) {
+            console.error('❌ Error al crear Payment Brick:', error);
+            hideLoading();
+            showError('No se pudo cargar el formulario de pago. Verifica tu PUBLIC_KEY.');
+        }
+    }
+
+    // Manejar la respuesta del pago
+    function handlePaymentResponse(payment) {
+        const status = payment.status;
+        const paymentId = payment.id;
+
+        switch(status) {
+            case 'approved':
+                window.location.href = `/MercadoPago/success?payment_id=${paymentId}`;
+                break;
+            case 'pending':
+            case 'in_process':
+                window.location.href = `/MercadoPago/pending?payment_id=${paymentId}`;
+                break;
+            case 'rejected':
+                window.location.href = `/MercadoPago/failure?payment_id=${paymentId}`;
+                break;
+            default:
+                showError('Estado de pago desconocido: ' + status);
+        }
+    }
+
+    // Iniciar cuando cargue la página
+    window.addEventListener('load', () => {
+        renderPaymentBrick();
+    });
+
+    /*]]>*/
+</script>
+</body>
+</html>

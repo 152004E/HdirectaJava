@@ -670,8 +670,6 @@
         }
 
         function mostrarTab(tabId) {
-            console.log('Mostrando tab:', tabId);
-            
             // Ocultar todos los contenidos
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.add('hidden');
@@ -686,19 +684,16 @@
                 switch(tabId) {
                     case 'productos':
                         if (!unitsChart) {
-                            console.log('Inicializando gráficas de productos');
                             inicializarGraficasProductos();
                         }
                         break;
                     case 'usuarios':
                         if (!rolesChart) {
-                            console.log('Inicializando gráficas de usuarios');
                             inicializarGraficasUsuarios();
                         }
                         break;
                     case 'ventas':
                         if (!ventasMesChart) {
-                            console.log('Inicializando gráficas de ventas');
                             inicializarGraficasVentas();
                         }
                         break;
@@ -714,10 +709,8 @@
                     throw new Error('Error al obtener productos');
                 }
                 const productos = await response.json();
-                console.log('Productos obtenidos:', productos);
                 return productos;
             } catch (error) {
-                console.error('Error obteniendo productos:', error);
                 // Datos de ejemplo para testing
                 return [
                     { name: 'Manzanas', category: 'Frutas', unit: 'Kilogramos (kg)', price: 5.99, active: true },
@@ -900,7 +893,7 @@
                     }
                 });
             } catch (error) {
-                console.error('Error inicializando gráficas de productos:', error);
+                // Error al inicializar gráficas de productos
             }
         }
 
@@ -910,10 +903,8 @@
                 const response = await fetch('/api/users');
                 if (!response.ok) throw new Error('Error al obtener usuarios');
                 const usuarios = await response.json();
-                console.log('Usuarios reales obtenidos:', usuarios);
                 return usuarios;
             } catch (error) {
-                console.error('Error obteniendo usuarios:', error);
                 // Datos de ejemplo mejorados para testing
                 return [
                     { idRole: 1, gender: 'masculino', birthdate: '1990-05-15', creacionDate: '2024-01-15', name: 'Admin 1' },
@@ -930,20 +921,17 @@
 
         async function calcularEstadisticasUsuarios() {
     const usuarios = await obtenerDatosUsuarios();
-    console.log('Calculando estadísticas para:', usuarios.length, 'usuarios');
-    
+
     let total = usuarios.length;
     let admins = usuarios.filter(u => u.idRole === 1).length;
     let clientes = usuarios.filter(u => u.idRole === 2).length;
     let otros = total - admins - clientes;
 
-    // CONTEO MANUAL Y VERBOSE PARA DEBUG
     let masculino = 0, femenino = 0, otro = 0, noEspecificado = 0;
     
     usuarios.forEach((user, index) => {
         const gender = String(user.gender || '').toLowerCase().trim();
-        console.log(`Usuario ${index}: gender="${user.gender}" -> normalized="${gender}"`);
-        
+
         if (gender === 'masculino' || gender === 'male') {
             masculino++;
         } else if (gender === 'femenino' || gender === 'female') {
@@ -954,7 +942,6 @@
             noEspecificado++;
         } else {
             // Si no coincide con ninguno, contar como "otro"
-            console.log(`Género no reconocido: "${gender}", contando como "otro"`);
             otro++;
         }
     });
@@ -966,9 +953,6 @@
         noEspecificado
     };
 
-    console.log('ESTADÍSTICAS FINALES DE GÉNERO:', generoStats);
-    console.log('Suma total:', Object.values(generoStats).reduce((a, b) => a + b, 0));
-    console.log('Total usuarios:', total);
 
     const edades = calcularRangosEdadUsuarios(usuarios);
     const actividad = calcularActividadUsuarios(usuarios);
@@ -1032,8 +1016,6 @@ async function inicializarGraficasUsuarios() {
     try {
         const stats = await calcularEstadisticasUsuarios();
         
-        console.log('Datos para gráfica de género:', stats.genero);
-        
         // Actualizar tarjetas
         document.getElementById('totalUsers').textContent = stats.total;
         document.getElementById('adminCount').textContent = stats.admins;
@@ -1089,7 +1071,6 @@ async function inicializarGraficasUsuarios() {
         
         // Verificar que el canvas existe y es accesible
         if (!genderCtx) {
-            console.error('No se pudo obtener el contexto del canvas genderChart');
             return;
         }
 
@@ -1102,10 +1083,6 @@ async function inicializarGraficasUsuarios() {
             stats.genero.noEspecificado
         ];
 
-        console.log('Creando gráfica de género con datos:', {
-            labels: genderLabels,
-            data: genderData
-        });
 
         genderChart = new Chart(genderCtx, {
             type: 'pie',
@@ -1215,10 +1192,8 @@ async function inicializarGraficasUsuarios() {
             }
         });
 
-        console.log('Todas las gráficas de usuarios inicializadas correctamente');
-
     } catch (error) {
-        console.error('Error inicializando gráficas de usuarios:', error);
+        // Error al inicializar gráficas de usuarios
     }
 }
 
@@ -1304,7 +1279,7 @@ async function inicializarGraficasUsuarios() {
                     options: { responsive: true, maintainAspectRatio: false }
                 });
             } catch (error) {
-                console.error('Error inicializando gráficas de ventas:', error);
+                // Error al inicializar gráficas de ventas
             }
         }
 
@@ -1339,7 +1314,6 @@ async function inicializarGraficasUsuarios() {
 
         // ===== INICIALIZACIÓN =====
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM cargado, inicializando...');
             inicializarTabs();
             // Inicializar gráficas de productos inmediatamente
             inicializarGraficasProductos();

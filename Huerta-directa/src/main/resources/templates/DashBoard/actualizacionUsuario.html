@@ -250,14 +250,20 @@
                       <div>
                         <label class="!block !text-gray-700 !font-medium !mb-2">
                           <i class="fas fa-phone !text-blue-500 !mr-2"></i>
-                          Teléfono
+                          Teléfono (10 dígitos)
                         </label>
                         <input
                           type="tel"
                           name="phone"
                           class="!w-full !px-4 !py-3 !border-2 !border-gray-200 !rounded-lg focus:!border-blue-500 focus:!ring focus:!ring-blue-500/20 !transition-all !duration-300 !font-medium"
                           th:value="${currentUser != null ? currentUser.phone : ''}"
-                          placeholder="+57 300 123 4567"
+                          placeholder="3001234567"
+                          pattern="[0-9]{10}"
+                          minlength="10"
+                          maxlength="10"
+                          title="Debe ingresar exactamente 10 dígitos numéricos"
+                          oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                          required
                         />
                       </div>
                     </div>
@@ -323,19 +329,11 @@
                             class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
                           >
                             <span
-                              id="currentPasswordVisible"
+                              id="currentPasswordIcon"
                               class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
-                              onclick="togglePassword('current-password', 'currentPasswordVisible', 'currentPasswordHidden')"
+                              onclick="togglePassword('current-password', 'currentPasswordIcon')"
                             >
                               visibility
-                            </span>
-
-                            <span
-                              id="currentPasswordHidden"
-                              class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
-                              onclick="togglePassword('current-password', 'currentPasswordVisible', 'currentPasswordHidden')"
-                            >
-                              visibility_off
                             </span>
                           </div>
                         </div>
@@ -366,19 +364,11 @@
                               class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
                             >
                               <span
-                                id="newPasswordVisible"
+                                id="newPasswordIcon"
                                 class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
-                                onclick="togglePassword('new-password', 'newPasswordVisible', 'newPasswordHidden')"
+                                onclick="togglePassword('new-password', 'newPasswordIcon')"
                               >
                                 visibility
-                              </span>
-
-                              <span
-                                id="newPasswordHidden"
-                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
-                                onclick="togglePassword('new-password', 'newPasswordVisible', 'newPasswordHidden')"
-                              >
-                                visibility_off
                               </span>
                             </div>
                           </div>
@@ -408,19 +398,11 @@
                               class="!absolute inset-y-0 right-0 !flex !items-center !pr-3"
                             >
                               <span
-                                id="confirmPasswordVisible"
+                                id="confirmPasswordIcon"
                                 class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors"
-                                onclick="togglePassword('confirm-password', 'confirmPasswordVisible', 'confirmPasswordHidden')"
+                                onclick="togglePassword('confirm-password', 'confirmPasswordIcon')"
                               >
                                 visibility
-                              </span>
-
-                              <span
-                                id="confirmPasswordHidden"
-                                class="material-symbols-outlined !text-gray-400 !cursor-pointer hover:!text-red-500 !transition-colors hidden"
-                                onclick="togglePassword('confirm-password', 'confirmPasswordVisible', 'confirmPasswordHidden')"
-                              >
-                                visibility_off
                               </span>
                             </div>
                           </div>
@@ -470,31 +452,25 @@
         }
       }
 
-      // Función para mostrar/ocultar contraseñas
-      function togglePassword(inputId, visibleIconId, hiddenIconId) {
+    
+      function togglePassword(inputId, iconId) {
         const passwordInput = document.getElementById(inputId);
-        const visibleIcon = document.getElementById(visibleIconId);
-        const hiddenIcon = document.getElementById(hiddenIconId);
+        const icon = document.getElementById(iconId);
 
         if (passwordInput.type === "password") {
-          // Mostrar contraseña
+          
           passwordInput.type = "text";
-          visibleIcon.classList.add("hidden");
-          hiddenIcon.classList.remove("hidden");
+          icon.textContent = "visibility_off";
         } else {
-          // Ocultar contraseña
+       
           passwordInput.type = "password";
-          visibleIcon.classList.remove("hidden");
-          hiddenIcon.classList.add("hidden");
+          icon.textContent = "visibility";
         }
       }
 
-      // Auto-abrir la primera sección al cargar la página
       document.addEventListener("DOMContentLoaded", function () {
         toggleSection("personal-info");
       });
-
-      // Funcionalidad del theme toggler
       const themeToggler = document.querySelector(".theme-toggler");
 
       if (themeToggler) {
@@ -576,20 +552,19 @@
         });
       }, 5000);
       
- function DesplegarProfile() {
-  console.log("click");
-  const MostrarInfo = document.getElementById("MostrarInfo");
+      function DesplegarProfile() {
+        const MostrarInfo = document.getElementById("MostrarInfo");
 
-  if (MostrarInfo.classList.contains("hidden")) {
-    // Si está oculto, mostrarlo
-    MostrarInfo.classList.remove("hidden");
-    MostrarInfo.classList.add("flex");
-  } else {
-    // Si está visible, ocultarlo
-    MostrarInfo.classList.add("hidden");
-    MostrarInfo.classList.remove("flex");
-  }
-}
+        if (MostrarInfo.classList.contains("hidden")) {
+          // Si está oculto, mostrarlo
+          MostrarInfo.classList.remove("hidden");
+          MostrarInfo.classList.add("flex");
+        } else {
+          // Si está visible, ocultarlo
+          MostrarInfo.classList.add("hidden");
+          MostrarInfo.classList.remove("flex");
+        }
+      }
     </script>
    
   </body>

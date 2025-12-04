@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.Service;
+/*package com.exe.Huerta_directa.Service;
 
 import com.exe.Huerta_directa.DTO.PaymentRequestDTO;
 import com.mercadopago.MercadoPagoConfig;
@@ -19,54 +19,56 @@ import java.util.List;
 @Service
 public class MercadoPagoService {
 
-        @Value("${mercadopago.access_token}") 
+        @Value("${mercadopago.access.token}")
         private String accessToken;
 
-        @Value("${mercadopago.success_url}")
+        @Value("${mercadopago.success.url}")
         private String successUrl;
 
-        @Value("${mercadopago.failure_url}")
+        @Value("${mercadopago.failure.url}")
         private String failureUrl;
 
-        @Value("${mercadopago.pending_url}")
+        @Value("${mercadopago.pending.url}")
         private String pendingUrl;
 
         public Preference createPreference(PaymentRequestDTO paymentRequest, Long userId)
                         throws MPException, MPApiException {
 
-                try {
-                        MercadoPagoConfig.setAccessToken(accessToken);
+                MercadoPagoConfig.setAccessToken(accessToken);
 
-                        PreferenceItemRequest item = PreferenceItemRequest.builder()
-                                        .title(paymentRequest.getTitle())
-                                        .quantity(paymentRequest.getQuantity())
-                                        .currencyId("COP")
-                                        .unitPrice(paymentRequest.getPrice())
-                                        .build();
+                PreferenceItemRequest item = PreferenceItemRequest.builder()
+                                .title(paymentRequest.getTitle())
+                                .quantity(paymentRequest.getQuantity())
+                                .currencyId("COP")
+                                .unitPrice(new BigDecimal("5000")) // Precio fijo para probar
+                                .build();
 
-                        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                                        .items(List.of(item))
-                                        .build();
+                PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                                .items(List.of(item))
+                                .build();
 
-                        PreferenceClient client = new PreferenceClient();
-                        return client.create(preferenceRequest);
-
-                } catch (MPApiException e) {
-                        System.err.println(" MPApiException capturada:");
-                        System.err.println(" - Status: " + e.getStatusCode());
-                        System.err.println(" - Message: " + e.getMessage());
-
-                        try {
-                                com.mercadopago.net.MPResponse response = e.getApiResponse();
-                                System.err.println(" - Response Content: " + response.getContent());
-                                System.err.println(" - Response Headers: " + response.getHeaders());
-                        } catch (Exception ex) {
-                                System.err.println(" - No se pudo extraer el contenido de la respuesta");
-                        }
-
-                        throw e;
-                }
-
-
+                PreferenceClient client = new PreferenceClient();
+                return client.create(preferenceRequest);
         }
+
+        // }catch(
+
+        // MPApiException e)
+        // {
+        // System.err.println(" MPApiException capturada:");
+        // System.err.println(" - Status: " + e.getStatusCode());
+        // System.err.println(" - Message: " + e.getMessage());
+        //
+
+        // try {
+        // com.mercadopago.net.MPResponse response = e.getApiResponse();
+        // System.err.println(" - Response Content: " + response.getContent());
+        // System.err.println(" - Response Headers: " + response.getHeaders());
+        // } catch (Exception ex) {
+        // System.err.println(" - No se pudo extraer el contenido de la respuesta");
+        // }
+
+        // throw e;
 }
+
+ */

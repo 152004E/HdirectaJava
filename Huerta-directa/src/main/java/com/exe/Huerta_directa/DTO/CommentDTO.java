@@ -20,5 +20,7 @@ public class CommentDTO {
     private LocalDate creationComment;
     private CommentType commentType;
     private Long userId;      
-    private Long productId;    
+    private Long productId;
+
+
 }

@@ -352,7 +352,6 @@
       function comprarElemento(e) {
         e.preventDefault();
         if (e.target.classList.contains("agregar-carrito")) {
-          console.log("¡Click en botón agregar!");
           const elemento = e.target.closest(".product");
           leerDatosElemento(elemento);
         }

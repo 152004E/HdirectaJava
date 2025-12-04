@@ -111,7 +111,6 @@ function eliminarProducto(id) {
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
         alert("Error al eliminar el producto");
       });
   }
@@ -337,7 +336,6 @@ async function cargarProductos(event) {
       // Recargar la página después de 2 segundos para mostrar los nuevos productos
       // Forzar recarga sin caché
       setTimeout(() => {
-        console.log("🔄 Recargando página para mostrar productos...");
         window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
       }, 2000);
     } else {
@@ -361,7 +359,6 @@ async function cargarProductos(event) {
                     No se pudo conectar con el servidor<br>
                     <small>Verifique su conexión a internet e intente nuevamente</small>
                 `;
-    console.error("Error:", error);
   }
 }
 
@@ -455,7 +452,6 @@ function abrirModalEditarDesdeBoton(boton) {
 
 
  function DesplegarProfile() {
-  console.log("click");
   const MostrarInfo = document.getElementById("MostrarInfo");
 
   if (MostrarInfo.classList.contains("hidden")) {

@@ -331,7 +331,6 @@
           const productos = await response.json();
           return productos;
         } catch (error) {
-          console.error("Error obteniendo productos:", error);
           return [];
         }
       }
@@ -346,7 +345,6 @@
           const productos = await response.json();
           return productos;
         } catch (error) {
-          console.error("Error obteniendo mis productos:", error);
           return [];
         }
       }

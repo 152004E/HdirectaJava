@@ -194,4 +194,36 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.groupingBy(ProductDTO::getCategory, Collectors.counting()));
     }
 
+
+    @Override
+    @Transactional
+    public void descontarStock(Long productId, Integer cantidad) {
+        Product producto = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + productId));
+
+        // Validar que hay stock suficiente
+        if (producto.getStock() == null) {
+            throw new RuntimeException("El producto '" + producto.getNameProduct() + "' no tiene stock configurado");
+        }
+
+        if (producto.getStock() < cantidad) {
+            throw new RuntimeException("Stock insuficiente para '" + producto.getNameProduct() +
+                    "'. Disponible: " + producto.getStock() +
+                    ", Solicitado: " + cantidad);
+        }
+
+        // Descontar stock
+        producto.setStock(producto.getStock() - cantidad);
+        productRepository.save(producto);
+
+
+        //Eliminar esto despues de probar
+        // Logging mejorado (más fácil de leer en consola)
+        System.out.println("✅ Stock actualizado:");
+        System.out.println("   - Producto: " + producto.getNameProduct());
+        System.out.println("   - Cantidad descontada: " + cantidad);
+        System.out.println("   - Stock restante: " + producto.getStock());
+    }
 }
+
+

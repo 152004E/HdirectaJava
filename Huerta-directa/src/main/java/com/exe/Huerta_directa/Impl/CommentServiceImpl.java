@@ -179,4 +179,11 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findByUser_Id(userId);
     }
 
+    @Override
+    public List<Comment> listarTodosComments() {
+        return commentRepository.findAll();
+    }
+
+
+
 }

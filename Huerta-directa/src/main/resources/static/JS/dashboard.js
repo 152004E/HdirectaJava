@@ -81,7 +81,6 @@ window.addEventListener("click", (e) => {
 //boton de prifile 
 
 function DesplegarProfile() {
-  console.log("click");
   const MostrarInfo = document.getElementById("MostrarInfo");
 
   if (MostrarInfo.classList.contains("hidden")) {
