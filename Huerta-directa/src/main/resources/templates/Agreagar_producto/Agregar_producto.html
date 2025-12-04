@@ -22,7 +22,6 @@
     <!-- Tailwind CSS -->
     <link href="/CSS/output.css" rel="stylesheet" />
   </head>
- 
 
   <body
     class="min-h-screen flex flex-col font-[Poppins] bg-[#f7efd8] text-[#333]"
@@ -37,82 +36,6 @@
 
     <div th:replace="fragments/footer :: footer"></div>
 
-    <script>
-      const inputImagen = document.getElementById("imagen");
-      const fileNameSpan = document.getElementById("file-name");
-
-      inputImagen.addEventListener("change", function () {
-        fileNameSpan.textContent =
-          inputImagen.files.length > 0
-            ? inputImagen.files[0].name
-            : "Ningún archivo seleccionado";
-      });
-
-      const btnVisualizar = document.getElementById("btn-visualizar");
-      const modal = document.getElementById("modalVistaPrevia");
-      const cerrarBtn = document.getElementById("cerrarModal");
-
-      const nombre = document.querySelector('[name="nombre"]');
-      const precio = document.querySelector('[name="precio"]');
-      const categoria = document.querySelector('[name="categoria-producto"]');
-      const descripcion = document.querySelector('[name="descripcion"]');
-      const imagen = document.querySelector('[name="image_product"]');
-      const unidad = document.querySelector('[name="unidad"]');
-
-      const prevNombre = document.getElementById("prev-nombre");
-      const prevPrecio = document.getElementById("prev-precio");
-      const prevCategoria = document.getElementById("prev-categoria");
-      const prevDescripcion = document.getElementById("prev-descripcion");
-      const prevImagen = document.getElementById("prev-imagen");
-      const prevUnidad = document.getElementById("prev-unidad");
-
-      btnVisualizar.addEventListener("click", () => {
-        prevNombre.textContent = nombre.value || "Nombre del producto";
-        prevPrecio.textContent = precio.value
-          ? `Precio: $${precio.value}`
-          : "Precio: $0.00";
-        prevUnidad.textContent =
-          "Medida: " + (unidad.options[unidad.selectedIndex].text || "—");
-        prevCategoria.textContent =
-          "Categoría: " +
-          (categoria.options[categoria.selectedIndex].text || "—");
-        prevDescripcion.textContent =
-          "Descripción: " + (descripcion.value || "Descripción del producto");
-
-        const file = imagen.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => (prevImagen.src = e.target.result);
-          reader.readAsDataURL(file);
-        } else {
-          prevImagen.src = "../images/ImgenAgregarProducto1.png";
-        }
-
-        modal.classList.remove("hidden");
-      });
-
-      cerrarBtn.addEventListener("click", () => {
-        modal.classList.add("hidden");
-      });
-
-      window.addEventListener("click", (e) => {
-        if (e.target === modal) modal.classList.add("hidden");
-      });
-
-      // para el boton de profile
-      function DesplegarProfile() {const MostrarInfo = document.getElementById("MostrarInfo");
-
-        if (MostrarInfo.classList.contains("hidden")) {
-          // Si está oculto, mostrarlo
-          MostrarInfo.classList.remove("hidden");
-          MostrarInfo.classList.add("flex");
-        } else {
-          // Si está visible, ocultarlo
-          MostrarInfo.classList.add("hidden");
-          MostrarInfo.classList.remove("flex");
-        }
-      }
-    </script>
+    <script src="/JS/AgregarProducto.js"></script>
   </body>
 </html>
-
