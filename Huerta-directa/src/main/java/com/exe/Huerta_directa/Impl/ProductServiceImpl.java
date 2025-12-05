@@ -129,24 +129,26 @@ public class ProductServiceImpl implements ProductService {
 
     // Convertir Entity a DTO
     private ProductDTO convertirADTO(Product product) {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setIdProduct(product.getIdProduct());
-        productDTO.setNameProduct(product.getNameProduct());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setCategory(product.getCategory());
-        productDTO.setImageProduct(product.getImageProduct());
-        productDTO.setUnit(product.getUnit());
-        productDTO.setDescriptionProduct(product.getDescriptionProduct());
-        productDTO.setPublicationDate(product.getPublicationDate());
+    ProductDTO productDTO = new ProductDTO();
+    productDTO.setIdProduct(product.getIdProduct());
+    productDTO.setNameProduct(product.getNameProduct());
+    productDTO.setPrice(product.getPrice());
+    productDTO.setCategory(product.getCategory());
+    productDTO.setImageProduct(product.getImageProduct());
+    productDTO.setUnit(product.getUnit());
+    productDTO.setDescriptionProduct(product.getDescriptionProduct());
+    productDTO.setPublicationDate(product.getPublicationDate());
 
-        // Asignar el id del usuario si existe
-        if (product.getUser() != null) {
-            productDTO.setUserId(product.getUser().getId());
-        } else {
-            productDTO.setUserId(null);
-        }
+    // Asignar el id del usuario si existe
+    if (product.getUser() != null) {
+        productDTO.setUserId(product.getUser().getId());
+        productDTO.setUserName(product.getUser().getName()); 
+    } else {
+        productDTO.setUserId(null);
+        productDTO.setUserName(null); 
+    }
 
-        return productDTO;
+    return productDTO;
     }
 
     // Convertir DTO a Entity
