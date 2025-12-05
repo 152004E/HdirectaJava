@@ -3,20 +3,65 @@ const elementos1 = document.getElementById("lista-1");
 const lista = document.querySelector("#lista-carrito tbody");
 const vaciarCarritoBtn = document.querySelector("#vaciar-carrito");
 
+// 🆕 Variable global para el ID del usuario actual
+let currentUserId = null;
+
 // 🆕 Array para almacenar productos del carrito
 let productosCarrito = [];
 
-cargarEvenetListeners();
+// 🆕 Obtener usuario de la sesión al cargar la página
+obtenerUsuarioSesion().then(() => {
+    cargarEvenetListeners();
+});
+
+// 🆕 Función para obtener el usuario de la sesión
+async function obtenerUsuarioSesion() {
+    try {
+        const response = await fetch('/api/login/current');
+        if (response.ok) {
+            const userData = await response.json();
+            currentUserId = userData.id;
+            console.log("✅ Usuario de sesión obtenido:", currentUserId);
+
+            // Cargar el carrito específico del usuario
+            cargarCarritoDesdeLocalStorage();
+        } else {
+            console.log("ℹ️ No hay usuario en sesión, usando modo invitado");
+            currentUserId = "guest";
+
+            // Cargar carrito de invitado
+            cargarCarritoDesdeLocalStorage();
+        }
+    } catch (error) {
+        console.error("❌ Error obteniendo usuario:", error);
+        currentUserId = "guest";
+        cargarCarritoDesdeLocalStorage();
+    }
+}
+
+// 🆕 Función para limpiar carrito al cerrar sesión (llamar desde logout)
+function limpiarCarritoSesion() {
+    if (currentUserId && currentUserId !== "guest") {
+        const claveCarrito = `carrito_${currentUserId}`;
+        localStorage.removeItem(claveCarrito);
+        console.log(`🧹 Carrito limpiado para usuario: ${currentUserId}`);
+    }
+    productosCarrito = [];
+    actualizarCarritoHTML();
+}
 
 function cargarEvenetListeners() {
-    elementos1.addEventListener("click", comprarElemento);
-    carrito.addEventListener("click", eliminarElemento);
+    if (elementos1) {
+        elementos1.addEventListener("click", comprarElemento);
+    }
+    if (carrito) {
+        carrito.addEventListener("click", eliminarElemento);
+    }
     if (vaciarCarritoBtn) {
         vaciarCarritoBtn.addEventListener("click", vaciarCarrito);
     }
 
-    // 🆕 Cargar carrito al inicio
-    cargarCarritoDesdeLocalStorage();
+    console.log("✅ Event listeners del carrito cargados");
 }
 
 function comprarElemento(e) {
@@ -170,17 +215,28 @@ function vaciarCarrito() {
     mostrarAlertaEliminacion("Carrito vaciado");
 }
 
-// 🆕 Guardar en localStorage (respaldo)
+// 🆕 Guardar en localStorage específico por usuario
 function guardarCarritoEnLocalStorage() {
-    localStorage.setItem("carrito", JSON.stringify(productosCarrito));
+    if (currentUserId) {
+        const claveCarrito = `carrito_${currentUserId}`;
+        localStorage.setItem(claveCarrito, JSON.stringify(productosCarrito));
+        console.log(`💾 Carrito guardado para usuario: ${currentUserId}`);
+    }
 }
 
-// 🆕 Cargar desde localStorage al inicio
+// 🆕 Cargar desde localStorage específico por usuario
 function cargarCarritoDesdeLocalStorage() {
-    const carritoGuardado = localStorage.getItem("carrito");
-    if (carritoGuardado) {
-        productosCarrito = JSON.parse(carritoGuardado);
-        actualizarCarritoHTML();
+    if (currentUserId) {
+        const claveCarrito = `carrito_${currentUserId}`;
+        const carritoGuardado = localStorage.getItem(claveCarrito);
+        if (carritoGuardado) {
+            productosCarrito = JSON.parse(carritoGuardado);
+            actualizarCarritoHTML();
+            console.log(`📂 Carrito cargado para usuario: ${currentUserId}`, productosCarrito);
+        } else {
+            productosCarrito = [];
+            console.log(`📂 Carrito nuevo para usuario: ${currentUserId}`);
+        }
     }
 }
 
@@ -320,16 +376,27 @@ if (toggle && sidebar && main) {
 }
 
 //  para  el  botón  de  perfil
-function  DesplegarProfile()  {
-    console.log("click");
-    const  MostrarInfo  =  document.getElementById("MostrarInfo");
+function DesplegarProfile() {
+    console.log("🔍 DesplegarProfile clicked");
+    const MostrarInfo = document.getElementById("MostrarInfo");
 
-    if  (MostrarInfo.classList.contains("hidden"))  {
-        //  Si  está  oculto,  mostrarlo
+    if (!MostrarInfo) {
+        console.error("❌ No se encontró el elemento MostrarInfo");
+        return;
+    }
+
+    if (MostrarInfo.classList.contains("hidden")) {
+        // Si está oculto, mostrarlo
         MostrarInfo.classList.remove("hidden");
         MostrarInfo.classList.add("flex");
-    }  else  {
-        //  Si  está  visible,  ocultarlo
+        console.log("✅ Perfil desplegado");
+    } else {
+        // Si está visible, ocultarlo
         MostrarInfo.classList.add("hidden");
         MostrarInfo.classList.remove("flex");
-    } }
+        console.log("✅ Perfil ocultado");
+    }
+}
+
+// 🆕 Hacer disponible globalmente
+window.DesplegarProfile = DesplegarProfile;

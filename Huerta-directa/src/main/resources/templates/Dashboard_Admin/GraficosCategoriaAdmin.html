@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mensajes y comentarios -- HUERTA DIRECTA</title>
+    <title>Grafico por categoria -- HUERTA DIRECTA</title>
 
     <!-- Link para el font -->
     <link
@@ -52,51 +52,74 @@
           <a class="tab-link" href="#" data-tab="ventas"> Tus ventas </a>
           <a class="" href="#"> Graficos por categorias </a>
         </div>
-        <div class="flex  gap-10">
-        <img th:src="@{/graficos/productosPorCategoria.png}" 
-     alt="Gráfico por categorías" 
-     class="!w-[500px] h-[350px] !mx-auto">
-          <table
-            class="!w-full !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200"
-          >
-            <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
-              <tr>
-                <th class="!px-6 !py-3 !text-sm !font-semibold">Nombre</th>
-                <th class="!px-6 !py-3 !text-sm !font-semibold">Categoría</th>
-                <th class="!px-6 !py-3 !text-sm !font-semibold">Unidad</th>
-              </tr>
-            </thead>
+        <div class="!flex !gap-10">
+          <div class="!flex !flex-col !justify-start !items-start !w-[450px] !h=[250px] !gap-10">
+            <img
+              th:src="@{/graficos/productosPorCategoria.png}"
+              alt="Gráfico por categorías"
+              class="!w-[500px] h-[350px] !mx-auto"
+            />
+           <button
+  class="!px-5 !py-2 !bg-red-500 hover:!bg-red-600 !text-white !rounded-lg !shadow-md 
+         !transition-all !duration-300 !flex !items-center !gap-2 !font-semibold cursor-pointer"
+>
+  <span class="material-symbols-outlined">picture_as_pdf</span>
+  Exportar a PDF
+</button>
+          </div>
+          <div class="!w-[450px]">
+            <table
+              class="!w-full !table-fixed !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200 !mb-10"
+            >
+              <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
+                <tr>
+                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
+                    Nombre
+                  </th>
+                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
+                    Categoría
+                  </th>
+                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[20%]">
+                    Unidad
+                  </th>
+                </tr>
+              </thead>
 
-            <tbody class="!divide-y !divide-gray-200">
-              <!-- Si NO hay productos -->
-              <tr
-                th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
-              >
-                <td
-                  colspan="3"
-                  class="!text-center !py-6 !text-gray-500 !font-medium"0
+              <tbody class="!divide-y !divide-gray-200">
+                <!-- Si NO hay productos -->
+                <tr
+                  th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
                 >
-                  No se encontraron productos
-                </td>
-              </tr>
+                  <td
+                    colspan="3"
+                    class="!text-center !py-6 !text-gray-500 !font-medium"
+                    0
+                  >
+                    No se encontraron productos
+                  </td>
+                </tr>
 
-              <!-- Si SÍ hay productos -->
-              <tr
-                th:each="p : ${productosCategoria}"
-                class="hover:bg-gray-200 !transition-all !duration-500"
-              >
-                <td
-                  class="!px-6 !py-3 !text-gray-800"
-                  th:text="${p.nameProduct}"
-                ></td>
-                <td
-                  class="!px-6 !py-3 !capitalize !text-gray-800"
-                  th:text="${p.category}"
-                ></td>
-                <td class="!px-6 !py-3 !text-gray-800" th:text="${p.unit}"></td>
-              </tr>
-            </tbody>
-          </table>
+                <!-- Si SÍ hay productos -->
+                <tr
+                  th:each="p : ${productosCategoria}"
+                  class="hover:bg-gray-200 !transition-all !duration-500"
+                >
+                  <td
+                    class="!px-6 !py-3 !text-gray-800"
+                    th:text="${p.nameProduct}"
+                  ></td>
+                  <td
+                    class="!px-6 !py-3 !capitalize !text-gray-800"
+                    th:text="${p.category}"
+                  ></td>
+                  <td
+                    class="!px-6 !py-3 !text-gray-800 !w-1"
+                    th:text="${p.unit}"
+                  ></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
 
@@ -108,15 +131,249 @@
           </div>
           <div th:replace="fragments/profile :: profile"></div>
         </div>
-        <div class="recent-updates !border-t !border-black/30 !rounded-xl">
-          <h2 class="text-center !mt-4">Visión General de Productos por Categoría</h2>
-          <div class="w-full h-20px bg-white">
-            hola
-          </div>
+        <div
+          class="recent-updates !border-t !border-black/30 !rounded-xl !px-5"
+        >
+          <div
+            class="!w-full !h-[900px] !bg-white !rounded-xl !flex !flex-col !justify-center !items-center !gap-[9px] !mt-[20px] !p-4 !mb-10"
+          >
+            <h2 class="!text-center !text-xl !font-bold !px-3">
+              Visión general de productos por Categoría
+            </h2>
+            <div class="!flex !justify-center !items-center !gap-5">
+              <article
+                class="!flex !flex-col !justify-center !items-center !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2">
+                    inventory_2
+                  </span>
+                  <span th:text="${totalProductos}">1</span>
+                </p>
+                <h3 class="!text-[13px] !font-semibold">Productos</h3>
+              </article>
+              <article
+                class="!flex !flex-col !justify-center !items-center !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2"> category </span
+                  >13
+                </p>
+                <h3 class="!text-[13px] !font-semibold">Categorias</h3>
+              </article>
+            </div>
+            <hr class="!border !w-[200px]" style="border: 1px solid #4caf50" />
+            <!--seccion de el conteo de la categorias-->
+            <section class="!flex !flex-col !gap-[9px]">
+              <!-- Frutas -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Frutas</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">nutrition</span>
+                  <span th:text="${datosCategoria['frutas'] ?: 0}">0</span>
+                </p>
+              </div>
+
+              <!-- Verduras y Hortalizas -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">
+                  Verduras y Hortalizas
+                </h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">eco</span>
+                  <span th:text="${datosCategoria['verduras-hortalizas'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Lácteos -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Lácteos</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">local_cafe</span>
+                  <span th:text="${datosCategoria['lacteos'] ?: 0}">0</span>
+                </p>
+              </div>
+
+              <!-- Carnes y Proteínas -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Carnes y Proteínas</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">restaurant</span>
+                  <span th:text="${datosCategoria['carnes-proteinas'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Cereales y Granos -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Cereales y Granos</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">grass</span>
+                  <span th:text="${datosCategoria['cereales-granos'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Legumbres Secas -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Legumbres Secas</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">spa</span>
+                  <span th:text="${datosCategoria['legumbres-secas'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Productos Orgánicos -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Productos Orgánicos</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">compost</span>
+                  <span th:text="${datosCategoria['productos-organicos'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Hierbas y Especias -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Hierbas y Especias</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">local_florist</span>
+                  <span th:text="${datosCategoria['hierbas-especias'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Miel y Derivados -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Miel y Derivados</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"
+                    >emoji_food_beverage</span
+                  >
+                  <span th:text="${datosCategoria['miel-derivados'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Procesados Artesanales -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">
+                  Procesados Artesanales
+                </h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">bakery_dining</span>
+                  <span
+                    th:text="${datosCategoria['procesados-artesanales'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Bebidas Naturales -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Bebidas Naturales</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">local_drink</span>
+                  <span th:text="${datosCategoria['bebidas-naturales'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Plantas y Semillas -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">Plantas y Semillas</h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">yard</span>
+                  <span th:text="${datosCategoria['plantas-semillas'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+
+              <!-- Cajas Mixtas o Combos -->
+              <div
+                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+              >
+                <h3 class="!text-[13px] !font-semibold">
+                  Cajas Mixtas o Combos
+                </h3>
+                <p
+                  class="!text-[#4CAF50] !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined">inventory_2</span>
+                  <span th:text="${datosCategoria['cajas-combos'] ?: 0}"
+                    >0</span
+                  >
+                </p>
+              </div>
+            </section>
           </div>
         </div>
       </div>
     </div>
+
     <script src="/JS/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>

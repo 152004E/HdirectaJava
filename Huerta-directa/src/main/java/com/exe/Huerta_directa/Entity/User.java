@@ -58,7 +58,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Product> products;
 
-    // Método para calcular la edad
+    // Metodo para calcular la edad
     public Integer getAge() {
         if (birthDate == null) {
             return null;
@@ -66,7 +66,7 @@ public class User {
         return LocalDate.now().getYear() - birthDate.getYear();
     }
 
-    // Método para obtener rango de edad
+    // Metodo para obtener rango de edad
     public String getAgeRange() {
         Integer age = getAge();
         if (age == null) return "No especificado";

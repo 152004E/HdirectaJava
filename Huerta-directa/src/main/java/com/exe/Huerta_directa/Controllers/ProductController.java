@@ -39,6 +39,7 @@ public class ProductController {
             @RequestParam("categoria-producto") String category,
             @RequestParam("image_product") MultipartFile imageFile,
             @RequestParam("descripcion") String descriptionProduct,
+            @RequestParam(value = "stock", defaultValue = "0") Integer stock,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         User currentUser = (User) session.getAttribute("user");
@@ -59,7 +60,7 @@ public class ProductController {
             User userSession = (User) session.getAttribute("user");
             if (userSession == null) {
                 // Si no hay usuario en sesiÃ³n, agregar mensaje de alerta y redirigir al login
-                return new RedirectView("/login?error=session&message=Debe+iniciar+sesiÃ³n+para+registrar+productos");
+                return new RedirectView("/login?error=session&message=Debe+iniciar+sesion+para+registrar+productos");
             }
             //  PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
             // (No solo admins, cualquier usuario autenticado puede agregar productos)
@@ -87,8 +88,9 @@ public class ProductController {
             productDTO.setCategory(category);
             productDTO.setUnit(unit);
             productDTO.setDescriptionProduct(descriptionProduct);
+            productDTO.setStock(stock);
             productDTO.setPublicationDate(LocalDate.now());
-            productDTO.setUserId(userSession.getId()); // Usar ID del usuario de la sesiÃ³n
+            productDTO.setUserId(userSession.getId()); // Usar ID del usuario de la sesión
             productDTO.setImageProduct(nombreImagen);
             ProductDTO creado = productService.crearProduct(productDTO, userSession.getId()); // Usar ID del usuario de la sesiÃ³n
             // Condicional para redirigir

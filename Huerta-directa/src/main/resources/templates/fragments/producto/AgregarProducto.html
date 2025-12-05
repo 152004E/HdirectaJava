@@ -145,7 +145,7 @@
 
             <div class="!w-[100px] !min-w-[50px]">
               <label
-                for="precio"
+                for="stock"
                 class="!block !text-sm !font-medium !mb-1 !text-black"
               >
                 Stock:
@@ -153,9 +153,11 @@
 
               <input
                 type="number"
-                id="precio"
-                name="precio"
-                step="0.01"
+                id="stock"
+                name="stock"
+                min="0"
+                value="1"
+                max="100"
                 required
                 class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
               />
@@ -229,6 +231,7 @@
               class="!w-full !max-w-sm !bg-surface-light !rounded-lg !shadow-xl !p-6 !border !border-border-light !space-y-4"
             >
               <div
+                id="preview-container"
                 class="!w-full !h-48 !bg-gray-200 !rounded-md !flex !items-center !justify-center !overflow-hidden"
               >
                 <span
@@ -244,6 +247,10 @@
               >
                 Nombre del Producto
               </h3>
+              <p id="prev-stock" class="!text-sm !text-green-800 !font-bold">
+                Stock Disponible
+
+              </p>
 
               <p class="!text-sm !text-subtle-text-light" id="prev-descripcion">
                 Breve descripción del producto que se mostrará aquí.
@@ -277,45 +284,6 @@
         </div>
       </div>
 
-      <!-- Modal vista previa -->
-      <div
-        id="modalVistaPrevia"
-        class="!hidden !fixed !inset-0 !bg-black !bg-opacity-50 !z-[9999] !justify-center !items-center"
-      >
-        <div
-          class="!bg-white !p-5 !rounded-2xl !w-[400px] !shadow-xl !animate-[fadeIn_0.3s_ease-in-out]"
-        >
-          <div class="!text-center !flex !flex-col !items-center">
-            <h3 class="!text-xl !font-semibold !mb-3">Vista previa</h3>
-
-            <img
-              id="prev-imagen"
-              class="!w-[200px] !rounded-lg !mb-4"
-              src="../images/ImgenAgregarProducto1.png"
-              alt="Vista previa"
-            />
-
-            <div class="!text-center !space-y-2 !text-sm">
-              <h3 id="prev-nombre" class="!font-semibold !text-lg">
-                Nombre del producto
-              </h3>
-              <p id="prev-precio" class="!text-[#8dc84b] !font-medium">
-                Precio $0.00
-              </p>
-              <p id="prev-unidad">Medida: —</p>
-              <p id="prev-categoria">Categoría: —</p>
-              <p id="prev-descripcion">Descripción: —</p>
-            </div>
-
-            <button
-              id="cerrarModal"
-              class="!mt-4 !bg-[#8dc84b] !hover:bg-[#004d00] !text-white !px-8 !py-2 !rounded-md !font-semibold !transition-all"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </body>
 </html>
