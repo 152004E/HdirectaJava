@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setUnit(product.getUnit());
         productDTO.setDescriptionProduct(product.getDescriptionProduct());
         productDTO.setPublicationDate(product.getPublicationDate());
-        productDTO.setStock(product.getStock()); // ⭐ AGREGADO
+        productDTO.setStock(product.getStock());
 
         // Asignar el id del usuario si existe
         if (product.getUser() != null) {
@@ -181,7 +181,7 @@ public class ProductServiceImpl implements ProductService {
         product.setUnit(productDTO.getUnit());
         product.setDescriptionProduct(productDTO.getDescriptionProduct());
         product.setPublicationDate(productDTO.getPublicationDate());
-        product.setStock(productDTO.getStock()); // ⭐ AGREGADO
+        product.setStock(productDTO.getStock());
 
         if (productDTO.getUserId() != null) {
             User user = userRepository.findById(productDTO.getUserId())
@@ -227,6 +227,7 @@ public class ProductServiceImpl implements ProductService {
         System.out.println("   - Cantidad descontada: " + cantidad);
         System.out.println("   - Stock restante: " + producto.getStock());
     }
+
 }
 
 

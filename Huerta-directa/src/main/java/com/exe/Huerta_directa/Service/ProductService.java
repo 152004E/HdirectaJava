@@ -34,5 +34,7 @@ public interface ProductService {
     //esto es para hacer los graficos por categorias
     Map<String, Long> contarProductosPorCategoria();
 
+
+
     void descontarStock(Long productId, Integer cantidad);
 }
