@@ -25,7 +25,7 @@ public class ProductDTO {
     private Long userId;
     private String etiqueta;
     private String userName;
-    //private Integer stock; // ⭐ NUEVO
+    private Integer stock;
 
 
 }

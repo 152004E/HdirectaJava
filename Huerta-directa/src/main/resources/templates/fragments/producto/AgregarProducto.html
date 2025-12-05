@@ -145,7 +145,7 @@
 
             <div class="!w-[100px] !min-w-[50px]">
               <label
-                for="precio"
+                for="stock"
                 class="!block !text-sm !font-medium !mb-1 !text-black"
               >
                 Stock:
@@ -153,9 +153,10 @@
 
               <input
                 type="number"
-                id="precio"
-                name="precio"
-                step="0.01"
+                id="stock"
+                name="stock"
+                min="0"
+                value="0"
                 required
                 class="!w-full !border !border-[#8dc84b] !rounded-md !px-4 !py-2 !focus:outline-none !focus:border-[#004d00] !focus:ring-2 !focus:ring-[#004d00]/40 !transition-all !text-sm"
               />

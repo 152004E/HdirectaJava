@@ -41,7 +41,7 @@ public class Product {
     private String imageProduct = "sin nombre";
 
 
-    @Column( name = "stock", nullable = true, length = 100)
+    @Column( name = "stock", length = 100)
     private Integer stock;
 
 

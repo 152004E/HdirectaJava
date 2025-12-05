@@ -940,6 +940,18 @@ public class UserController {
                     producto.setUnit(campos[3].trim());
                     producto.setDescriptionProduct(campos[4].trim());
                     producto.setImageProduct(campos[5].trim());
+
+                    // Agregar stock si está disponible (columna 6)
+                    if (campos.length > 6 && !campos[6].trim().isEmpty()) {
+                        try {
+                            producto.setStock(Integer.parseInt(campos[6].trim()));
+                        } catch (NumberFormatException e) {
+                            producto.setStock(0); // Stock por defecto si no se puede parsear
+                        }
+                    } else {
+                        producto.setStock(0); // Stock por defecto
+                    }
+
                     producto.setPublicationDate(LocalDate.now());
                     productos.add(producto);
                 }
@@ -993,6 +1005,24 @@ public class UserController {
                     if (imagenCell != null) {
                         producto.setImageProduct(obtenerValorCelda(imagenCell));
                     }
+
+                    // Agregar stock si está disponible (columna 6)
+                    Cell stockCell = row.getCell(6);
+                    if (stockCell != null) {
+                        try {
+                            String valorStock = obtenerValorCelda(stockCell);
+                            if (!valorStock.trim().isEmpty()) {
+                                producto.setStock(Integer.parseInt(valorStock.trim()));
+                            } else {
+                                producto.setStock(0); // Stock por defecto
+                            }
+                        } catch (NumberFormatException e) {
+                            producto.setStock(0); // Stock por defecto si no se puede parsear
+                        }
+                    } else {
+                        producto.setStock(0); // Stock por defecto
+                    }
+
                     producto.setPublicationDate(LocalDate.now());
                     // Validar que los campos obligatorios no estén vacíos
                     if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
@@ -1027,6 +1057,7 @@ public class UserController {
             throw e; // Re-lanzar la excepciÃ³n para que sea manejada en el bucle principal
         }
     }
+
     @GetMapping("/products/refresh")
     @ResponseBody
     public ResponseEntity<List<ProductDTO>> obtenerProductosActualizados() {
