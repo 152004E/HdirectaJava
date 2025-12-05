@@ -29,12 +29,18 @@ public class CarritoController {
     /**
      * 🔹 ENDPOINT 1: Guardar carrito en sesión (llamado desde tu carrito.js)
      */
-    @PostMapping("/carrito/guardar-sesion")
+    /**
+     * 🔹 ENDPOINT 1: Guardar carrito en sesión (llamado desde tu carrito.js)
+     */
+    @PostMapping(value = "/carrito/guardar-sesion", produces = "application/json")
     @ResponseBody
     public Map<String, String> guardarCarritoEnSesion(
             @RequestBody List<Map<String, Object>> productosJS,
             HttpSession session) {
         try {
+            System.out.println("🔥 ENDPOINT LLAMADO: /carrito/guardar-sesion");
+            System.out.println("📦 Productos recibidos: " + productosJS.size());
+
             List<CarritoItem> carrito = new ArrayList<>();
 
             for (Map<String, Object> prod : productosJS) {
@@ -57,13 +63,15 @@ public class CarritoController {
             session.setAttribute(CARRITO_SESSION, carrito);
             System.out.println("✅ Carrito guardado en sesión: " + carrito.size() + " productos");
 
-            return Map.of("status", "success");
+            return Map.of("status", "success", "message", "Carrito guardado correctamente");
 
         } catch (Exception e) {
+            System.err.println("❌ ERROR en guardarCarritoEnSesion: " + e.getMessage());
             e.printStackTrace();
             return Map.of("status", "error", "message", e.getMessage());
         }
     }
+
 
     /**
      * 🔹 ENDPOINT 2: Mostrar resumen del carrito
@@ -100,7 +108,7 @@ public class CarritoController {
         model.addAttribute("ivaPercent", IVA_PERCENT.multiply(BigDecimal.valueOf(100)).intValue());
         model.addAttribute("total", total);
 
-        return "Modulo_Pagos/Resumen_Pago"; // ✅ CORREGIDO
+        return "Modulo_Pagos/Resumen_Pago";
     }
 
     /**
@@ -144,7 +152,7 @@ public class CarritoController {
         model.addAttribute("descripcion", descripcion.toString());
         model.addAttribute("productos", carrito);
 
-        return "MercadoPago/checkout"; // ✅ CORREGIDO
+        return "MercadoPago/checkout";
     }
 
     /**
