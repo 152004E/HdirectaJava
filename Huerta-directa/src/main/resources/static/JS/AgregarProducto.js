@@ -13,6 +13,30 @@ document.getElementById("nombre").addEventListener("input", function () {
   document.getElementById("prev-nombre").textContent =
     this.value || "Nombre del Producto";
 });
+//Stock
+const stockInput = document.getElementById("stock");
+stockInput.addEventListener("input", function () {
+  let valor = parseInt(this.value);
+
+  if(valor === 0 || isNaN(valor) )
+  this.value = "1";
+  document.getElementById("prev-stock").textContent = this.value
+    ? "Disponible : " + valor
+    : "1";
+
+
+  
+  if (valor === 0 || valor > 100) {
+    Swal.fire({
+      icon: "error",
+      title: "Valor inválido",
+      text: "El stock no puede ser menor a 1 ni mayor a 100.",
+
+    });
+    this.value = "";
+    document.getElementById("prev-stock").textContent = "1";
+  }
+});
 
 // Descripción
 document.getElementById("descripcion").addEventListener("input", function () {
