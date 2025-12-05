@@ -88,7 +88,7 @@
           </span>
         </a>
         <a
-          th:href="@{/home}"
+          th:href="${userRole == 'Administrador'} ? @{/DashboardAdmin} : @{/home}"
           class="btn-logout"
           style="
             width: 100%;

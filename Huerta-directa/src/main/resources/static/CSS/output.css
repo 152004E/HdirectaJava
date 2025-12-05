@@ -2551,6 +2551,9 @@
   .text-emerald-800 {
     color: var(--color-emerald-800);
   }
+  .text-gray-300 {
+    color: var(--color-gray-300);
+  }
   .text-gray-400 {
     color: var(--color-gray-400);
   }
@@ -2649,6 +2652,9 @@
   }
   .accent-green-600 {
     accent-color: var(--color-green-600);
+  }
+  .opacity-70 {
+    opacity: 70%;
   }
   .opacity-80 {
     opacity: 80%;

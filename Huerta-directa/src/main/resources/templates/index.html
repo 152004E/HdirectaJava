@@ -200,8 +200,9 @@
                 <!-- Producto sin stock -->
                 <a th:if="${producto.etiqueta != 'MI PRODUCTO' and (producto.stock == null or producto.stock == 0)}"
                    href="#"
-                   class="btn-2 botonIcono btn-disabled w-[100px] h-10 flex items-center justify-center text-xs px-2 py-2 text-center rounded-lg transition-all duration-300 no-underline box-border font-medium bg-gray-400 cursor-not-allowed opacity-80 hover:transform-none"
-                   onclick="return false;">
+                   class="btn-2 botonIcono btn-disabled w-[100px] h-10 flex items-center justify-center text-xs px-2 py-2 text-center rounded-lg no-underline box-border font-medium bg-gray-500 text-gray-300 cursor-not-allowed opacity-70"
+                   onclick="return false;"
+                   style="pointer-events: none;">
                   <span class="material-symbols-outlined text-base mr-1">block</span>
                   Sin stock
                 </a>
@@ -209,8 +210,9 @@
                 <!-- Producto propio -->
                 <a th:if="${producto.etiqueta == 'MI PRODUCTO'}"
                    href="#"
-                   class="btn-2 botonIcono btn-disabled w-[100px] h-10 flex items-center justify-center text-xs px-2 py-2 text-center rounded-lg transition-all duration-300 no-underline box-border font-medium bg-gray-600 cursor-not-allowed opacity-80 hover:transform-none"
-                   onclick="return false;">
+                   class="btn-2 botonIcono btn-disabled w-[100px] h-10 flex items-center justify-center text-xs px-2 py-2 text-center rounded-lg no-underline box-border font-medium bg-gray-500 text-gray-300 cursor-not-allowed opacity-70"
+                   onclick="return false;"
+                   style="pointer-events: none;">
                   <span class="material-symbols-outlined text-base mr-1">person</span>
                   Tu producto
                 </a>
