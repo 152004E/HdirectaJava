@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -312,6 +311,9 @@ public class RutasPagina {
 
         Map<String, Long> datosCategoria = productService.contarProductosPorCategoria();
         model.addAttribute("datosCategoria", datosCategoria);
+
+        long totalProductos = productService.contarTotalProductos();
+    model.addAttribute("totalProductos", totalProductos);
 
         DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
         datosCategoria.forEach(dataset::setValue);
@@ -634,3 +636,4 @@ public class RutasPagina {
 
 
 }
+

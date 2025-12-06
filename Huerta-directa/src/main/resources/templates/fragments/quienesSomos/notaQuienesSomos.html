@@ -10,12 +10,19 @@
         ir al <span class="font-semibold">dashboard</span> en la sección de
         mensajes.
       </p>
-      <a
-        th:href="@{/MensajesComentarios}"
-        class="bg-[#558b2f] text-white hover:bg-[#385c1e] !py-3 !px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer"
-      >
-        Ir a dashboard
-      </a>
+        <!-- Para Administradores -->
+        <a th:if="${userRole == 'Administrador'}"
+           th:href="@{/DashboardAdmin}"
+           class="bg-[#558b2f] text-white hover:bg-[#385c1e] !py-3 !px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer">
+            Ir a dashboard
+        </a>
+
+        <!-- Para otros usuarios -->
+        <a th:unless="${userRole == 'Administrador'}"
+           th:href="@{/MensajesComentarios}"
+           class="bg-[#558b2f] text-white hover:bg-[#385c1e] !py-3 !px-8 rounded-lg transition-all duration-500 shadow-lg hover:scale-[1.03] transform cursor-pointer">
+            Ir a dashboard
+        </a>
     </div>
   </body>
 </html>

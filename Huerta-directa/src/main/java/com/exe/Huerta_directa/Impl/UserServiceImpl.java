@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(userId);
     }
-    // â­ MÃ‰TODO DE AUTENTICACIÃ“N CON BCRYPT
+    //DE AUTENTICACIÃ“N CON BCRYPT
     @Override
     public UserDTO autenticarUsuario(String email, String password) {
         // Buscar usuario por email

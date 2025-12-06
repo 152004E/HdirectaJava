@@ -5,7 +5,6 @@ import com.exe.Huerta_directa.DTO.BulkEmailRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailResponse;
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
@@ -24,7 +23,6 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,11 +32,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,6 +117,7 @@ public class UserController {
         headerRow.createCell(3).setCellValue("Género");
         headerRow.createCell(4).setCellValue("Edad");
         headerRow.createCell(5).setCellValue("Rol ID");
+        headerRow.createCell(6).setCellValue("Stock");
         // Si hay filtro, agregar fila informativa
         if (dato != null && valor != null && !valor.isEmpty()) {
             org.apache.poi.ss.usermodel.Row filterRow = sheet.createRow(1);
@@ -146,6 +144,238 @@ public class UserController {
         workbook.close();
         response.getOutputStream().flush();
     }
+
+    // Método POST: exportar con gráficas
+@PostMapping("/exportPdf")
+public void exportUsersToPdfWithCharts(
+        HttpServletResponse response,
+        @RequestParam(required = false) String dato,
+        @RequestParam(required = false) String valor,
+        @RequestBody(required = false) Map<String, Object> requestBody) throws IOException {
+    
+    // Obtener usuarios filtrados
+    List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
+    
+    // Extraer imágenes de gráficas si existen
+    Map<String, String> chartImages = null;
+    if (requestBody != null && requestBody.containsKey("chartImages")) {
+        chartImages = (Map<String, String>) requestBody.get("chartImages");
+    }
+    
+    try {
+        // Configurar la respuesta HTTP
+        response.setContentType("application/pdf");
+        String filename = "Usuarios_" + java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        response.setHeader("Cache-Control", "no-cache");
+        
+        // Crear documento PDF
+        com.lowagie.text.Document document = new com.lowagie.text.Document();
+        com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+        
+        // Título principal
+        com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#689f38"));
+        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
+        title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        document.add(title);
+        
+        // Subtítulo
+        com.lowagie.text.Font subtitleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 14, java.awt.Color.BLACK);
+        com.lowagie.text.Paragraph subtitle = new com.lowagie.text.Paragraph("Reporte de Usuarios", subtitleFont);
+        subtitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        subtitle.setSpacingAfter(10);
+        document.add(subtitle);
+        
+        // Información del filtro
+        if (dato != null && valor != null && !valor.isEmpty()) {
+            com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#689f38"));
+            com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
+                    "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
+            filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            filterInfo.setSpacingAfter(15);
+            document.add(filterInfo);
+        }
+        
+        // Información del reporte
+        com.lowagie.text.Font infoFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.GRAY);
+        String currentDate = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        com.lowagie.text.Paragraph reportInfo = new com.lowagie.text.Paragraph(
+                "Fecha: " + currentDate + " | Total: " + usuarios.size() + " usuario(s)", infoFont);
+        reportInfo.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
+        reportInfo.setSpacingAfter(20);
+        document.add(reportInfo);
+        
+        if (usuarios.isEmpty()) {
+            // Sin usuarios
+            com.lowagie.text.Font noDataFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 12, java.awt.Color.RED);
+            com.lowagie.text.Paragraph noData = new com.lowagie.text.Paragraph(
+                    "No se encontraron usuarios con los filtros aplicados.", noDataFont);
+            noData.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            noData.setSpacingBefore(50);
+            document.add(noData);
+        } else {
+            // Crear tabla de usuarios
+            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(6);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            float[] columnWidths = { 1f, 3f, 4f, 2f, 2f, 2f };
+            table.setWidths(columnWidths);
+            
+            // Encabezados
+            com.lowagie.text.Font headerFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.WHITE);
+            addTableHeaderPdf(table, "ID", headerFont);
+            addTableHeaderPdf(table, "Nombre", headerFont);
+            addTableHeaderPdf(table, "Email", headerFont);
+            addTableHeaderPdf(table, "Género", headerFont);
+            addTableHeaderPdf(table, "Edad", headerFont);
+            addTableHeaderPdf(table, "Rol", headerFont);
+            
+            // Datos
+            com.lowagie.text.Font dataFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+            int rowCount = 0;
+            for (UserDTO usuario : usuarios) {
+                rowCount++;
+                java.awt.Color rowColor = (rowCount % 2 == 0) ? new java.awt.Color(240, 240, 240)
+                        : java.awt.Color.WHITE;
+                addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A",
+                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
+                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                addTableCellPdf(table, obtenerGeneroTexto(usuario.getGender()), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                addTableCellPdf(table, String.valueOf(calcularEdad(usuario.getBirthDate())), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                String roleName = obtenerNombreRol(usuario.getIdRole());
+                addTableCellPdf(table, roleName, dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+            }
+            document.add(table);
+            
+            // ========== AGREGAR GRÁFICAS ==========
+            if (chartImages != null && !chartImages.isEmpty()) {
+                // Nueva página para gráficas
+                document.newPage();
+                
+                // Título de gráficas
+                com.lowagie.text.Font chartsTitle = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 16, java.awt.Color.decode("#689f38"));
+                com.lowagie.text.Paragraph chartsHeader = new com.lowagie.text.Paragraph(
+                        "Gráficas Estadísticas", chartsTitle);
+                chartsHeader.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                chartsHeader.setSpacingAfter(20);
+                document.add(chartsHeader);
+                
+                // Agregar cada gráfica
+                agregarGrafica(document, chartImages.get("rolesChart"), "Distribución por Roles");
+                agregarGrafica(document, chartImages.get("genderChart"), "Distribución por Género");
+                agregarGrafica(document, chartImages.get("ageChart"), "Distribución por Edad");
+                agregarGrafica(document, chartImages.get("activityChart"), "Actividad por Mes");
+            }
+            
+            // Estadísticas textuales (original)
+            java.util.Map<String, Long> usersByRole = usuarios.stream()
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            user -> obtenerNombreRol(user.getIdRole()),
+                            java.util.stream.Collectors.counting()));
+            
+            java.util.Map<String, Long> usersByGender = usuarios.stream()
+                    .filter(u -> u.getGender() != null)
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            user -> obtenerGeneroTexto(user.getGender()),
+                            java.util.stream.Collectors.counting()));
+            
+            if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
+                document.add(new com.lowagie.text.Paragraph(" "));
+                com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+                com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
+                        "Estadísticas:", statsFont);
+                statsTitle.setSpacingBefore(20);
+                document.add(statsTitle);
+                
+                com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+                
+                if (!usersByRole.isEmpty()) {
+                    com.lowagie.text.Paragraph roleTitle = new com.lowagie.text.Paragraph(
+                            "Por Rol:", statsDataFont);
+                    roleTitle.setSpacingBefore(10);
+                    document.add(roleTitle);
+                    for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        statLine.setIndentationLeft(20);
+                        document.add(statLine);
+                    }
+                }
+                
+                if (!usersByGender.isEmpty()) {
+                    com.lowagie.text.Paragraph genderTitle = new com.lowagie.text.Paragraph(
+                            "Por Género:", statsDataFont);
+                    genderTitle.setSpacingBefore(10);
+                    document.add(genderTitle);
+                    for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
+                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        statLine.setIndentationLeft(20);
+                        document.add(statLine);
+                    }
+                }
+            }
+        }
+        
+        document.close();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new IOException("Error generando PDF: " + e.getMessage());
+    }
+}
+
+// Método auxiliar para agregar gráficas al PDF
+private void agregarGrafica(com.lowagie.text.Document document, String base64Image, String titulo) 
+        throws com.lowagie.text.DocumentException, IOException {
+    if (base64Image != null && !base64Image.isEmpty()) {
+        // Agregar título de la gráfica
+        com.lowagie.text.Font chartTitleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+        com.lowagie.text.Paragraph chartTitle = new com.lowagie.text.Paragraph(titulo, chartTitleFont);
+        chartTitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        chartTitle.setSpacingBefore(15);
+        document.add(chartTitle);
+        
+        // Decodificar imagen base64
+        String imageData = base64Image;
+        if (imageData.contains(",")) {
+            imageData = imageData.split(",")[1];
+        }
+        byte[] imageBytes = Base64.getDecoder().decode(imageData);
+        
+        // Agregar imagen al PDF
+        com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(imageBytes);
+        
+        // Escalar imagen para que quepa bien en el PDF
+        float maxWidth = 450f;
+        float maxHeight = 300f;
+        pdfImage.scaleToFit(maxWidth, maxHeight);
+        pdfImage.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        
+        document.add(pdfImage);
+        document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
+    }
+}
     // Endpoint para exportar usuarios a PDF CON FILTROS
     @GetMapping("/exportPdf")
     public void exportUsersToPdf(
@@ -315,170 +545,9 @@ public class UserController {
     // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
     @Autowired
     private PasswordEncoder passwordEncoder; // o BCryptPasswordEncoder, pero mejor PasswordEncoder
-    @PostMapping("/register")
-    public String seveUserView(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-            BindingResult result,
-            RedirectAttributes redirectAttributes,
-            HttpSession session) {
-        if (result.hasErrors()) {
-            return "login/login";
-        }
-        try {
-            // Validar edad mínima (18 años)
-            if (userDTO.getBirthDate() != null) {
-                LocalDate today = LocalDate.now();
-                Period age = Period.between(userDTO.getBirthDate(), today);
-                if (age.getYears() < 18) {
-                    redirectAttributes.addFlashAttribute("error", "Debes ser mayor de 18 años para registrarte");
-                    redirectAttributes.addFlashAttribute("userDTO", userDTO);
-                    return "redirect:/login";
-                }
-            }
-            // âŒ NO hashear aquÃ­: quitar la siguiente lnea si existe en tu controlador
-            // userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            // Dejar que el servicio se encargue de hashear:
-            UserDTO usuarioCreado = userService.crearUser(userDTO);
-            User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
-            if (userEntity != null) {
-                session.setAttribute("user", userEntity);
-            } else {
-                session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
-            }
-            enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
-            if (usuarioCreado.getIdRole() != null && usuarioCreado.getIdRole() == 1L) {
-                redirectAttributes.addFlashAttribute("success", "Â¡Bienvenido Administrador!");
-                return "redirect:/DashboardAdmin";
-            } else {
-                redirectAttributes.addFlashAttribute("success", "Â¡Bienvenido!");
-                return "redirect:/index";
-            }
-        } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("error", "El correo electrÃ³nico ya estÃ¡ registrado");
-            redirectAttributes.addFlashAttribute("userDTO", userDTO);
-            return "redirect:/login";
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Error al crear la cuenta.");
-            redirectAttributes.addFlashAttribute("userDTO", userDTO);
-            return "redirect:/login";
-        }
-    }
 
-    // MÉTODO PARA ENVIAR EL CORREO
-    private void enviarCorreoConfirmacion(String nombre, String email) throws MessagingException {
-        Session session = crearSesionCorreo();
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-        message.setSubject("Registro exitoso en Huerta Directa");
-        // Crear el contenido HTML del correo
-        String htmlContent = crearContenidoHTMLCorreo(nombre);
-        // Configurar el mensaje como HTML
-        message.setContent(htmlContent, "text/html; charset=utf-8");
-        Transport.send(message);
-    }
-    // CONTENIDO HTML DEL CORREO DE REGISTRO
-    private String crearContenidoHTMLCorreo(String nombre) {
-        return """
-                <!DOCTYPE html>
-                <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Bienvenido a Huerta Directa</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
-                    <table role="presentation" style="width: 100%%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 0;">
-                                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                                    <!-- Header con gradiente verde -->
-                                    <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
-                                        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                            🌱 Huerta Directa
-                                        </h1>
-                                        <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-                                            Conectando el campo con tu mesa
-                                        </p>
-                                    </div>
-                                    <!-- Contenido principal -->
-                                    <div style="padding: 40px 30px;">
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
-                                                ✅
-                                            </div>
-                                            <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
-                                                ¡Registro Exitoso!
-                                            </h2>
-                                        </div>
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
-                                                ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
-                                            </p>
-                                            <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-                                                Tu cuenta en <strong>Huerta Directa</strong> ha sido creada exitosamente.
-                                                Ahora formas parte de nuestra comunidad que conecta directamente a productores
-                                                campesinos con consumidores como tú.
-                                            </p>
-                                        </div>
-                                        <!-- Beneficios -->
-                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
-                                            <h3 style="color: #2e7d32; margin: 0 0 20px 0; font-size: 18px; text-align: center;">
-                                                ¿Qué puedes hacer ahora?
-                                            </h3>
-                                            <div style="text-align: left;">
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    🥕 <strong>Explorar productos frescos</strong> directamente de la huerta
-                                                </p>
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    🚚 <strong>Realizar pedidos</strong> con entrega a domicilio
-                                                </p>
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    👨‍🌾 <strong>Conocer a los productores</strong> detrás de tus alimentos
-                                                </p>
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    💚 <strong>Apoyar la agricultura local</strong> y sostenible
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <!-- Botón de acción -->
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <a href="#" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3); transition: all 0.3s ease;">
-                                                🌟 Comenzar a Explorar
-                                            </a>
-                                        </div>
-                                        <!-- Mensaje de agradecimiento -->
-                                        <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
-                                            <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
-                                                Gracias por unirte a nuestra misión de acercar el campo a tu mesa.<br>
-                                                <strong style="color: #689f38;">¡Juntos construimos un futuro más verde! 🌍</strong>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Footer -->
-                                    <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
-                                        <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
-                                            El equipo de Huerta Directa 🌱
-                                        </p>
-                                        <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
-                                            Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
-                                        </p>
-                                        <div style="margin-top: 15px;">
-                                            <span style="color: #c8e6c9; font-size: 12px;">
-                                                © 2024 Huerta Directa - Todos los derechos reservados
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-                </html>
-                """
-                .formatted(nombre);
-    }
+
+
     // Método reutilizable para crear la sesión de correo con las constantes
     private Session crearSesionCorreo() {
         Properties props = new Properties();
@@ -492,109 +561,12 @@ public class UserController {
             }
         });
     }
-         //  LOGIN (NO MODIFICADO)
-    // ============================
-        @PostMapping("/loginUser")
-        public String loginUser(
-                @RequestParam String email,
-                @RequestParam String password,
-                Model model,
-                HttpSession session) {
-
-            // Buscar el usuario por correo
-            User user = userRepository.findByEmail(email).orElse(null);
-
-            // ⚠Validar si el usuario existe y si la contraseña coincide
-            if (user == null) {
-                model.addAttribute("error", "Correo o contraseña incorrectos");
-                model.addAttribute("userDTO", new UserDTO());
-                return "login/login";
-            }
-
-            // Verificar con BCrypt si la contraseña plana coincide con el hash
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                model.addAttribute("error", "Correo o contraseña incorrectos");
-                model.addAttribute("userDTO", new UserDTO());
-                return "login/login";
-            }
-
-            //  GUARDAR EL USUARIO PRIMERO
-            session.setAttribute("user", user);
-
-            if (user.getPhone() == null || user.getPhone().isBlank()) {
-                return "redirect:/api/users/redirigirPorRol";
-            }
-            session.setAttribute("pendingUser", user);
-            return "login/verify-sms";  // ✅ Vista HTML
-        }
 
 
-        // =========================
-    // OPCIONAL: CONFIRMAR SMS
-    // =========================
-        @PostMapping("/complete-login")
-        public String completeLogin(HttpSession session) {
-            User user = (User) session.getAttribute("pendingUser");
-            if (user == null) return "redirect:/api/users/loginUser";
 
-            session.setAttribute("user", user);
-            session.removeAttribute("pendingUser");
-            return "redirect:/api/users/redirigirPorRol";
-        }
 
-        @GetMapping("/redirigirPorRol")
-        public String redirigirPorRol(HttpSession session) {
-            User user = (User) session.getAttribute("user");
-            if (user == null) return "redirect:/api/users/loginUser";
 
-            if (user.getRole().getIdRole() == 1) {
-                return "redirect:/DashboardAdmin";
-            } else {
-                return "redirect:/index";
-            }
-        }
 
-    @PostMapping("/FormAdmin")
-    public String registrarAdmin(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-            BindingResult result,
-            RedirectAttributes redirect) {
-        if (result.hasErrors()) {
-            // Cambiado para usar la plantilla existente en el proyecto
-            return "Dashboard_Admin/Registro_nuevo_admin/form_registro_admin";
-        }
-        userService.crearAdmin(userDTO); // crear el admin
-        redirect.addFlashAttribute("success", "Administrador creado con Ã©xito");
-        return "redirect:/DashboardAdmin"; // redirecciÃ³n al dashboard
-    }
-    /**
-     * Método para cerrar sesión
-     */
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate(); // Destruir completamente la sesión
-        return "redirect:/login";
-    }
-    /**
-     * Método para obtener información del usuario logueado (útil para mostrar en el
-     * frontend)
-     */
-    @GetMapping("/current")
-    @ResponseBody
-    public ResponseEntity<UserDTO> getCurrentUser(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setGender(user.getGender());
-        userDTO.setBirthDate(user.getBirthDate());
-        userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
     // ========== MÃ‰TODOS AUXILIARES PARA EXPORTACIÃ“N ==========
     private List<UserDTO> obtenerUsuariosFiltrados(String dato, String valor) {
         List<UserDTO> todosUsuarios = userService.listarUsers();
@@ -706,21 +678,7 @@ public class UserController {
      * Método auxiliar para convertir UserDTO a User Entity
      * Se usa como respaldo si no se puede encontrar el usuario en la base de datos
      */
-    private User convertirDTOaEntity(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setCreacionDate(userDTO.getCreacionDate());
-        // Crear un Role básico si es necesario
-        if (userDTO.getIdRole() != null) {
-            com.exe.Huerta_directa.Entity.Role role = new Role();
-            role.setIdRole(userDTO.getIdRole());
-            user.setRole(role);
-        }
-        return user;
-    }
+
     // ========== ENVÍO DE CORREOS MASIVOS ==========
     /**
      * Endpoint para enviar correo masivo a todos los usuarios
@@ -872,168 +830,7 @@ public class UserController {
      * registro
      */
 
-    @PostMapping("/forgot-password")
-    public String solicitarRecuperacionContrasena(@RequestParam String email, RedirectAttributes redirectAttributes) {
-        try {
-            User user = userRepository.findByEmail(email).orElse(null);
-            if (user == null) {
-                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo
-                // mensaje
-                redirectAttributes.addFlashAttribute("success",
-                        "Si el correo existe, recibiras tu nueva contraseña en unos minutos");
-                return "redirect:/forgot-password";
-            }
-            // Generar nueva contraseÃ±a aleatoria
-            String nuevaContrasena = generarContrasenaAleatoria();
-            // Se hashea la nueva contraseÃ±a antes de guardarla
-            user.setPassword(passwordEncoder.encode(nuevaContrasena));
-            userRepository.save(user);
-            // Enviar correo con la nueva contraseÃ±a
-            enviarCorreoNuevaContrasena(user.getName(), email, nuevaContrasena);
-            redirectAttributes.addFlashAttribute("success",
-                    "Si el correo existe, recibiras tu nueva contraseña en unos minutos");
-            return "redirect:/forgot-password";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Error al procesar la solicitud. Por favor, intenta nuevamente");
-            return "redirect:/forgot-password";
-        }
-    }
-    /**
-     * MÃ©todo para generar una contraseÃ±a aleatoria segura
-     */
-    private String generarContrasenaAleatoria() {
-        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        java.util.Random random = new Random();
-        StringBuilder contrasena = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            int index = random.nextInt(caracteres.length());
-            contrasena.append(caracteres.charAt(index));
-        }
-        return contrasena.toString();
-    }
-    /**
-     * MÃ©todo para enviar correo con la nueva contraseÃ±a
-     */
-    private void enviarCorreoNuevaContrasena(String nombre, String email, String nuevaContrasena)
-            throws MessagingException {
-        Session session = crearSesionCorreo();
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-        message.setSubject("Tu nueva contraseña - Huerta Directa");
-        String htmlContent = crearContenidoHTMLNuevaContrasena(nombre, nuevaContrasena);
-        message.setContent(htmlContent, "text/html; charset=utf-8");
-        Transport.send(message);
-    }
-    /**
-     * MÃ©todo para crear el contenido HTML del correo con la nueva contraseÃ±a
-     */
-    private String crearContenidoHTMLNuevaContrasena(String nombre, String nuevaContrasena) {
-        return """
-                <!DOCTYPE html>
-                <html lang="es">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Nueva Contraseña - Huerta Directa</title>
-                </head>
-                <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
-                    <table role="presentation" style="width: 100%%; border-collapse: collapse;">
-                        <tr>
-                            <td style="padding: 0;">
-                                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                                    <!-- Header -->
-                                    <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
-                                        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
-                                            🌱 Huerta Directa
-                                        </h1>
-                                        <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-                                            Nueva Contraseña Generada
-                                        </p>
-                                    </div>
-                                    <!-- Contenido principal -->
-                                    <div style="padding: 40px 30px;">
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
-                                                🔑
-                                            </div>
-                                            <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
-                                                ¡Nueva Contraseña Lista!
-                                            </h2>
-                                        </div>
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
-                                                ¡Hola <strong style="color: #689f38;">%s</strong>! 👋
-                                            </p>
-                                            <p style="color: #666666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-                                                Hemos generado una nueva contraseña para tu cuenta en <strong>Huerta Directa</strong>.
-                                                Ya puedes iniciar sesión con esta nueva contraseña.
-                                            </p>
-                                        </div>
-                                        <!-- Nueva contraseña -->
-                                        <div style="background-color: #f8f9fa; border: 2px dashed #8dc84b; border-radius: 15px; padding: 25px; margin-bottom: 30px; text-align: center;">
-                                            <h3 style="color: #2e7d32; margin: 0 0 15px 0; font-size: 18px;">
-                                                🔐 Tu Nueva Contraseña
-                                            </h3>
-                                            <div style="background-color: #ffffff; border: 2px solid #8dc84b; border-radius: 10px; padding: 15px; margin: 10px 0;">
-                                                <span style="font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #2e7d32; letter-spacing: 2px;">
-                                                    %s
-                                                </span>
-                                            </div>
-                                            <p style="color: #666666; font-size: 12px; margin: 10px 0 0 0;">
-                                                Copia esta contraseña exactamente como aparece
-                                            </p>
-                                        </div>
-                                        <!-- Instrucciones -->
-                                        <div style="background-color: #fff3e0; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-                                            <h3 style="color: #f57c00; margin: 0 0 15px 0; font-size: 16px; text-align: center;">
-                                                📋 Próximos Pasos
-                                            </h3>
-                                            <div style="text-align: left;">
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    1️⃣ Ve a la página de inicio de sesión
-                                                </p>
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    2️⃣ Usa tu email y esta nueva contraseña
-                                                </p>
-                                                <p style="color: #555555; margin: 8px 0; font-size: 14px;">
-                                                    3️⃣ ¡Recomendamos cambiarla por una personalizada!
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <!-- Botón de acción -->
-                                        <div style="text-align: center; margin-bottom: 30px;">
-                                            <a href="http://localhost:8085/login" style="display: inline-block; background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(104, 159, 56, 0.3);">
-                                                🚀 Iniciar Sesión Ahora
-                                            </a>
-                                        </div>
-                                        <!-- Mensaje de seguridad -->
-                                        <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
-                                            <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
-                                                Si no solicitaste este cambio, contacta inmediatamente con soporte.<br>
-                                                <strong style="color: #689f38;">Tu cuenta está segura con nosotros 🛡️</strong>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Footer -->
-                                    <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
-                                        <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
-                                            El equipo de Huerta Directa 🌱
-                                        </p>
-                                        <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
-                                            Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
-                                        </p>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-                </html>
-                """
-                .formatted(nombre, nuevaContrasena);
-    }
+
     // ========== CARGA DE DATOS DESDE ARCHIVO ==========
     /**
      * Endpoint para cargar datos desde archivo CSV o Excel
@@ -1377,6 +1174,18 @@ public class UserController {
                     producto.setUnit(campos[3].trim());
                     producto.setDescriptionProduct(campos[4].trim());
                     producto.setImageProduct(campos[5].trim());
+
+                    // Agregar stock si está disponible (columna 6)
+                    if (campos.length > 6 && !campos[6].trim().isEmpty()) {
+                        try {
+                            producto.setStock(Integer.parseInt(campos[6].trim()));
+                        } catch (NumberFormatException e) {
+                            producto.setStock(0); // Stock por defecto si no se puede parsear
+                        }
+                    } else {
+                        producto.setStock(0); // Stock por defecto
+                    }
+
                     producto.setPublicationDate(LocalDate.now());
                     productos.add(producto);
                 }
@@ -1430,6 +1239,24 @@ public class UserController {
                     if (imagenCell != null) {
                         producto.setImageProduct(obtenerValorCelda(imagenCell));
                     }
+
+                    // Agregar stock si está disponible (columna 6)
+                    Cell stockCell = row.getCell(6);
+                    if (stockCell != null) {
+                        try {
+                            String valorStock = obtenerValorCelda(stockCell);
+                            if (!valorStock.trim().isEmpty()) {
+                                producto.setStock(Integer.parseInt(valorStock.trim()));
+                            } else {
+                                producto.setStock(0); // Stock por defecto
+                            }
+                        } catch (NumberFormatException e) {
+                            producto.setStock(0); // Stock por defecto si no se puede parsear
+                        }
+                    } else {
+                        producto.setStock(0); // Stock por defecto
+                    }
+
                     producto.setPublicationDate(LocalDate.now());
                     // Validar que los campos obligatorios no estén vacíos
                     if (producto.getNameProduct() != null && !producto.getNameProduct().trim().isEmpty() &&
@@ -1464,6 +1291,7 @@ public class UserController {
             throw e; // Re-lanzar la excepciÃ³n para que sea manejada en el bucle principal
         }
     }
+
     @GetMapping("/products/refresh")
     @ResponseBody
     public ResponseEntity<List<ProductDTO>> obtenerProductosActualizados() {
@@ -1566,16 +1394,16 @@ public class UserController {
                 redirectAttributes.addFlashAttribute("error", "Sesion expirada");
                 return "redirect:/login";
             }
-            // Determinar la pÃ¡gina de redirecciÃ³n segÃºn el rol
+            // Determinar la pagina de redireccion segun el rol
             String redirectPage = currentUser.getRole().getName().equals("Admin") ?
                 "/actualizacionUsuarioAdmin" : "/actualizacionUsuario";
-            // Validar que las contraseÃ±as nuevas coincidan
+            // Validar que las contraseñas nuevas coincidan
             if (!newPassword.equals(confirmPassword)) {
                 redirectAttributes.addFlashAttribute("error", "Las contraseÃ±as no coinciden");
                 return "redirect:" + redirectPage;
             }
             if (!passwordEncoder.matches(currentPassword, currentUser.getPassword())) {
-                redirectAttributes.addFlashAttribute("error", "ContraseÃ±a actual incorrecta");
+                redirectAttributes.addFlashAttribute("error", "Contraseña actual incorrecta");
                 return "redirect:" + redirectPage;
             }
             User user = userRepository.findById(currentUser.getId())
@@ -1583,7 +1411,7 @@ public class UserController {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             session.setAttribute("user", user);
-            redirectAttributes.addFlashAttribute("success", "ContraseÃ±a actualizada correctamente");
+            redirectAttributes.addFlashAttribute("success", "Contraseña actualizada correctamente");
             return "redirect:" + redirectPage;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseÃ±a");

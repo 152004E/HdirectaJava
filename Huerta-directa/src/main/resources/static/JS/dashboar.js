@@ -415,7 +415,7 @@ setTimeout(() => {
 }, 5000);
 
 // modal de editar
-function abrirModalEditar(id, name, category, price, unit, description, image) {
+function abrirModalEditar(id, name, category, price, unit, description, image, stock) {
   document.getElementById("modalEditarProducto").classList.add("active");
   document.getElementById("modalOverlayEditar").classList.add("active");
 
@@ -427,6 +427,7 @@ function abrirModalEditar(id, name, category, price, unit, description, image) {
   document.getElementById("unit").value = unit;
   document.getElementById("descriptionProduct").value = description;
   document.getElementById("imageProduct").value = image;
+  document.getElementById("stock").value = stock || 0;
 
   // Actualizar el action del formulario
   document.getElementById(
@@ -446,8 +447,9 @@ function abrirModalEditarDesdeBoton(boton) {
   const unit = boton.getAttribute("data-unit");
   const description = boton.getAttribute("data-description");
   const image = boton.getAttribute("data-image");
+  const stock = boton.getAttribute("data-stock");
 
-  abrirModalEditar(id, name, category, price, unit, description, image);
+  abrirModalEditar(id, name, category, price, unit, description, image, stock);
 }
 
 
@@ -464,3 +466,4 @@ function abrirModalEditarDesdeBoton(boton) {
     MostrarInfo.classList.remove("flex");
   }
 }
+
