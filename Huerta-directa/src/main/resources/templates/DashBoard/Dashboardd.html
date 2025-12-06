@@ -758,6 +758,8 @@
           <div class="form-group">
             <label for="price">Precio (COP)</label>
             <input type="number" step="0.01" id="price" name="price" required />
+            <label for="stock">Stock</label>
+            <input type="number" id="stock" name="stock" min="0" max="100" value="0" />
           </div>
         </div>
         <!--div para la categoria y la unidad de medida-->
@@ -812,10 +814,7 @@
             ></textarea>
           </div>
 
-          <div class="form-group">
-            <label for="stock">Stock</label>
-            <input type="number" id="stock" name="stock" min="0" value="0" />
-          </div>
+          
         </div>
         <div class="form-groupDescripcionYImagen">
           <div class="form-group">
