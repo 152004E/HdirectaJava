@@ -17,7 +17,7 @@ public class CarritoItem {
     private Integer cantidad;
     private String imagen;
 
-    // Método auxiliar para calcular el subtotal de este item
+    // Metodo auxiliar para calcular el subtotal de este item
     public BigDecimal getSubtotal() {
         return precio.multiply(new BigDecimal(cantidad));
     }
