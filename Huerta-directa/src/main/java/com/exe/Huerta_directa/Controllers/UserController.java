@@ -117,7 +117,6 @@ public class UserController {
         headerRow.createCell(3).setCellValue("Género");
         headerRow.createCell(4).setCellValue("Edad");
         headerRow.createCell(5).setCellValue("Rol ID");
-        headerRow.createCell(6).setCellValue("Stock");
         // Si hay filtro, agregar fila informativa
         if (dato != null && valor != null && !valor.isEmpty()) {
             org.apache.poi.ss.usermodel.Row filterRow = sheet.createRow(1);
