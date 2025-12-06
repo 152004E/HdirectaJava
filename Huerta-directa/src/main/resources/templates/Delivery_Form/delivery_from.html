@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Entregas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>🚚 Calculadora de Tiempos de Entrega</h1>
+
+<form action="/delivery/calculate" method="get">
+    <label>Selecciona la región de Colombia:</label>
+    <select name="region" required>
+        <option value="">-- Selecciona --</option>
+        <option value="andina">Región Andina</option>
+        <option value="caribe">Región Caribe</option>
+        <option value="pacifica">Región Pacífica</option>
+        <option value="orinoquia">Región Orinoquía</option>
+        <option value="amazonia">Región Amazonía</option>
+    </select>
+
+    <label>Selecciona el método de transporte:</label>
+    <select name="type" required>
+        <option value="">-- Selecciona --</option>
+        <option value="motorcycle">🏍️ Motocicleta</option>
+        <option value="farmer_to_center">🚜 Campesino → Centro</option>
+        <option value="urban_rural">🚗 Urbano-Rural</option>
+        <option value="allied_transport">🚛 Aliado de Transporte</option>
+        <option value="store_pickup">🏪 Recogida en Tienda</option>
+        <option value="scheduled">📅 Entrega Programada</option>
+    </select>
+
+    <button type="submit">Calcular Tiempo de Entrega</button>
+</form>
+</body>
+</html>

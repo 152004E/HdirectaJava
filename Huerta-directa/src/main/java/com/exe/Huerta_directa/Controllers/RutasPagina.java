@@ -628,6 +628,13 @@ public class RutasPagina {
     }
 
 
+    @GetMapping("/Delivery")
+    public String mostrarDeliveryPage() {
+        return "Delivery_Form/delivery_from";
+    }
+
+
+
 
 
 

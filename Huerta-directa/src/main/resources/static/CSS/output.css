@@ -115,6 +115,7 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --drop-shadow-lg: 0 4px 4px rgb(0 0 0 / 0.15);
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --animate-spin: spin 1s linear infinite;
     --blur-lg: 16px;
@@ -275,6 +276,9 @@
 @layer utilities {
   .invisible {
     visibility: hidden;
+  }
+  .visible {
+    visibility: visible;
   }
   .\!absolute {
     position: absolute !important;
@@ -1911,6 +1915,9 @@
   .\!py-6 {
     padding-block: calc(var(--spacing) * 6) !important;
   }
+  .\!py-8 {
+    padding-block: calc(var(--spacing) * 8) !important;
+  }
   .\!py-12 {
     padding-block: calc(var(--spacing) * 12) !important;
   }
@@ -2654,6 +2661,10 @@
   .ease-in-out {
     --tw-ease: var(--ease-in-out);
     transition-timing-function: var(--ease-in-out);
+  }
+  .ease-out {
+    --tw-ease: var(--ease-out);
+    transition-timing-function: var(--ease-out);
   }
   .outline-none {
     --tw-outline-style: none;
