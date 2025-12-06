@@ -466,3 +466,4 @@ function abrirModalEditarDesdeBoton(boton) {
     MostrarInfo.classList.remove("flex");
   }
 }
+

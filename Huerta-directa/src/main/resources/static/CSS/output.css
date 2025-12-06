@@ -28,6 +28,7 @@
     --color-yellow-800: oklch(47.6% 0.114 61.907);
     --color-lime-100: oklch(96.7% 0.067 122.328);
     --color-lime-500: oklch(76.8% 0.233 130.85);
+    --color-lime-600: oklch(64.8% 0.2 131.684);
     --color-lime-800: oklch(45.3% 0.124 130.933);
     --color-green-50: oklch(98.2% 0.018 155.826);
     --color-green-100: oklch(96.2% 0.044 156.743);
@@ -1644,6 +1645,9 @@
   .bg-lime-100 {
     background-color: var(--color-lime-100);
   }
+  .bg-lime-500 {
+    background-color: var(--color-lime-500);
+  }
   .bg-red-50 {
     background-color: var(--color-red-50);
   }
@@ -2873,6 +2877,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-indigo-700);
+      }
+    }
+  }
+  .hover\:bg-lime-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-lime-600);
       }
     }
   }

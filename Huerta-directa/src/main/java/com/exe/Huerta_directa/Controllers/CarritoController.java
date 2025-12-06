@@ -5,6 +5,7 @@ import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,30 +33,44 @@ public class CarritoController {
     /**
      * 🔹 ENDPOINT 1: Guardar carrito en sesión (llamado desde tu carrito.js)
      */
-    @PostMapping(value = "/carrito/guardar-sesion", produces = "application/json")
-    @ResponseBody
-    public Map<String, String> guardarCarritoEnSesion(
+
+    @PostMapping("/carrito/guardar-sesion")
+    public ResponseEntity<Map<String, Object>> guardarCarritoEnSesion(
             @RequestBody List<Map<String, Object>> productosJS,
             HttpSession session) {
         try {
-            System.out.println("🔥 ENDPOINT LLAMADO: /carrito/guardar-sesion");
-            System.out.println("📦 Productos recibidos: " + productosJS.size());
+            System.out.println("/carrito/guardar-sesion");
+            System.out.println("Productos recibidos: " + productosJS.size());
 
             List<CarritoItem> carrito = new ArrayList<>();
 
             for (Map<String, Object> prod : productosJS) {
+                Long productId = Long.parseLong(prod.get("id").toString());
+                Integer cantidad = Integer.parseInt(prod.get("cantidad").toString());
+
+                // Validar que el producto existe y tiene stock
+                ProductDTO producto = productService.obtenerProductPorId(productId);
+                if (producto == null) {
+                    return ResponseEntity.badRequest().body(Map.of(
+                            "status", "error",
+                            "message", "Producto no encontrado: " + productId
+                    ));
+                }
+
+                if (cantidad > producto.getStock()) {
+                    return ResponseEntity.badRequest().body(Map.of(
+                            "status", "error",
+                            "message", "Stock insuficiente, " + producto.getNameProduct()+ " disponible: " + producto.getStock()
+                    ));
+                }
+
                 CarritoItem item = new CarritoItem();
-                item.setProductId(Long.parseLong(prod.get("id").toString()));
+                item.setProductId(productId);
                 item.setNombre(prod.get("nombre").toString());
                 item.setPrecio(new BigDecimal(prod.get("precio").toString()));
-                item.setCantidad(Integer.parseInt(prod.get("cantidad").toString()));
-
-                // Obtener más info del producto desde la BD
-                ProductDTO productoCompleto = productService.obtenerProductPorId(item.getProductId());
-                if (productoCompleto != null) {
-                    item.setDescripcion(productoCompleto.getDescriptionProduct());
-                    item.setImagen(productoCompleto.getImageProduct());
-                }
+                item.setCantidad(cantidad);
+                item.setDescripcion(producto.getDescriptionProduct());
+                item.setImagen(producto.getImageProduct());
 
                 carrito.add(item);
             }
@@ -63,19 +78,26 @@ public class CarritoController {
             session.setAttribute(CARRITO_SESSION, carrito);
             System.out.println("✅ Carrito guardado en sesión: " + carrito.size() + " productos");
 
-            return Map.of("status", "success", "message", "Carrito guardado correctamente");
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Carrito guardado correctamente",
+                    "productos", carrito.size()
+            ));
 
         } catch (Exception e) {
-            System.err.println("❌ ERROR en guardarCarritoEnSesion: " + e.getMessage());
+            System.err.println("❌ ERROR: " + e.getMessage());
             e.printStackTrace();
-            return Map.of("status", "error", "message", e.getMessage());
+            return ResponseEntity.status(500).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno: " + e.getMessage()
+            ));
         }
     }
 
 
     /**
      * 🔹 ENDPOINT 2: Mostrar resumen del carrito
-     * ✅ CORREGIDO: Removida la barra inicial y la extensión .html
+     *
      */
     @GetMapping("/carrito/resumen")
     public String verResumen(HttpSession session, Model model) {
@@ -113,7 +135,7 @@ public class CarritoController {
 
     /**
      * 🔹 ENDPOINT 3: Redirigir al Brick con el total calculado
-     * ✅ CORREGIDO: Removida la barra inicial y la extensión .html
+     *
      */
     @GetMapping("/carrito/checkout")
     public String mostrarCheckout(HttpSession session, Model model) {
@@ -189,7 +211,7 @@ public class CarritoController {
     }
 
     /**
-     * 🔹 Método auxiliar para calcular subtotal
+     * 🔹 Metodo auxiliar para calcular subtotal
      */
     private BigDecimal calcularSubtotal(List<CarritoItem> carrito) {
         return carrito.stream()
