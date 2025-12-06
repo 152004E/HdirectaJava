@@ -1037,12 +1037,11 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo
-    (@RequestParam("archivo")
-     MultipartFile archivo,
-     HttpSession session) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo(
+            @RequestParam("archivo") MultipartFile archivo,
+            HttpSession session) {
         try {
-            // OBTENER USUARIO DE LA SESIÃ“N
+            // OBTENER USUARIO DE LA SESIÃ"N
             User userSession = (User) session.getAttribute("user");
             if (userSession == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -1050,7 +1049,19 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                                 "success", false,
                                 "message", "Sesion expirada. Debe iniciar sesion para cargar productos"));
             }
+
+            // VALIDAR QUE EL USUARIO TENGA DATOS COMPLETOS
+            if (userSession.getAddress() == null || userSession.getAddress().trim().isEmpty() ||
+                userSession.getPhone() == null || userSession.getPhone().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Debe completar su información de perfil (dirección y teléfono) antes de poder cargar productos masivamente",
+                                "redirectTo", "/actualizacionUsuario"));
+            }
+
             Long currentUserId = userSession.getId();
+
             // Validar que se enviÃ³ un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()
