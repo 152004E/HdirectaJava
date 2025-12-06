@@ -339,14 +339,30 @@ async function cargarProductos(event) {
         window.location.href = window.location.href.split('?')[0] + '?t=' + new Date().getTime();
       }, 2000);
     } else {
-      // Mostrar error
-      resultProductos.className = "result-message error active";
-      resultProductos.innerHTML = `
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Error al procesar archivo de productos</strong><br>
-                        ${result.message || "Ocurrió un error inesperado"}<br>
-                        <small>📋 Verifique el formato del archivo y los datos de los productos</small>
-                    `;
+      // Verificar si es un error por datos incompletos
+      if (result.message && result.message.includes("información de perfil")) {
+        // Mostrar mensaje específico para datos incompletos
+        resultProductos.className = "result-message warning active";
+        resultProductos.innerHTML = `
+          <i class="fas fa-user-edit"></i>
+          <strong>Información de perfil incompleta</strong><br>
+          ${result.message}<br>
+          <br>
+          <button onclick="window.location.href='${result.redirectTo || '/actualizacionUsuario'}'" 
+                  style="background: #689f38; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+            <i class="fas fa-edit"></i> Completar Mi Perfil
+          </button>
+        `;
+      } else {
+        // Mostrar error normal
+        resultProductos.className = "result-message error active";
+        resultProductos.innerHTML = `
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>Error al procesar archivo de productos</strong><br>
+          ${result.message || "Ocurrió un error inesperado"}<br>
+          <small>📋 Verifique el formato del archivo y los datos de los productos</small>
+        `;
+      }
     }
   } catch (error) {
     loadingProductos.classList.remove("active");
