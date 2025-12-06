@@ -30,6 +30,10 @@
             <span class="material-symbols-outlined">mail</span>
             <h3>Mensajes</h3>
         </a>
+        <a th:href="@{/misOrdenes}">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <h3>Ordenes</h3>
+        </a>
         <a th:href="${(session.user != null &&
                       session.user.phone != null && !#strings.isEmpty(session.user.phone) &&
                       session.user.address != null && !#strings.isEmpty(session.user.address))

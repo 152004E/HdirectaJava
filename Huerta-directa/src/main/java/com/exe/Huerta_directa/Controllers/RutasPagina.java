@@ -296,9 +296,15 @@ public class RutasPagina {
      * // return "DashBoard/MensajesComentarios";
      * }
      */
+
+
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
+    }
+        @GetMapping("/misOrdenes")
+    public String misOrdenes() {
+        return "DashBoard/misOrdenes";
     }
 
     @GetMapping("/DashBoardGraficos")

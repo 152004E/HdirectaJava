@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensajes y comentarios -- HUERTA DIRECTA</title>
+
+    <!-- Link para el font -->
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+  </head>
+
+  <body>
+    <div class="containerActualizarUcuario">
+      <div
+        th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main>
+        <h1 class="!mt-[20px]">
+          Revisa tus ordenes de pedido y tus ventas aquí.
+        </h1>
+
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]" href=""
+            >Tus Comentarios</a
+          >
+          <a href="">Mensajes</a>
+          <a href="">Comentarios de tus productos</a>
+        </div>
+        <!-- SECCIÓN COMENTARIOS -->
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 !gap-6"
+        ></div>
+      </main>
+
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+        <div
+          class="recent-updates !border-t !border-black/30 !rounded-xl !px-5"
+        >
+          <div
+            class="!w-full !bg-white !rounded-xl !flex !flex-col !justify-start !items-center !gap-[9px] !mt-[20px] !p-4 !mb-10"
+          >
+            <h2 class="!text-center !text-xl !font-bold !px-3">
+              Visión general de tus ventas
+            </h2>
+            <div
+              class="!flex !flex-col w-full !justify-center !items-center !gap-5"
+            >
+              <!-- Ventas Totales -->
+              <article
+                class="!flex !flex-col !justify-center !items-center w-[90%] !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <h3
+                  class="!text-[13px] !flex !justify-center !gap-2 !font-semibold"
+                >
+                  <span class="material-symbols-outlined text-green-500">
+                    payments
+                  </span>
+                  Ventas totales
+                </h3>
+
+                <p
+                  class="!text-[#4CAF50] !font-semibold !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2">
+                    attach_money
+                  </span>
+                  <span>1,000.000</span>
+                </p>
+
+                <p
+                  class="!text-[#297c2c] !text-[13px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"> arrow_upward </span>
+                  <span>+ 1 % vs el mes pasado</span>
+                </p>
+              </article>
+
+              <hr
+                class="!border !w-[200px]"
+                style="border: 1px solid #4caf50"
+              />
+
+              <!-- Ganancia mensual -->
+              <article
+                class="!flex !flex-col !justify-center !items-center w-[90%] !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <h3
+                  class="!text-[13px] !flex !justify-center !gap-2 !font-semibold"
+                >
+                  <span class="material-symbols-outlined text-emerald-500">
+                    trending_up
+                  </span>
+                  Ganancia mensual
+                </h3>
+
+                <p
+                  class="!text-emerald-600 !font-semibold !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2"> paid </span>
+                  <span>$750.000</span>
+                </p>
+
+                <p
+                  class="!text-emerald-700 !text-[13px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"> arrow_upward </span>
+                  <span>+ 2.3 % vs el mes pasado</span>
+                </p>
+              </article>
+
+              <hr
+                class="!border !w-[200px]"
+                style="border: 1px solid #2ecc71"
+              />
+
+              <!-- Pedidos pendientes -->
+              <article
+                class="!flex !flex-col !justify-center !items-center w-[90%] !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <h3
+                  class="!text-[13px] !flex !justify-center !gap-2 !font-semibold"
+                >
+                  <span class="material-symbols-outlined text-yellow-500">
+                    schedule
+                  </span>
+                  Pedidos pendientes
+                </h3>
+
+                <p
+                  class="!text-yellow-600 !font-semibold !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2">
+                    local_shipping
+                  </span>
+                  <span>25</span>
+                </p>
+
+                <p
+                  class="!text-yellow-700 !text-[13px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"> arrow_upward </span>
+                  <span>+ 3 % vs el mes pasado</span>
+                </p>
+              </article>
+
+              <hr
+                class="!border !w-[200px]"
+                style="border: 1px solid #ffc107"
+              />
+
+              <!-- Nuevos Clientes -->
+              <article
+                class="!flex !flex-col !justify-center !items-center w-[90%] !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <h3
+                  class="!text-[13px] !flex !justify-center !gap-2 !font-semibold"
+                >
+                  <span class="material-symbols-outlined text-blue-500">
+                    group_add
+                  </span>
+                  Nuevos clientes
+                </h3>
+
+                <p
+                  class="!text-blue-600 !font-semibold !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2">
+                    person_add
+                  </span>
+                  <span>12</span>
+                </p>
+
+                <p
+                  class="!text-blue-700 !text-[13px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"> arrow_upward </span>
+                  <span>+ 8 % vs el mes pasado</span>
+                </p>
+              </article>
+
+              <hr
+                class="!border !w-[200px]"
+                style="border: 1px solid #2196f3"
+              />
+
+              <!-- Órdenes Completadas -->
+              <article
+                class="!flex !flex-col !justify-center !items-center w-[90%] !bg-gray-500/10 !border !border-gray-400 !p-4 !rounded-xl hover:!bg-gray-500/20 !duration-500 !transition-all"
+              >
+                <h3
+                  class="!text-[13px] !flex !justify-center !gap-2 !font-semibold"
+                >
+                  <span class="material-symbols-outlined text-purple-500">
+                    task_alt
+                  </span>
+                  Órdenes completadas
+                </h3>
+
+                <p
+                  class="!text-purple-600 !font-semibold !text-[20px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined !mr-2">
+                    check_circle
+                  </span>
+                  <span>82</span>
+                </p>
+
+                <p
+                  class="!text-purple-700 !text-[13px] !flex !justify-center !items-center"
+                >
+                  <span class="material-symbols-outlined"> arrow_upward </span>
+                  <span>+ 4 % vs el mes pasado</span>
+                </p>
+              </article>
+
+              <hr
+                class="!border !w-[200px]"
+                style="border: 1px solid #9c27b0"
+              />
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
