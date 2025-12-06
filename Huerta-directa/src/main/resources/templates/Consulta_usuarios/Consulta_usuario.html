@@ -206,20 +206,48 @@
             <hr class="my-6 border-gray-300">
 
             <!-- Botones de exportación y correo masivo -->
-            <div class="flex flex-wrap items-center gap-3 mb-6">
-                <h5 class="text-lg font-semibold text-gray-700">Exportar Datos:</h5>
-                <button onclick="exportarUsuariosExcel()" 
-                        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors duration-200 shadow-md">
-                    <i class="fas fa-file-excel mr-2"></i> Exportar a Excel
-                </button>
-                <button onclick="exportarUsuariosPDF()" 
-                        class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors duration-200 shadow-md">
-                    <i class="fas fa-file-pdf mr-2"></i> Exportar a PDF
-                </button>
-                <button onclick="abrirModalEmail()" 
-                        class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                    <i class="fas fa-envelope mr-2"></i> Enviar Correo Masivo
-                </button>
+            <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+                <h5 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+                    <i class="fas fa-download mr-2 text-green-600"></i>
+                    Exportar Datos
+                </h5>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Exportar a Excel -->
+                    <button onclick="exportarUsuariosExcel()" 
+                            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fas fa-file-excel mr-2"></i> Exportar a Excel
+                    </button>
+                    
+                    <!-- Exportar a PDF Simple -->
+                    <button onclick="exportarUsuariosPDFSimple()" 
+                            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fas fa-file-pdf mr-2"></i> PDF Simple
+                    </button>
+                    
+                    <!-- Exportar a PDF con Gráficas -->
+                    <button onclick="exportarPDFConGraficas()" 
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fas fa-chart-pie mr-2"></i> PDF + Gráficas
+                    </button>
+                    
+                    <!-- Enviar Correo Masivo -->
+                    <button onclick="abrirModalEmail()" 
+                            class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <i class="fas fa-envelope mr-2"></i> Enviar Correo Masivo
+                    </button>
+                </div>
+                
+                <!-- Mensaje informativo -->
+                <div class="mt-3 p-3 bg-blue-50 border-l-4 border-blue-400 rounded text-sm">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+                        <p class="text-blue-800">
+                            <strong>Nota:</strong> El PDF con gráficas incluye visualizaciones estadísticas. 
+                            Las estadísticas se generarán automáticamente durante la exportación.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <hr class="my-6 border-gray-300">
@@ -372,6 +400,99 @@
      <script>
         let rolesChart, genderChart, ageChart, activityChart;
         let estadisticasVisibles = false;
+
+
+        // Función para exportar PDF con gráficas incluidas
+async function exportarPDFConGraficas() {
+    try {
+        // Mostrar estadísticas si no están visibles
+        const wasHidden = !estadisticasVisibles;
+        if (wasHidden) {
+            toggleStatistics();
+            // Esperar a que las gráficas se rendericen
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // Capturar las 4 gráficas como imágenes base64
+        const chartImages = {
+            rolesChart: rolesChart ? rolesChart.toBase64Image() : null,
+            genderChart: genderChart ? genderChart.toBase64Image() : null,
+            ageChart: ageChart ? ageChart.toBase64Image() : null,
+            activityChart: activityChart ? activityChart.toBase64Image() : null
+        };
+
+        // Obtener filtros si existen
+        const filtro = document.getElementById('filtro')?.value || '';
+        const busqueda = document.getElementById('busqueda')?.value || '';
+
+        // Construir URL con parámetros
+        let url = '/api/users/exportPdf';
+        const params = new URLSearchParams();
+        
+        if (filtro) params.append('dato', filtro);
+        if (busqueda) params.append('valor', busqueda);
+        
+        if (params.toString()) {
+            url += '?' + params.toString();
+        }
+
+        // Hacer la petición POST con las imágenes
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chartImages: chartImages
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al generar el PDF');
+        }
+
+        // Descargar el archivo PDF
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `Usuarios_${new Date().toISOString().slice(0,10)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(downloadUrl);
+        document.body.removeChild(a);
+
+        // Ocultar estadísticas si estaban ocultas antes
+        if (wasHidden) {
+            toggleStatistics();
+        }
+
+        // Mostrar mensaje de éxito
+        alert('PDF generado exitosamente con gráficas incluidas');
+
+    } catch (error) {
+        console.error('Error al exportar PDF:', error);
+        alert('Error al generar el PDF. Por favor, intente nuevamente.');
+    }
+}
+
+// Función alternativa: exportar sin gráficas (método GET original)
+function exportarPDFSinGraficas() {
+    const filtro = document.getElementById('filtro')?.value || '';
+    const busqueda = document.getElementById('busqueda')?.value || '';
+    
+    let url = '/api/users/exportPdf';
+    const params = new URLSearchParams();
+    
+    if (filtro) params.append('dato', filtro);
+    if (busqueda) params.append('valor', busqueda);
+    
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+    
+    window.open(url, '_blank');
+} 
 
         function toggleStatistics() {
             const section = document.getElementById('statisticsSection');
