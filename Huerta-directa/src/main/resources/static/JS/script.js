@@ -277,7 +277,7 @@ async function procederAlPago() {
 
     } catch (error) {
         console.error("❌ Error completo:", error);
-        alert("Error al procesar el carrito: " + error.message);
+        alert(error.message);
     }
 }
 
