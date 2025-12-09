@@ -41,7 +41,7 @@ body {
 }
 .containerActualizarUcuario {
   display: grid;
-  max-width: 1800px;
+  max-width: 1800px !important;
   margin: 0 auto;
   background: #faf2dd;
   gap: 1.8rem;
@@ -1665,4 +1665,100 @@ body:has(.consulta-wrapper) {
   display: block;
 }
 
+/* ====================================
+   ESTILOS PARA MENSAJES DE RESULTADO
+   ================================== */
 
+.result-message {
+  display: none;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  border: 2px solid;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.result-message.active {
+  display: block;
+  animation: fadeInScale 0.4s ease-out;
+}
+
+.result-message i {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.result-message.success {
+  background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+  border-color: #4caf50;
+  color: #1b5e20;
+}
+
+.result-message.success i {
+  color: #4caf50;
+}
+
+.result-message.error {
+  background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+  border-color: #f44336;
+  color: #b71c1c;
+}
+
+.result-message.error i {
+  color: #f44336;
+}
+
+.result-message.warning {
+  background: linear-gradient(135deg, #fff8e1 0%, #fffde7 100%);
+  border-color: #ff9800;
+  color: #e65100;
+}
+
+.result-message.warning i {
+  color: #ff9800;
+}
+
+.result-message strong {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.result-message small {
+  opacity: 0.8;
+  font-style: italic;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Tema oscuro para mensajes de resultado */
+body.dark-theme .result-message.success {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+  border-color: #4caf50;
+  color: #e8f5e8;
+}
+
+body.dark-theme .result-message.error {
+  background: linear-gradient(135deg, #b71c1c 0%, #c62828 100%);
+  border-color: #f44336;
+  color: #ffebee;
+}
+
+body.dark-theme .result-message.warning {
+  background: linear-gradient(135deg, #e65100 0%, #f57c00 100%);
+  border-color: #ff9800;
+  color: #fff8e1;
+}

@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -23,6 +23,240 @@
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
     <link rel="stylesheet" href="/css/output.css" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+    <style>
+      .products-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+        padding: 16px 0;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      
+      .product-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid #e5e7eb;
+      }
+      
+      .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        border-color: #9ae6b4;
+      }
+      
+      .product-image-container {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f0f9ff 0%, #f0fff4 100%);
+      }
+      
+      .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      
+      .product-card:hover .product-image {
+        transform: scale(1.05);
+      }
+      
+      .product-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        z-index: 10;
+      }
+      
+      .product-content {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .product-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        line-height: 1.3;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 3.2rem;
+      }
+      
+      .product-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-top: 1px solid #f3f4f6;
+        border-bottom: 1px solid #f3f4f6;
+      }
+      
+      .price-container, .stock-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .meta-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-weight: 500;
+      }
+      
+      .price-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #059669;
+      }
+      
+      .stock-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2937;
+        background: #f0f9ff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-align: center;
+      }
+      
+      .category-badge {
+        display: inline-block;
+        background: #f3f4f6;
+        color: #4b5563;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-top: 8px;
+      }
+      
+      .user-info {
+        background: #eff6ff;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-top: auto;
+      }
+      
+      .user-label {
+        font-size: 0.875rem;
+        color: #3b82f6;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      
+      .user-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1e40af;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      
+      .user-name::before {
+        content: "person";
+        font-family: 'Material Symbols Outlined';
+        font-size: 1.1rem;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      
+      .btn {
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+      }
+      
+      .btn-delete {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+      }
+      
+      .btn-delete:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+      
+      .btn-notify {
+        background: linear-gradient(135deg, #558b2f, #385c1e);
+        color: white;
+      }
+      
+      .btn-notify:hover {
+        background: linear-gradient(135deg, #4a7729, #2e4a18);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(85, 139, 47, 0.3);
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .products-container {
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 20px;
+          padding: 12px;
+        }
+        
+        .product-image-container {
+          height: 180px;
+        }
+        
+        .product-content {
+          padding: 16px;
+        }
+        
+        .product-title {
+          font-size: 1.125rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .products-container {
+          grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+
+
+    </style>
   </head>
   <body>
     <div class="containerActualizarUcuario">
@@ -32,13 +266,13 @@
       <!-- fin del asside -->
       <main>
         <h1 class="!mt-[20px]">
-          Revisa los prodcutos subidos por los usuarios.
+          Revisa los productos subidos por los usuarios.
         </h1>
         <div
           class="bg-yellow-100 !border-l-4 !border-yellow-500 text-yellow-800 !p-4 rounded-md shadow-md !w-full h-18 mx-auto !mt-16 flex justify-between items-center hover:bg-yellow-100/80 transition-all duration-500"
         >
           <p class="text-md">
-            <strong>Nota:</strong> Para ver o agregar prodcutos debes ir a la
+            <strong>Nota:</strong> Para ver o agregar productos debes ir a la
             sección de <span class="font-semibold">Agregar Productos</span>.
           </p>
           <a
@@ -52,177 +286,197 @@
           class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
         >
           <a class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]" href=""
-            >Procutos subidos por los usuarios</a
+            >Productos subidos por los usuarios</a
           >
         </div>
-        <main class="products container1 !px-10 !py-12" id="lista-1">
-            <h2 data-aos="zoom-in" class="!mb-12 !text-3xl font-bold text-gray-800">
-              Productos subidos por los usuarios
-            </h2>
-            <div
-              class="products-container"
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-                gap: 40px;
-                padding: 20px;
-                max-width: 1600px;
-                margin: 0 auto;
-              "
-            >
+        
+        <div class="container1 !px-6 !py-8">
+          <h2 class="!mb-8 !text-2xl font-bold text-gray-800">
+            Productos subidos por los usuarios
+          </h2>
+          
+          <div class="products-container">
             <!-- Producto iterado -->
             <div
               th:each="producto : ${productos}"
-              class="product bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] flex flex-col"
+              class="product-card"
               data-aos="zoom-in"
             >
-              <div class="relative h-56 overflow-hidden bg-gray-100">
+              <!-- Imagen del producto -->
+              <div class="product-image-container">
                 <div
-                  class="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md z-10"
+                  class="product-badge"
                   th:if="${producto.etiqueta != null}"
+                  th:text="${producto.etiqueta}"
                 >
-                  <span th:text="${producto.etiqueta}"></span>
+                  Etiqueta
                 </div>
-
+                
                 <img
                   th:src="@{'/images/productos/' + ${producto.imageProduct}}"
                   alt="Imagen de [[${producto.nameProduct}]]"
-                  class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                  class="product-image"
                 />
               </div>
 
               <!-- Contenido de la tarjeta -->
-              <div class="p-6 flex flex-col gap-4 flex-grow">
+              <div class="product-content">
                 <!-- Título del producto -->
-                <h3
-                  class="text-2xl font-bold text-gray-900 line-clamp-2 min-h-[3.5rem]"
-                  th:text="${producto.nameProduct}"
-                >
+                <h3 class="product-title" th:text="${producto.nameProduct}">
                   Nombre Producto
                 </h3>
-
-                <!-- Precio y categoría -->
-                <div class="flex justify-between items-center py-2 border-y border-gray-100">
-                  <div>
-                    <p class="text-xs text-gray-500 mb-1">Precio</p>
-                    <p
-                      class="text-2xl font-bold text-green-700"
-                      th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')} + ' COP'"
-                    >
+                
+                <!-- Precio y stock -->
+                <div class="product-meta">
+                  <div class="price-container">
+                    <span class="meta-label">Precio</span>
+                    <span class="price-value" 
+                          th:text="${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')} + ' COP'">
                       Precio
-                    </p>
+                    </span>
                   </div>
-                  <div class="text-right">
-                    <p class="text-xs text-gray-500 mb-1">Categoría</p>
-                    <span
-                      class="inline-block bg-gray-100 text-gray-700 text-sm font-medium px-3 py-1 rounded-full"
-                      th:text="${producto.category}"
-                    >
-                      Categoría
+                  
+                  <div class="stock-container">
+                    <span class="meta-label">Stock</span>
+                    <span class="stock-value" th:text="${producto.stock}">
+                      Stock
                     </span>
                   </div>
                 </div>
-
+                
+                <!-- Categoría -->
+                <div class="category-badge" th:text="${producto.category}">
+                  Categoría
+                </div>
+                
                 <!-- Información del usuario -->
-                <div class="bg-blue-50 rounded-lg p-3 mt-auto">
-                  <p class="text-xs text-gray-500 mb-1">Publicado por</p>
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-blue-600 text-xl">
-                      account_circle
-                    </span>
-                    <span 
-                      class="text-sm font-semibold text-gray-800"
-                      th:text="${producto.userName}"
-                    >
-                      Nombre Usuario
-                    </span>
+                <div class="user-info">
+                  <div class="user-label">Publicado por</div>
+                  <div class="user-name" th:text="${producto.userName}">
+                    Nombre Usuario
                   </div>
                 </div>
 
                 <!-- Botones de acción -->
-                <div class="flex gap-3 mt-2">
+                <div class="action-buttons">
                   <button
-                    class="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
+                    class="btn btn-delete"
                     th:onclick="'eliminarProducto(' + ${producto.idProduct} + ')'"
                   >
-                    <span class="material-symbols-outlined text-lg">delete</span>
+                    <span class="material-symbols-outlined">delete</span>
                     Eliminar
                   </button>
 
                   <button
-                    class="flex-1 bg-[#558b2f] hover:bg-[#385c1e] text-white py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium shadow-md hover:shadow-lg"
+                    class="btn btn-notify"
                     th:onclick="'notificarUsuario(' + ${producto.userId} + ')'"
                   >
-                    <span class="material-symbols-outlined text-lg">notifications</span>
+                    <span class="material-symbols-outlined">notifications</span>
                     Notificar
                   </button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <script>
-            function eliminarProducto(id) {
-              Swal.fire({
-                title: "¿Estás seguro?",
-                text: "No podrás revertir esto",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#558b2f",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  fetch("/api/products/" + id, {
-                    method: "DELETE",
-                  })
-                    .then((response) => {
-                      if (response.ok) {
-                        Swal.fire(
-                          "¡Eliminado!",
-                          "El producto ha sido eliminado.",
-                          "success"
-                        ).then(() => {
-                          location.reload();
-                        });
-                      } else {
-                        Swal.fire(
-                          "Error",
-                          "No se pudo eliminar el producto.",
-                          "error"
-                        );
-                      }
-                    })
-                    .catch((error) => {Swal.fire(
+        <script>
+          function eliminarProducto(id) {
+            Swal.fire({
+              title: "¿Estás seguro?",
+              text: "Esta acción eliminará permanentemente el producto",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#558b2f",
+              confirmButtonText: "Sí, eliminar",
+              cancelButtonText: "Cancelar",
+              backdrop: true,
+              allowOutsideClick: false
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetch("/api/products/" + id, {
+                  method: "DELETE",
+                })
+                  .then((response) => {
+                    if (response.ok) {
+                      Swal.fire({
+                        title: "¡Eliminado!",
+                        text: "El producto ha sido eliminado correctamente",
+                        icon: "success",
+                        confirmButtonColor: "#558b2f",
+                        timer: 2000,
+                        showConfirmButton: false
+                      }).then(() => {
+                        location.reload();
+                      });
+                    } else {
+                      Swal.fire(
                         "Error",
-                        "Ocurrió un error al procesar la solicitud.",
+                        "No se pudo eliminar el producto. Intente nuevamente.",
                         "error"
                       );
-                    });
-                }
-              });
-            }
+                    }
+                  })
+                  .catch((error) => {
+                    Swal.fire(
+                      "Error de conexión",
+                      "No se pudo conectar con el servidor. Verifique su conexión a internet.",
+                      "error"
+                    );
+                  });
+              }
+            });
+          }
 
-            function notificarUsuario(userName) {
-              // Placeholder para notificación
-              Swal.fire({
-                title: "Notificar Usuario",
-                text:
-                  "Funcionalidad de notificación para el usuario: " +
-                  userName +
-                  " en desarrollo.",
-                showCancelButton: false,
-                confirmButtonColor: "#558b2f",
-                confirmButtonText: "Ok",
-                icon: "info",
-              });
-            }
-          </script>
-        </main>
-
-        
+          function notificarUsuario(userId) {
+            Swal.fire({
+              title: "Notificar al usuario",
+              text: "¿Desea enviar una notificación al usuario sobre este producto?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonColor: "#558b2f",
+              cancelButtonColor: "#6b7280",
+              confirmButtonText: "Enviar notificación",
+              cancelButtonText: "Cancelar",
+              showLoaderOnConfirm: true,
+              preConfirm: () => {
+                return fetch(`/api/notify-user/${userId}`, {
+                  method: "POST",
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ type: 'product_review' })
+                })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                  }
+                  return response.json();
+                })
+                .catch(error => {
+                  Swal.showValidationMessage(
+                    `Error: ${error.message}`
+                  );
+                });
+              },
+              allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.fire({
+                  title: "¡Notificación enviada!",
+                  text: "El usuario ha sido notificado exitosamente",
+                  icon: "success",
+                  confirmButtonColor: "#558b2f",
+                  timer: 2000
+                });
+              }
+            });
+          }
+        </script>
       </main>
+      
+      <!-- Resto de tu código (right sidebar) permanece igual -->
       <div class="right">
         <div class="top">
           <div class="theme-toggler">
@@ -231,7 +485,6 @@
           </div>
           <div th:replace="fragments/profile :: profile"></div>
         </div>
-        <!--FIN DEL TOP-->
         <div class="recent-updates">
           <h2>Actualizaciones</h2>
           <div class="updates">
@@ -319,7 +572,7 @@
             <div class="right">
               <div class="info">
                 <h3>PEDIDOS HOY</h3>
-                <small class="text-muted">Pendientes: 3</small>
+                <small class="text-muted">Pendientes: 3</small> 
               </div>
               <h5 class="success">+8%</h5>
               <h3>18</h3>
@@ -327,9 +580,11 @@
           </div>
         </div>
       </div>
+        <!-- ... resto del código del sidebar ... -->
+      </div>
     </div>
     <script src="/JS/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
   </body>
 </html>
-

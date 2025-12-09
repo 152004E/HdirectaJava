@@ -55,6 +55,7 @@ public class ProductExportController {
         headerRow.createCell(4).setCellValue("Unidad");
         headerRow.createCell(5).setCellValue("Descripción");
         headerRow.createCell(6).setCellValue("Fecha Publicación");
+        headerRow.createCell(7).setCellValue("Stock");
 
         // Llenar datos
         int rowNum = 1;
@@ -67,10 +68,11 @@ public class ProductExportController {
             row.createCell(4).setCellValue(producto.getUnit());
             row.createCell(5).setCellValue(producto.getDescriptionProduct());
             row.createCell(6).setCellValue(producto.getPublicationDate().toString());
+            row.createCell(7).setCellValue(producto.getStock());
         }
 
         // Ajustar ancho de columnas
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             sheet.autoSizeColumn(i);
         }
 
@@ -120,10 +122,10 @@ public class ProductExportController {
         document.add(reportInfo);
 
         // Crear tabla
-        PdfPTable table = new PdfPTable(6);
+        PdfPTable table = new PdfPTable(7);
         table.setWidthPercentage(100);
         table.setSpacingBefore(10f);
-        float[] columnWidths = {1f, 2.5f, 1.5f, 2f, 1.5f, 3f};
+        float[] columnWidths = {1f, 2.5f, 1.5f, 2f, 1.5f, 3f, 1.5f};
         table.setWidths(columnWidths);
 
         // Encabezados
@@ -134,6 +136,7 @@ public class ProductExportController {
         addTableHeader(table, "Categoría", headerFont);
         addTableHeader(table, "Unidad", headerFont);
         addTableHeader(table, "Descripción", headerFont);
+        addTableHeader(table, "Stock", headerFont);
 
         // Datos
         Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 9, Color.BLACK);
@@ -148,12 +151,14 @@ public class ProductExportController {
             addTableCell(table, producto.getCategory(), dataFont, rowColor, Element.ALIGN_LEFT);
             addTableCell(table, producto.getUnit(), dataFont, rowColor, Element.ALIGN_CENTER);
             
+            
             // Truncar descripción si es muy larga
             String desc = producto.getDescriptionProduct();
             if (desc.length() > 50) {
                 desc = desc.substring(0, 47) + "...";
             }
             addTableCell(table, desc, dataFont, rowColor, Element.ALIGN_LEFT);
+            addTableCell(table, String.valueOf(producto.getStock()), dataFont, rowColor, Element.ALIGN_CENTER);
         }
 
         document.add(table);

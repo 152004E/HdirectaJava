@@ -35,6 +35,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -142,6 +143,238 @@ public class UserController {
         workbook.close();
         response.getOutputStream().flush();
     }
+
+    // Método POST: exportar con gráficas
+@PostMapping("/exportPdf")
+public void exportUsersToPdfWithCharts(
+        HttpServletResponse response,
+        @RequestParam(required = false) String dato,
+        @RequestParam(required = false) String valor,
+        @RequestBody(required = false) Map<String, Object> requestBody) throws IOException {
+    
+    // Obtener usuarios filtrados
+    List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
+    
+    // Extraer imágenes de gráficas si existen
+    Map<String, String> chartImages = null;
+    if (requestBody != null && requestBody.containsKey("chartImages")) {
+        chartImages = (Map<String, String>) requestBody.get("chartImages");
+    }
+    
+    try {
+        // Configurar la respuesta HTTP
+        response.setContentType("application/pdf");
+        String filename = "Usuarios_" + java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        response.setHeader("Cache-Control", "no-cache");
+        
+        // Crear documento PDF
+        com.lowagie.text.Document document = new com.lowagie.text.Document();
+        com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+        document.open();
+        
+        // Título principal
+        com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#689f38"));
+        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
+        title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        document.add(title);
+        
+        // Subtítulo
+        com.lowagie.text.Font subtitleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 14, java.awt.Color.BLACK);
+        com.lowagie.text.Paragraph subtitle = new com.lowagie.text.Paragraph("Reporte de Usuarios", subtitleFont);
+        subtitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        subtitle.setSpacingAfter(10);
+        document.add(subtitle);
+        
+        // Información del filtro
+        if (dato != null && valor != null && !valor.isEmpty()) {
+            com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#689f38"));
+            com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
+                    "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
+            filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            filterInfo.setSpacingAfter(15);
+            document.add(filterInfo);
+        }
+        
+        // Información del reporte
+        com.lowagie.text.Font infoFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.GRAY);
+        String currentDate = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        com.lowagie.text.Paragraph reportInfo = new com.lowagie.text.Paragraph(
+                "Fecha: " + currentDate + " | Total: " + usuarios.size() + " usuario(s)", infoFont);
+        reportInfo.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
+        reportInfo.setSpacingAfter(20);
+        document.add(reportInfo);
+        
+        if (usuarios.isEmpty()) {
+            // Sin usuarios
+            com.lowagie.text.Font noDataFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 12, java.awt.Color.RED);
+            com.lowagie.text.Paragraph noData = new com.lowagie.text.Paragraph(
+                    "No se encontraron usuarios con los filtros aplicados.", noDataFont);
+            noData.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            noData.setSpacingBefore(50);
+            document.add(noData);
+        } else {
+            // Crear tabla de usuarios
+            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(6);
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+            float[] columnWidths = { 1f, 3f, 4f, 2f, 2f, 2f };
+            table.setWidths(columnWidths);
+            
+            // Encabezados
+            com.lowagie.text.Font headerFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.WHITE);
+            addTableHeaderPdf(table, "ID", headerFont);
+            addTableHeaderPdf(table, "Nombre", headerFont);
+            addTableHeaderPdf(table, "Email", headerFont);
+            addTableHeaderPdf(table, "Género", headerFont);
+            addTableHeaderPdf(table, "Edad", headerFont);
+            addTableHeaderPdf(table, "Rol", headerFont);
+            
+            // Datos
+            com.lowagie.text.Font dataFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+            int rowCount = 0;
+            for (UserDTO usuario : usuarios) {
+                rowCount++;
+                java.awt.Color rowColor = (rowCount % 2 == 0) ? new java.awt.Color(240, 240, 240)
+                        : java.awt.Color.WHITE;
+                addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A",
+                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
+                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                addTableCellPdf(table, obtenerGeneroTexto(usuario.getGender()), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                addTableCellPdf(table, String.valueOf(calcularEdad(usuario.getBirthDate())), dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+                String roleName = obtenerNombreRol(usuario.getIdRole());
+                addTableCellPdf(table, roleName, dataFont, rowColor,
+                        com.lowagie.text.Element.ALIGN_CENTER);
+            }
+            document.add(table);
+            
+            // ========== AGREGAR GRÁFICAS ==========
+            if (chartImages != null && !chartImages.isEmpty()) {
+                // Nueva página para gráficas
+                document.newPage();
+                
+                // Título de gráficas
+                com.lowagie.text.Font chartsTitle = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 16, java.awt.Color.decode("#689f38"));
+                com.lowagie.text.Paragraph chartsHeader = new com.lowagie.text.Paragraph(
+                        "Gráficas Estadísticas", chartsTitle);
+                chartsHeader.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                chartsHeader.setSpacingAfter(20);
+                document.add(chartsHeader);
+                
+                // Agregar cada gráfica
+                agregarGrafica(document, chartImages.get("rolesChart"), "Distribución por Roles");
+                agregarGrafica(document, chartImages.get("genderChart"), "Distribución por Género");
+                agregarGrafica(document, chartImages.get("ageChart"), "Distribución por Edad");
+                agregarGrafica(document, chartImages.get("activityChart"), "Actividad por Mes");
+            }
+            
+            // Estadísticas textuales (original)
+            java.util.Map<String, Long> usersByRole = usuarios.stream()
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            user -> obtenerNombreRol(user.getIdRole()),
+                            java.util.stream.Collectors.counting()));
+            
+            java.util.Map<String, Long> usersByGender = usuarios.stream()
+                    .filter(u -> u.getGender() != null)
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            user -> obtenerGeneroTexto(user.getGender()),
+                            java.util.stream.Collectors.counting()));
+            
+            if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
+                document.add(new com.lowagie.text.Paragraph(" "));
+                com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+                com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
+                        "Estadísticas:", statsFont);
+                statsTitle.setSpacingBefore(20);
+                document.add(statsTitle);
+                
+                com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+                
+                if (!usersByRole.isEmpty()) {
+                    com.lowagie.text.Paragraph roleTitle = new com.lowagie.text.Paragraph(
+                            "Por Rol:", statsDataFont);
+                    roleTitle.setSpacingBefore(10);
+                    document.add(roleTitle);
+                    for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        statLine.setIndentationLeft(20);
+                        document.add(statLine);
+                    }
+                }
+                
+                if (!usersByGender.isEmpty()) {
+                    com.lowagie.text.Paragraph genderTitle = new com.lowagie.text.Paragraph(
+                            "Por Género:", statsDataFont);
+                    genderTitle.setSpacingBefore(10);
+                    document.add(genderTitle);
+                    for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
+                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                        statLine.setIndentationLeft(20);
+                        document.add(statLine);
+                    }
+                }
+            }
+        }
+        
+        document.close();
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new IOException("Error generando PDF: " + e.getMessage());
+    }
+}
+
+// Método auxiliar para agregar gráficas al PDF
+private void agregarGrafica(com.lowagie.text.Document document, String base64Image, String titulo) 
+        throws com.lowagie.text.DocumentException, IOException {
+    if (base64Image != null && !base64Image.isEmpty()) {
+        // Agregar título de la gráfica
+        com.lowagie.text.Font chartTitleFont = com.lowagie.text.FontFactory.getFont(
+                com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+        com.lowagie.text.Paragraph chartTitle = new com.lowagie.text.Paragraph(titulo, chartTitleFont);
+        chartTitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        chartTitle.setSpacingBefore(15);
+        document.add(chartTitle);
+        
+        // Decodificar imagen base64
+        String imageData = base64Image;
+        if (imageData.contains(",")) {
+            imageData = imageData.split(",")[1];
+        }
+        byte[] imageBytes = Base64.getDecoder().decode(imageData);
+        
+        // Agregar imagen al PDF
+        com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(imageBytes);
+        
+        // Escalar imagen para que quepa bien en el PDF
+        float maxWidth = 450f;
+        float maxHeight = 300f;
+        pdfImage.scaleToFit(maxWidth, maxHeight);
+        pdfImage.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+        
+        document.add(pdfImage);
+        document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
+    }
+}
     // Endpoint para exportar usuarios a PDF CON FILTROS
     @GetMapping("/exportPdf")
     public void exportUsersToPdf(
@@ -804,12 +1037,11 @@ public class UserController {
      */
     @PostMapping("/upload-products")
     @ResponseBody
-    public ResponseEntity<?> cargarProductosDesdeArchivo
-    (@RequestParam("archivo")
-     MultipartFile archivo,
-     HttpSession session) {
+    public ResponseEntity<?> cargarProductosDesdeArchivo(
+            @RequestParam("archivo") MultipartFile archivo,
+            HttpSession session) {
         try {
-            // OBTENER USUARIO DE LA SESIÃ“N
+            // OBTENER USUARIO DE LA SESIÃ"N
             User userSession = (User) session.getAttribute("user");
             if (userSession == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -817,7 +1049,19 @@ public class UserController {
                                 "success", false,
                                 "message", "Sesion expirada. Debe iniciar sesion para cargar productos"));
             }
+
+            // VALIDAR QUE EL USUARIO TENGA DATOS COMPLETOS
+            if (userSession.getAddress() == null || userSession.getAddress().trim().isEmpty() ||
+                userSession.getPhone() == null || userSession.getPhone().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Debe completar su información de perfil (dirección y teléfono) antes de poder cargar productos masivamente",
+                                "redirectTo", "/actualizacionUsuario"));
+            }
+
             Long currentUserId = userSession.getId();
+
             // Validar que se enviÃ³ un archivo
             if (archivo.isEmpty()) {
                 return ResponseEntity.badRequest()

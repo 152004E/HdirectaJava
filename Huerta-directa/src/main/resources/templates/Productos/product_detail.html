@@ -87,12 +87,8 @@
               <span
                 class="precio-actual"
                 th:text="'$' + ${#numbers.formatDecimal(producto.price, 0, 'COMMA', 0, 'POINT')}"
-                >$15.000</span
+                >$4,200</span
               >
-              <span class="precio-anterior">$18.750</span>
-            </div>
-            <div class="descuento-badge">
-              <span class="descuento-texto">¡20% OFF!</span>
             </div>
           </div>
 
@@ -143,46 +139,29 @@
           <!-- Caja de compra mejorada -->
           <div class="compra-box">
             <div class="stock-info">
-              <div class="stock-disponible">
+              <div th:if="${producto.stock != null and producto.stock > 0}" class="stock-disponible">
                 <span class="stock-icon">✓</span>
                 <span class="stock-texto">Stock disponible</span>
               </div>
-              <span class="unidades-disponibles">Más de 50 unidades</span>
+              <div th:if="${producto.stock == null or producto.stock == 0}" class="stock-agotado">
+
+                <span class="stock-texto">Sin stock</span>
+              </div>
+              <span
+                th:if="${producto.stock != null and producto.stock > 0}"
+                class="unidades-disponibles"
+                th:text="${producto.stock + ' unidades disponibles'}"
+                >67 unidades disponibles</span>
+              <span
+                th:if="${producto.stock == null or producto.stock == 0}"
+                class="unidades-disponibles"
+                style="color: #dc3545;">Producto agotado</span>
             </div>
 
-            <!-- Selector de cantidad -->
-            <div class="cantidad-selector">
-              <label for="cantidad">Cantidad:</label>
-              <div class="cantidad-controls">
-                <button
-                  type="button"
-                  class="btn-cantidad"
-                  onclick="cambiarCantidad(-1)"
-                >
-                  −
-                </button>
-                <input
-                  type="number"
-                  id="cantidad"
-                  name="cantidad"
-                  value="1"
-                  min="1"
-                  max="99"
-                  readonly
-                />
-                <button
-                  type="button"
-                  class="btn-cantidad"
-                  onclick="cambiarCantidad(1)"
-                >
-                  +
-                </button>
-              </div>
-              <span class="unidad-medida">unidad(es)</span>
-            </div>
+
 
             <!-- Botones de acción -->
-            <div class="botones-accion">
+            <div class="botones-accion" th:if="${producto.stock != null and producto.stock > 0}">
               <form
                 th:action="@{/producto/{id}(id=${producto.idProduct})}"
                 method="post"
@@ -203,13 +182,25 @@
                 </button>
               </form>
               <div class="btnProducto">
-                <a href="#" class="agregar-carrito btn-2 botonIcono"
+                <button
+                  type="button"
+                  class="agregar-carrito btn-2 botonIcono"
+                  th:onclick="'agregarAlCarrito(' + ${producto.idProduct} + ')'"
                   ><span class="material-symbols-outlined iconAgregar">
                     add_shopping_cart
                   </span>
-                  Agregar</a
-                >
-                
+                  Agregar</button>
+              </div>
+            </div>
+
+            <!-- Mensaje cuando no hay stock -->
+            <div class="botones-sin-stock" th:if="${producto.stock == null or producto.stock == 0}">
+              <button class="btn-2 btn-disabled" disabled style="background-color: #6b7280 !important; cursor: not-allowed; opacity: 0.7;">
+                <span class="material-symbols-outlined">block</span>
+                Producto agotado
+              </button>
+            </div>
+
               </div>
             </div>
 
@@ -330,10 +321,83 @@
       function cambiarCantidad(delta) {
         const input = document.getElementById("cantidad");
         const formInput = document.getElementById("cantidadForm");
+        const btnMas = document.querySelector('.btn-cantidad[onclick="cambiarCantidad(1)"]');
+
+        // Obtener el stock máximo desde el atributo data-max-stock
+        let maxStock = parseInt(btnMas?.getAttribute('data-max-stock')) || 99;
+
         let valor = parseInt(input.value) || 1;
-        valor = Math.max(1, Math.min(99, valor + delta));
+        valor = Math.max(1, Math.min(maxStock, valor + delta));
+
         input.value = valor;
         if (formInput) formInput.value = valor;
+
+        // Mostrar mensaje si se alcanza el límite
+        if (valor === maxStock && delta > 0) {
+          mostrarMensajeLimite(maxStock);
+        }
+      }
+
+      // Función para mostrar mensaje cuando se alcanza el límite de stock
+      function mostrarMensajeLimite(maxStock) {
+        // Crear mensaje temporal si no existe
+        let mensaje = document.getElementById('mensaje-limite');
+        if (!mensaje) {
+          mensaje = document.createElement('div');
+          mensaje.id = 'mensaje-limite';
+          mensaje.style.cssText = 'color: #dc3545; font-size: 12px; margin-top: 5px; text-align: center;';
+          document.querySelector('.cantidad-selector').appendChild(mensaje);
+        }
+
+        mensaje.textContent = `Solo hay ${maxStock} unidades disponibles`;
+
+        // Remover mensaje después de 3 segundos
+        setTimeout(() => {
+          if (mensaje && mensaje.parentNode) {
+            mensaje.parentNode.removeChild(mensaje);
+          }
+        }, 3000);
+      }
+
+      // Función para agregar al carrito
+      function agregarAlCarrito(productoId) {
+        const cantidad = document.getElementById('cantidad')?.value || 1;
+
+        fetch('/carrito/agregar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `productoId=${productoId}&cantidad=${cantidad}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Producto agregado al carrito exitosamente');
+            // Actualizar contador del carrito si existe
+            actualizarContadorCarrito();
+          } else {
+            alert('Error al agregar el producto: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al agregar el producto al carrito');
+        });
+      }
+
+      // Función para actualizar contador del carrito
+      function actualizarContadorCarrito() {
+        fetch('/carrito/count')
+        .then(response => response.json())
+        .then(data => {
+          const contador = document.querySelector('.carrito-contador');
+          if (contador && data.count !== undefined) {
+            contador.textContent = data.count;
+            contador.style.display = data.count > 0 ? 'block' : 'none';
+          }
+        })
+        .catch(error => console.error('Error al actualizar contador:', error));
       }
 
       // Script para tabs
@@ -347,14 +411,6 @@
 
         event.target.classList.add("active");
         document.getElementById(tabId).classList.add("active");
-      }
-      // Script para agregar al carrito
-      function comprarElemento(e) {
-        e.preventDefault();
-        if (e.target.classList.contains("agregar-carrito")) {
-          const elemento = e.target.closest(".product");
-          leerDatosElemento(elemento);
-        }
       }
     </script>
     <script src="/JS/script.js"></script>

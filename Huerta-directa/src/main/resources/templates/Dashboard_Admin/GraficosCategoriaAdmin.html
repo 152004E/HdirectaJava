@@ -39,7 +39,7 @@
         <h1 class="!mt-[20px]">Análisis y gráficos de actividad</h1>
 
         <div
-          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+          class="!flex !justify-center !items-center !gap-20 !my-10 text-xl font-bold !text-black/70"
         >
           <a
             class="tab-link !text-[#8bc34a] !border-b-4 !border-[#88ff002f]"
@@ -52,75 +52,66 @@
           <a class="tab-link" href="#" data-tab="ventas"> Tus ventas </a>
           <a class="" href="#"> Graficos por categorias </a>
         </div>
-        <div class="!flex !gap-10">
-          <div class="!flex !flex-col !justify-start !items-start !w-[450px] !h=[250px] !gap-10">
-            <img
-              th:src="@{/graficos/productosPorCategoria.png}"
-              alt="Gráfico por categorías"
-              class="!w-[500px] h-[350px] !mx-auto"
-            />
-           <button
-  class="!px-5 !py-2 !bg-red-500 hover:!bg-red-600 !text-white !rounded-lg !shadow-md 
-         !transition-all !duration-300 !flex !items-center !gap-2 !font-semibold cursor-pointer"
->
-  <span class="material-symbols-outlined">picture_as_pdf</span>
-  Exportar a PDF
-</button>
-          </div>
-          <div class="!w-[450px]">
-            <table
-              class="!w-full !table-fixed !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200 !mb-10"
-            >
-              <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
-                <tr>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
-                    Nombre
-                  </th>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
-                    Categoría
-                  </th>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[20%]">
-                    Unidad
-                  </th>
-                </tr>
-              </thead>
+       <div class="!flex !flex-col xl:!flex-row !gap-10 !w-full">
 
-              <tbody class="!divide-y !divide-gray-200">
-                <!-- Si NO hay productos -->
-                <tr
-                  th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
-                >
-                  <td
-                    colspan="3"
-                    class="!text-center !py-6 !text-gray-500 !font-medium"
-                    0
-                  >
-                    No se encontraron productos
-                  </td>
-                </tr>
+  <!-- Columna izquierda: gráfico -->
+  <div
+    class="!flex !flex-col !justify-start !items-start !gap-6 
+           !w-full xl:!w-1/2">
 
-                <!-- Si SÍ hay productos -->
-                <tr
-                  th:each="p : ${productosCategoria}"
-                  class="hover:bg-gray-200 !transition-all !duration-500"
-                >
-                  <td
-                    class="!px-6 !py-3 !text-gray-800"
-                    th:text="${p.nameProduct}"
-                  ></td>
-                  <td
-                    class="!px-6 !py-3 !capitalize !text-gray-800"
-                    th:text="${p.category}"
-                  ></td>
-                  <td
-                    class="!px-6 !py-3 !text-gray-800 !w-1"
-                    th:text="${p.unit}"
-                  ></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+    <img
+      th:src="@{/graficos/productosPorCategoria.png}"
+      alt="Gráfico por categorías"
+      class="!w-full 
+             !max-w-[400px] sm:!max-w-[500px] md:!max-w-[600px] 
+             lg:!max-w-[700px] xl:!max-w-[800px] 
+             !mx-auto !h-auto"
+    />
+
+    <button
+      onclick="alert('boton aun no implementado')"
+      class="!px-5 !py-2 !bg-red-500 hover:!bg-red-600 !text-white !rounded-lg 
+             !shadow-md !transition-all !duration-300 !flex !items-center 
+             !gap-2 !font-semibold !cursor-pointer">
+      <span class="material-symbols-outlined">picture_as_pdf</span>
+      Exportar a PDF
+    </button>
+  </div>
+
+  <!-- Columna derecha: tabla -->
+  <div class="!w-full xl:!w-1/2">
+    <table
+      class="!w-full !table-fixed !bg-white !rounded-xl !overflow-hidden 
+             !shadow-lg !border !border-gray-200 !mb-10"
+    >
+      <thead class="!bg-[#4caf50] !uppercase !text-white !text-left">
+        <tr>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">Nombre</th>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">Categoría</th>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[20%]">Unidad</th>
+        </tr>
+      </thead>
+
+      <tbody class="!divide-y !divide-gray-200">
+        <tr th:if="${productosCategoria == null || productosCategoria.isEmpty()}">
+          <td colspan="3" class="!text-center !py-6 !text-gray-500 !font-medium">
+            No se encontraron productos
+          </td>
+        </tr>
+
+        <tr th:each="p : ${productosCategoria}" 
+            class="hover:!bg-gray-200 !transition-all !duration-500">
+          <td class="!px-6 !py-3 !text-gray-800" th:text="${p.nameProduct}"></td>
+          <td class="!px-6 !py-3 !capitalize !text-gray-800" th:text="${p.category}"></td>
+          <td class="!px-6 !py-3 !text-gray-800" th:text="${p.unit}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
       </main>
 
       <div class="right">
@@ -171,7 +162,7 @@
             <section class="!flex !flex-col !gap-[9px]">
               <!-- Frutas -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Frutas</h3>
                 <p
@@ -184,7 +175,7 @@
 
               <!-- Verduras y Hortalizas -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">
                   Verduras y Hortalizas
@@ -201,7 +192,7 @@
 
               <!-- Lácteos -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Lácteos</h3>
                 <p
@@ -214,7 +205,7 @@
 
               <!-- Carnes y Proteínas -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Carnes y Proteínas</h3>
                 <p
@@ -229,7 +220,7 @@
 
               <!-- Cereales y Granos -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Cereales y Granos</h3>
                 <p
@@ -244,7 +235,7 @@
 
               <!-- Legumbres Secas -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Legumbres Secas</h3>
                 <p
@@ -259,7 +250,7 @@
 
               <!-- Productos Orgánicos -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Productos Orgánicos</h3>
                 <p
@@ -274,7 +265,7 @@
 
               <!-- Hierbas y Especias -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Hierbas y Especias</h3>
                 <p
@@ -289,7 +280,7 @@
 
               <!-- Miel y Derivados -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Miel y Derivados</h3>
                 <p
@@ -306,7 +297,7 @@
 
               <!-- Procesados Artesanales -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">
                   Procesados Artesanales
@@ -324,7 +315,7 @@
 
               <!-- Bebidas Naturales -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Bebidas Naturales</h3>
                 <p
@@ -339,7 +330,7 @@
 
               <!-- Plantas y Semillas -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">Plantas y Semillas</h3>
                 <p
@@ -354,7 +345,7 @@
 
               <!-- Cajas Mixtas o Combos -->
               <div
-                class="!flex !justify-around !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
+                class="!flex !justify-between !items-center !bg-gray-500/10 w-full !border !border-gray-400 !px-4 !py-2 !rounded-xl hover:!bg-gray-500/20 !duration-500"
               >
                 <h3 class="!text-[13px] !font-semibold">
                   Cajas Mixtas o Combos

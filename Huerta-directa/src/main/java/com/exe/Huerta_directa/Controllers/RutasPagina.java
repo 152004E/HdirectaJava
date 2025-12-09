@@ -296,9 +296,15 @@ public class RutasPagina {
      * // return "DashBoard/MensajesComentarios";
      * }
      */
+
+
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
+    }
+        @GetMapping("/misOrdenes")
+    public String misOrdenes() {
+        return "DashBoard/misOrdenes";
     }
 
     @GetMapping("/DashBoardGraficos")
@@ -620,6 +626,13 @@ public class RutasPagina {
         }
         return "login/verify-sms"; // Página para ingresar el código SMS
     }
+
+
+    @GetMapping("/Delivery")
+    public String mostrarDeliveryPage() {
+        return "Delivery_Form/delivery_from";
+    }
+
 
 
 
