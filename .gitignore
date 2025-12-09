@@ -61,3 +61,7 @@ target/
 # Spring Boot application config (ruta exacta)
 Huerta-directa/src/main/resources/application.properties
 Huerta-directa/src/main/resources/application.ymlHuerta-directa/src/main/resources/application.properties
+
+
+# Tailwind CSS - archivo generado
+Huerta-directa/src/main/resources/static/CSS/output.css
