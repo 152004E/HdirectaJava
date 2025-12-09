@@ -39,7 +39,7 @@
         <h1 class="!mt-[20px]">Análisis y gráficos de actividad</h1>
 
         <div
-          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+          class="!flex !justify-center !items-center !gap-20 !my-10 text-xl font-bold !text-black/70"
         >
           <a
             class="tab-link !text-[#8bc34a] !border-b-4 !border-[#88ff002f]"
@@ -52,79 +52,66 @@
           <a class="tab-link" href="#" data-tab="ventas"> Tus ventas </a>
           <a class="" href="#"> Graficos por categorias </a>
         </div>
-        <div class="!flex !gap-10">
-          <div
-            class="!flex !flex-col !justify-start !items-start !gap-10 lg:!w-[500px] !h-[250px]"
-          >
-            <img
-              th:src="@{/graficos/productosPorCategoria.png}"
-              alt="Gráfico por categorías"
-              class="w-full mx-auto lg:!max-w-[500px] xl:!max-w-[650px]"
-            />
+       <div class="!flex !flex-col xl:!flex-row !gap-10 !w-full">
 
-            <button
-              onclick="alert('boton aun no implementado')"
-              class="!px-5 !py-2 !bg-red-500 hover:!bg-red-600 !text-white !rounded-lg !shadow-md !transition-all !duration-300 !flex !items-center !gap-2 !font-semibold cursor-pointer"
-            >
-              <span class="material-symbols-outlined">picture_as_pdf</span>
-              Exportar a PDF
-            </button>
-          </div>
+  <!-- Columna izquierda: gráfico -->
+  <div
+    class="!flex !flex-col !justify-start !items-start !gap-6 
+           !w-full xl:!w-1/2">
 
-          <div class="!w-[430px]">
-            <table
-              class="!w-full !table-fixed !bg-white !rounded-xl !overflow-hidden !shadow-lg !border !border-gray-200 !mb-10"
-            >
-              <thead class="!bg-[#4caf50] uppercase !text-white !text-left">
-                <tr>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
-                    Nombre
-                  </th>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">
-                    Categoría
-                  </th>
-                  <th class="!px-6 !py-3 !text-sm !font-semibold !w-[20%]">
-                    Unidad
-                  </th>
-                </tr>
-              </thead>
+    <img
+      th:src="@{/graficos/productosPorCategoria.png}"
+      alt="Gráfico por categorías"
+      class="!w-full 
+             !max-w-[400px] sm:!max-w-[500px] md:!max-w-[600px] 
+             lg:!max-w-[700px] xl:!max-w-[800px] 
+             !mx-auto !h-auto"
+    />
 
-              <tbody class="!divide-y !divide-gray-200">
-                <!-- Si NO hay productos -->
-                <tr
-                  th:if="${productosCategoria == null || productosCategoria.isEmpty()}"
-                >
-                  <td
-                    colspan="3"
-                    class="!text-center !py-6 !text-gray-500 !font-medium"
-                    0
-                  >
-                    No se encontraron productos
-                  </td>
-                </tr>
+    <button
+      onclick="alert('boton aun no implementado')"
+      class="!px-5 !py-2 !bg-red-500 hover:!bg-red-600 !text-white !rounded-lg 
+             !shadow-md !transition-all !duration-300 !flex !items-center 
+             !gap-2 !font-semibold !cursor-pointer">
+      <span class="material-symbols-outlined">picture_as_pdf</span>
+      Exportar a PDF
+    </button>
+  </div>
 
-                <!-- Si SÍ hay productos -->
-                <tr
-                  th:each="p : ${productosCategoria}"
-                  class="hover:bg-gray-200 !transition-all !duration-500"
-                >
-                  <td
-                    class="!px-6 !py-3 !text-gray-800"
-                    th:text="${p.nameProduct}"
-                  ></td>
-                  <td
-                    class="!px-6 !py-3 !capitalize !text-gray-800"
-                    th:text="${p.category}"
-                  ></td>
-                  <td
-                    class="!px-6 !py-3 !text-gray-800 !w-1"
-                    th:text="${p.unit}"
-                  ></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <!-- Columna derecha: tabla -->
+  <div class="!w-full xl:!w-1/2">
+    <table
+      class="!w-full !table-fixed !bg-white !rounded-xl !overflow-hidden 
+             !shadow-lg !border !border-gray-200 !mb-10"
+    >
+      <thead class="!bg-[#4caf50] !uppercase !text-white !text-left">
+        <tr>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">Nombre</th>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[40%]">Categoría</th>
+          <th class="!px-6 !py-3 !text-sm !font-semibold !w-[20%]">Unidad</th>
+        </tr>
+      </thead>
+
+      <tbody class="!divide-y !divide-gray-200">
+        <tr th:if="${productosCategoria == null || productosCategoria.isEmpty()}">
+          <td colspan="3" class="!text-center !py-6 !text-gray-500 !font-medium">
+            No se encontraron productos
+          </td>
+        </tr>
+
+        <tr th:each="p : ${productosCategoria}" 
+            class="hover:!bg-gray-200 !transition-all !duration-500">
+          <td class="!px-6 !py-3 !text-gray-800" th:text="${p.nameProduct}"></td>
+          <td class="!px-6 !py-3 !capitalize !text-gray-800" th:text="${p.category}"></td>
+          <td class="!px-6 !py-3 !text-gray-800" th:text="${p.unit}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
       </main>
 
       <div class="right">

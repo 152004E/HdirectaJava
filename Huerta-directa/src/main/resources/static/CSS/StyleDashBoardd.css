@@ -41,7 +41,7 @@ body {
 }
 .containerActualizarUcuario {
   display: grid;
-  max-width: 1800px;
+  max-width: 1800px !important;
   margin: 0 auto;
   background: #faf2dd;
   gap: 1.8rem;
