@@ -53,9 +53,9 @@
             alt="carrito de compra"
           />
           <div id="carrito" class="dropdown-carrito">
-            <table id="lista-carrito">
-              <thead>
-                <tr>
+            <table id="lista-carrito" class="tablaCarrito !text-[13px]">
+              <thead class="!flex !w-full  !gap-[40px]">
+                <tr class="!flex !justify-center !items-center !gap-[55px] !ml-4 uppercase">
                   <th>Imagen</th>
                   <th>Nombre</th>
                   <th>Precio</th>
@@ -63,17 +63,19 @@
                   <th>Subtotal</th>
                 </tr>
               </thead>
-              <tbody class="!text-center">
+              <tbody class="contenidoCarrito !text-center  ">
               </tbody>
             </table>
-            <div class="flex justify-start !items-center gap-5 !mt-10">
+            <div class="flex justify-between !items-center gap-5 !mt-10">
               <button
               id="vaciar-carrito"
               class="btn-vaciar bg-gray-500/20 !p-2 rounded-sm !cursor-pointer hover:bg-gray-500/40"
             >
               Vaciar Carrito
             </button>
-            <button
+            <div class="flex justify-center items-center gap-5">
+              <p class="!m-0 !text-white">Total :  $<span id="total">1</span></p>
+               <button
               onclick="procederAlPago()"
               class="btn-pagar"
               style="
@@ -88,7 +90,9 @@
             >
               Proceder al Pago
             </button>
-            <p class="!m-0 !text-white">Total :  $<span id="total">1</span></p>
+            </div>
+           
+            
 
             </div>
             

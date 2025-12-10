@@ -149,8 +149,8 @@ function actualizarCarritoHTML() {
 
         const row = document.createElement("tr");
         row.innerHTML = ` 
-      <td>
-        <img src="${producto.imagen}" class="w-[60px] h-[55px] !mt-[10px] rounded-sm">
+      <td class=" !p-2">
+        <img src="${producto.imagen}" class="w-[60px] h-[55px] rounded-sm">
       </td>
       <td>
         ${producto.nombre}
@@ -160,13 +160,13 @@ function actualizarCarritoHTML() {
       </td>
       <td class="!flex !justify-center !items-center">
         <input type="number" value="${producto.cantidad}" min="1" 
-               class="cantidad-input  !w-[100px] !px-10" data-id="${producto.id}" 
+               class="cantidad-input  !w-[100px] !px-7" data-id="${producto.id}" 
                style=" height: 20px; text-align: start;">
       </td>
       <td>
         $${subtotal.toLocaleString('es-CO')}
       </td>
-      <td class="flex justify-center items-center !mt-[17px] ">
+      <td class="flex justify-center items-center  ">
         <a href="#" class="borrar !px-2 !py-1 rounded-sm bg-[#90CA50] hover:bg-[#90CA50]/80 transition-all duration-500 " data-id="${producto.id}"><span class="material-symbols-outlined borrar">delete</span></a>
       </td>
     `;
