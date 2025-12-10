@@ -140,33 +140,44 @@ function actualizarCarritoHTML() {
     // Limpiar la tabla
     lista.innerHTML = "";
 
+    let totalCarrito = 0; // 🆕 Variable para acumular el total
+
     // Agregar cada producto
     productosCarrito.forEach(producto => {
+        const subtotal = producto.precio * producto.cantidad;
+        totalCarrito += subtotal; // 🆕 Sumar al total
+
         const row = document.createElement("tr");
         row.innerHTML = ` 
       <td>
-        <img src="${producto.imagen}" width="100">
+        <img src="${producto.imagen}" class="w-[60px] h-[55px] !mt-[10px] rounded-sm">
       </td>
       <td>
         ${producto.nombre}
       </td>
-      <td>
+      <td >
         $${producto.precio.toLocaleString('es-CO')}
       </td>
-      <td>
+      <td class="!flex !justify-center !items-center">
         <input type="number" value="${producto.cantidad}" min="1" 
-               class="cantidad-input" data-id="${producto.id}" 
-               style="width: 60px; text-align: center;">
+               class="cantidad-input  !w-[100px] !px-10" data-id="${producto.id}" 
+               style=" height: 20px; text-align: start;">
       </td>
       <td>
-        $${(producto.precio * producto.cantidad).toLocaleString('es-CO')}
+        $${subtotal.toLocaleString('es-CO')}
       </td>
-      <td>
-        <a href="#" class="borrar btn-2" data-id="${producto.id}">X</a>
+      <td class="flex justify-center items-center !mt-[17px] ">
+        <a href="#" class="borrar !px-2 !py-1 rounded-sm bg-[#90CA50] hover:bg-[#90CA50]/80 transition-all duration-500 " data-id="${producto.id}"><span class="material-symbols-outlined borrar">delete</span></a>
       </td>
     `;
         lista.appendChild(row);
     });
+
+    // 🆕 Actualizar el elemento del total en el HTML
+    const totalElement = document.getElementById("total");
+    if (totalElement) {
+        totalElement.textContent = totalCarrito.toLocaleString('es-CO');
+    }
 
     // Agregar event listeners a los inputs de cantidad
     document.querySelectorAll(".cantidad-input").forEach(input => {
