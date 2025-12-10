@@ -59,17 +59,39 @@
                   <th>Imagen</th>
                   <th>Nombre</th>
                   <th>Precio</th>
-                  <th></th>
+                  <th>Unidad</th>
+                  <th>Subtotal</th>
                 </tr>
               </thead>
-              <tbody></tbody>
+              <tbody class="!text-center">
+              </tbody>
             </table>
-              <button id="vaciar-carrito" class="btn-vaciar">Vaciar Carrito</button>
-              <button onclick="procederAlPago()" class="btn-pagar"
-                      style="background: #8cc63f; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
-                  Proceder al Pago
-              </button>
+            <div class="flex justify-start !items-center gap-5 !mt-10">
+              <button
+              id="vaciar-carrito"
+              class="btn-vaciar bg-gray-500/20 !p-2 rounded-sm !cursor-pointer hover:bg-gray-500/40"
+            >
+              Vaciar Carrito
+            </button>
+            <button
+              onclick="procederAlPago()"
+              class="btn-pagar"
+              style="
+                background: #8cc63f;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                
+              "
+            >
+              Proceder al Pago
+            </button>
+            <p class="!m-0 !text-white">Total :  $<span id="total">1</span></p>
 
+            </div>
+            
           </div>
         </li>
       </ul>
