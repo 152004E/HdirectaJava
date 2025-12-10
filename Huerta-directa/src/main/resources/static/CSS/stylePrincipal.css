@@ -199,8 +199,8 @@ img {
   backdrop-filter: blur(10px);
   padding: 15px;
   border-radius: 10px;
-  width: 590px;
-  
+  width: 650px;
+
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -218,6 +218,33 @@ img {
 
 .submenu.carrito-container {
   position: relative;
+}
+.contenidoCarrito tr {
+  border-radius: 20px;
+  margin-top: 10px;
+  background-color: rgb(153, 153, 153);
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease;
+}
+.contenidoCarrito :hover,.contenidoCarrito td :hover {
+  
+  background-color: rgb(123, 121, 121);
+
+}
+
+.contenidoCarrito td {
+   border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px !important;
+  width: 100px;
+  padding: 0px !important;
+    transition: all 0.5s ease;
+
 }
 
 table {
@@ -368,9 +395,9 @@ h3 {
 .information-1 p {
   margin-bottom: 0;
 }
-.information-1  {
- display: flex ;
- flex-direction: column;
+.information-1 {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -397,7 +424,6 @@ h3 {
   transform: translateY(-10px); /* Mueve la imagen 10px hacia arriba */
 }
 .ofert img {
-
   width: 140px;
   margin: 5px auto;
 }
@@ -760,7 +786,7 @@ input {
   border-radius: 50%;
   overflow: hidden;
 }
-.errorMargin{
+.errorMargin {
   margin-bottom: 0px !important ;
 }
 .right .top .profile {
@@ -768,8 +794,6 @@ input {
   gap: 2rem;
   text-align: left !important;
 }
-
-
 
 /* Pequeño ajuste en móviles */
 @media (max-width: 768px) {
@@ -1117,10 +1141,10 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
   font-size: 10px;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 2px solid #1e7e34;
-    position: relative;
-    left: -160px;
+  position: relative;
+  left: -160px;
 }
 
 .otro-producto-badge {
@@ -1131,10 +1155,10 @@ body.dark-theme ::-webkit-scrollbar-thumb:hover {
   font-size: 10px;
   font-weight: bold;
   text-transform: uppercase;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   border: 2px solid #545b62;
-    position: relative;
-    left: -90px;
+  position: relative;
+  left: -90px;
 }
 
 /* Asegurar que el contenedor del producto tenga posición relativa */
