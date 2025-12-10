@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensajes-- HUERTA DIRECTA</title>
+
+    <!-- Link para el font -->
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
+    />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
+    <link rel="stylesheet" href="/css/output.css" />
+    <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
+  </head>
+
+  <body>
+    <div class="containerActualizarUcuario">
+      <div
+        th:replace="fragments/DashBoard/insadeDashBoard :: insadeDashBoard"
+      ></div>
+      <!-- fin del asside -->
+      <main>
+        <h1 class="!mt-[20px]">Revisa tus mensajes aquí.</h1>
+        <div
+          id="NotaComentarios"
+          class="bg-yellow-100 !border-l-4 !border-yellow-500 text-yellow-800 !p-4 rounded-md shadow-md !w-full h-18 mx-auto !mt-4 flex justify-between items-center hover:bg-yellow-100/80 transition-all duration-500"
+        >
+          <p class="text-md">
+            <strong>Nota:</strong> Puedes mantener conversaciones con tus
+            compradores o vendedores en esta seccion
+            <span class="font-semibold"
+              >Recuerda que los chats son temporales
+            </span>
+          </p>
+          <button
+            id="botonnota"
+            class="bg-[#8bc34a] !px-2 !py-1 text-amber-50 cursor-pointer rounded-sm"
+          >
+            x
+          </button>
+        </div>
+
+        <div
+          class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
+        >
+          <a href="" class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]"
+            >Mensajes</a
+          >
+          <a href="">Comentarios de tus productos</a>
+          <a class="" href="">Tus Comentarios</a>
+        </div>
+        <!-- SECCIÓN COMENTARIOS -->
+
+        <div class="!w-3/4 !mx-auto !bg-white !shadow-xl !rounded-2xl !p-8">
+          <h2 class="!text-3xl !font-bold !text-green-700 !mb-6">
+            💬 Chat Área Social
+          </h2>
+
+          <!-- NOMBRE DEL USUARIO -->
+          <div class="!mb-4">
+            <label class="!font-semibold !text-gray-700">Tu nombre:</label>
+            <input
+              id="sender"
+              type="text"
+              placeholder="Ingresa tu nombre..."
+              class="!w-full !p-3 !border !border-gray-300 !rounded-lg !mt-1 !focus:outline-none !focus:ring-2 !focus:ring-green-400"
+            />
+          </div>
+
+          <!-- ÁREA DEL CHAT -->
+          <div
+            id="chatArea"
+            class="!h-80 !overflow-y-auto !border !border-gray-300 !rounded-lg !p-4 !bg-gray-50 !mb-5"
+          ></div>
+
+          <!-- ESCRIBIR MENSAJE -->
+          <div class="!flex !gap-3">
+            <input
+              id="content"
+              type="text"
+              placeholder="Escribe tu mensaje..."
+              class="!flex-grow !p-3 !border !border-gray-300 !rounded-lg !focus:outline-none !focus:ring-2 !focus:ring-green-400"
+            />
+
+            <button
+              onclick="sendMessage()"
+              class="!bg-green-600 !text-white !px-6 !rounded-lg !font-semibold !hover:bg-green-700 !transition !duration-300"
+            >
+              Enviar
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <div class="right">
+        <div class="top">
+          <div class="theme-toggler">
+            <span class="material-symbols-outlined active">light_mode</span>
+            <span class="material-symbols-outlined">dark_mode</span>
+          </div>
+          <div th:replace="fragments/profile :: profile"></div>
+        </div>
+        <div
+          class="recent-updates !h-[640px] !border-t !border-black/30 !rounded-xl !px-5"
+        >
+          <div class="!w-full !h-full !max-w-md !mx-auto !bg-white !p-2 !mt-[20px] !rounded-xl">
+            <!-- ITEM 1 -->
+            <div
+              class="!flex !items-center !justify-between !p-3 !hover:bg-gray-100 !cursor-pointer !rounded-lg"
+            >
+              <div class="!flex !items-center">
+                <img
+                  src="https://i.pravatar.cc/60?img=1"
+                  class="!w-12 !h-12 !rounded-full !object-cover"
+                />
+                <div class="!ml-3">
+                  <p class="!font-semibold !text-gray-800">Ana</p>
+                  <p class="!text-gray-500 !text-sm">
+                    🛒 Vendió: Tomates frescos – $12.000
+                  </p>
+                </div>
+              </div>
+              <p class="!text-gray-500 !text-xs">11:32</p>
+            </div>
+
+            <!-- ITEM 2 -->
+            <div
+              class="!flex !items-center !justify-between !p-3 !hover:bg-gray-100 !cursor-pointer !rounded-lg"
+            >
+              <div class="!flex !items-center">
+                <img
+                  src="https://i.pravatar.cc/60?img=2"
+                  class="!w-12 !h-12 !rounded-full !object-cover"
+                />
+                <div class="!ml-3">
+                  <p class="!font-semibold !text-gray-800">Luis</p>
+                  <p class="!text-gray-500 !text-sm">
+                    📦 Nuevo producto: Lechuga Orgánica
+                  </p>
+                </div>
+              </div>
+              <p class="!text-gray-500 !text-xs">10:04</p>
+            </div>
+
+            <!-- ITEM 3 -->
+            <div
+              class="!flex !items-center !justify-between !p-3 !hover:bg-gray-100 !cursor-pointer !rounded-lg"
+            >
+              <div class="!flex !items-center">
+                <img
+                  src="https://i.pravatar.cc/60?img=3"
+                  class="!w-12 !h-12 !rounded-full !object-cover"
+                />
+                <div class="!ml-3">
+                  <p class="!font-semibold !text-gray-800">Martín</p>
+                  <p class="!text-gray-500 !text-sm">
+                    🥬 Oferta recibida por: Cilantro fresco
+                  </p>
+                </div>
+              </div>
+              <p class="!text-gray-500 !text-xs">9:45</p>
+            </div>
+
+            <!-- ITEM 4 -->
+            <div
+              class="!flex !items-center !justify-between !p-3 !hover:bg-gray-100 !cursor-pointer !rounded-lg"
+            >
+              <div class="!flex !items-center">
+                <img
+                  src="https://i.pravatar.cc/60?img=4"
+                  class="!w-12 !h-12 !rounded-full !object-cover"
+                />
+                <div class="!ml-3">
+                  <p class="!font-semibold !text-gray-800">Gregorio</p>
+                  <p class="!text-gray-500 !text-sm">
+                    🍅 Pedido confirmado: Tomate Chonto
+                  </p>
+                </div>
+              </div>
+              <p class="!text-gray-500 !text-xs">9:23</p>
+            </div>
+
+            <!-- ITEM 5 -->
+            <div
+              class="!flex !items-center !justify-between !p-3 !hover:bg-gray-100 !cursor-pointer !rounded-lg"
+            >
+              <div class="!flex !items-center">
+                <img
+                  src="https://i.pravatar.cc/60?img=5"
+                  class="!w-12 !h-12 !rounded-full !object-cover"
+                />
+                <div class="!ml-3">
+                  <p class="!font-semibold !text-gray-800">Andrea</p>
+                  <p class="!text-gray-500 !text-sm">
+                    🥚 Publicaste: Huevos campesinos
+                  </p>
+                </div>
+              </div>
+              <p class="!text-green-600 !text-xs !font-semibold">8:37</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- LIBRERÍAS PARA WEBSOCKETS -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <script>
+      let stompClient = null;
+
+      function connect() {
+        const socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function () {
+          stompClient.subscribe("/topic/messages", function (message) {
+            addMessage(JSON.parse(message.body));
+          });
+        });
+      }
+
+      function sendMessage() {
+        const sender = document.getElementById("sender").value.trim();
+        const content = document.getElementById("content").value.trim();
+
+        if (sender === "" || content === "") {
+          alert("Debes escribir tu nombre y un mensaje.");
+          return;
+        }
+
+        stompClient.send(
+          "/app/sendMessage",
+          {},
+          JSON.stringify({
+            sender: sender,
+            content: content,
+            timestamp: new Date().toISOString(),
+          })
+        );
+
+        document.getElementById("content").value = "";
+      }
+
+      function addMessage(msg) {
+        const area = document.getElementById("chatArea");
+
+        area.innerHTML += `
+            <p class="!mb-2 !bg-green-100 !p-2 !rounded !shadow-sm">
+                <strong>${msg.sender}:</strong> ${msg.content}
+            </p>
+        `;
+
+        area.scrollTop = area.scrollHeight;
+      }
+
+      connect();
+    </script>
+  </body>
+</html>

@@ -93,3 +93,13 @@ function DesplegarProfile() {
     MostrarInfo.classList.remove("flex");
   }
 }
+
+
+// nota me nsaje para que se oculte
+ let NotaComentarios = document.getElementById("NotaComentarios");
+      let botonnota = document.getElementById("botonnota");
+
+      botonnota.addEventListener("click", () => {
+        NotaComentarios.classList.remove("flex");
+        NotaComentarios.classList.add("hidden");
+      });

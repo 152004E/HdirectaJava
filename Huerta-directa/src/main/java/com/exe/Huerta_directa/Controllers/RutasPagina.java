@@ -315,6 +315,15 @@ public class RutasPagina {
     public String DashBoardGraficos() {
         return "DashBoard/GraficosDashboarCliente";
     }
+
+    // seccion de comentarios
+
+    @GetMapping("/MensajesAreaSocial")
+    public String MensajesAreaSocial() {
+        return "DashBoard/MensajesAreaSocial";
+    }
+
+
     
 
     @GetMapping("/GraficosCategoriaAdmin")
