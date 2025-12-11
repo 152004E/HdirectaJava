@@ -8,8 +8,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,11 +26,8 @@ public class ProductDTO {
     private String etiqueta;
     private String userName;
     private Integer stock;
+    private java.util.List<String> images;
 
-    private UserDTO user; 
-
-
-
-
+    private UserDTO user;
 
 }

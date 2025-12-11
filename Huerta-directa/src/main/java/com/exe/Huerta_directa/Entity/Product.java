@@ -62,4 +62,7 @@ public class Product {
     @lombok.EqualsAndHashCode.Exclude
     private User user;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("product")
+    private java.util.List<ProductImage> images = new java.util.ArrayList<>();
 }

@@ -143,6 +143,13 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setPublicationDate(product.getPublicationDate());
         productDTO.setStock(product.getStock());
 
+        // Map images
+        if (product.getImages() != null) {
+            productDTO.setImages(product.getImages().stream()
+                    .map(com.exe.Huerta_directa.Entity.ProductImage::getImageUrl)
+                    .collect(Collectors.toList()));
+        }
+
         // Asignar el id del usuario si existe
         if (product.getUser() != null) {
             try {
@@ -272,6 +279,21 @@ public class ProductServiceImpl implements ProductService {
         System.out.println("   - Producto: " + producto.getNameProduct());
         System.out.println("   - Cantidad descontada: " + cantidad);
         System.out.println("   - Stock restante: " + producto.getStock());
+    }
+
+    @Override
+    @Transactional
+    public void agregarImagen(Long productId, String imageUrl) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        com.exe.Huerta_directa.Entity.ProductImage image = new com.exe.Huerta_directa.Entity.ProductImage(imageUrl,
+                product);
+
+        // Al usar CascadeType.ALL y añadir a la lista, debería guardarse al guardar el
+        // producto
+        product.getImages().add(image);
+        productRepository.save(product);
     }
 
 }
