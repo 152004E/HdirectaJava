@@ -56,6 +56,8 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
     private Set<Product> products;
 
     // Metodo para calcular la edad
@@ -69,12 +71,17 @@ public class User {
     // Metodo para obtener rango de edad
     public String getAgeRange() {
         Integer age = getAge();
-        if (age == null) return "No especificado";
-        
-        if (age <= 25) return "18-25";
-        if (age <= 35) return "26-35";
-        if (age <= 45) return "36-45";
-        if (age <= 55) return "46-55";
+        if (age == null)
+            return "No especificado";
+
+        if (age <= 25)
+            return "18-25";
+        if (age <= 35)
+            return "26-35";
+        if (age <= 45)
+            return "36-45";
+        if (age <= 55)
+            return "46-55";
         return "56+";
     }
 }

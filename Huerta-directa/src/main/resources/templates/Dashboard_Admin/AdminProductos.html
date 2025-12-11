@@ -73,7 +73,7 @@
         position: absolute;
         top: 12px;
         left: 12px;
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
         color: white;
         font-size: 0.75rem;
         font-weight: 600;
@@ -128,13 +128,13 @@
       .price-value {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #059669;
+        color: #8bc34a;
       }
       
       .stock-value {
         font-size: 1rem;
         font-weight: 600;
-        color: #1f2937;
+        color: #4e9b36;
         background: #f0f9ff;
         padding: 4px 12px;
         border-radius: 20px;
@@ -161,7 +161,7 @@
       
       .user-label {
         font-size: 0.875rem;
-        color: #3b82f6;
+        color: #3f5c25;
         font-weight: 500;
         margin-bottom: 4px;
       }
@@ -169,7 +169,7 @@
       .user-name {
         font-size: 1rem;
         font-weight: 600;
-        color: #1e40af;
+        color: #2a3d19;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -214,12 +214,12 @@
       }
       
       .btn-notify {
-        background: linear-gradient(135deg, #558b2f, #385c1e);
+        background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
         color: white;
       }
       
       .btn-notify:hover {
-        background: linear-gradient(135deg, #4a7729, #2e4a18);
+        background: linear-gradient(135deg, #8bc34a 0%, #3f5c25 100%);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(85, 139, 47, 0.3);
       }
@@ -352,7 +352,7 @@
                 <!-- Información del usuario -->
                 <div class="user-info">
                   <div class="user-label">Publicado por</div>
-                  <div class="user-name" th:text="${producto.userName}">
+                  <div class="user-name" th:text="${producto.userName != null and !#strings.isEmpty(producto.userName) ? producto.userName : 'usuario'}">
                     Nombre Usuario
                   </div>
                 </div>
