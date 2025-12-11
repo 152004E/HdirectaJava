@@ -22,7 +22,7 @@ public interface ProductService {
     void eliminarProductPorId(Long productId);
 
     List<ProductDTO> buscarPorNombre(String nombre);
-    
+
     List<ProductDTO> buscarPorCategoria(String categoria);
 
     boolean existeProducto(String nombre, String categoria);
@@ -30,9 +30,11 @@ public interface ProductService {
     boolean existeProductoPorUsuario(String nombre, String Categoria, Long productId);
 
     long contarTotalProductos();
-    
-    //esto es para hacer los graficos por categorias
+
+    // esto es para hacer los graficos por categorias
     Map<String, Long> contarProductosPorCategoria();
 
     void descontarStock(Long productId, Integer cantidad);
+
+    void agregarImagen(Long productId, String imageUrl);
 }

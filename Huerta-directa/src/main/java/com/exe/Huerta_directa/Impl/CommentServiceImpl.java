@@ -129,6 +129,7 @@ public class CommentServiceImpl implements CommentService {
         commentDTO.setCreationComment(comment.getCreationComment());
         commentDTO.setCommentType(comment.getCommentType());
         commentDTO.setUserId(comment.getUser().getId());
+        commentDTO.setNameCommenter(comment.getUser().getName());
         commentDTO.setProductId(
                 comment.getProduct() != null ? comment.getProduct().getIdProduct() : null);
 
@@ -172,7 +173,7 @@ public class CommentServiceImpl implements CommentService {
             comment.setUser(user);
         }
     }
-        //Este servicio es para implementarlo en el front de dashboard comentarios
+    // Este servicio es para implementarlo en el front de dashboard comentarios
 
     @Override
     public List<Comment> obtenerComentariosPorUsuario(Long userId) {
@@ -183,7 +184,5 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> listarTodosComments() {
         return commentRepository.findAll();
     }
-
-
 
 }

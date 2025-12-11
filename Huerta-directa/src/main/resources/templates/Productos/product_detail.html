@@ -50,10 +50,18 @@
           </div>
 
           <!-- Miniaturas -->
-          <div class="galeria-miniaturas">
-            <div class="miniatura activa">
+          <div class="galeria-miniaturas" th:if="${producto.images != null and !producto.images.isEmpty()}">
+            <!-- Miniatura imagen principal -->
+            <div class="miniatura activa" th:onclick="cambiarImagenPrincipal([[${'/images/productos/' + producto.imageProduct}]])">
               <img
                 th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                th:alt="${producto.nameProduct}"
+              />
+            </div>
+            <!-- Miniaturas adicionales -->
+            <div class="miniatura" th:each="img : ${producto.images}" th:onclick="cambiarImagenPrincipal([[${'/images/productos/' + img}]])">
+              <img
+                th:src="@{'/images/productos/' + ${img}}"
                 th:alt="${producto.nameProduct}"
               />
             </div>
@@ -77,7 +85,7 @@
                 <span class="estrella activa">★</span>
                 <span class="estrella">★</span>
               </div>
-              <span class="rating-texto">(4.0) 127 reseñas</span>
+                <span class="rating-texto" th:text="'(' + ${#lists.size(comments)} + ') reseñas'"> (4.0) 127 reseñas</span>
             </div>
           </div>
 
@@ -158,7 +166,29 @@
                 style="color: #dc3545;">Producto agotado</span>
             </div>
 
-
+            <!-- Selector de cantidad (OCULTO A PETICION DEL USUARIO) -->
+            <div class="cantidad-selector" style="display: none;">
+              <div class="cantidad-controls">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidadDetalle(-1)">-</button>
+                <input
+                  type="number"
+                  id="cantidad"
+                  class="cantidad-input"
+                  value="1"
+                  min="1"
+                  th:max="${producto.stock}"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="btn-cantidad"
+                  onclick="ajustarCantidadDetalle(1)"
+                  th:data-max-stock="${producto.stock}"
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
             <!-- Botones de acción -->
             <div class="botones-accion" th:if="${producto.stock != null and producto.stock > 0}">
@@ -177,7 +207,8 @@
                   id="cantidadForm"
                   value="1"
                 />
-                <button type="button" class="btn-2" onclick="crearPago()">
+                <button type="button" class="btn-2" 
+                    th:onclick="crearPagoDetalle([[${producto.idProduct}]], [[${producto.nameProduct}]], [[${producto.price}]], '/images/productos/' + [[${producto.imageProduct}]])">
                   Ir a pagar
                 </button>
               </form>
@@ -185,7 +216,7 @@
                 <button
                   type="button"
                   class="agregar-carrito btn-2 botonIcono"
-                  th:onclick="'agregarAlCarrito(' + ${producto.idProduct} + ')'"
+                  th:onclick="agregarAlCarritoDesdeDetalle([[${producto.idProduct}]], [[${producto.nameProduct}]], [[${producto.price}]], '/images/productos/' + [[${producto.imageProduct}]])"
                   ><span class="material-symbols-outlined iconAgregar">
                     add_shopping_cart
                   </span>
@@ -255,7 +286,7 @@
             Conservación
           </button>
           <button class="tab-btn" onclick="cambiarTab('resenas')">
-            Reseñas (127)
+            Reseñas (<span th:text="${#lists.size(comments)}">0</span>)
           </button>
         </div>
 
@@ -289,10 +320,38 @@
 
           <div id="resenas" class="tab-panel">
             <h3>Reseñas de clientes</h3>
-            <p>
-              127 clientes han valorado este producto con un promedio de 4.0
-              estrellas.
-            </p>
+
+            <div th:if="${#lists.isEmpty(comments)}" class="no-resenas">
+               <p>Aún no hay reseñas para este producto. ¡Sé el primero en opinar!</p>
+            </div>
+
+            <!-- Formulario de reseña -->
+            <div class="form-resena" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px;">
+                <h4 style="margin-bottom: 10px;">Escribe una reseña</h4>
+                <form action="/comment/add" method="post">
+                    <input type="hidden" name="productId" th:value="${producto.idProduct}" />
+                    <div style="margin-bottom: 10px;">
+                        <textarea
+                            name="commentCommenter"
+                            rows="3"
+                            placeholder="Comparte tu experiencia con este producto..."
+                            required
+                            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn-2" style="font-size: 0.9rem; padding: 5px 15px;">Publicar reseña</button>
+                </form>
+            </div>
+
+            <div th:each="comment : ${comments}" class="review-item" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <strong th:text="${comment.nameCommenter}" style="color: #333;">Usuario</strong>
+                    <span class="review-date" th:text="${#temporals.format(comment.creationComment, 'dd/MM/yyyy')}" style="color: #666; font-size: 0.9em;">Fecha</span>
+                </div>
+                <div class="review-body">
+                    <p th:text="${comment.commentCommenter}" style="color: #555; line-height: 1.4;">Comentario...</p>
+                </div>
+            </div>
           </div>
         </div>
       </div>
@@ -317,99 +376,112 @@
     </div>
 
     <script>
-      // Script para cambiar cantidad
-      function cambiarCantidad(delta) {
+      // ==========================================
+      // Lógica específica del Detalle de Producto
+      // ==========================================
+
+      // 1. Manejo de Cantidad (Renombrado para evitar conflictos con script.js)
+      function ajustarCantidadDetalle(delta) {
         const input = document.getElementById("cantidad");
         const formInput = document.getElementById("cantidadForm");
-        const btnMas = document.querySelector('.btn-cantidad[onclick="cambiarCantidad(1)"]');
+        const btnMas = document.querySelector('.btn-cantidad[onclick*="1"]');
 
-        // Obtener el stock máximo desde el atributo data-max-stock
-        let maxStock = parseInt(btnMas?.getAttribute('data-max-stock')) || 99;
+        // Obtener stock máximo
+        let maxStock = 99;
+        if (btnMas) {
+             const dataMax = btnMas.getAttribute('data-max-stock');
+             if (dataMax) maxStock = parseInt(dataMax);
+        }
 
         let valor = parseInt(input.value) || 1;
-        valor = Math.max(1, Math.min(maxStock, valor + delta));
+        let nuevoValor = valor + delta;
 
-        input.value = valor;
-        if (formInput) formInput.value = valor;
-
-        // Mostrar mensaje si se alcanza el límite
-        if (valor === maxStock && delta > 0) {
-          mostrarMensajeLimite(maxStock);
+        // Validar límites
+        if (nuevoValor < 1) nuevoValor = 1;
+        if (nuevoValor > maxStock) {
+            nuevoValor = maxStock;
+            if (delta > 0) mostrarMensajeLimite(maxStock);
         }
+
+        input.value = nuevoValor;
+        if (formInput) formInput.value = nuevoValor;
       }
 
-      // Función para mostrar mensaje cuando se alcanza el límite de stock
       function mostrarMensajeLimite(maxStock) {
-        // Crear mensaje temporal si no existe
         let mensaje = document.getElementById('mensaje-limite');
         if (!mensaje) {
           mensaje = document.createElement('div');
           mensaje.id = 'mensaje-limite';
           mensaje.style.cssText = 'color: #dc3545; font-size: 12px; margin-top: 5px; text-align: center;';
-          document.querySelector('.cantidad-selector').appendChild(mensaje);
+          document.querySelector('.cantidad-selector')?.appendChild(mensaje);
         }
-
         mensaje.textContent = `Solo hay ${maxStock} unidades disponibles`;
+        setTimeout(() => mensaje?.remove(), 3000);
+      }
 
-        // Remover mensaje después de 3 segundos
+      // 2. Integración con el Carrito de script.js
+      // Construye el objeto producto y usa la función global agregarAlCarrito(producto) de script.js
+      function agregarAlCarritoDesdeDetalle(idProducto, nombre, precio, imagen) {
+        const cantidadInput = document.getElementById("cantidad");
+        const cantidad = parseInt(cantidadInput.value) || 1;
+
+        const infoElemento = {
+            id: idProducto.toString(), // script.js maneja IDs como strings en data attributes
+            nombre: nombre,
+            precio: parseFloat(precio),
+            imagen: imagen,
+            cantidad: cantidad
+        };
+
+        console.log("📦 Agregando desde detalle:", infoElemento);
+
+        // Llamar a la función del script.js global
+        if (typeof agregarAlCarrito === 'function') {
+            agregarAlCarrito(infoElemento);
+        } else {
+            console.error("❌ Error: script.js no cargado correctamente (agregarAlCarrito no existe)");
+            alert("Error interno: No se pudo agregar al carrito.");
+        }
+      }
+
+      // 3. Función "Ir a Pagar" (Comprar ahora)
+      function crearPagoDetalle(idProducto, nombre, precio, imagen) {
+        // 1. Agregar al carrito
+        agregarAlCarritoDesdeDetalle(idProducto, nombre, precio, imagen);
+
+        // 2. Proceder al pago (función de script.js)
         setTimeout(() => {
-          if (mensaje && mensaje.parentNode) {
-            mensaje.parentNode.removeChild(mensaje);
-          }
-        }, 3000);
+            if (typeof procederAlPago === 'function') {
+                procederAlPago();
+            } else {
+                console.log("ℹ️ Redirigiendo a resumen manualmente...");
+                window.location.href = "/carrito/resumen";
+            }
+        }, 500); // Pequeño delay para asegurar actualización de localStorage
+      }
+      
+      // 4. Cambiar Imagen Principal
+      function cambiarImagenPrincipal(src) {
+        const mainImage = document.querySelector('.producto-img-zoom');
+        if(mainImage) {
+            mainImage.src = src;
+        }
+        // Actualizar clase activa en miniaturas
+        document.querySelectorAll('.miniatura').forEach(m => m.classList.remove('activa'));
+        event.currentTarget.classList.add('activa');
       }
 
-      // Función para agregar al carrito
-      function agregarAlCarrito(productoId) {
-        const cantidad = document.getElementById('cantidad')?.value || 1;
-
-        fetch('/carrito/agregar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `productoId=${productoId}&cantidad=${cantidad}`
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Producto agregado al carrito exitosamente');
-            // Actualizar contador del carrito si existe
-            actualizarContadorCarrito();
-          } else {
-            alert('Error al agregar el producto: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error al agregar el producto al carrito');
-        });
-      }
-
-      // Función para actualizar contador del carrito
-      function actualizarContadorCarrito() {
-        fetch('/carrito/count')
-        .then(response => response.json())
-        .then(data => {
-          const contador = document.querySelector('.carrito-contador');
-          if (contador && data.count !== undefined) {
-            contador.textContent = data.count;
-            contador.style.display = data.count > 0 ? 'block' : 'none';
-          }
-        })
-        .catch(error => console.error('Error al actualizar contador:', error));
-      }
-
-      // Script para tabs
+      // Script para tabs (sin cambios)
       function cambiarTab(tabId) {
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-panel")
-          .forEach((panel) => panel.classList.remove("active"));
-
+        document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+        // Buscar el botón correspondiente
+        const btn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.textContent.includes(tabId) || b.onclick.toString().includes(tabId));
+        if(btn) btn.classList.add("active");
+        
+        // Fallback simple si no encuentra por texto
         event.target.classList.add("active");
+        
         document.getElementById(tabId).classList.add("active");
       }
     </script>

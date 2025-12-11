@@ -19,8 +19,8 @@ public class CommentDTO {
     private String commentCommenter;
     private LocalDate creationComment;
     private CommentType commentType;
-    private Long userId;      
+    private Long userId;
+    private String nameCommenter;
     private Long productId;
-
 
 }
