@@ -319,37 +319,65 @@
           </div>
 
           <div id="resenas" class="tab-panel">
-            <h3>Reseñas de clientes</h3>
+            <h3 style="margin-bottom: 25px; font-size: 1.5rem; color: #1f2937;">Reseñas de clientes</h3>
 
-            <div th:if="${#lists.isEmpty(comments)}" class="no-resenas">
-               <p>Aún no hay reseñas para este producto. ¡Sé el primero en opinar!</p>
-            </div>
-
-            <!-- Formulario de reseña -->
-            <div class="form-resena" style="margin-bottom: 20px; padding: 15px; background: #f9fafb; border-radius: 8px;">
-                <h4 style="margin-bottom: 10px;">Escribe una reseña</h4>
-                <form action="/comment/add" method="post">
+            <!-- Formulario de reseña  -->
+            <div class="form-resena" style="margin-bottom: 30px; padding: 25px 20px; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-width: 100%;">
+    <h4 style="margin-bottom: 15px; color: #374151; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.3rem;"></span>
+        Escribe tu opinión
+    </h4>
+                <form action="/comment/add" method="post" style="width: 100%;">
                     <input type="hidden" name="productId" th:value="${producto.idProduct}" />
-                    <div style="margin-bottom: 10px;">
+                    <div style="margin-bottom: 12px; width: 100%;">
                         <textarea
                             name="commentCommenter"
-                            rows="3"
-                            placeholder="Comparte tu experiencia con este producto..."
+                            rows="8"
+                            placeholder="Comparte tu experiencia con este producto... ¿Qué te pareció? ¿Lo recomendarías?"
                             required
-                            style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                            style="width: 100%; min-height: 180px; padding: 15px 20px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical; transition: all 0.3s ease; background: white; display: block; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#8bc34a'; this.style.boxShadow='0 0 0 3px rgba(139,195,74,0.1)'"
+                            onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
                         ></textarea>
                     </div>
-                    <button type="submit" class="btn-2" style="font-size: 0.9rem; padding: 5px 15px;">Publicar reseña</button>
+                    <div style="text-align: left;">
+                        <button type="submit" style="font-size: 0.85rem; padding: 8px 16px; background: #8bc34a; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-block;">
+                            📝 Publicar
+                        </button>
+                    </div>
                 </form>
             </div>
 
-            <div th:each="comment : ${comments}" class="review-item" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-                <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <strong th:text="${comment.nameCommenter}" style="color: #333;">Usuario</strong>
-                    <span class="review-date" th:text="${#temporals.format(comment.creationComment, 'dd/MM/yyyy')}" style="color: #666; font-size: 0.9em;">Fecha</span>
+            <!-- Mensaje cuando no hay reseñas -->
+            <div th:if="${#lists.isEmpty(comments)}" class="no-resenas" style="text-align: center; padding: 40px 20px; background: #f9fafb; border-radius: 12px; border: 2px dashed #d1d5db;">
+               <p style="color: #6b7280; font-size: 1rem; margin: 0;">
+                   <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💬</span>
+                   Aún no hay reseñas para este producto.<br/>
+                   <strong style="color: #8bc34a;">¡Sé el primero en opinar!</strong>
+               </p>
+            </div>
+
+            <!-- Lista de reseñas mejorada -->
+            <div th:each="comment : ${comments}" class="review-item" style="margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)'">
+                <div class="review-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <!-- Avatar del usuario -->
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <span th:text="${#strings.substring(comment.nameCommenter, 0, 1).toUpperCase()}">U</span>
+                    </div>
+                    <div style="flex: 1;">
+                        <strong th:text="${comment.nameCommenter}" style="color: #1f2937; font-size: 1rem; display: block; margin-bottom: 2px;">Usuario</strong>
+                        <span class="review-date" th:text="${#temporals.format(comment.creationComment, 'dd/MM/yyyy')}" style="color: #9ca3af; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">
+                            <span style="font-size: 0.9rem;">📅</span>
+                            Fecha
+                        </span>
+                    </div>
+                    <!-- Estrellas decorativas -->
+                    <div style="color: #fbbf24; font-size: 1rem;">
+                        ★★★★★
+                    </div>
                 </div>
-                <div class="review-body">
-                    <p th:text="${comment.commentCommenter}" style="color: #555; line-height: 1.4;">Comentario...</p>
+                <div class="review-body" style="padding-left: 57px;">
+                    <p th:text="${comment.commentCommenter}" style="color: #4b5563; line-height: 1.6; margin: 0; font-size: 0.95rem;">Comentario...</p>
                 </div>
             </div>
           </div>
