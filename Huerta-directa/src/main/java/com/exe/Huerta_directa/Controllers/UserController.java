@@ -158,7 +158,9 @@ public void exportUsersToPdfWithCharts(
     // Extraer imágenes de gráficas si existen
     Map<String, String> chartImages = null;
     if (requestBody != null && requestBody.containsKey("chartImages")) {
-        chartImages = (Map<String, String>) requestBody.get("chartImages");
+        @SuppressWarnings("unchecked")
+        Map<String, String> images = (Map<String, String>) requestBody.get("chartImages");
+        chartImages = images;
     }
     
     try {
