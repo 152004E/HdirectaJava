@@ -8,6 +8,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,6 +29,11 @@ public class ProductDTO {
     private String etiqueta;
     private String userName;
     private Integer stock;
+
+    private UserDTO user; 
+
+
+
 
 
 }
