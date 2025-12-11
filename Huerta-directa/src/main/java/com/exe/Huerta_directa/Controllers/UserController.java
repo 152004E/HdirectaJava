@@ -1,4 +1,5 @@
 package com.exe.Huerta_directa.Controllers;
+
 import com.exe.Huerta_directa.DTO.BulkEmailByRoleRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailFilteredRequest;
 import com.exe.Huerta_directa.DTO.BulkEmailRequest;
@@ -46,6 +47,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/api/users")
 @CrossOrigin("*")
@@ -60,31 +62,37 @@ public class UserController {
     // Nota: la contraseña de aplicación idealmente debe guardarse en
     // properties/secret manager
     private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
+
     public UserController(UserService userService, UserRepository userRepository, ProductService productService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.productService = productService;
     }
+
     // Aqui irian los endpoints para manejar las solicitudes HTTP relacionadas con
     // Metodo para listar todos los usuarios
     @GetMapping
     public ResponseEntity<List<UserDTO>> listarUsers() {
         return new ResponseEntity<>(userService.listarUsers(), HttpStatus.OK);
     }
+
     // Metodo para obtener un usuario por su id
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> obtenerUserPorId(@PathVariable Long userId) {
         return new ResponseEntity<>(userService.obtenerUserPorId(userId), HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<UserDTO> crearUser(@RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.crearUser(userDTO), HttpStatus.CREATED);
     }
+
     // Metodo para actualizar un usuario
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> actualizarUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.actualizarUser(userId, userDTO), HttpStatus.OK);
     }
+
     // Metodo para eliminar un usuario por su id
     @DeleteMapping("/{userId}")
     @Transactional
@@ -92,6 +100,7 @@ public class UserController {
         userService.eliminarUserPorId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     // ========== EXPORTACIÓN CON FILTROS ==========
     // Método para exportar usuarios a Excel CON FILTROS
     @GetMapping("/exportExcel")
@@ -145,238 +154,239 @@ public class UserController {
     }
 
     // Método POST: exportar con gráficas
-@PostMapping("/exportPdf")
-public void exportUsersToPdfWithCharts(
-        HttpServletResponse response,
-        @RequestParam(required = false) String dato,
-        @RequestParam(required = false) String valor,
-        @RequestBody(required = false) Map<String, Object> requestBody) throws IOException {
-    
-    // Obtener usuarios filtrados
-    List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
-    
-    // Extraer imágenes de gráficas si existen
-    Map<String, String> chartImages = null;
-    if (requestBody != null && requestBody.containsKey("chartImages")) {
-        @SuppressWarnings("unchecked")
-        Map<String, String> images = (Map<String, String>) requestBody.get("chartImages");
-        chartImages = images;
-    }
-    
-    try {
-        // Configurar la respuesta HTTP
-        response.setContentType("application/pdf");
-        String filename = "Usuarios_" + java.time.LocalDateTime.now()
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-        response.setHeader("Cache-Control", "no-cache");
-        
-        // Crear documento PDF
-        com.lowagie.text.Document document = new com.lowagie.text.Document();
-        com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
-        document.open();
-        
-        // Título principal
-        com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
-                com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#689f38"));
-        com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
-        title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-        document.add(title);
-        
-        // Subtítulo
-        com.lowagie.text.Font subtitleFont = com.lowagie.text.FontFactory.getFont(
-                com.lowagie.text.FontFactory.HELVETICA_BOLD, 14, java.awt.Color.BLACK);
-        com.lowagie.text.Paragraph subtitle = new com.lowagie.text.Paragraph("Reporte de Usuarios", subtitleFont);
-        subtitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-        subtitle.setSpacingAfter(10);
-        document.add(subtitle);
-        
-        // Información del filtro
-        if (dato != null && valor != null && !valor.isEmpty()) {
-            com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#689f38"));
-            com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
-                    "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
-            filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-            filterInfo.setSpacingAfter(15);
-            document.add(filterInfo);
-        }
-        
-        // Información del reporte
-        com.lowagie.text.Font infoFont = com.lowagie.text.FontFactory.getFont(
-                com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.GRAY);
-        String currentDate = java.time.LocalDateTime.now()
-                .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-        com.lowagie.text.Paragraph reportInfo = new com.lowagie.text.Paragraph(
-                "Fecha: " + currentDate + " | Total: " + usuarios.size() + " usuario(s)", infoFont);
-        reportInfo.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
-        reportInfo.setSpacingAfter(20);
-        document.add(reportInfo);
-        
-        if (usuarios.isEmpty()) {
-            // Sin usuarios
-            com.lowagie.text.Font noDataFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA, 12, java.awt.Color.RED);
-            com.lowagie.text.Paragraph noData = new com.lowagie.text.Paragraph(
-                    "No se encontraron usuarios con los filtros aplicados.", noDataFont);
-            noData.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-            noData.setSpacingBefore(50);
-            document.add(noData);
-        } else {
-            // Crear tabla de usuarios
-            com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(6);
-            table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            float[] columnWidths = { 1f, 3f, 4f, 2f, 2f, 2f };
-            table.setWidths(columnWidths);
-            
-            // Encabezados
-            com.lowagie.text.Font headerFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.WHITE);
-            addTableHeaderPdf(table, "ID", headerFont);
-            addTableHeaderPdf(table, "Nombre", headerFont);
-            addTableHeaderPdf(table, "Email", headerFont);
-            addTableHeaderPdf(table, "Género", headerFont);
-            addTableHeaderPdf(table, "Edad", headerFont);
-            addTableHeaderPdf(table, "Rol", headerFont);
-            
-            // Datos
-            com.lowagie.text.Font dataFont = com.lowagie.text.FontFactory.getFont(
-                    com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
-            int rowCount = 0;
-            for (UserDTO usuario : usuarios) {
-                rowCount++;
-                java.awt.Color rowColor = (rowCount % 2 == 0) ? new java.awt.Color(240, 240, 240)
-                        : java.awt.Color.WHITE;
-                addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor,
-                        com.lowagie.text.Element.ALIGN_CENTER);
-                addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A",
-                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
-                addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
-                        dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
-                addTableCellPdf(table, obtenerGeneroTexto(usuario.getGender()), dataFont, rowColor,
-                        com.lowagie.text.Element.ALIGN_CENTER);
-                addTableCellPdf(table, String.valueOf(calcularEdad(usuario.getBirthDate())), dataFont, rowColor,
-                        com.lowagie.text.Element.ALIGN_CENTER);
-                String roleName = obtenerNombreRol(usuario.getIdRole());
-                addTableCellPdf(table, roleName, dataFont, rowColor,
-                        com.lowagie.text.Element.ALIGN_CENTER);
-            }
-            document.add(table);
-            
-            // ========== AGREGAR GRÁFICAS ==========
-            if (chartImages != null && !chartImages.isEmpty()) {
-                // Nueva página para gráficas
-                document.newPage();
-                
-                // Título de gráficas
-                com.lowagie.text.Font chartsTitle = com.lowagie.text.FontFactory.getFont(
-                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 16, java.awt.Color.decode("#689f38"));
-                com.lowagie.text.Paragraph chartsHeader = new com.lowagie.text.Paragraph(
-                        "Gráficas Estadísticas", chartsTitle);
-                chartsHeader.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-                chartsHeader.setSpacingAfter(20);
-                document.add(chartsHeader);
-                
-                // Agregar cada gráfica
-                agregarGrafica(document, chartImages.get("rolesChart"), "Distribución por Roles");
-                agregarGrafica(document, chartImages.get("genderChart"), "Distribución por Género");
-                agregarGrafica(document, chartImages.get("ageChart"), "Distribución por Edad");
-                agregarGrafica(document, chartImages.get("activityChart"), "Actividad por Mes");
-            }
-            
-            // Estadísticas textuales (original)
-            java.util.Map<String, Long> usersByRole = usuarios.stream()
-                    .collect(java.util.stream.Collectors.groupingBy(
-                            user -> obtenerNombreRol(user.getIdRole()),
-                            java.util.stream.Collectors.counting()));
-            
-            java.util.Map<String, Long> usersByGender = usuarios.stream()
-                    .filter(u -> u.getGender() != null)
-                    .collect(java.util.stream.Collectors.groupingBy(
-                            user -> obtenerGeneroTexto(user.getGender()),
-                            java.util.stream.Collectors.counting()));
-            
-            if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
-                document.add(new com.lowagie.text.Paragraph(" "));
-                com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
-                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
-                com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
-                        "Estadísticas:", statsFont);
-                statsTitle.setSpacingBefore(20);
-                document.add(statsTitle);
-                
-                com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
-                        com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
-                
-                if (!usersByRole.isEmpty()) {
-                    com.lowagie.text.Paragraph roleTitle = new com.lowagie.text.Paragraph(
-                            "Por Rol:", statsDataFont);
-                    roleTitle.setSpacingBefore(10);
-                    document.add(roleTitle);
-                    for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
-                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
-                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
-                        statLine.setIndentationLeft(20);
-                        document.add(statLine);
-                    }
-                }
-                
-                if (!usersByGender.isEmpty()) {
-                    com.lowagie.text.Paragraph genderTitle = new com.lowagie.text.Paragraph(
-                            "Por Género:", statsDataFont);
-                    genderTitle.setSpacingBefore(10);
-                    document.add(genderTitle);
-                    for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
-                        com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
-                                "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
-                        statLine.setIndentationLeft(20);
-                        document.add(statLine);
-                    }
-                }
-            }
-        }
-        
-        document.close();
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        throw new IOException("Error generando PDF: " + e.getMessage());
-    }
-}
+    @PostMapping("/exportPdf")
+    public void exportUsersToPdfWithCharts(
+            HttpServletResponse response,
+            @RequestParam(required = false) String dato,
+            @RequestParam(required = false) String valor,
+            @RequestBody(required = false) Map<String, Object> requestBody) throws IOException {
 
-// Método auxiliar para agregar gráficas al PDF
-private void agregarGrafica(com.lowagie.text.Document document, String base64Image, String titulo) 
-        throws com.lowagie.text.DocumentException, IOException {
-    if (base64Image != null && !base64Image.isEmpty()) {
-        // Agregar título de la gráfica
-        com.lowagie.text.Font chartTitleFont = com.lowagie.text.FontFactory.getFont(
-                com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
-        com.lowagie.text.Paragraph chartTitle = new com.lowagie.text.Paragraph(titulo, chartTitleFont);
-        chartTitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-        chartTitle.setSpacingBefore(15);
-        document.add(chartTitle);
-        
-        // Decodificar imagen base64
-        String imageData = base64Image;
-        if (imageData.contains(",")) {
-            imageData = imageData.split(",")[1];
+        // Obtener usuarios filtrados
+        List<UserDTO> usuarios = obtenerUsuariosFiltrados(dato, valor);
+
+        // Extraer imágenes de gráficas si existen
+        Map<String, String> chartImages = null;
+        if (requestBody != null && requestBody.containsKey("chartImages")) {
+            @SuppressWarnings("unchecked")
+            Map<String, String> images = (Map<String, String>) requestBody.get("chartImages");
+            chartImages = images;
         }
-        byte[] imageBytes = Base64.getDecoder().decode(imageData);
-        
-        // Agregar imagen al PDF
-        com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(imageBytes);
-        
-        // Escalar imagen para que quepa bien en el PDF
-        float maxWidth = 450f;
-        float maxHeight = 300f;
-        pdfImage.scaleToFit(maxWidth, maxHeight);
-        pdfImage.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
-        
-        document.add(pdfImage);
-        document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
+
+        try {
+            // Configurar la respuesta HTTP
+            response.setContentType("application/pdf");
+            String filename = "Usuarios_" + java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf";
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            response.setHeader("Cache-Control", "no-cache");
+
+            // Crear documento PDF
+            com.lowagie.text.Document document = new com.lowagie.text.Document();
+            com.lowagie.text.pdf.PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            // Título principal
+            com.lowagie.text.Font titleFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 20, java.awt.Color.decode("#689f38"));
+            com.lowagie.text.Paragraph title = new com.lowagie.text.Paragraph("HUERTA DIRECTA", titleFont);
+            title.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            document.add(title);
+
+            // Subtítulo
+            com.lowagie.text.Font subtitleFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 14, java.awt.Color.BLACK);
+            com.lowagie.text.Paragraph subtitle = new com.lowagie.text.Paragraph("Reporte de Usuarios", subtitleFont);
+            subtitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            subtitle.setSpacingAfter(10);
+            document.add(subtitle);
+
+            // Información del filtro
+            if (dato != null && valor != null && !valor.isEmpty()) {
+                com.lowagie.text.Font filterFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.decode("#689f38"));
+                com.lowagie.text.Paragraph filterInfo = new com.lowagie.text.Paragraph(
+                        "Filtro aplicado: " + dato + " = \"" + valor + "\"", filterFont);
+                filterInfo.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                filterInfo.setSpacingAfter(15);
+                document.add(filterInfo);
+            }
+
+            // Información del reporte
+            com.lowagie.text.Font infoFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.GRAY);
+            String currentDate = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            com.lowagie.text.Paragraph reportInfo = new com.lowagie.text.Paragraph(
+                    "Fecha: " + currentDate + " | Total: " + usuarios.size() + " usuario(s)", infoFont);
+            reportInfo.setAlignment(com.lowagie.text.Element.ALIGN_RIGHT);
+            reportInfo.setSpacingAfter(20);
+            document.add(reportInfo);
+
+            if (usuarios.isEmpty()) {
+                // Sin usuarios
+                com.lowagie.text.Font noDataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 12, java.awt.Color.RED);
+                com.lowagie.text.Paragraph noData = new com.lowagie.text.Paragraph(
+                        "No se encontraron usuarios con los filtros aplicados.", noDataFont);
+                noData.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                noData.setSpacingBefore(50);
+                document.add(noData);
+            } else {
+                // Crear tabla de usuarios
+                com.lowagie.text.pdf.PdfPTable table = new com.lowagie.text.pdf.PdfPTable(6);
+                table.setWidthPercentage(100);
+                table.setSpacingBefore(10f);
+                float[] columnWidths = { 1f, 3f, 4f, 2f, 2f, 2f };
+                table.setWidths(columnWidths);
+
+                // Encabezados
+                com.lowagie.text.Font headerFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.WHITE);
+                addTableHeaderPdf(table, "ID", headerFont);
+                addTableHeaderPdf(table, "Nombre", headerFont);
+                addTableHeaderPdf(table, "Email", headerFont);
+                addTableHeaderPdf(table, "Género", headerFont);
+                addTableHeaderPdf(table, "Edad", headerFont);
+                addTableHeaderPdf(table, "Rol", headerFont);
+
+                // Datos
+                com.lowagie.text.Font dataFont = com.lowagie.text.FontFactory.getFont(
+                        com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+                int rowCount = 0;
+                for (UserDTO usuario : usuarios) {
+                    rowCount++;
+                    java.awt.Color rowColor = (rowCount % 2 == 0) ? new java.awt.Color(240, 240, 240)
+                            : java.awt.Color.WHITE;
+                    addTableCellPdf(table, String.valueOf(usuario.getId()), dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                    addTableCellPdf(table, usuario.getName() != null ? usuario.getName() : "N/A",
+                            dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                    addTableCellPdf(table, usuario.getEmail() != null ? usuario.getEmail() : "N/A",
+                            dataFont, rowColor, com.lowagie.text.Element.ALIGN_LEFT);
+                    addTableCellPdf(table, obtenerGeneroTexto(usuario.getGender()), dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                    addTableCellPdf(table, String.valueOf(calcularEdad(usuario.getBirthDate())), dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                    String roleName = obtenerNombreRol(usuario.getIdRole());
+                    addTableCellPdf(table, roleName, dataFont, rowColor,
+                            com.lowagie.text.Element.ALIGN_CENTER);
+                }
+                document.add(table);
+
+                // ========== AGREGAR GRÁFICAS ==========
+                if (chartImages != null && !chartImages.isEmpty()) {
+                    // Nueva página para gráficas
+                    document.newPage();
+
+                    // Título de gráficas
+                    com.lowagie.text.Font chartsTitle = com.lowagie.text.FontFactory.getFont(
+                            com.lowagie.text.FontFactory.HELVETICA_BOLD, 16, java.awt.Color.decode("#689f38"));
+                    com.lowagie.text.Paragraph chartsHeader = new com.lowagie.text.Paragraph(
+                            "Gráficas Estadísticas", chartsTitle);
+                    chartsHeader.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+                    chartsHeader.setSpacingAfter(20);
+                    document.add(chartsHeader);
+
+                    // Agregar cada gráfica
+                    agregarGrafica(document, chartImages.get("rolesChart"), "Distribución por Roles");
+                    agregarGrafica(document, chartImages.get("genderChart"), "Distribución por Género");
+                    agregarGrafica(document, chartImages.get("ageChart"), "Distribución por Edad");
+                    agregarGrafica(document, chartImages.get("activityChart"), "Actividad por Mes");
+                }
+
+                // Estadísticas textuales (original)
+                java.util.Map<String, Long> usersByRole = usuarios.stream()
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                user -> obtenerNombreRol(user.getIdRole()),
+                                java.util.stream.Collectors.counting()));
+
+                java.util.Map<String, Long> usersByGender = usuarios.stream()
+                        .filter(u -> u.getGender() != null)
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                user -> obtenerGeneroTexto(user.getGender()),
+                                java.util.stream.Collectors.counting()));
+
+                if (!usersByRole.isEmpty() || !usersByGender.isEmpty()) {
+                    document.add(new com.lowagie.text.Paragraph(" "));
+                    com.lowagie.text.Font statsFont = com.lowagie.text.FontFactory.getFont(
+                            com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+                    com.lowagie.text.Paragraph statsTitle = new com.lowagie.text.Paragraph(
+                            "Estadísticas:", statsFont);
+                    statsTitle.setSpacingBefore(20);
+                    document.add(statsTitle);
+
+                    com.lowagie.text.Font statsDataFont = com.lowagie.text.FontFactory.getFont(
+                            com.lowagie.text.FontFactory.HELVETICA, 10, java.awt.Color.BLACK);
+
+                    if (!usersByRole.isEmpty()) {
+                        com.lowagie.text.Paragraph roleTitle = new com.lowagie.text.Paragraph(
+                                "Por Rol:", statsDataFont);
+                        roleTitle.setSpacingBefore(10);
+                        document.add(roleTitle);
+                        for (java.util.Map.Entry<String, Long> entry : usersByRole.entrySet()) {
+                            com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
+                    }
+
+                    if (!usersByGender.isEmpty()) {
+                        com.lowagie.text.Paragraph genderTitle = new com.lowagie.text.Paragraph(
+                                "Por Género:", statsDataFont);
+                        genderTitle.setSpacingBefore(10);
+                        document.add(genderTitle);
+                        for (java.util.Map.Entry<String, Long> entry : usersByGender.entrySet()) {
+                            com.lowagie.text.Paragraph statLine = new com.lowagie.text.Paragraph(
+                                    "• " + entry.getKey() + ": " + entry.getValue() + " usuario(s)", statsDataFont);
+                            statLine.setIndentationLeft(20);
+                            document.add(statLine);
+                        }
+                    }
+                }
+            }
+
+            document.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("Error generando PDF: " + e.getMessage());
+        }
     }
-}
+
+    // Método auxiliar para agregar gráficas al PDF
+    private void agregarGrafica(com.lowagie.text.Document document, String base64Image, String titulo)
+            throws com.lowagie.text.DocumentException, IOException {
+        if (base64Image != null && !base64Image.isEmpty()) {
+            // Agregar título de la gráfica
+            com.lowagie.text.Font chartTitleFont = com.lowagie.text.FontFactory.getFont(
+                    com.lowagie.text.FontFactory.HELVETICA_BOLD, 12, java.awt.Color.BLACK);
+            com.lowagie.text.Paragraph chartTitle = new com.lowagie.text.Paragraph(titulo, chartTitleFont);
+            chartTitle.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+            chartTitle.setSpacingBefore(15);
+            document.add(chartTitle);
+
+            // Decodificar imagen base64
+            String imageData = base64Image;
+            if (imageData.contains(",")) {
+                imageData = imageData.split(",")[1];
+            }
+            byte[] imageBytes = Base64.getDecoder().decode(imageData);
+
+            // Agregar imagen al PDF
+            com.lowagie.text.Image pdfImage = com.lowagie.text.Image.getInstance(imageBytes);
+
+            // Escalar imagen para que quepa bien en el PDF
+            float maxWidth = 450f;
+            float maxHeight = 300f;
+            pdfImage.scaleToFit(maxWidth, maxHeight);
+            pdfImage.setAlignment(com.lowagie.text.Element.ALIGN_CENTER);
+
+            document.add(pdfImage);
+            document.add(new com.lowagie.text.Paragraph(" ")); // Espacio
+        }
+    }
+
     // Endpoint para exportar usuarios a PDF CON FILTROS
     @GetMapping("/exportPdf")
     public void exportUsersToPdf(
@@ -537,17 +547,17 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             document.close();
             response.getOutputStream().flush();
         } catch (Exception e) {
-            // Un único manejo de errores para cualquier excepciÃ³n durante la generaciÃ³n del
+            // Un único manejo de errores para cualquier excepciÃ³n durante la generaciÃ³n
+            // del
             // PDF
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("Error al generar el archivo PDF: " + e.getMessage());
         }
     }
+
     // AQUI VAN LOS MÉTODOS DE LOGIN Y REGISTRO
     @Autowired
     private PasswordEncoder passwordEncoder; // o BCryptPasswordEncoder, pero mejor PasswordEncoder
-
-
 
     // Método reutilizable para crear la sesión de correo con las constantes
     private Session crearSesionCorreo() {
@@ -562,11 +572,6 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             }
         });
     }
-
-
-
-
-
 
     // ========== MÃ‰TODOS AUXILIARES PARA EXPORTACIÃ“N ==========
     private List<UserDTO> obtenerUsuariosFiltrados(String dato, String valor) {
@@ -600,6 +605,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                 })
                 .collect(java.util.stream.Collectors.toList());
     }
+
     private boolean filtrarPorRol(UserDTO usuario, String valor) {
         if (usuario.getIdRole() == null || valor == null) {
             return false;
@@ -622,6 +628,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return false;
     }
+
     private String obtenerNombreRol(Long idRole) {
         if (idRole == null) {
             return "Sin Rol";
@@ -632,6 +639,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             default -> "Otro";
         };
     }
+
     // Método para obtener texto del género
     private String obtenerGeneroTexto(String gender) {
         if (gender == null) {
@@ -644,6 +652,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             default -> "No especificado";
         };
     }
+
     // Método para calcular edad
     private int calcularEdad(LocalDate birthDate) {
         if (birthDate == null) {
@@ -651,6 +660,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
+
     private void addTableHeaderPdf(PdfPTable table, String headerTitle,
             com.lowagie.text.Font font) {
         PdfPCell header = new PdfPCell();
@@ -662,6 +672,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         header.setPadding(8);
         table.addCell(header);
     }
+
     private void addTableCellPdf(PdfPTable table, String text,
             com.lowagie.text.Font font, java.awt.Color backgroundColor,
             int alignment) {
@@ -710,6 +721,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                     .body(new BulkEmailResponse(0, 0, "Error en el envío masivo: " + e.getMessage()));
         }
     }
+
     /**
      * Endpoint para enviar correo masivo filtrado por IDs o emails
      */
@@ -748,6 +760,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
         }
     }
+
     /**
      * Endpoint para enviar correo masivo por rol
      */
@@ -780,6 +793,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
         }
     }
+
     /**
      * Método para envío masivo rápido - Envía a todos los destinatarios en una sola
      * operación
@@ -807,30 +821,182 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
     }
 
     /**
+     * Método para enviar correo individual
+     */
+    private void enviarCorreoIndividual(String destinatario, String asunto, String cuerpo) throws MessagingException {
+        System.out.println("DEBUG: Iniciando envío de correo a: " + destinatario);
+        System.out.println("DEBUG: Asunto: " + asunto);
+
+        Session session = crearSesionCorreo();
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        message.setSubject(asunto);
+
+        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
+            message.setContent(cuerpo, "text/html; charset=utf-8");
+        } else {
+            message.setText(cuerpo, "utf-8");
+        }
+
+        System.out.println("DEBUG: Intentando enviar mensaje por Transport...");
+        Transport.send(message);
+        System.out.println("DEBUG: Mensaje enviado exitosamente por Transport.");
+    }
+
+    /**
+     * Endpoint para enviar notificación individual a un usuario con mensaje
+     * personalizado
+     */
+    @PostMapping("/notify-single")
+    @ResponseBody
+    public ResponseEntity<?> notifySingleUser(@RequestBody Map<String, String> request) {
+        System.out.println("DEBUG: Endpoint /notify-single invocado");
+        try {
+            Long userId = Long.parseLong(request.get("userId"));
+            String messageBody = request.get("message");
+            String subject = request.getOrDefault("subject", "Notificación de Huerta Directa");
+
+            System.out.println("DEBUG: Buscando usuario ID: " + userId);
+            UserDTO user = userService.obtenerUserPorId(userId);
+
+            if (user == null) {
+                System.out.println("DEBUG: Usuario es NULL");
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Usuario no encontrado"));
+            }
+
+            System.out.println("DEBUG: Usuario encontrado. Email: '" + user.getEmail() + "'");
+
+            if (user.getEmail() == null || user.getEmail().isEmpty()) {
+                System.out.println("DEBUG: Email es NULL o vacío");
+                return ResponseEntity.badRequest()
+                        .body(Collections.singletonMap("error", "Usuario sin email asociado"));
+            }
+
+            // Generar contenido visual HTML
+            String htmlContent = crearContenidoHTMLNotificacion(user.getName() != null ? user.getName() : "Usuario",
+                    messageBody);
+
+            enviarCorreoIndividual(user.getEmail(), subject, htmlContent);
+
+            return ResponseEntity
+                    .ok(Collections.singletonMap("message", "Correo enviado exitosamente a " + user.getEmail()));
+
+        } catch (Exception e) {
+            System.err.println("DEBUG ERROR: Excepción en envío de correo:");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "Error al enviar correo: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Método para crear el contenido HTML del correo de notificación (Estilo Huerta
+     * Directa)
+     */
+    private String crearContenidoHTMLNotificacion(String nombre, String mensajePersonalizado) {
+        // Formateamos los saltos de línea del mensaje para HTML
+        String mensajeHtml = mensajePersonalizado.replace("\n", "<br>");
+
+        return """
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Notificación - Huerta Directa</title>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
+                    <table role="presentation" style="width: 100%%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                                    <!-- Header con gradiente verde -->
+                                    <div style="background: linear-gradient(135deg, #689f38 0%%, #8bc34a 100%%); padding: 40px 30px; text-align: center;">
+                                        <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                            🌱 Huerta Directa
+                                        </h1>
+                                        <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
+                                            Mensaje Importante
+                                        </p>
+                                    </div>
+                                    <!-- Contenido principal -->
+                                    <div style="padding: 40px 30px;">
+                                        <div style="text-align: center; margin-bottom: 30px;">
+                                            <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
+                                                📩
+                                            </div>
+                                            <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
+                                                Tienes una nueva notificación
+                                            </h2>
+                                        </div>
+                                        <div style="text-align: left; margin-bottom: 30px;">
+                                            <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
+                                                Hola <strong style="color: #689f38;">%s</strong>,
+                                            </p>
+                                            <div style="background-color: #f8f9fa; border-left: 5px solid #689f38; padding: 20px; border-radius: 5px;">
+                                                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0;">
+                                                    %s
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <!-- Footer -->
+                                        <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
+                                            <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
+                                                Si tienes preguntas, puedes contactarnos en cualquier momento.<br>
+                                                <strong style="color: #689f38;">¡Gracias por ser parte de Huerta Directa! 🌍</strong>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <!-- Footer Verde -->
+                                    <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
+                                        <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
+                                            El equipo de Huerta Directa 🌱
+                                        </p>
+                                        <div style="margin-top: 15px;">
+                                            <span style="color: #c8e6c9; font-size: 12px;">
+                                                © 2024 Huerta Directa - Todos los derechos reservados
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+                """
+                .formatted(nombre, mensajeHtml);
+    }
+
+    /**
      * Metodo privado para enviar correo personalizado
      */
-    //  lo comente por que me daba error y sÃ© que no se usa/////
-    // private void enviarCorreoPersonalizado(String destinatario, String asunto, String cuerpo)
-    //         throws MessagingException {
-    //     Session session = crearSesionCorreo();
-    //     MimeMessage message = new MimeMessage(session);
-    //     message.setFrom(new InternetAddress(SENDER_EMAIL));
-    //     message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-    //     message.setSubject(asunto);
-    //     // Detectar si el cuerpo es HTML o texto plano
-    //     if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
-    //         message.setContent(cuerpo, "text/html; charset=utf-8");
-    //     } else {
-    //         message.setText(cuerpo, "utf-8");
-    //     }
-    //     Transport.send(message);
+    // lo comente por que me daba error y sÃ© que no se usa/////
+    // private void enviarCorreoPersonalizado(String destinatario, String asunto,
+    // String cuerpo)
+    // throws MessagingException {
+    // Session session = crearSesionCorreo();
+    // MimeMessage message = new MimeMessage(session);
+    // message.setFrom(new InternetAddress(SENDER_EMAIL));
+    // message.setRecipients(Message.RecipientType.TO,
+    // InternetAddress.parse(destinatario));
+    // message.setSubject(asunto);
+    // // Detectar si el cuerpo es HTML o texto plano
+    // if (cuerpo.trim().startsWith("<!DOCTYPE") ||
+    // cuerpo.trim().startsWith("<html")) {
+    // message.setContent(cuerpo, "text/html; charset=utf-8");
+    // } else {
+    // message.setText(cuerpo, "utf-8");
+    // }
+    // Transport.send(message);
     // }
     // ========== RECUPERACIÃ“N DE CONTRASEÃ‘A ==========
     /**
-     * Endpoint para solicitar recuperaciÃ³n de contraseÃ±a - VersiÃ³n simple como el
+     * Endpoint para solicitar recuperaciÃ³n de contraseÃ±a - VersiÃ³n simple como
+     * el
      * registro
      */
-
 
     // ========== CARGA DE DATOS DESDE ARCHIVO ==========
     /**
@@ -915,6 +1081,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                             "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
+
     /**
      * Procesar archivo CSV
      */
@@ -952,6 +1119,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return usuarios;
     }
+
     /**
      * Procesar archivo Excel
      */
@@ -1003,6 +1171,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return usuarios;
     }
+
     /**
      * Obtener valor de celda como String
      */
@@ -1033,6 +1202,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                 return "";
         }
     }
+
     // ========== CARGA MASIVA DE PRODUCTOS ==========
     /**
      * Endpoint para cargar productos masivamente desde archivo CSV o Excel
@@ -1054,11 +1224,12 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
 
             // VALIDAR QUE EL USUARIO TENGA DATOS COMPLETOS
             if (userSession.getAddress() == null || userSession.getAddress().trim().isEmpty() ||
-                userSession.getPhone() == null || userSession.getPhone().trim().isEmpty()) {
+                    userSession.getPhone() == null || userSession.getPhone().trim().isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(Map.of(
                                 "success", false,
-                                "message", "Debe completar su información de perfil (dirección y teléfono) antes de poder cargar productos masivamente",
+                                "message",
+                                "Debe completar su información de perfil (dirección y teléfono) antes de poder cargar productos masivamente",
                                 "redirectTo", "/actualizacionUsuario"));
             }
 
@@ -1127,8 +1298,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                     boolean existe = verificarProductoExistente(
                             producto.getNameProduct().trim(),
                             producto.getCategory().trim(),
-                            currentUserId
-                    );
+                            currentUserId);
                     if (existe) {
                         productosDuplicados++;
                         continue;
@@ -1158,6 +1328,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                             "message", "Error al procesar el archivo: " + e.getMessage()));
         }
     }
+
     /**
      * Procesar archivo CSV de productos
      */
@@ -1205,6 +1376,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return productos;
     }
+
     /**
      * Procesar archivo Excel de productos
      */
@@ -1292,6 +1464,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             return false;
         }
     }
+
     /**
      * Crear producto desde DTO usando ProductService
      */
@@ -1314,6 +1487,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
+
     @GetMapping("/admin/migrate-passwords")
     public String migratePasswords() {
         List<User> users = userRepository.findAll();
@@ -1327,6 +1501,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
         }
         return "redirect:/DashboardAdmin";
     }
+
     @PostMapping("/actualizarDatos")
     public String actualizarDatos(
             @RequestParam String name,
@@ -1352,6 +1527,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             return "redirect:/actualizacionUsuario";
         }
     }
+
     @PostMapping("/ActualizarContacto")
     public String actualizarContacto(
             @RequestParam String email,
@@ -1364,17 +1540,17 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                 redirectAttributes.addFlashAttribute("error", "Sesion expirada");
                 return "redirect:/login";
             }
-            //Validar telefono
+            // Validar telefono
             if (phone != null && !phone.trim().isEmpty()) {
-                //Esto eliminar espacion y caracteres no numericos
+                // Esto eliminar espacion y caracteres no numericos
                 String phoneClean = phone.replaceAll("[^0-9]", "");
-                if (phoneClean.length() != 10){
+                if (phoneClean.length() != 10) {
                     redirectAttributes.addFlashAttribute("error", "El nÃºmero de telÃ©fono debe tener 10 dÃ­gitos");
                     return "redirect:/actualizacionUsuario";
                 }
-                phone = phoneClean; //Asignar el telefono limpio
+                phone = phoneClean; // Asignar el telefono limpio
             }
-            //Verificar si el email ya estÃ¡ en uso por otro usuario
+            // Verificar si el email ya estÃ¡ en uso por otro usuario
             if (!currentUser.getEmail().equals(email) &&
                     userRepository.findByEmail(email).isPresent()) {
                 redirectAttributes.addFlashAttribute("error", "El email ya estÃ¡ registrado");
@@ -1393,6 +1569,7 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             return "redirect:/actualizacionUsuario";
         }
     }
+
     @PostMapping("/ActualizarContrasena")
     public String actualizarContrasena(
             @RequestParam String currentPassword,
@@ -1407,8 +1584,8 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
                 return "redirect:/login";
             }
             // Determinar la pagina de redireccion segun el rol
-            String redirectPage = currentUser.getRole().getName().equals("Admin") ?
-                "/actualizacionUsuarioAdmin" : "/actualizacionUsuario";
+            String redirectPage = currentUser.getRole().getName().equals("Admin") ? "/actualizacionUsuarioAdmin"
+                    : "/actualizacionUsuario";
             // Validar que las contraseñas nuevas coincidan
             if (!newPassword.equals(confirmPassword)) {
                 redirectAttributes.addFlashAttribute("error", "Las contraseÃ±as no coinciden");
@@ -1429,10 +1606,10 @@ private void agregarGrafica(com.lowagie.text.Document document, String base64Ima
             redirectAttributes.addFlashAttribute("error", "Error al actualizar la contraseÃ±a");
             // En caso de error, intentar determinar el rol para redirigir correctamente
             User currentUser = (User) session.getAttribute("user");
-            String redirectPage = (currentUser != null && currentUser.getRole().getName().equals("Admin")) ?
-                "/actualizacionUsuarioAdmin" : "/actualizacionUsuario";
+            String redirectPage = (currentUser != null && currentUser.getRole().getName().equals("Admin"))
+                    ? "/actualizacionUsuarioAdmin"
+                    : "/actualizacionUsuario";
             return "redirect:" + redirectPage;
         }
     }
 }
-

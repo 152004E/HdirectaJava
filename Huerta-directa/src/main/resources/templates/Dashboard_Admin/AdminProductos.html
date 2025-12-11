@@ -255,7 +255,34 @@
         }
       }
 
+      @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
 
+      @keyframes slideDown {
+          from { opacity: 0; transform: translate(-50%, -60%); }
+          to { opacity: 1; transform: translate(-50%, -50%); }
+      }
+
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+
+      .modal-overlay.active {
+          display: block;
+          animation: fadeIn 0.3s;
+      }
+
+      .modal-email.active {
+          display: block;
+          animation: slideDown 0.3s;
+      }
+
+      .spinner {
+          animation: spin 1s linear infinite;
+      }
     </style>
   </head>
   <body>
@@ -369,7 +396,8 @@
 
                   <button
                     class="btn btn-notify"
-                    th:onclick="'notificarUsuario(' + ${producto.userId} + ')'"
+                    th:attr="data-id=${producto.userId}, data-username=${producto.userName != null ? producto.userName : 'Usuario'}"
+                    onclick="notificarUsuario(this.getAttribute('data-id'), this.getAttribute('data-username'))"
                   >
                     <span class="material-symbols-outlined">notifications</span>
                     Notificar
@@ -429,51 +457,191 @@
             });
           }
 
-          function notificarUsuario(userId) {
-            Swal.fire({
-              title: "Notificar al usuario",
-              text: "¿Desea enviar una notificación al usuario sobre este producto?",
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonColor: "#558b2f",
-              cancelButtonColor: "#6b7280",
-              confirmButtonText: "Enviar notificación",
-              cancelButtonText: "Cancelar",
-              showLoaderOnConfirm: true,
-              preConfirm: () => {
-                return fetch(`/api/notify-user/${userId}`, {
-                  method: "POST",
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ type: 'product_review' })
-                })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
-                  }
-                  return response.json();
-                })
-                .catch(error => {
-                  Swal.showValidationMessage(
-                    `Error: ${error.message}`
-                  );
-                });
-              },
-              allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-              if (result.isConfirmed) {
-                Swal.fire({
-                  title: "¡Notificación enviada!",
-                  text: "El usuario ha sido notificado exitosamente",
-                  icon: "success",
-                  confirmButtonColor: "#558b2f",
-                  timer: 2000
-                });
-              }
-            });
-          }
-        </script>
+      let currentUserIdToNotify = null;
+
+      function notificarUsuario(userId, userName) {
+        currentUserIdToNotify = userId;
+        const modal = document.getElementById('modalEmail');
+        modal.classList.remove('hidden');
+        // Force reflow for fade-in effect if we added transitions later, 
+        // but for now simple hidden toggle is robust.
+        document.getElementById('displayUserName').textContent = userName || 'Usuario';
+        document.getElementById('asuntoEmail').value = 'Notificación sobre su producto';
+        document.getElementById('destinatarioEmail').value = userName || 'Usuario'; 
+        document.getElementById('cuerpoEmail').value = '';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function cerrarModalEmail() {
+        const modal = document.getElementById('modalEmail');
+        modal.classList.add('hidden');
+        currentUserIdToNotify = null;
+        document.body.style.overflow = 'auto';
+        
+        document.getElementById('formEmailMasivo').reset();
+        document.getElementById('resultMessage').classList.add('hidden');
+        document.getElementById('loadingSpinner').classList.add('hidden');
+        document.getElementById('formEmailMasivo').classList.remove('hidden');
+      }
+
+      function enviarNotificacion(event) {
+        event.preventDefault();
+        if (!currentUserIdToNotify) return;
+
+        const subject = document.getElementById('asuntoEmail').value;
+        const message = document.getElementById('cuerpoEmail').value;
+
+        document.getElementById('loadingSpinner').classList.remove('hidden');
+        document.getElementById('formEmailMasivo').classList.add('hidden');
+
+        fetch('/api/users/notify-single', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                userId: currentUserIdToNotify.toString(), 
+                subject: subject, 
+                message: message 
+            })
+        })
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Error del servidor'); });
+            return response.json();
+        })
+        .then(data => {
+             Swal.fire({
+                title: '¡Enviado!',
+                text: 'Notificación enviada con éxito',
+                icon: 'success',
+                confirmButtonColor: "#558b2f"
+             });
+             cerrarModalEmail();
+        })
+        .catch(error => {
+            Swal.fire('Error', 'No se pudo enviar: ' + error.message, 'error');
+        })
+        .finally(() => {
+            document.getElementById('loadingSpinner').classList.add('hidden');
+            document.getElementById('formEmailMasivo').classList.remove('hidden');
+        });
+      }
+    </script>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+
+<!-- Modal Premium - ESPACIADO AUMENTADO -->
+<div id="modalEmail" class="relative z-[9999] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Background backdrop con blur -->
+    <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity"></div>
+  
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <!-- Modal panel - MÁS ANCHO PARA MÁS ESPACIO -->
+        <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-gray-200">
+            
+            <!-- Close Button - MÁS GRANDE Y CON ESPACIO -->
+            <div class="absolute right-6 top-6 z-20">
+                <button type="button" onclick="cerrarModalEmail()" class="rounded-full bg-gray-100 p-2.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-200">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+            </div>
+
+            <!-- Header - CON MÁS ESPACIO VERTICAL -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-10 py-8 border-b border-gray-200">
+                <div class="flex items-center gap-6">
+                    <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-green-100 ring-2 ring-green-50">
+                        <i class="fas fa-paper-plane text-green-600 text-xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2" id="modal-title">Enviar Notificación</h3>
+                        <p class="text-sm text-gray-600">Comunícate directamente con el usuario seleccionado</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body - CON ESPACIO AMPLIO ENTRE ELEMENTOS -->
+            <div class="px-10 py-8">
+                <form id="formEmailMasivo" onsubmit="enviarNotificacion(event)">
+                    
+                    <!-- User Badge - CON MÁS MARGEN INFERIOR -->
+                    <div class="mb-10 pb-6 border-b border-gray-100">
+                         <div class="inline-flex items-center rounded-lg bg-green-50 px-5 py-3.5 text-sm font-medium text-green-800 border border-green-200 shadow-sm">
+                            <i class="fas fa-user-circle text-green-600 mr-3 text-base"></i>
+                            <span class="mr-3 text-gray-600 font-normal">Destinatario:</span>
+                            <span id="displayUserName" class="font-semibold text-gray-900 text-base">Usuario</span>
+                            <input type="hidden" id="destinatarioEmail"> 
+                        </div>
+                    </div>
+
+                    <!-- Form - ESPACIO AMPLIO ENTRE SECCIONES -->
+                    <div class="space-y-10">
+                        <!-- Asunto - CON MÁS SEPARACIÓN -->
+                        <div class="pb-2">
+                            <label for="asuntoEmail" class="block text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                                <i class="fas fa-heading text-green-600 mr-2 text-sm"></i>
+                                Asunto del Correo
+                            </label>
+                            <input type="text" name="subject" id="asuntoEmail" required 
+                                   class="block w-full rounded-lg border-0 px-4 py-3.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 transition-all duration-200 hover:ring-green-200" 
+                                   placeholder="Ej: Actualización sobre su producto">
+                        </div>
+
+                        <!-- Mensaje - CON MÁS ESPACIO Y ALTURA -->
+                        <div class="pt-2">
+                            <label for="cuerpoEmail" class="block text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                                <i class="fas fa-align-left text-green-600 mr-2 text-sm"></i>
+                                Mensaje
+                            </label>
+                            <textarea id="cuerpoEmail" name="body" rows="8" required 
+                                      class="block w-full rounded-lg border-0 px-4 py-3.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-600 resize-y transition-all duration-200 hover:ring-green-200" 
+                                      placeholder="Escriba aquí el contenido de su mensaje..."></textarea>
+                            
+                            <!-- Info Box - CON MÁS ESPACIO INTERNO -->
+                            <div class="mt-8 p-5 rounded-lg border border-blue-100 bg-blue-50">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-info-circle text-blue-500 text-sm mt-0.5"></i>
+                                    <div>
+                                        <p class="text-sm text-gray-700 font-medium mb-2">Información:</p>
+                                        <p class="text-xs text-gray-600 leading-relaxed">
+                                            El sistema agregará automáticamente un saludo personalizado con el nombre del usuario al inicio del mensaje.
+                                            Puedes usar variables como <code class="bg-blue-100 px-1.5 py-0.5 rounded text-blue-700 font-mono">{"{{nombre}}"}</code> para personalizar aún más el contenido.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons - CON MÁS ESPACIO Y TAMAÑO -->
+                    <div class="mt-12 pt-8 border-t border-gray-100 flex flex-col-reverse sm:flex-row sm:justify-end gap-4">
+                        <button type="button" onclick="cerrarModalEmail()" 
+                                class="inline-flex justify-center items-center rounded-lg bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:shadow-md transition-all duration-200 w-full sm:w-auto order-2 sm:order-1 h-12">
+                            <i class="fas fa-times mr-2 text-sm"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btnEnviar" 
+                                class="inline-flex justify-center items-center rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:shadow-md hover:from-green-700 hover:to-emerald-700 transition-all duration-200 w-full sm:w-auto order-1 sm:order-2 mb-4 sm:mb-0 h-12">
+                            <i class="fas fa-paper-plane mr-2 text-sm"></i>
+                            Enviar Mensaje
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading State - CON MÁS ESPACIO -->
+                <div id="loadingSpinner" class="hidden py-10 text-center">
+                    <div class="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-solid border-gray-200 border-t-green-600" role="status"></div>
+                    <p class="mt-4 text-sm text-gray-600 font-medium">Enviando mensaje...</p>
+                </div>
+                
+                <!-- Result Message - CON MÁS ESPACIO -->
+                <div id="resultMessage" class="hidden mt-6 p-5 rounded-lg text-center text-sm font-medium bg-gray-50 border border-gray-200"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
       </main>
       
       <!-- Resto de tu código (right sidebar) permanece igual -->
@@ -583,8 +751,7 @@
         <!-- ... resto del código del sidebar ... -->
       </div>
     </div>
-    <script src="/JS/dashboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
   </body>
 </html>
