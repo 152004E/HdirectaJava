@@ -511,8 +511,26 @@ public class RutasPagina {
         ProductDTO producto = productService.obtenerProductPorId(id);
         List<CommentDTO> comments = commentService.listarCommentsPorProducto(id);
 
+        // Calculate average rating
+        double averageRating = 0.0;
+        int ratingCount = 0;
+
+        for (CommentDTO comment : comments) {
+            if (comment.getRating() != null) {
+                averageRating += comment.getRating();
+                ratingCount++;
+            }
+        }
+
+        if (ratingCount > 0) {
+            averageRating = averageRating / ratingCount;
+        }
+
         model.addAttribute("producto", producto);
         model.addAttribute("comments", comments);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("ratingCount", ratingCount);
+
         return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }
 

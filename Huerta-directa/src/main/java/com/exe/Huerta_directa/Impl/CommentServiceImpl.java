@@ -128,20 +128,11 @@ public class CommentServiceImpl implements CommentService {
         commentDTO.setCommentCommenter(comment.getCommentCommenter());
         commentDTO.setCreationComment(comment.getCreationComment());
         commentDTO.setCommentType(comment.getCommentType());
+        commentDTO.setRating(comment.getRating()); // Map rating
         commentDTO.setUserId(comment.getUser().getId());
         commentDTO.setNameCommenter(comment.getUser().getName());
         commentDTO.setProductId(
                 comment.getProduct() != null ? comment.getProduct().getIdProduct() : null);
-
-        /*
-         * private Long idComment;
-         * private String NameCommenter;
-         * private String EmailCommenter;
-         * private String CommentCommenter;
-         * private LocalDate CreationComment;
-         * private Long userId;
-         * private Long productId;
-         */
 
         return commentDTO;
 
@@ -153,6 +144,7 @@ public class CommentServiceImpl implements CommentService {
         commentEntity.setCommentCommenter(commentDTO.getCommentCommenter());
         commentEntity.setCreationComment(commentDTO.getCreationComment());
         commentEntity.setCommentType(commentDTO.getCommentType());
+        commentEntity.setRating(commentDTO.getRating()); // Map rating
         commentEntity.setUser(userRepository.findById(commentDTO.getUserId()).orElse(null));
         if (commentDTO.getProductId() != null) {
             commentEntity.setProduct(
@@ -166,6 +158,9 @@ public class CommentServiceImpl implements CommentService {
     private void actualizarDatosComment(Comment comment, CommentDTO commentDTO) {
         comment.setCommentCommenter(commentDTO.getCommentCommenter());
         comment.setCreationComment(commentDTO.getCreationComment());
+        if (commentDTO.getRating() != null) {
+            comment.setRating(commentDTO.getRating()); // Update rating
+        }
 
         if (commentDTO.getUserId() != null) {
             User user = userRepository.findById(commentDTO.getUserId())

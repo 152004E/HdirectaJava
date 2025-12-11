@@ -19,6 +19,7 @@ public class CommentDTO {
     private String commentCommenter;
     private LocalDate creationComment;
     private CommentType commentType;
+    private Integer rating; // 1-5 star rating
     private Long userId;
     private String nameCommenter;
     private Long productId;

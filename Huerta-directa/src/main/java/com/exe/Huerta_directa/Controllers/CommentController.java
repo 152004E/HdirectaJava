@@ -73,6 +73,7 @@ public class CommentController {
     public RedirectView crearComentarioProducto(
             @RequestParam("commentCommenter") String commentCommenter,
             @RequestParam("productId") Long productId,
+            @RequestParam(value = "rating", required = false) Integer rating,
             HttpSession session) {
         try {
             User userSession = (User) session.getAttribute("user");
@@ -85,6 +86,7 @@ public class CommentController {
             commentDTO.setCreationComment(LocalDate.now());
             commentDTO.setUserId(userSession.getId());
             commentDTO.setProductId(productId);
+            commentDTO.setRating(rating); // Set the rating
 
             commentService.crearComment(commentDTO, userSession.getId(), productId);
 
