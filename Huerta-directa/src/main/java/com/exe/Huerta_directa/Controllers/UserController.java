@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -706,16 +707,13 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " usuarios");
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " usuarios");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error en el envío masivo: " + e.getMessage()));
@@ -745,16 +743,14 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " usuarios filtrados");
+            return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
@@ -777,17 +773,15 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " " + roleName);
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " " + roleName);
+            return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
@@ -795,26 +789,55 @@ public class UserController {
     }
 
     /**
-     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola
-     * operación con estilo HTML
+     * Método asíncrono para envío masivo en segundo plano
      */
-    private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
-        Session session = crearSesionCorreo();
+    @Async
+    public void enviarCorreoMasivoAsync(List<User> users, String asunto, String cuerpo) {
+        try {
+            enviarCorreoMasivoOptimizado(users, asunto, cuerpo);
+        } catch (Exception e) {
+            System.err.println("Error en envío masivo asíncrono: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para envío masivo optimizado - Configuración SMTP mejorada
+     */
+    private void enviarCorreoMasivoOptimizado(List<User> users, String asunto, String cuerpo) throws MessagingException {
+        // Configuración SMTP optimizada
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", EMAIL_HOST);
+        props.put("mail.smtp.port", EMAIL_PORT);
+        // Optimizaciones de rendimiento
+        props.put("mail.smtp.connectionpoolsize", "10");
+        props.put("mail.smtp.connectionpooltimeout", "30000");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.writetimeout", "10000");
+        
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+            }
+        });
+        
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SENDER_EMAIL));
-        // Agregar todos los destinatarios de una vez usando BCC para privacidad
+        
+        // Agregar todos los destinatarios usando BCC
         InternetAddress[] destinatarios = new InternetAddress[users.size()];
         for (int i = 0; i < users.size(); i++) {
             destinatarios[i] = new InternetAddress(users.get(i).getEmail());
         }
-        // Usar BCC para envío masivo manteniendo privacidad de emails
         message.setRecipients(Message.RecipientType.BCC, destinatarios);
         message.setSubject(asunto);
         
-        // Aplicar estilo HTML de Huerta Directa al contenido
+        // Aplicar estilo HTML
         String htmlContent = crearContenidoHTMLEnvioMasivo("Usuario", cuerpo);
         message.setContent(htmlContent, "text/html; charset=utf-8");
-        // Enviar el correo masivo en una sola operación
+        
+        // Envío optimizado
         Transport.send(message);
     }
 
