@@ -37,6 +37,7 @@
       ></div>
       <!-- fin del asside -->
       <main>
+        <input type="hidden" id="username" th:value="${currentUser.name}" />
         <h1 class="!mt-[20px]">Revisa tus mensajes aquí.</h1>
         <div
           id="NotaComentarios"
@@ -61,10 +62,10 @@
           class="flex justify-center items-center gap-20 !my-10 text-xl font-bold !text-black/70"
         >
           <a href="" class="!text-[#8bc34a] !border-b-4 !border-[#88ff002f]"
-            >Mensajes</a
+            >Area Social</a
           >
           <a href="">Comentarios de tus productos</a>
-          <a class="" href="">Tus Comentarios</a>
+          <a th:href="@{/MensajesComentarios}">Tus Comentarios</a>
         </div>
         <!-- SECCIÓN COMENTARIOS -->
 
@@ -93,7 +94,7 @@
           <!-- ÁREA DEL CHAT -->
           <div
             id="chatArea"
-            class="!flex !flex-col !h-80 !overflow-y-auto  !p-4 !bg-[#FAF2DD] !mb-5"
+            class="!flex !flex-col !h-80 !overflow-y-auto !p-4 !bg-[#FAF2DD] !mb-5"
           ></div>
 
           <!-- ESCRIBIR MENSAJE -->
@@ -247,6 +248,7 @@
     <script>
       let stompClient = null;
       let currentUser = null;
+      const sender = document.getElementById("username").value;
 
       function connect() {
         const socket = new SockJS("/ws");
@@ -260,14 +262,14 @@
       }
 
       function sendMessage() {
-        const sender = document.getElementById("sender").value.trim();
+        const sender = document.getElementById("username").value;
         const content = document.getElementById("content").value.trim();
 
-        if (sender === "" || content === "") {
+        if (content === "") {
           Swal.fire({
             icon: "warning",
-            title: "Campos incompletos",
-            text: "Debes escribir tu nombre y un mensaje.",
+            title: "Mensaje vacío",
+            text: "Debes escribir un mensaje.",
             confirmButtonColor: "#3085d6",
           });
           return;
@@ -287,29 +289,30 @@
 
         document.getElementById("content").value = "";
       }
+
       function addMessage(msg) {
         const area = document.getElementById("chatArea");
         const isMine = msg.sender === currentUser;
 
         // 🎨 Clases de burbuja
         const bubbleClass = isMine
-          ? "!bg-[#10B981] !text-white !self-end !rounded-xl !rounded-br-none"
-          : "!bg-white !border !border-gray-900 !self-start !rounded-xl !rounded-bl-none";
+          ? "!bg-[#10B981] !text-white !self-end !items-end !rounded-xl !rounded-tr-none"
+          : "!bg-white text-gray-800 !border !border-gray-900/50 !self-start !rounded-xl !rounded-tl-none";
 
         // 📌 Contenedor general alineado
         const wrapperClass = isMine
-          ? "!flex !flex-col !items-end !mb-2"
+          ? "!flex !flex-col  !items-end !mb-2"
           : "!flex !flex-col !items-start !mb-2";
 
         area.innerHTML += `
     <div class="${wrapperClass}">
       
-      <div class="!max-w-[80%] !py-2 !px-5 !shadow ${bubbleClass}">
-        <p class="!text-sm !text-gray-400 !mb-1"><strong>${msg.sender}</strong></p>
-        <p class="!text-sm">${msg.content}</p>
+      <div class="!max-w-[80%]  !py-2 !px-5 !shadow ${bubbleClass}">
+        <p class="!text-[12px]  !mb-1"><strong>${msg.sender}</strong></p>
+        <p class="!text-[12px]  ">${msg.content}</p>
       </div>
 
-      <p class="!text-[10px] !text-gray-300 !mt-1">${msg.time}</p>
+      <p class="!text-[10px] !text-gray-400 !mt-1">${msg.time}</p>
     </div>
   `;
 

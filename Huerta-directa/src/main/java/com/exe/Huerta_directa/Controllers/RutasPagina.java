@@ -323,10 +323,16 @@ public class RutasPagina {
 
     // seccion de comentarios
 
-    @GetMapping("/MensajesAreaSocial")
-    public String MensajesAreaSocial() {
-        return "DashBoard/MensajesAreaSocial";
-    }
+   @GetMapping("/MensajesAreaSocial")
+public String MensajesAreaSocial(Model model, HttpSession session) {
+
+    UserDTO user = (UserDTO) session.getAttribute("user");  // <-- recuperamos al usuario
+
+    model.addAttribute("currentUser", user); // <-- lo mandamos al HTML
+
+    return "DashBoard/MensajesAreaSocial";
+}
+
 
     @GetMapping("/GraficosCategoriaAdmin")
     public String GraficosCategoriaAdmin(Model model) {
