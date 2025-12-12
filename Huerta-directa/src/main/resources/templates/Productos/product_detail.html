@@ -50,10 +50,18 @@
           </div>
 
           <!-- Miniaturas -->
-          <div class="galeria-miniaturas">
-            <div class="miniatura activa">
+          <div class="galeria-miniaturas" th:if="${producto.images != null and !producto.images.isEmpty()}">
+            <!-- Miniatura imagen principal -->
+            <div class="miniatura activa" th:onclick="cambiarImagenPrincipal([[${'/images/productos/' + producto.imageProduct}]])">
               <img
                 th:src="@{'/images/productos/' + ${producto.imageProduct}}"
+                th:alt="${producto.nameProduct}"
+              />
+            </div>
+            <!-- Miniaturas adicionales -->
+            <div class="miniatura" th:each="img : ${producto.images}" th:onclick="cambiarImagenPrincipal([[${'/images/productos/' + img}]])">
+              <img
+                th:src="@{'/images/productos/' + ${img}}"
                 th:alt="${producto.nameProduct}"
               />
             </div>
@@ -71,13 +79,16 @@
 
             <div class="producto-rating">
               <div class="estrellas">
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella">★</span>
+                <!-- Dynamic stars based on average rating -->
+                <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                  <span th:class="${i <= averageRating} ? 'estrella activa' : 'estrella'">★</span>
+                </th:block>
               </div>
-              <span class="rating-texto">(4.0) 127 reseñas</span>
+              <span class="rating-texto">
+                <span th:if="${ratingCount > 0}" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
+                <span th:if="${ratingCount == 0}">Sin calificaciones</span>
+                <span th:text="' (' + ${#lists.size(comments)} + ' reseñas)'"> (0 reseñas)</span>
+              </span>
             </div>
           </div>
 
@@ -158,7 +169,29 @@
                 style="color: #dc3545;">Producto agotado</span>
             </div>
 
-
+            <!-- Selector de cantidad (OCULTO A PETICION DEL USUARIO) -->
+            <div class="cantidad-selector" style="display: none;">
+              <div class="cantidad-controls">
+                <button type="button" class="btn-cantidad" onclick="ajustarCantidadDetalle(-1)">-</button>
+                <input
+                  type="number"
+                  id="cantidad"
+                  class="cantidad-input"
+                  value="1"
+                  min="1"
+                  th:max="${producto.stock}"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="btn-cantidad"
+                  onclick="ajustarCantidadDetalle(1)"
+                  th:data-max-stock="${producto.stock}"
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
             <!-- Botones de acción -->
             <div class="botones-accion" th:if="${producto.stock != null and producto.stock > 0}">
@@ -177,7 +210,8 @@
                   id="cantidadForm"
                   value="1"
                 />
-                <button type="button" class="btn-2" onclick="crearPago()">
+                <button type="button" class="btn-2" 
+                    th:onclick="crearPagoDetalle([[${producto.idProduct}]], [[${producto.nameProduct}]], [[${producto.price}]], '/images/productos/' + [[${producto.imageProduct}]])">
                   Ir a pagar
                 </button>
               </form>
@@ -185,7 +219,7 @@
                 <button
                   type="button"
                   class="agregar-carrito btn-2 botonIcono"
-                  th:onclick="'agregarAlCarrito(' + ${producto.idProduct} + ')'"
+                  th:onclick="agregarAlCarritoDesdeDetalle([[${producto.idProduct}]], [[${producto.nameProduct}]], [[${producto.price}]], '/images/productos/' + [[${producto.imageProduct}]])"
                   ><span class="material-symbols-outlined iconAgregar">
                     add_shopping_cart
                   </span>
@@ -255,7 +289,7 @@
             Conservación
           </button>
           <button class="tab-btn" onclick="cambiarTab('resenas')">
-            Reseñas (127)
+            Reseñas (<span th:text="${#lists.size(comments)}">0</span>)
           </button>
         </div>
 
@@ -288,11 +322,82 @@
           </div>
 
           <div id="resenas" class="tab-panel">
-            <h3>Reseñas de clientes</h3>
-            <p>
-              127 clientes han valorado este producto con un promedio de 4.0
-              estrellas.
-            </p>
+            <h3 style="margin-bottom: 25px; font-size: 1.5rem; color: #1f2937;">Reseñas de clientes</h3>
+
+            <!-- Formulario de reseña  -->
+            <div class="form-resena" style="margin-bottom: 30px; padding: 25px 20px; background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-width: 100%;">
+    <h4 style="margin-bottom: 15px; color: #374151; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.3rem;"></span>
+        Escribe tu opinión
+    </h4>
+                <form action="/comment/add" method="post" style="width: 100%;">
+                    <input type="hidden" name="productId" th:value="${producto.idProduct}" />
+                    <input type="hidden" name="rating" id="ratingInput" value="5" />
+                    
+                    <!-- Star Rating Selector -->
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.95rem;">Tu calificación:</label>
+                        <div class="star-rating" style="display: flex; gap: 5px; font-size: 2rem; cursor: pointer;">
+                            <span class="star" data-rating="1" onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="2" onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="3" onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="4" onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="5" onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHover()">★</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px; width: 100%;">
+                        <textarea
+                            name="commentCommenter"
+                            rows="8"
+                            placeholder="Comparte tu experiencia con este producto... ¿Qué te pareció? ¿Lo recomendarías?"
+                            required
+                            style="width: 100%; min-height: 180px; padding: 15px 20px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; font-family: inherit; resize: vertical; transition: all 0.3s ease; background: white; display: block; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#8bc34a'; this.style.boxShadow='0 0 0 3px rgba(139,195,74,0.1)'"
+                            onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                        ></textarea>
+                    </div>
+                    <div style="text-align: left;">
+                        <button type="submit" style="font-size: 0.85rem; padding: 8px 16px; background: #8bc34a; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-block;">
+                             Publicar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Mensaje cuando no hay reseñas -->
+            <div th:if="${#lists.isEmpty(comments)}" class="no-resenas" style="text-align: center; padding: 40px 20px; background: #f9fafb; border-radius: 12px; border: 2px dashed #d1d5db;">
+               <p style="color: #6b7280; font-size: 1rem; margin: 0;">
+                   <span style="font-size: 2rem; display: block; margin-bottom: 10px;">💬</span>
+                   Aún no hay reseñas para este producto.<br/>
+                   <strong style="color: #8bc34a;">¡Sé el primero en opinar!</strong>
+               </p>
+            </div>
+
+            <!-- Lista de reseñas mejorada -->
+            <div th:each="comment : ${comments}" class="review-item" style="margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.3s ease;" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.04)'; this.style.transform='translateY(0)'">
+                <div class="review-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <!-- Avatar del usuario -->
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <span th:text="${#strings.substring(comment.nameCommenter, 0, 1).toUpperCase()}">U</span>
+                    </div>
+                    <div style="flex: 1;">
+                        <strong th:text="${comment.nameCommenter}" style="color: #1f2937; font-size: 1rem; display: block; margin-bottom: 2px;">Usuario</strong>
+                        <span class="review-date" th:text="${#temporals.format(comment.creationComment, 'dd/MM/yyyy')}" style="color: #9ca3af; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">
+                            <span style="font-size: 0.9rem;">📅</span>
+                            Fecha
+                        </span>
+                    </div>
+                    <!-- Estrellas dinámicas basadas en rating -->
+                    <div style="color: #fbbf24; font-size: 1rem; display: flex; gap: 2px;">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}" 
+                              th:style="${comment.rating != null and i <= comment.rating} ? 'color: #fbbf24;' : 'color: #d1d5db;'">★</span>
+                    </div>
+                </div>
+                <div class="review-body" style="padding-left: 57px;">
+                    <p th:text="${comment.commentCommenter}" style="color: #4b5563; line-height: 1.6; margin: 0; font-size: 0.95rem;">Comentario...</p>
+                </div>
+            </div>
           </div>
         </div>
       </div>
@@ -300,12 +405,43 @@
       <!-- SECCIÓN: Productos relacionados -->
       <div class="productos-relacionados">
         <h2 class="seccion-titulo-principal">También te puede interesar</h2>
-        <div class="productos-grid">
-          <!-- Aquí irían productos relacionados -->
-          <div class="producto-card-mini">
-            <p class="texto-placeholder">
-              Productos relacionados aparecerán aquí
-            </p>
+        
+        <div th:if="${#lists.isEmpty(relatedProducts)}" style="text-align: center; padding: 40px; color: #6b7280;">
+          <p>No hay productos relacionados disponibles en este momento.</p>
+        </div>
+        
+        <div th:if="${!#lists.isEmpty(relatedProducts)}" class="productos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+          
+          <div th:each="related : ${relatedProducts}" class="producto-card-mini" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" 
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+            <a th:href="@{/producto/{id}(id=${related.idProduct})}" style="text-decoration: none; color: inherit; display: block;">
+              
+              <div style="width: 100%; height: 180px; overflow: hidden; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                
+                <img th:if="${!#lists.isEmpty(related.images)}" 
+                     th:src="@{'/images/productos/' + ${related.images[0]}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <img th:if="${#lists.isEmpty(related.images) and related.imageProduct != null}" 
+                     th:src="@{'/images/productos/' + ${related.imageProduct}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <span th:if="${#lists.isEmpty(related.images) and related.imageProduct == null}" style="color: #9ca3af; font-size: 3rem;">📦</span>
+              </div>
+              
+              
+              <div style="padding: 15px;">
+                <h3 th:text="${related.nameProduct}" style="font-size: 0.95rem; font-weight: 600; color: #1f2937; margin: 0 0 8px 0; line-height: 1.3; height: 2.6em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                  Producto
+                </h3>
+                <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 10px 0;" th:text="${related.category}">Categoría</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 1.1rem; font-weight: bold; color: #8bc34a;" th:text="'$' + ${#numbers.formatDecimal(related.price, 1, 2)}">$0.00</span>
+                  <span style="font-size: 0.75rem; padding: 4px 8px; background: #f3f4f6; border-radius: 4px; color: #6b7280;" th:text="'/' + ${related.unit}">unidad</span>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -317,99 +453,145 @@
     </div>
 
     <script>
-      // Script para cambiar cantidad
-      function cambiarCantidad(delta) {
-        const input = document.getElementById("cantidad");
-        const formInput = document.getElementById("cantidadForm");
-        const btnMas = document.querySelector('.btn-cantidad[onclick="cambiarCantidad(1)"]');
+      // ==========================================
+      // Lógica específica del Detalle de Producto
+      // ==========================================
 
-        // Obtener el stock máximo desde el atributo data-max-stock
-        let maxStock = parseInt(btnMas?.getAttribute('data-max-stock')) || 99;
+      // Star Rating System
+      let currentRating = 5; // Default rating
 
-        let valor = parseInt(input.value) || 1;
-        valor = Math.max(1, Math.min(maxStock, valor + delta));
-
-        input.value = valor;
-        if (formInput) formInput.value = valor;
-
-        // Mostrar mensaje si se alcanza el límite
-        if (valor === maxStock && delta > 0) {
-          mostrarMensajeLimite(maxStock);
-        }
+      function setRating(rating) {
+        currentRating = rating;
+        document.getElementById('ratingInput').value = rating;
+        updateStars(rating);
       }
 
-      // Función para mostrar mensaje cuando se alcanza el límite de stock
+      function hoverRating(rating) {
+        updateStars(rating);
+      }
+
+      function resetHover() {
+        updateStars(currentRating);
+      }
+
+      function updateStars(rating) {
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.style.color = '#fbbf24'; // Gold color
+          } else {
+            star.style.color = '#d1d5db'; // Gray color
+          }
+        });
+      }
+
+      // Initialize stars on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        updateStars(currentRating);
+      });
+
+      // 1. Manejo de Cantidad (Renombrado para evitar conflictos con script.js)
+      function ajustarCantidadDetalle(delta) {
+        const input = document.getElementById("cantidad");
+        const formInput = document.getElementById("cantidadForm");
+        const btnMas = document.querySelector('.btn-cantidad[onclick*="1"]');
+
+        // Obtener stock máximo
+        let maxStock = 99;
+        if (btnMas) {
+             const dataMax = btnMas.getAttribute('data-max-stock');
+             if (dataMax) maxStock = parseInt(dataMax);
+        }
+
+        let valor = parseInt(input.value) || 1;
+        let nuevoValor = valor + delta;
+
+        // Validar límites
+        if (nuevoValor < 1) nuevoValor = 1;
+        if (nuevoValor > maxStock) {
+            nuevoValor = maxStock;
+            if (delta > 0) mostrarMensajeLimite(maxStock);
+        }
+
+        input.value = nuevoValor;
+        if (formInput) formInput.value = nuevoValor;
+      }
+
       function mostrarMensajeLimite(maxStock) {
-        // Crear mensaje temporal si no existe
         let mensaje = document.getElementById('mensaje-limite');
         if (!mensaje) {
           mensaje = document.createElement('div');
           mensaje.id = 'mensaje-limite';
           mensaje.style.cssText = 'color: #dc3545; font-size: 12px; margin-top: 5px; text-align: center;';
-          document.querySelector('.cantidad-selector').appendChild(mensaje);
+          document.querySelector('.cantidad-selector')?.appendChild(mensaje);
         }
-
         mensaje.textContent = `Solo hay ${maxStock} unidades disponibles`;
+        setTimeout(() => mensaje?.remove(), 3000);
+      }
 
-        // Remover mensaje después de 3 segundos
+      // 2. Integración con el Carrito de script.js
+      // Construye el objeto producto y usa la función global agregarAlCarrito(producto) de script.js
+      function agregarAlCarritoDesdeDetalle(idProducto, nombre, precio, imagen) {
+        const cantidadInput = document.getElementById("cantidad");
+        const cantidad = parseInt(cantidadInput.value) || 1;
+
+        const infoElemento = {
+            id: idProducto.toString(), // script.js maneja IDs como strings en data attributes
+            nombre: nombre,
+            precio: parseFloat(precio),
+            imagen: imagen,
+            cantidad: cantidad
+        };
+
+        console.log("📦 Agregando desde detalle:", infoElemento);
+
+        // Llamar a la función del script.js global
+        if (typeof agregarAlCarrito === 'function') {
+            agregarAlCarrito(infoElemento);
+        } else {
+            console.error("❌ Error: script.js no cargado correctamente (agregarAlCarrito no existe)");
+            alert("Error interno: No se pudo agregar al carrito.");
+        }
+      }
+
+      // 3. Función "Ir a Pagar" (Comprar ahora)
+      function crearPagoDetalle(idProducto, nombre, precio, imagen) {
+        // 1. Agregar al carrito
+        agregarAlCarritoDesdeDetalle(idProducto, nombre, precio, imagen);
+
+        // 2. Proceder al pago (función de script.js)
         setTimeout(() => {
-          if (mensaje && mensaje.parentNode) {
-            mensaje.parentNode.removeChild(mensaje);
-          }
-        }, 3000);
+            if (typeof procederAlPago === 'function') {
+                procederAlPago();
+            } else {
+                console.log("ℹ️ Redirigiendo a resumen manualmente...");
+                window.location.href = "/carrito/resumen";
+            }
+        }, 500); // Pequeño delay para asegurar actualización de localStorage
+      }
+      
+      // 4. Cambiar Imagen Principal
+      function cambiarImagenPrincipal(src) {
+        const mainImage = document.querySelector('.producto-img-zoom');
+        if(mainImage) {
+            mainImage.src = src;
+        }
+        // Actualizar clase activa en miniaturas
+        document.querySelectorAll('.miniatura').forEach(m => m.classList.remove('activa'));
+        event.currentTarget.classList.add('activa');
       }
 
-      // Función para agregar al carrito
-      function agregarAlCarrito(productoId) {
-        const cantidad = document.getElementById('cantidad')?.value || 1;
-
-        fetch('/carrito/agregar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `productoId=${productoId}&cantidad=${cantidad}`
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Producto agregado al carrito exitosamente');
-            // Actualizar contador del carrito si existe
-            actualizarContadorCarrito();
-          } else {
-            alert('Error al agregar el producto: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error al agregar el producto al carrito');
-        });
-      }
-
-      // Función para actualizar contador del carrito
-      function actualizarContadorCarrito() {
-        fetch('/carrito/count')
-        .then(response => response.json())
-        .then(data => {
-          const contador = document.querySelector('.carrito-contador');
-          if (contador && data.count !== undefined) {
-            contador.textContent = data.count;
-            contador.style.display = data.count > 0 ? 'block' : 'none';
-          }
-        })
-        .catch(error => console.error('Error al actualizar contador:', error));
-      }
-
-      // Script para tabs
+      // Script para tabs (sin cambios)
       function cambiarTab(tabId) {
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-panel")
-          .forEach((panel) => panel.classList.remove("active"));
-
+        document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+        // Buscar el botón correspondiente
+        const btn = Array.from(document.querySelectorAll(".tab-btn")).find(b => b.textContent.includes(tabId) || b.onclick.toString().includes(tabId));
+        if(btn) btn.classList.add("active");
+        
+        // Fallback simple si no encuentra por texto
         event.target.classList.add("active");
+        
         document.getElementById(tabId).classList.add("active");
       }
     </script>

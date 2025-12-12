@@ -1,11 +1,13 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.DTO.CommentDTO;
 import com.exe.Huerta_directa.DTO.UserDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.exe.Huerta_directa.Service.UserService;
+import com.exe.Huerta_directa.Service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class RutasPagina {
@@ -32,12 +35,14 @@ public class RutasPagina {
     private final ProductService productService;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final CommentService commentService;
 
-    public RutasPagina(ProductService productService, UserService userService, UserRepository userRepository) {
+    public RutasPagina(ProductService productService, UserService userService, UserRepository userRepository,
+            CommentService commentService) {
         this.productService = productService;
         this.userService = userService;
         this.userRepository = userRepository;
-
+        this.commentService = commentService;
     }
 
     /**
@@ -297,16 +302,17 @@ public class RutasPagina {
      * }
      */
 
-
     @GetMapping("/DashBoardAgregarProducto")
     public String DashBoardAgregarProducto() {
         return "DashBoard/DashBoardAgregarProducto";
     }
-        @GetMapping("/misOrdenes")
+
+    @GetMapping("/misOrdenes")
     public String misOrdenes() {
         return "DashBoard/misOrdenes";
     }
-            @GetMapping("/misVentas")
+
+    @GetMapping("/misVentas")
     public String misVentas() {
         return "DashBoard/misVentas";
     }
@@ -318,13 +324,16 @@ public class RutasPagina {
 
     // seccion de comentarios
 
-    @GetMapping("/MensajesAreaSocial")
-    public String MensajesAreaSocial() {
-        return "DashBoard/MensajesAreaSocial";
-    }
+   @GetMapping("/MensajesAreaSocial")
+public String MensajesAreaSocial(Model model, HttpSession session) {
 
+    UserDTO user = (UserDTO) session.getAttribute("user");  // <-- recuperamos al usuario
 
-    
+    model.addAttribute("currentUser", user); // <-- lo mandamos al HTML
+
+    return "DashBoard/MensajesAreaSocial";
+}
+
 
     @GetMapping("/GraficosCategoriaAdmin")
     public String GraficosCategoriaAdmin(Model model) {
@@ -333,7 +342,7 @@ public class RutasPagina {
         model.addAttribute("datosCategoria", datosCategoria);
 
         long totalProductos = productService.contarTotalProductos();
-    model.addAttribute("totalProductos", totalProductos);
+        model.addAttribute("totalProductos", totalProductos);
 
         DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
         datosCategoria.forEach(dataset::setValue);
@@ -507,7 +516,39 @@ public class RutasPagina {
     @GetMapping("/producto/{id}")
     public String verProducto(@PathVariable("id") Long id, Model model) {
         ProductDTO producto = productService.obtenerProductPorId(id);
+        List<CommentDTO> comments = commentService.listarCommentsPorProducto(id);
+
+        // Calculate average rating
+        double averageRating = 0.0;
+        int ratingCount = 0;
+
+        for (CommentDTO comment : comments) {
+            if (comment.getRating() != null) {
+                averageRating += comment.getRating();
+                ratingCount++;
+            }
+        }
+
+        if (ratingCount > 0) {
+            averageRating = averageRating / ratingCount;
+        }
+
+        // Get related products (same category, exclude current product, limit to 6)
+        List<ProductDTO> allProducts = productService.listarProducts();
+        List<ProductDTO> relatedProducts = allProducts.stream()
+                .filter(p -> p.getCategory() != null &&
+                        producto.getCategory() != null &&
+                        p.getCategory().equalsIgnoreCase(producto.getCategory()) &&
+                        !p.getIdProduct().equals(id))
+                .limit(6)
+                .collect(Collectors.toList());
+
         model.addAttribute("producto", producto);
+        model.addAttribute("comments", comments);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("ratingCount", ratingCount);
+        model.addAttribute("relatedProducts", relatedProducts);
+
         return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }
 
@@ -594,6 +635,7 @@ public class RutasPagina {
             return "redirect:/agregar_admin";
         }
     }
+
     @GetMapping("/ClientesDestacados")
     public String mostrarClientesDestacados(Model model) {
         return "Clientes_Destacados/ClientesDestacados";
@@ -602,13 +644,11 @@ public class RutasPagina {
     @Value("${mercadopago.public_key}")
     private String mercadoPagoPublicKey;
 
-
     @GetMapping("/checkout")
     public String mostrarCheckout(Model model) {
         model.addAttribute("publicKey", mercadoPagoPublicKey);
         return "MercadoPago/checkout"; // ✅ Correcto // Ajusta la ruta según tu estructura de templates
     }
-
 
     @GetMapping("/reportes/comment")
     public String mostrarReporteEstadistico() {
@@ -616,21 +656,22 @@ public class RutasPagina {
         return "Reportes_estadisticos/commentFc";
     }
 
-
-    //verify por sms firebase
-    /*@GetMapping("/verify-sms")
-    public String showVerifySMS(HttpSession session, Model model) {
-        // Tomar el usuario de la sesión
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            // Si no hay usuario en sesión, redirigir al login
-            return "redirect:/login";
-        }
-
-        // Pasar el teléfono y rol al HTML
-        model.addAttribute("user", user);
-        return "verify-sms"; // Nombre del HTML sin extensión .html
-    }*/
+    // verify por sms firebase
+    /*
+     * @GetMapping("/verify-sms")
+     * public String showVerifySMS(HttpSession session, Model model) {
+     * // Tomar el usuario de la sesión
+     * User user = (User) session.getAttribute("user");
+     * if (user == null) {
+     * // Si no hay usuario en sesión, redirigir al login
+     * return "redirect:/login";
+     * }
+     * 
+     * // Pasar el teléfono y rol al HTML
+     * model.addAttribute("user", user);
+     * return "verify-sms"; // Nombre del HTML sin extensión .html
+     * }
+     */
 
     @GetMapping("/verify-sms")
     public String showSmsVerificationPage(HttpSession session) {
@@ -641,19 +682,9 @@ public class RutasPagina {
         return "login/verify-sms"; // Página para ingresar el código SMS
     }
 
-
     @GetMapping("/Delivery")
     public String mostrarDeliveryPage() {
         return "Delivery_Form/delivery_from";
     }
 
-
-
-
-
-
-
-
-
 }
-

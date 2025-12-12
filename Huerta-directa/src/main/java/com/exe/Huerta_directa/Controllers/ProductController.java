@@ -1,6 +1,5 @@
 package com.exe.Huerta_directa.Controllers;
 
-
 import com.exe.Huerta_directa.DTO.ProductDTO;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
@@ -18,18 +17,22 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+
 @RestController
-    @RequestMapping("/api/products")
+@RequestMapping("/api/products")
 @CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
     private final UserRepository userRepository;
+
     public ProductController(ProductService productService, UserRepository userRepository) {
         this.productService = productService;
         this.userRepository = userRepository;
     }
+
     @Value("${upload.path}")
     private String uploadPath;
+
     // Crear producto con imagen
     @PostMapping("/create")
     public RedirectView crearProductConImagen(
@@ -37,7 +40,8 @@ public class ProductController {
             @RequestParam("precio") Double price,
             @RequestParam("unidad") String unit,
             @RequestParam("categoria-producto") String category,
-            @RequestParam("image_product") MultipartFile imageFile,
+            @RequestParam(value = "image_product", required = false) MultipartFile mainImage,
+            @RequestParam(value = "additional_images", required = false) MultipartFile[] additionalImages,
             @RequestParam("descripcion") String descriptionProduct,
             @RequestParam(value = "stock", defaultValue = "0") Integer stock,
             HttpSession session,
@@ -62,7 +66,7 @@ public class ProductController {
                 // Si no hay usuario en sesiÃ³n, agregar mensaje de alerta y redirigir al login
                 return new RedirectView("/login?error=session&message=Debe+iniciar+sesion+para+registrar+productos");
             }
-            //  PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
+            // PERMITIR A CUALQUIER USUARIO REGISTRADO AGREGAR PRODUCTOS
             // (No solo admins, cualquier usuario autenticado puede agregar productos)
             // Crear carpeta /productos dentro de C:/HuertaUploads
             File uploadDir = new File(uploadPath, "productos");
@@ -73,14 +77,14 @@ public class ProductController {
                 }
             }
             String nombreImagen = "default.png";
-            if (imageFile != null && !imageFile.isEmpty()) {
-                String extension = Optional.ofNullable(imageFile.getOriginalFilename())
+            if (mainImage != null && !mainImage.isEmpty()) {
+                String extension = Optional.ofNullable(mainImage.getOriginalFilename())
                         .filter(f -> f.contains("."))
-                        .map(f -> f.substring(imageFile.getOriginalFilename().lastIndexOf(".")))
+                        .map(f -> f.substring(mainImage.getOriginalFilename().lastIndexOf(".")))
                         .orElse("");
                 nombreImagen = UUID.randomUUID() + extension;
                 File destino = new File(uploadDir, nombreImagen);
-                imageFile.transferTo(destino);
+                mainImage.transferTo(destino);
             }
             ProductDTO productDTO = new ProductDTO();
             productDTO.setNameProduct(nameProduct);
@@ -92,16 +96,39 @@ public class ProductController {
             productDTO.setPublicationDate(LocalDate.now());
             productDTO.setUserId(userSession.getId()); // Usar ID del usuario de la sesión
             productDTO.setImageProduct(nombreImagen);
-            ProductDTO creado = productService.crearProduct(productDTO, userSession.getId()); // Usar ID del usuario de la sesiÃ³n
+
+            ProductDTO creado = productService.crearProduct(productDTO, userSession.getId());
+
+            // Guardar imágenes adicionales
+            if (additionalImages != null && additionalImages.length > 0) {
+                for (MultipartFile img : additionalImages) {
+                    if (!img.isEmpty()) {
+                        String ext = Optional.ofNullable(img.getOriginalFilename())
+                                .filter(f -> f.contains("."))
+                                .map(f -> f.substring(img.getOriginalFilename().lastIndexOf(".")))
+                                .orElse("");
+                        String imgName = UUID.randomUUID() + ext;
+                        File dest = new File(uploadDir, imgName);
+                        img.transferTo(dest);
+
+                        // Aquí deberíamos guardar la entidad ProductImage.
+                        // Como no tengo autowired del repositorio de imágenes aquí, necesito un
+                        // servicio.
+                        productService.agregarImagen(creado.getIdProduct(), imgName);
+                    }
+                }
+            }
             // Condicional para redirigir
             if (creado != null && creado.getIdProduct() != null) {
-                //  Registro exitoso -> Redirigir segÃºn el rol del usuario con mensaje de Ã©xito
+                // Registro exitoso -> Redirigir segÃºn el rol del usuario con mensaje de Ã©xito
                 if (user != null && user.getRole() != null && user.getRole().getIdRole() == 1) {
                     // Si es admin, ir al dashboard admin con mensaje de Ã©xito
-                    return new RedirectView("/DashboardAdmin?success=Producto+'" + creado.getNameProduct() + "'+registrado+exitosamente");
+                    return new RedirectView("/DashboardAdmin?success=Producto+'" + creado.getNameProduct()
+                            + "'+registrado+exitosamente");
                 } else {
                     // Si es usuario normal, ir al dashboard cliente o index con mensaje de Ã©xito
-                    return new RedirectView("/index?success=Â¡Producto+registrado+exitosamente!+Gracias+por+contribuir+a+nuestra+comunidad");
+                    return new RedirectView(
+                            "/index?success=Â¡Producto+registrado+exitosamente!+Gracias+por+contribuir+a+nuestra+comunidad");
                 }
             } else {
                 // FallÃ³ el registro -> volver al formulario con error
@@ -112,17 +139,20 @@ public class ProductController {
             return new RedirectView("/agregar_producto?error=Error+interno+del+servidor.+Contacta+al+administrador");
         }
     }
+
     // AquÃ­ irÃ­an los endpoints para manejar las solicitudes HTTP relacionadas con
     // producto
     @GetMapping
     public ResponseEntity<List<ProductDTO>> listarProducts() {
         return new ResponseEntity<>(productService.listarProducts(), HttpStatus.OK);
     }
+
     // Metodo para obtener un producto por su id
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> obtenerProductPorId(@PathVariable Long productId) {
         return new ResponseEntity<>(productService.obtenerProductPorId(productId), HttpStatus.OK);
     }
+
     /*
      *
      * @PostMapping
@@ -138,16 +168,18 @@ public class ProductController {
             @RequestBody ProductDTO productDTO) {
         return new ResponseEntity<>(productService.actualizarProduct(productId, productDTO), HttpStatus.OK);
     }
+
     // Metodo para eliminar un producto por su id
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> eliminarProductPorId(@PathVariable("productId") Long productId) {
         productService.eliminarProductPorId(productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @GetMapping("/mis-Productos" )
+
+    @GetMapping("/mis-Productos")
     @ResponseBody
     public ResponseEntity<List<ProductDTO>> obtenerMisProductos(HttpSession session) {
-        User user = (User)  session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -155,4 +187,3 @@ public class ProductController {
         return ResponseEntity.ok(productos);
     }
 }
-

@@ -25,14 +25,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> listarProducts() {
-        return productRepository.findAll()
+        return productRepository.findAllWithUsers()
                 .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDTO> listarProductosPorUsuario(Long userID) {
         return productRepository.findByUserId(userID)
                 .stream()
@@ -41,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDTO obtenerProductPorId(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productId));
@@ -140,11 +143,63 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setPublicationDate(product.getPublicationDate());
         productDTO.setStock(product.getStock());
 
+        // Map images
+        if (product.getImages() != null) {
+            productDTO.setImages(product.getImages().stream()
+                    .map(com.exe.Huerta_directa.Entity.ProductImage::getImageUrl)
+                    .collect(Collectors.toList()));
+        }
+
         // Asignar el id del usuario si existe
         if (product.getUser() != null) {
-            productDTO.setUserId(product.getUser().getId());
+            try {
+                // PRIMERO asignamos los datos planos
+                productDTO.setUserId(product.getUser().getId());
+
+                // Intentamos obtener el nombre (esto dispara el fetch lazy)
+                String nombreUsuario = product.getUser().getName();
+
+                // DEBUG LOGGING
+                System.out.println("DEBUG PROD ID: " + product.getIdProduct() + " - User ID: "
+                        + product.getUser().getId() + " - Name found: '" + nombreUsuario + "'");
+
+                if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) {
+                    // Si no tiene nombre, intentamos usar el EMAIL
+                    String emailUsuario = product.getUser().getEmail();
+                    if (emailUsuario != null && !emailUsuario.trim().isEmpty()) {
+                        productDTO.setUserName(emailUsuario);
+                        nombreUsuario = emailUsuario; // Para el UserDTO
+                    } else {
+                        // Si no tiene email, usamos el ID
+                        String idString = "ID: " + product.getUser().getId();
+                        productDTO.setUserName(idString);
+                        nombreUsuario = idString;
+                    }
+                } else {
+                    productDTO.setUserName(nombreUsuario);
+                }
+
+                // Crear UserDTO básico con la información necesaria
+                com.exe.Huerta_directa.DTO.UserDTO userDTO = new com.exe.Huerta_directa.DTO.UserDTO();
+                userDTO.setId(product.getUser().getId());
+                userDTO.setName(nombreUsuario);
+                userDTO.setEmail(product.getUser().getEmail());
+                productDTO.setUser(userDTO);
+
+            } catch (Exception e) {
+                // Fallback en caso de error de lazy loading u otro
+                System.err.println("Error al cargar datos del usuario para producto " + product.getIdProduct() + ": "
+                        + e.getMessage());
+                productDTO.setUserName("Error cargando usuario");
+                // Aseguramos que el userDTO no sea null para evitar null pointer en vista
+                com.exe.Huerta_directa.DTO.UserDTO fallbackUser = new com.exe.Huerta_directa.DTO.UserDTO();
+                fallbackUser.setId(product.getUser().getId()); // ID suele estar disponible sin fetch
+                fallbackUser.setName("Desconocido");
+                productDTO.setUser(fallbackUser);
+            }
         } else {
             productDTO.setUserId(null);
+            productDTO.setUserName("Sin Usuario Asignado");
         }
 
         return productDTO;
@@ -197,7 +252,6 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.groupingBy(ProductDTO::getCategory, Collectors.counting()));
     }
 
-
     @Override
     @Transactional
     public void descontarStock(Long productId, Integer cantidad) {
@@ -219,8 +273,7 @@ public class ProductServiceImpl implements ProductService {
         producto.setStock(producto.getStock() - cantidad);
         productRepository.save(producto);
 
-
-        //Eliminar esto despues de probar
+        // Eliminar esto despues de probar
         // Logging mejorado (más fácil de leer en consola)
         System.out.println("✅ Stock actualizado:");
         System.out.println("   - Producto: " + producto.getNameProduct());
@@ -228,6 +281,19 @@ public class ProductServiceImpl implements ProductService {
         System.out.println("   - Stock restante: " + producto.getStock());
     }
 
+    @Override
+    @Transactional
+    public void agregarImagen(Long productId, String imageUrl) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        com.exe.Huerta_directa.Entity.ProductImage image = new com.exe.Huerta_directa.Entity.ProductImage(imageUrl,
+                product);
+
+        // Al usar CascadeType.ALL y añadir a la lista, debería guardarse al guardar el
+        // producto
+        product.getImages().add(image);
+        productRepository.save(product);
+    }
+
 }
-
-

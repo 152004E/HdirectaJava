@@ -23,7 +23,6 @@ import org.jfree.chart.ChartUtils;
 import java.io.File;
 import java.io.OutputStream;
 
-
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -70,6 +69,35 @@ public class CommentController {
 
     }
 
+    @PostMapping("/comment/add")
+    public RedirectView crearComentarioProducto(
+            @RequestParam("commentCommenter") String commentCommenter,
+            @RequestParam("productId") Long productId,
+            @RequestParam(value = "rating", required = false) Integer rating,
+            HttpSession session) {
+        try {
+            User userSession = (User) session.getAttribute("user");
+            if (userSession == null) {
+                return new RedirectView("/login?error=session&message=Debe+iniciar+sesión+para+dejar+una+reseña");
+            }
+
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setCommentCommenter(commentCommenter);
+            commentDTO.setCreationComment(LocalDate.now());
+            commentDTO.setUserId(userSession.getId());
+            commentDTO.setProductId(productId);
+            commentDTO.setRating(rating); // Set the rating
+
+            commentService.crearComment(commentDTO, userSession.getId(), productId);
+
+            return new RedirectView("/producto/" + productId + "?success=¡Gracias+por+tu+reseña!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("/producto/" + productId + "?error=No+se+pudo+enviar+tu+reseña");
+        }
+    }
+
     // ✅ GET — Mostrar comentarios tipo SITE (para la página "quienes somos")
     @GetMapping("/Quienes_somos")
     public String mostrarComentariosSitio(Model model) {
@@ -102,8 +130,8 @@ public class CommentController {
         return "DashBoard/MensajesComentarios";
     }
 
-    //Este apartado esel get mappin de comentarios pero para le admin
-     @GetMapping("/MensajesComentariosAdmin")
+    // Este apartado esel get mappin de comentarios pero para le admin
+    @GetMapping("/MensajesComentariosAdmin")
     public String mostrarMensajesComentariosAdmin(Model model, HttpSession session) {
         // Obtener usuario de la sesión
         User userSession = (User) session.getAttribute("user");
@@ -192,15 +220,15 @@ public class CommentController {
                 datos,
                 true,
                 true,
-                false
-        );
+                false);
 
         // Guardar gráfico en disco
         String rutaArchivo = "uploads/graficos/reporteProductSite.png";
 
         try {
             File carpeta = new File("uploads/graficos/");
-            if (!carpeta.exists()) carpeta.mkdirs();
+            if (!carpeta.exists())
+                carpeta.mkdirs();
 
             try (OutputStream out = new FileOutputStream(rutaArchivo)) {
                 ChartUtils.writeChartAsPNG(out, chart, 650, 450);
@@ -219,6 +247,5 @@ public class CommentController {
 
         return "Reportes_estadisticos/commentFc";
     }
-
 
 }

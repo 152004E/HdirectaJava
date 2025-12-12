@@ -22,241 +22,9 @@
     <!-- Enlace al archivo CSS -->
     <link rel="stylesheet" href="/CSS/StyleDashBoardd.css" />
     <link rel="stylesheet" href="/css/output.css" />
+    <link rel="stylesheet" href="/css/AdminProducts.css" />
     <link rel="icon" type="image/png" href="/images/logo_huerta.png" />
-    <style>
-      .products-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 24px;
-        padding: 16px 0;
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-      
-      .product-card {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        border: 1px solid #e5e7eb;
-      }
-      
-      .product-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        border-color: #9ae6b4;
-      }
-      
-      .product-image-container {
-        position: relative;
-        height: 200px;
-        overflow: hidden;
-        background: linear-gradient(135deg, #f0f9ff 0%, #f0fff4 100%);
-      }
-      
-      .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
-      
-      .product-card:hover .product-image {
-        transform: scale(1.05);
-      }
-      
-      .product-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 20px;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-        z-index: 10;
-      }
-      
-      .product-content {
-        padding: 20px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      
-      .product-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1f2937;
-        line-height: 1.3;
-        margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        min-height: 3.2rem;
-      }
-      
-      .product-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 0;
-        border-top: 1px solid #f3f4f6;
-        border-bottom: 1px solid #f3f4f6;
-      }
-      
-      .price-container, .stock-container {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      
-      .meta-label {
-        font-size: 0.875rem;
-        color: #6b7280;
-        font-weight: 500;
-      }
-      
-      .price-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #059669;
-      }
-      
-      .stock-value {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #1f2937;
-        background: #f0f9ff;
-        padding: 4px 12px;
-        border-radius: 20px;
-        text-align: center;
-      }
-      
-      .category-badge {
-        display: inline-block;
-        background: #f3f4f6;
-        color: #4b5563;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding: 4px 12px;
-        border-radius: 20px;
-        margin-top: 8px;
-      }
-      
-      .user-info {
-        background: #eff6ff;
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-top: auto;
-      }
-      
-      .user-label {
-        font-size: 0.875rem;
-        color: #3b82f6;
-        font-weight: 500;
-        margin-bottom: 4px;
-      }
-      
-      .user-name {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #1e40af;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      
-      .user-name::before {
-        content: "person";
-        font-family: 'Material Symbols Outlined';
-        font-size: 1.1rem;
-      }
-      
-      .action-buttons {
-        display: flex;
-        gap: 12px;
-        margin-top: 16px;
-      }
-      
-      .btn {
-        flex: 1;
-        padding: 10px 16px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 0.9375rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        border: none;
-      }
-      
-      .btn-delete {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-        color: white;
-      }
-      
-      .btn-delete:hover {
-        background: linear-gradient(135deg, #dc2626, #b91c1c);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-      }
-      
-      .btn-notify {
-        background: linear-gradient(135deg, #558b2f, #385c1e);
-        color: white;
-      }
-      
-      .btn-notify:hover {
-        background: linear-gradient(135deg, #4a7729, #2e4a18);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(85, 139, 47, 0.3);
-      }
-      
-      /* Responsive adjustments */
-      @media (max-width: 768px) {
-        .products-container {
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 20px;
-          padding: 12px;
-        }
-        
-        .product-image-container {
-          height: 180px;
-        }
-        
-        .product-content {
-          padding: 16px;
-        }
-        
-        .product-title {
-          font-size: 1.125rem;
-        }
-      }
-      
-      @media (max-width: 480px) {
-        .products-container {
-          grid-template-columns: 1fr;
-        }
-        
-        .action-buttons {
-          flex-direction: column;
-        }
-      }
 
-
-    </style>
   </head>
   <body>
     <div class="containerActualizarUcuario">
@@ -352,7 +120,7 @@
                 <!-- Información del usuario -->
                 <div class="user-info">
                   <div class="user-label">Publicado por</div>
-                  <div class="user-name" th:text="${producto.userName}">
+                  <div class="user-name" th:text="${producto.userName != null and !#strings.isEmpty(producto.userName) ? producto.userName : 'usuario'}">
                     Nombre Usuario
                   </div>
                 </div>
@@ -369,7 +137,8 @@
 
                   <button
                     class="btn btn-notify"
-                    th:onclick="'notificarUsuario(' + ${producto.userId} + ')'"
+                    th:attr="data-id=${producto.userId}, data-username=${producto.userName != null ? producto.userName : 'Usuario'}"
+                    onclick="notificarUsuario(this.getAttribute('data-id'), this.getAttribute('data-username'))"
                   >
                     <span class="material-symbols-outlined">notifications</span>
                     Notificar
@@ -429,54 +198,150 @@
             });
           }
 
-          function notificarUsuario(userId) {
-            Swal.fire({
-              title: "Notificar al usuario",
-              text: "¿Desea enviar una notificación al usuario sobre este producto?",
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonColor: "#558b2f",
-              cancelButtonColor: "#6b7280",
-              confirmButtonText: "Enviar notificación",
-              cancelButtonText: "Cancelar",
-              showLoaderOnConfirm: true,
-              preConfirm: () => {
-                return fetch(`/api/notify-user/${userId}`, {
-                  method: "POST",
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ type: 'product_review' })
-                })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
-                  }
-                  return response.json();
-                })
-                .catch(error => {
-                  Swal.showValidationMessage(
-                    `Error: ${error.message}`
-                  );
-                });
-              },
-              allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-              if (result.isConfirmed) {
-                Swal.fire({
-                  title: "¡Notificación enviada!",
-                  text: "El usuario ha sido notificado exitosamente",
-                  icon: "success",
-                  confirmButtonColor: "#558b2f",
-                  timer: 2000
-                });
-              }
-            });
-          }
-        </script>
+      let currentUserIdToNotify = null;
+
+      function notificarUsuario(userId, userName) {
+        currentUserIdToNotify = userId;
+        const modal = document.getElementById('modalEmail');
+        modal.classList.remove('hidden');
+        // Force reflow for fade-in effect if we added transitions later, 
+        // but for now simple hidden toggle is robust.
+        document.getElementById('displayUserName').textContent = userName || 'Usuario';
+        document.getElementById('asuntoEmail').value = 'Notificación sobre su producto';
+        document.getElementById('destinatarioEmail').value = userName || 'Usuario'; 
+        document.getElementById('cuerpoEmail').value = '';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function cerrarModalEmail() {
+        const modal = document.getElementById('modalEmail');
+        modal.classList.add('hidden');
+        currentUserIdToNotify = null;
+        document.body.style.overflow = 'auto';
+        
+        document.getElementById('formEmailMasivo').reset();
+        document.getElementById('resultMessage').classList.add('hidden');
+        document.getElementById('loadingSpinner').classList.add('hidden');
+        document.getElementById('formEmailMasivo').classList.remove('hidden');
+      }
+
+      function enviarNotificacion(event) {
+        event.preventDefault();
+        if (!currentUserIdToNotify) return;
+
+        const subject = document.getElementById('asuntoEmail').value;
+        const message = document.getElementById('cuerpoEmail').value;
+
+        document.getElementById('loadingSpinner').classList.remove('hidden');
+        document.getElementById('formEmailMasivo').classList.add('hidden');
+
+        fetch('/api/users/notify-single', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                userId: currentUserIdToNotify.toString(), 
+                subject: subject, 
+                message: message 
+            })
+        })
+        .then(response => {
+            if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Error del servidor'); });
+            return response.json();
+        })
+        .then(data => {
+             Swal.fire({
+                title: '¡Enviado!',
+                text: 'Notificación enviada con éxito',
+                icon: 'success',
+                confirmButtonColor: "#558b2f"
+             });
+             cerrarModalEmail();
+        })
+        .catch(error => {
+            Swal.fire('Error', 'No se pudo enviar: ' + error.message, 'error');
+        })
+        .finally(() => {
+            document.getElementById('loadingSpinner').classList.add('hidden');
+            document.getElementById('formEmailMasivo').classList.remove('hidden');
+        });
+      }
+    </script>
+    <script src="/JS/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+<div id="modalEmail" class="modalEmail-overlay hidden">
+
+    <div class="modalEmail-container">
+
+        <!-- HEADER -->
+        <div class="modalEmail-header">
+            <div>
+                <h2 class="modalEmail-title">Enviar notificación</h2>
+                <p class="modalEmail-subtitle">Mensaje directo y claro para tu usuario</p>
+            </div>
+
+            <button onclick="cerrarModalEmail()" class="modalEmail-close">✕</button>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="modalEmail-body">
+
+            <!-- Destinatario -->
+            <div class="modalEmail-dest">
+                <span class="modalEmail-dot"></span>
+                <span class="modalEmail-dest-label">Para:</span>
+                <span id="displayUserName" class="modalEmail-dest-name">Usuario</span>
+                <input type="hidden" id="destinatarioEmail">
+            </div>
+
+            <!-- FORM -->
+            <form id="formEmailMasivo" onsubmit="enviarNotificacion(event)" class="modalEmail-form">
+
+                <!-- Asunto -->
+                <label class="modalEmail-label">Asunto</label>
+                <input id="asuntoEmail" name="subject" class="modalEmail-input" required>
+
+                <!-- Mensaje -->
+                <label class="modalEmail-label">Mensaje</label>
+                <textarea id="cuerpoEmail" name="body" class="modalEmail-textarea" rows="7" required></textarea>
+
+                <!-- Info -->
+                <div class="modalEmail-info">
+                    <span class="modalEmail-info-icon">ℹ</span>
+                    Se agregará el saludo automáticamente. Puedes usar variables como  
+                    <code class="modalEmail-code">{{nombre}}</code>  
+                    para personalizar tu mensaje.
+                </div>
+                
+                <!-- Loading & Result Messages (Hidden by default, used by JS) -->
+                <div id="loadingSpinner" class="hidden text-center py-4">
+                    <div class="inline-block w-8 h-8 border-4 border-gray-200 border-t-green-600 rounded-full spinner"></div>
+                    <p class="mt-2 text-gray-600">Enviando...</p>
+                </div>
+                <div id="resultMessage" class="hidden p-4 rounded-lg text-center font-medium"></div>
+
+                <!-- Buttons -->
+                <div class="modalEmail-footer">
+                    <button type="button" onclick="cerrarModalEmail()" class="modalEmail-btn cancel">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" id="btnEnviar" class="modalEmail-btn send">
+                        Enviar mensaje
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
       </main>
       
-      <!-- Resto de tu código (right sidebar) permanece igual -->
+
       <div class="right">
         <div class="top">
           <div class="theme-toggler">
@@ -583,8 +448,7 @@
         <!-- ... resto del código del sidebar ... -->
       </div>
     </div>
-    <script src="/JS/dashboard.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
   </body>
 </html>

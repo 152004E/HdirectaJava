@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.exe.Huerta_directa.DTO.CarritoItem;
 import com.exe.Huerta_directa.Service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.HashMap;
@@ -38,8 +39,9 @@ public class PaymentController {
 
             System.out.println("📤 Respuesta de MercadoPago (JSON): " + responseJson);
 
-            // Parsear el JSON a Map usando Jackson
-            Map<String, Object> paymentResult = objectMapper.readValue(responseJson, Map.class);
+            // Parsear el JSON a Map usando Jackson con TypeReference
+            TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+            Map<String, Object> paymentResult = objectMapper.readValue(responseJson, typeRef);
 
             // Extraer información importante
             String status = (String) paymentResult.get("status");

@@ -172,27 +172,35 @@
           </label>
 
           <div
-            class="!flex !flex-col !items-center !my-2 !flex-wrap !gap-4 !border-4 !border-dashed !border-gray-400 !p-4"
+            class="!flex !flex-col !items-center !my-2 !gap-2 !border-4 !border-dashed !border-gray-400 !p-2"
           >
-            <input
-              type="file"
-              id="imagen"
-              name="image_product"
-              accept="image/*"
-              required
-              hidden
-            />
+            <div class="!w-full !text-center">
+              <label class="!block !text-[10px] !font-medium !mb-1 !text-black"
+                >Imagen Principal</label
+              >
+              <input
+                type="file"
+                id="imagen"
+                name="image_product"
+                accept="image/*"
+                required
+                class="!block !w-full !text-[10px] !text-slate-500 file:!mr-2 file:!py-1 file:!px-2 file:!rounded-full file:!border-0 file:!text-[10px] file:!font-semibold file:!bg-[#8dc84b] file:!text-white hover:file:!bg-[#6ca52a]"
+              />
+            </div>
 
-            <label
-              for="imagen"
-              class="!bg-[#8dc84b] !w-[250px] !text-white !px-4 !py-2 !rounded-md !font-semibold !cursor-pointer !hover:bg-[#6ca52a] !transition-all"
-            >
-              📁 Seleccionar imagen
-            </label>
-
-            <span id="file-name" class="!text-[#8dc84b] !font-medium !text-sm">
-              Ningún archivo seleccionado
-            </span>
+            <div class="!w-full !text-center">
+              <label class="!block !text-[10px] !font-medium !mb-1 !text-black"
+                >Adicionales (Ctrl+Click)</label
+              >
+              <input
+                type="file"
+                id="additional_images"
+                name="additional_images"
+                accept="image/*"
+                multiple
+                class="!block !w-full !text-[10px] !text-slate-500 file:!mr-2 file:!py-1 file:!px-2 file:!rounded-full file:!border-0 file:!text-[10px] file:!font-semibold file:!bg-[#8dc84b] file:!text-white hover:file:!bg-[#6ca52a]"
+              />
+            </div>
           </div>
 
           <!-- Botones -->
@@ -249,7 +257,6 @@
               </h3>
               <p id="prev-stock" class="!text-sm !text-green-800 !font-bold">
                 Stock Disponible
-
               </p>
 
               <p class="!text-sm !text-subtle-text-light" id="prev-descripcion">
@@ -283,7 +290,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </body>
 </html>
