@@ -1,28 +1,38 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.Entity.User;
+import com.exe.Huerta_directa.Service.ChatSocialService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class SocialMessagesController {
 
+    private final ChatSocialService chatService;
+
+    public SocialMessagesController(ChatSocialService chatService) {
+        this.chatService = chatService;
+    }
+
     @GetMapping("/MensajesAreaSocial")
     public String MensajesAreaSocial(Model model, HttpSession session) {
 
-        // Obtener el User que está guardado en la sesión
         User user = (User) session.getAttribute("user");
 
-        // Si no hay usuario, redirigir a login
         if (user == null) {
             return "redirect:/login";
         }
 
-        // Enviar el usuario actual a Thymeleaf
         model.addAttribute("currentUser", user);
-
         return "DashBoard/MensajesAreaSocial";
+    }
+
+    @GetMapping("/MensajesAreaSocial/mensajes")
+    @ResponseBody
+    public Object loadMessages() {
+        return chatService.getAllMessages();
     }
 }

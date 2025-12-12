@@ -1,18 +1,34 @@
 package com.exe.Huerta_directa.Controllers;
 
+import com.exe.Huerta_directa.Entity.ChatSocialMessage;
+import com.exe.Huerta_directa.Service.ChatSocialService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import com.exe.Huerta_directa.DTO.ChatMessage;
+import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class ChatWebSocketController {
-    @MessageMapping("/sendMessage")  // Cliente envía a /app/sendMessage
-    @SendTo("/topic/messages")   // el servidor reenvia a /tipic/messages
 
-    public ChatMessage send(ChatMessage message){
-        System.out.println("");
-        return message;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ChatSocialService chatService;
+
+    @MessageMapping("/sendMessage")
+    public void receiveMessage(@Payload Map<String, String> msg) {
+
+        // RECIBE EL MENSAJE DEL CLIENTE
+        String sender = msg.get("sender");
+        String content = msg.get("content");
+        Long userId = Long.parseLong(msg.get("userId"));
+
+        // 1. GUARDAR EN BD
+        ChatSocialMessage saved = chatService.saveMessage(userId, sender, content);
+
+        // 2. ENVIAR A TODOS LOS CLIENTES ACTUALES
+        messagingTemplate.convertAndSend("/topic/messages", saved);
     }
 }

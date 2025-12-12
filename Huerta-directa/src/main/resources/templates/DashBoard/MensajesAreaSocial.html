@@ -37,7 +37,11 @@
       ></div>
       <!-- fin del asside -->
       <main>
-        <input type="hidden" id="username" th:value="${currentUser.name}" />
+        <input 
+    type="hidden"
+    id="userInfo"
+    th:value="${currentUser.name}"
+    th:data-id="${currentUser.id}" />
         <h1 class="!mt-[20px]">Revisa tus mensajes aquí.</h1>
         <div
           id="NotaComentarios"
@@ -239,87 +243,109 @@
 
     <script>
       let stompClient = null;
-      let currentUser = null;
-      const sender = document.getElementById("username").value;
 
+     const username = document.getElementById("userInfo").value;
+const userId = document.getElementById("userInfo").dataset.id;
+
+      // ========================
+      // CONECTAR A WEBSOCKET
+      // ========================
       function connect() {
-        const socket = new SockJS("/ws");
+        const socket = new SockJS("/chat-socket");
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function () {
-          stompClient.subscribe("/topic/messages", function (message) {
-            addMessage(JSON.parse(message.body));
+        stompClient.connect({}, () => {
+          // Nos suscribimos para recibir mensajes
+          stompClient.subscribe("/topic/messages", (message) => {
+            const msg = JSON.parse(message.body);
+
+            addMessage({
+              sender: msg.senderName,
+              content: msg.content,
+              time: new Date(msg.timestamp).toLocaleTimeString(),
+            });
           });
         });
       }
 
+      // ========================
+      // ENVIAR MENSAJE
+      // ========================
       function sendMessage() {
-        const sender = document.getElementById("username").value;
         const content = document.getElementById("content").value.trim();
 
-        if (content === "") {
-          Swal.fire({
-            icon: "warning",
-            title: "Mensaje vacío",
-            text: "Debes escribir un mensaje.",
-            confirmButtonColor: "#3085d6",
-          });
-          return;
-        }
-
-        if (!currentUser) currentUser = sender;
+        if (content === "") return;
 
         stompClient.send(
           "/app/sendMessage",
           {},
           JSON.stringify({
-            sender: sender,
+            sender: username,
             content: content,
-            time: new Date().toLocaleTimeString(),
+            userId: userId,
           })
         );
 
         document.getElementById("content").value = "";
       }
 
+      // ========================
+      // CARGAR MENSAJES INICIALES
+      // ========================
+      async function loadMessages() {
+        const res = await fetch("/MensajesAreaSocial/mensajes");
+        const msgs = await res.json();
+
+        msgs.forEach((m) => {
+          addMessage({
+            sender: m.senderName,
+            content: m.content,
+            time: new Date(m.timestamp).toLocaleTimeString(),
+          });
+        });
+      }
+
+      // ========================
+      // MOSTRAR MENSAJE EN EL CHAT
+      // ========================
       function addMessage(msg) {
         const area = document.getElementById("chatArea");
-        const isMine = msg.sender === currentUser;
+        const isMine = msg.sender === username;
 
-        // 🎨 Clases de burbuja
         const bubbleClass = isMine
-          ? "!bg-[#10B981] !text-white !self-end !items-end !rounded-xl !rounded-tr-none"
+          ? "!bg-[#10B981] !text-white !self-end !rounded-xl !rounded-tr-none"
           : "!bg-white text-gray-800 !border !border-gray-900/50 !self-start !rounded-xl !rounded-tl-none";
 
-        // 📌 Contenedor general alineado
-        const wrapperClass = isMine
-          ? "!flex !flex-col  !items-end !mb-2"
-          : "!flex !flex-col !items-start !mb-2";
-
         area.innerHTML += `
-    <div class="${wrapperClass}">
-      
-      <div class="!max-w-[80%]  !py-2 !px-5 !shadow ${bubbleClass}">
-        <p class="!text-[12px]  !mb-1"><strong>${msg.sender}</strong></p>
-        <p class="!text-[12px]  ">${msg.content}</p>
-      </div>
-
-      <p class="!text-[10px] !text-gray-400 !mt-1">${msg.time}</p>
-    </div>
-  `;
+        <div class="!flex !flex-col ${
+          isMine ? "!items-end" : "!items-start"
+        } !mb-2">
+            <div class="!max-w-[80%] !py-2 !px-5 !shadow ${bubbleClass}">
+                <p class="!text-[12px] !mb-1"><strong>${msg.sender}</strong></p>
+                <p class="!text-[12px]">${msg.content}</p>
+            </div>
+            <p class="!text-[10px] !text-gray-400 !mt-1">${msg.time}</p>
+        </div>
+    `;
 
         area.scrollTop = area.scrollHeight;
       }
-      // Enviar mensaje al presionar ENTER
-      document
-        .getElementById("content")
-        .addEventListener("keydown", function (e) {
-          if (e.key === "Enter") {
-            e.preventDefault(); // evita salto de línea
-            sendMessage();
-          }
-        });
+
+      // ========================
+      // ENTER PARA ENVIAR
+      // ========================
+      document.getElementById("content").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // ========================
+      // INICIAR TODO
+      // ========================
       connect();
+      loadMessages();
     </script>
   </body>
 </html>
