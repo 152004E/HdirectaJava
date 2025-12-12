@@ -76,16 +76,12 @@
             <h2 class="!text-3xl !font-bold !text-green-700">
               💬 Chat Área Social
             </h2>
-            <div class="!mb-4 flex justify-center items-center !gap-7">
-              <label class="!font-semibold !text-gray-700 !w-[110px]"
+            <div class="flex justify-center items-center !gap-3 !mr-10">
+              <label class="!font-semibold !text-gray-700 "
                 >Tu nombre:</label
               >
-              <input
-                id="sender"
-                type="text"
-                placeholder="Ingresa tu nombre..."
-                class="!w-full !p-3 !border !border-gray-300 !rounded-lg !mt-1 !focus:outline-none !focus:ring-2 !focus:ring-green-400"
-              />
+              <p th:text="${currentUser.name}">Nombre</p>
+             
             </div>
           </div>
 
