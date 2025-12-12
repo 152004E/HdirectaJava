@@ -405,12 +405,43 @@
       <!-- SECCIÓN: Productos relacionados -->
       <div class="productos-relacionados">
         <h2 class="seccion-titulo-principal">También te puede interesar</h2>
-        <div class="productos-grid">
-          <!-- Aquí irían productos relacionados -->
-          <div class="producto-card-mini">
-            <p class="texto-placeholder">
-              Productos relacionados aparecerán aquí
-            </p>
+        
+        <div th:if="${#lists.isEmpty(relatedProducts)}" style="text-align: center; padding: 40px; color: #6b7280;">
+          <p>No hay productos relacionados disponibles en este momento.</p>
+        </div>
+        
+        <div th:if="${!#lists.isEmpty(relatedProducts)}" class="productos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+          <!-- Product cards -->
+          <div th:each="related : ${relatedProducts}" class="producto-card-mini" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" 
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+            <a th:href="@{/producto/{id}(id=${related.idProduct})}" style="text-decoration: none; color: inherit; display: block;">
+              <!-- Product Image -->
+              <div style="width: 100%; height: 180px; overflow: hidden; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                <!-- Try images list first, then imageProduct, then placeholder -->
+                <img th:if="${!#lists.isEmpty(related.images)}" 
+                     th:src="@{'/images/productos/' + ${related.images[0]}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <img th:if="${#lists.isEmpty(related.images) and related.imageProduct != null}" 
+                     th:src="@{'/images/productos/' + ${related.imageProduct}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <span th:if="${#lists.isEmpty(related.images) and related.imageProduct == null}" style="color: #9ca3af; font-size: 3rem;">📦</span>
+              </div>
+              
+              <!-- Product Info -->
+              <div style="padding: 15px;">
+                <h3 th:text="${related.nameProduct}" style="font-size: 0.95rem; font-weight: 600; color: #1f2937; margin: 0 0 8px 0; line-height: 1.3; height: 2.6em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                  Producto
+                </h3>
+                <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 10px 0;" th:text="${related.category}">Categoría</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 1.1rem; font-weight: bold; color: #8bc34a;" th:text="'$' + ${#numbers.formatDecimal(related.price, 1, 2)}">$0.00</span>
+                  <span style="font-size: 0.75rem; padding: 4px 8px; background: #f3f4f6; border-radius: 4px; color: #6b7280;" th:text="'/' + ${related.unit}">unidad</span>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
