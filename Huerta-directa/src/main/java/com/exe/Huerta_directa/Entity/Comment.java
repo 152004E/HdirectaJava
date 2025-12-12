@@ -28,6 +28,9 @@ public class Comment {
     @Column(name = "comment_type", nullable = false, length = 20)
     private CommentType commentType;
 
+    @Column(name = "rating", nullable = true)
+    private Integer rating; // 1-5 star rating, nullable for backward compatibility
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class RutasPagina {
@@ -517,8 +518,37 @@ public String MensajesAreaSocial(Model model, HttpSession session) {
         ProductDTO producto = productService.obtenerProductPorId(id);
         List<CommentDTO> comments = commentService.listarCommentsPorProducto(id);
 
+        // Calculate average rating
+        double averageRating = 0.0;
+        int ratingCount = 0;
+
+        for (CommentDTO comment : comments) {
+            if (comment.getRating() != null) {
+                averageRating += comment.getRating();
+                ratingCount++;
+            }
+        }
+
+        if (ratingCount > 0) {
+            averageRating = averageRating / ratingCount;
+        }
+
+        // Get related products (same category, exclude current product, limit to 6)
+        List<ProductDTO> allProducts = productService.listarProducts();
+        List<ProductDTO> relatedProducts = allProducts.stream()
+                .filter(p -> p.getCategory() != null &&
+                        producto.getCategory() != null &&
+                        p.getCategory().equalsIgnoreCase(producto.getCategory()) &&
+                        !p.getIdProduct().equals(id))
+                .limit(6)
+                .collect(Collectors.toList());
+
         model.addAttribute("producto", producto);
         model.addAttribute("comments", comments);
+        model.addAttribute("averageRating", averageRating);
+        model.addAttribute("ratingCount", ratingCount);
+        model.addAttribute("relatedProducts", relatedProducts);
+
         return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }
 

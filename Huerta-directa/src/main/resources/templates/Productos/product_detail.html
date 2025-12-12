@@ -79,13 +79,16 @@
 
             <div class="producto-rating">
               <div class="estrellas">
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella activa">★</span>
-                <span class="estrella">★</span>
+                <!-- Dynamic stars based on average rating -->
+                <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                  <span th:class="${i <= averageRating} ? 'estrella activa' : 'estrella'">★</span>
+                </th:block>
               </div>
-                <span class="rating-texto" th:text="'(' + ${#lists.size(comments)} + ') reseñas'"> (4.0) 127 reseñas</span>
+              <span class="rating-texto">
+                <span th:if="${ratingCount > 0}" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</span>
+                <span th:if="${ratingCount == 0}">Sin calificaciones</span>
+                <span th:text="' (' + ${#lists.size(comments)} + ' reseñas)'"> (0 reseñas)</span>
+              </span>
             </div>
           </div>
 
@@ -329,6 +332,20 @@
     </h4>
                 <form action="/comment/add" method="post" style="width: 100%;">
                     <input type="hidden" name="productId" th:value="${producto.idProduct}" />
+                    <input type="hidden" name="rating" id="ratingInput" value="5" />
+                    
+                    <!-- Star Rating Selector -->
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 0.95rem;">Tu calificación:</label>
+                        <div class="star-rating" style="display: flex; gap: 5px; font-size: 2rem; cursor: pointer;">
+                            <span class="star" data-rating="1" onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="2" onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="3" onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="4" onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHover()">★</span>
+                            <span class="star" data-rating="5" onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHover()">★</span>
+                        </div>
+                    </div>
+
                     <div style="margin-bottom: 12px; width: 100%;">
                         <textarea
                             name="commentCommenter"
@@ -342,7 +359,7 @@
                     </div>
                     <div style="text-align: left;">
                         <button type="submit" style="font-size: 0.85rem; padding: 8px 16px; background: #8bc34a; border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-block;">
-                            📝 Publicar
+                             Publicar
                         </button>
                     </div>
                 </form>
@@ -371,9 +388,10 @@
                             Fecha
                         </span>
                     </div>
-                    <!-- Estrellas decorativas -->
-                    <div style="color: #fbbf24; font-size: 1rem;">
-                        ★★★★★
+                    <!-- Estrellas dinámicas basadas en rating -->
+                    <div style="color: #fbbf24; font-size: 1rem; display: flex; gap: 2px;">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}" 
+                              th:style="${comment.rating != null and i <= comment.rating} ? 'color: #fbbf24;' : 'color: #d1d5db;'">★</span>
                     </div>
                 </div>
                 <div class="review-body" style="padding-left: 57px;">
@@ -387,12 +405,43 @@
       <!-- SECCIÓN: Productos relacionados -->
       <div class="productos-relacionados">
         <h2 class="seccion-titulo-principal">También te puede interesar</h2>
-        <div class="productos-grid">
-          <!-- Aquí irían productos relacionados -->
-          <div class="producto-card-mini">
-            <p class="texto-placeholder">
-              Productos relacionados aparecerán aquí
-            </p>
+        
+        <div th:if="${#lists.isEmpty(relatedProducts)}" style="text-align: center; padding: 40px; color: #6b7280;">
+          <p>No hay productos relacionados disponibles en este momento.</p>
+        </div>
+        
+        <div th:if="${!#lists.isEmpty(relatedProducts)}" class="productos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+          
+          <div th:each="related : ${relatedProducts}" class="producto-card-mini" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" 
+               onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+            <a th:href="@{/producto/{id}(id=${related.idProduct})}" style="text-decoration: none; color: inherit; display: block;">
+              
+              <div style="width: 100%; height: 180px; overflow: hidden; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                
+                <img th:if="${!#lists.isEmpty(related.images)}" 
+                     th:src="@{'/images/productos/' + ${related.images[0]}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <img th:if="${#lists.isEmpty(related.images) and related.imageProduct != null}" 
+                     th:src="@{'/images/productos/' + ${related.imageProduct}}" 
+                     th:alt="${related.nameProduct}"
+                     style="width: 100%; height: 100%; object-fit: cover;" />
+                <span th:if="${#lists.isEmpty(related.images) and related.imageProduct == null}" style="color: #9ca3af; font-size: 3rem;">📦</span>
+              </div>
+              
+              
+              <div style="padding: 15px;">
+                <h3 th:text="${related.nameProduct}" style="font-size: 0.95rem; font-weight: 600; color: #1f2937; margin: 0 0 8px 0; line-height: 1.3; height: 2.6em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                  Producto
+                </h3>
+                <p style="font-size: 0.85rem; color: #6b7280; margin: 0 0 10px 0;" th:text="${related.category}">Categoría</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 1.1rem; font-weight: bold; color: #8bc34a;" th:text="'$' + ${#numbers.formatDecimal(related.price, 1, 2)}">$0.00</span>
+                  <span style="font-size: 0.75rem; padding: 4px 8px; background: #f3f4f6; border-radius: 4px; color: #6b7280;" th:text="'/' + ${related.unit}">unidad</span>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -407,6 +456,39 @@
       // ==========================================
       // Lógica específica del Detalle de Producto
       // ==========================================
+
+      // Star Rating System
+      let currentRating = 5; // Default rating
+
+      function setRating(rating) {
+        currentRating = rating;
+        document.getElementById('ratingInput').value = rating;
+        updateStars(rating);
+      }
+
+      function hoverRating(rating) {
+        updateStars(rating);
+      }
+
+      function resetHover() {
+        updateStars(currentRating);
+      }
+
+      function updateStars(rating) {
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.style.color = '#fbbf24'; // Gold color
+          } else {
+            star.style.color = '#d1d5db'; // Gray color
+          }
+        });
+      }
+
+      // Initialize stars on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        updateStars(currentRating);
+      });
 
       // 1. Manejo de Cantidad (Renombrado para evitar conflictos con script.js)
       function ajustarCantidadDetalle(delta) {
