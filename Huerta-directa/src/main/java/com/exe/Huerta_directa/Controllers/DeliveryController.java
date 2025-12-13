@@ -3,7 +3,6 @@ package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.Service.DeliveryService;
 import com.exe.Huerta_directa.Strategy.DeliveryResult;
-import com.exe.Huerta_directa.Strategy.Localidad;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
