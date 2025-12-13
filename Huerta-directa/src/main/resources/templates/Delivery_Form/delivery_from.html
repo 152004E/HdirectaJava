@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Entregas - Huerta Directa</title>
+    <title>Metodo De Envio</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #54cc33 0%, #3c3 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -41,7 +41,7 @@
         }
 
         h1 {
-            color: #667eea;
+            color: #3c3;
             margin-bottom: 10px;
             font-size: 28px;
         }
@@ -76,14 +76,14 @@
 
         select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3c3;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #54cc33 0%, #3c3 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -117,7 +117,7 @@
     <div class="header">
         <div class="logo">🚚</div>
         <h1>Calculadora de Entregas</h1>
-        <p class="subtitle">Calcula el tiempo de entrega según tu localidad</p>
+        <p class="subtitle">Elige tu metodo de Envio</p>
     </div>
 
     <!-- IMPORTANTE: method="post" porque tu controller usa @PostMapping -->
@@ -162,7 +162,7 @@
     </form>
 
     <div class="info-box">
-        <strong>ℹ️ Nota:</strong> Los factores se calculan basándose en la distancia y condiciones de tráfico. Chapinero es la referencia base (100%).
+        <strong>ℹ️ Nota:</strong> Los factores se calculan basándose en la distancia y condiciones de tráfico. Chapinero es nuestro punto de despacho.
     </div>
 </div>
 </body>
