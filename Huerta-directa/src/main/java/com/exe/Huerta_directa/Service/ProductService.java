@@ -37,4 +37,7 @@ public interface ProductService {
     void descontarStock(Long productId, Integer cantidad);
 
     void agregarImagen(Long productId, String imageUrl);
+
+    // Enrich products with rating data (average rating and review count)
+    void enrichProductsWithRatings(List<ProductDTO> products);
 }

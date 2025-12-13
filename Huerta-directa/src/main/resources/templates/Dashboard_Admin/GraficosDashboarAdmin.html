@@ -543,7 +543,7 @@
         // ===== FUNCIONES PARA PRODUCTOS =====
         async function obtenerDatosProductos() {
             try {
-                const response = await fetch('/api/products/{productId}');
+                const response = await fetch('/api/products');
                 if (!response.ok) {
                     throw new Error('Error al obtener productos');
                 }

@@ -30,4 +30,8 @@ public class ProductDTO {
 
     private UserDTO user;
 
+    // Rating fields for product cards
+    private Double averageRating;
+    private Integer reviewCount;
+
 }

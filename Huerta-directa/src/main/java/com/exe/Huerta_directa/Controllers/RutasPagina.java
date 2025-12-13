@@ -89,6 +89,9 @@ public class RutasPagina {
         // Obtener TODOS los productos para mostrar en el index
         List<ProductDTO> productos = productService.listarProducts();
 
+        // Enrich products with rating data (average rating and review count)
+        productService.enrichProductsWithRatings(productos);
+
         // Marcar productos del usuario actual con etiqueta
         productos.forEach(producto -> {
             if (producto.getUserId() != null && producto.getUserId().equals(userSession.getId())) {
@@ -324,16 +327,6 @@ public class RutasPagina {
 
     // seccion de comentarios
 
-   @GetMapping("/MensajesAreaSocial")
-public String MensajesAreaSocial(Model model, HttpSession session) {
-
-    UserDTO user = (UserDTO) session.getAttribute("user");  // <-- recuperamos al usuario
-
-    model.addAttribute("currentUser", user); // <-- lo mandamos al HTML
-
-    return "DashBoard/MensajesAreaSocial";
-}
-
 
     @GetMapping("/GraficosCategoriaAdmin")
     public String GraficosCategoriaAdmin(Model model) {
@@ -514,7 +507,7 @@ public String MensajesAreaSocial(Model model, HttpSession session) {
     }
 
     @GetMapping("/producto/{id}")
-    public String verProducto(@PathVariable("id") Long id, Model model) {
+    public String verProducto(@PathVariable("id") Long id, Model model, HttpSession session) {
         ProductDTO producto = productService.obtenerProductPorId(id);
         List<CommentDTO> comments = commentService.listarCommentsPorProducto(id);
 
@@ -543,11 +536,15 @@ public String MensajesAreaSocial(Model model, HttpSession session) {
                 .limit(6)
                 .collect(Collectors.toList());
 
+        // Get current user from session to check if this is their own product
+        User userSession = (User) session.getAttribute("user");
+
         model.addAttribute("producto", producto);
         model.addAttribute("comments", comments);
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("ratingCount", ratingCount);
         model.addAttribute("relatedProducts", relatedProducts);
+        model.addAttribute("currentUser", userSession);
 
         return "Productos/product_detail"; // apunta a tu vista en templates/Productos/product_detail.html
     }

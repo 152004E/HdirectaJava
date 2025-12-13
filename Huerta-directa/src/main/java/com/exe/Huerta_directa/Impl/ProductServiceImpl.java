@@ -1,11 +1,13 @@
 package com.exe.Huerta_directa.Impl;
 
 import com.exe.Huerta_directa.DTO.ProductDTO;
+import com.exe.Huerta_directa.DTO.CommentDTO;
 import com.exe.Huerta_directa.Entity.Product;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.ProductRepository;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.ProductService;
+import com.exe.Huerta_directa.Service.CommentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final CommentService commentService;
 
-    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository,
+            CommentService commentService) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     @Override
@@ -294,6 +299,42 @@ public class ProductServiceImpl implements ProductService {
         // producto
         product.getImages().add(image);
         productRepository.save(product);
+    }
+
+    @Override
+    public void enrichProductsWithRatings(List<ProductDTO> products) {
+        for (ProductDTO product : products) {
+            try {
+                // Get comments for this product
+                List<CommentDTO> comments = commentService.listarCommentsPorProducto(product.getIdProduct());
+
+                // Calculate average rating and count
+                double averageRating = 0.0;
+                int ratingCount = 0;
+
+                for (CommentDTO comment : comments) {
+                    if (comment.getRating() != null) {
+                        averageRating += comment.getRating();
+                        ratingCount++;
+                    }
+                }
+
+                if (ratingCount > 0) {
+                    averageRating = averageRating / ratingCount;
+                }
+
+                // Set the values in the product DTO
+                product.setAverageRating(averageRating);
+                product.setReviewCount(comments.size()); // Total number of reviews (comments)
+
+            } catch (Exception e) {
+                // If there's an error, set default values
+                System.err.println(
+                        "Error calculating ratings for product " + product.getIdProduct() + ": " + e.getMessage());
+                product.setAverageRating(0.0);
+                product.setReviewCount(0);
+            }
+        }
     }
 
 }

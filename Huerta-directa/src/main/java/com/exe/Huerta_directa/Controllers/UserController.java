@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -706,16 +707,13 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios con emails válidos"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " usuarios");
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " usuarios");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error en el envío masivo: " + e.getMessage()));
@@ -745,16 +743,14 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay usuarios válidos para enviar"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " usuarios filtrados");
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " usuarios filtrados");
+            return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
@@ -777,17 +773,15 @@ public class UserController {
                 return ResponseEntity.badRequest()
                         .body(new BulkEmailResponse(0, 0, "No hay " + roleName + " con emails válidos"));
             }
-            // Envío masivo real sin personalización individual
-            try {
-                enviarCorreoMasivoRapido(users, request.getSubject(), request.getBody());
-                String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
-                BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
-                        "Correo enviado masivamente a " + users.size() + " " + roleName);
-                return ResponseEntity.ok(response);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(new BulkEmailResponse(0, users.size(), "Error en el envío masivo: " + e.getMessage()));
-            }
+            
+            // Envío asíncrono - respuesta inmediata
+            enviarCorreoMasivoAsync(users, request.getSubject(), request.getBody());
+            
+            String roleName = request.getIdRole() == 1 ? "administradores" : "clientes";
+            BulkEmailResponse response = new BulkEmailResponse(users.size(), 0,
+                    "Correo enviándose en segundo plano a " + users.size() + " " + roleName);
+            return ResponseEntity.ok(response);
+            
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BulkEmailResponse(0, 0, "Error: " + e.getMessage()));
@@ -795,28 +789,55 @@ public class UserController {
     }
 
     /**
-     * Método para envío masivo rápido - Envía a todos los destinatarios en una sola
-     * operación
+     * Método asíncrono para envío masivo en segundo plano
      */
-    private void enviarCorreoMasivoRapido(List<User> users, String asunto, String cuerpo) throws MessagingException {
-        Session session = crearSesionCorreo();
+    @Async
+    public void enviarCorreoMasivoAsync(List<User> users, String asunto, String cuerpo) {
+        try {
+            enviarCorreoMasivoOptimizado(users, asunto, cuerpo);
+        } catch (Exception e) {
+            System.err.println("Error en envío masivo asíncrono: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para envío masivo optimizado - Configuración SMTP mejorada
+     */
+    private void enviarCorreoMasivoOptimizado(List<User> users, String asunto, String cuerpo) throws MessagingException {
+        // Configuración SMTP optimizada
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", EMAIL_HOST);
+        props.put("mail.smtp.port", EMAIL_PORT);
+        // Optimizaciones de rendimiento
+        props.put("mail.smtp.connectionpoolsize", "10");
+        props.put("mail.smtp.connectionpooltimeout", "30000");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.writetimeout", "10000");
+        
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+            }
+        });
+        
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SENDER_EMAIL));
-        // Agregar todos los destinatarios de una vez usando BCC para privacidad
+        
+        // Agregar todos los destinatarios usando BCC
         InternetAddress[] destinatarios = new InternetAddress[users.size()];
         for (int i = 0; i < users.size(); i++) {
             destinatarios[i] = new InternetAddress(users.get(i).getEmail());
         }
-        // Usar BCC para envÃ­o masivo manteniendo privacidad de emails
         message.setRecipients(Message.RecipientType.BCC, destinatarios);
         message.setSubject(asunto);
-        // Configurar el contenido
-        if (cuerpo.trim().startsWith("<!DOCTYPE") || cuerpo.trim().startsWith("<html")) {
-            message.setContent(cuerpo, "text/html; charset=utf-8");
-        } else {
-            message.setText(cuerpo, "utf-8");
-        }
-        // Enviar el correo masivo en una sola operación
+        
+        // Aplicar estilo HTML
+        String htmlContent = crearContenidoHTMLEnvioMasivo("Usuario", cuerpo);
+        message.setContent(htmlContent, "text/html; charset=utf-8");
+        
+        // Envío optimizado
         Transport.send(message);
     }
 
@@ -824,9 +845,6 @@ public class UserController {
      * Método para enviar correo individual
      */
     private void enviarCorreoIndividual(String destinatario, String asunto, String cuerpo) throws MessagingException {
-        System.out.println("DEBUG: Iniciando envío de correo a: " + destinatario);
-        System.out.println("DEBUG: Asunto: " + asunto);
-
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(SENDER_EMAIL));
@@ -839,9 +857,7 @@ public class UserController {
             message.setText(cuerpo, "utf-8");
         }
 
-        System.out.println("DEBUG: Intentando enviar mensaje por Transport...");
         Transport.send(message);
-        System.out.println("DEBUG: Mensaje enviado exitosamente por Transport.");
     }
 
     /**
@@ -898,13 +914,90 @@ public class UserController {
         // Formateamos los saltos de línea del mensaje para HTML
         String mensajeHtml = mensajePersonalizado.replace("\n", "<br>");
 
+        String htmlTemplate = "<!DOCTYPE html>" +
+            "<html lang=\"es\">" +
+            "<head>" +
+            "<meta charset=\"UTF-8\">" +
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">" +
+            "<title>Notificación - Huerta Directa</title>" +
+            "</head>" +
+            "<body style=\"margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;\">" +
+            "<table role=\"presentation\" style=\"width: 100%; border-collapse: collapse;\">" +
+            "<tr>" +
+            "<td style=\"padding: 0;\">" +
+            "<div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\">" +
+            "<!-- Header con gradiente verde -->" +
+            "<div style=\"background: linear-gradient(135deg, #689f38 0%, #8bc34a 100%); padding: 40px 30px; text-align: center;\">" +
+            "<h1 style=\"color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3);\">" +
+            "🌱 Huerta Directa" +
+            "</h1>" +
+            "<p style=\"color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;\">" +
+            "Mensaje Importante" +
+            "</p>" +
+            "</div>" +
+            "<!-- Contenido principal -->" +
+            "<div style=\"padding: 40px 30px;\">" +
+            "<div style=\"text-align: center; margin-bottom: 30px;\">" +
+            "<div style=\"background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;\">" +
+            "📩" +
+            "</div>" +
+            "<h2 style=\"color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;\">" +
+            "Tienes una nueva notificación" +
+            "</h2>" +
+            "</div>" +
+            "<div style=\"text-align: left; margin-bottom: 30px;\">" +
+            "<p style=\"color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;\">" +
+            "Hola <strong style=\"color: #689f38;\">%s</strong>," +
+            "</p>" +
+            "<div style=\"background-color: #f8f9fa; border-left: 5px solid #689f38; padding: 20px; border-radius: 5px;\">" +
+            "<p style=\"color: #555555; font-size: 16px; line-height: 1.6; margin: 0;\">" +
+            "%s" +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            "<!-- Footer -->" +
+            "<div style=\"text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;\">" +
+            "<p style=\"color: #666666; font-size: 14px; line-height: 1.5; margin: 0;\">" +
+            "Si tienes preguntas, puedes contactarnos en cualquier momento.<br>" +
+            "<strong style=\"color: #689f38;\">¡Gracias por ser parte de Huerta Directa! 🌍</strong>" +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            "<!-- Footer Verde -->" +
+            "<div style=\"background-color: #2e7d32; padding: 25px 30px; text-align: center;\">" +
+            "<p style=\"color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;\">" +
+            "El equipo de Huerta Directa 🌱" +
+            "</p>" +
+            "<div style=\"margin-top: 15px;\">" +
+            "<span style=\"color: #c8e6c9; font-size: 12px;\">" +
+            "© 2024 Huerta Directa - Todos los derechos reservados" +
+            "</span>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</td>" +
+            "</tr>" +
+            "</table>" +
+            "</body>" +
+            "</html>";
+
+        return String.format(htmlTemplate, nombre, mensajeHtml);
+    }
+
+    /**
+     * Método para crear el contenido HTML del correo de notificación masiva (Estilo Huerta Directa)
+     */
+    private String crearContenidoHTMLEnvioMasivo(String nombre, String mensajePersonalizado) {
+        // Formateamos los saltos de línea del mensaje para HTML
+        String mensajeHtml = mensajePersonalizado.replace("\n", "<br>");
+
         return """
                 <!DOCTYPE html>
                 <html lang="es">
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Notificación - Huerta Directa</title>
+                    <title>Comunicado - Huerta Directa</title>
                 </head>
                 <body style="margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f4f4;">
                     <table role="presentation" style="width: 100%%; border-collapse: collapse;">
@@ -917,41 +1010,45 @@ public class UserController {
                                             🌱 Huerta Directa
                                         </h1>
                                         <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">
-                                            Mensaje Importante
+                                            Comunicado Importante
                                         </p>
                                     </div>
                                     <!-- Contenido principal -->
                                     <div style="padding: 40px 30px;">
                                         <div style="text-align: center; margin-bottom: 30px;">
                                             <div style="background-color: #e8f5e8; border-radius: 50px; width: 80px; height: 80px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center; font-size: 35px;">
-                                                📩
+                                                📢
                                             </div>
                                             <h2 style="color: #2e7d32; margin: 0; font-size: 24px; font-weight: bold;">
-                                                Tienes una nueva notificación
+                                                Mensaje de Huerta Directa
                                             </h2>
                                         </div>
-                                        <div style="text-align: left; margin-bottom: 30px;">
+                                        <div style="text-align: center; margin-bottom: 30px;">
                                             <p style="color: #333333; font-size: 18px; line-height: 1.6; margin-bottom: 15px;">
-                                                Hola <strong style="color: #689f38;">%s</strong>,
+                                                Estimado/a <strong style="color: #689f38;">miembro de nuestra comunidad</strong>! 👋
                                             </p>
-                                            <div style="background-color: #f8f9fa; border-left: 5px solid #689f38; padding: 20px; border-radius: 5px;">
-                                                <p style="color: #555555; font-size: 16px; line-height: 1.6; margin: 0;">
-                                                    %s
-                                                </p>
-                                            </div>
                                         </div>
-                                        <!-- Footer -->
+                                        <!-- Mensaje principal -->
+                                        <div style="background-color: #f8f9fa; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                                            <p style="color: #555555; font-size: 16px; line-height: 1.7; margin: 0; text-align: left;">
+                                                %s
+                                            </p>
+                                        </div>
+                                        <!-- Mensaje de agradecimiento -->
                                         <div style="text-align: center; border-top: 2px solid #e8f5e8; padding-top: 25px;">
                                             <p style="color: #666666; font-size: 14px; line-height: 1.5; margin: 0;">
-                                                Si tienes preguntas, puedes contactarnos en cualquier momento.<br>
-                                                <strong style="color: #689f38;">¡Gracias por ser parte de Huerta Directa! 🌍</strong>
+                                                Gracias por formar parte de nuestra comunidad que conecta el campo con tu mesa.<br>
+                                                <strong style="color: #689f38;">¡Juntos construimos un futuro más verde! 🌍</strong>
                                             </p>
                                         </div>
                                     </div>
-                                    <!-- Footer Verde -->
+                                    <!-- Footer -->
                                     <div style="background-color: #2e7d32; padding: 25px 30px; text-align: center;">
                                         <p style="color: #ffffff; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">
                                             El equipo de Huerta Directa 🌱
+                                        </p>
+                                        <p style="color: #c8e6c9; margin: 0; font-size: 12px;">
+                                            Este correo fue enviado automáticamente. Por favor, no respondas a este mensaje.
                                         </p>
                                         <div style="margin-top: 15px;">
                                             <span style="color: #c8e6c9; font-size: 12px;">
@@ -966,7 +1063,7 @@ public class UserController {
                 </body>
                 </html>
                 """
-                .formatted(nombre, mensajeHtml);
+                .formatted(mensajeHtml);
     }
 
     /**
