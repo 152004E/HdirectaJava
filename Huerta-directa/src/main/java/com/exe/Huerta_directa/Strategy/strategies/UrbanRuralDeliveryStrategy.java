@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.Strategy.strategies;
+/*package com.exe.Huerta_directa.Strategy.strategies;
 
 
 
@@ -83,3 +83,6 @@ public class UrbanRuralDeliveryStrategy implements DeliveryStrategy {
         };
     }
 }
+
+
+ */

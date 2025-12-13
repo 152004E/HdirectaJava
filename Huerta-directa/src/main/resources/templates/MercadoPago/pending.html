@@ -11,3 +11,307 @@
 <button onclick="window.location.href='/checkout'">Volver al inicio</button>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso - Huerta Directa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fdf8 0%, #e8f5e3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(76, 175, 80, 0.15);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            animation: checkmark 0.8s ease-out 0.3s both;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(0deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .success-icon svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.95);
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .payment-info {
+            background: linear-gradient(135deg, #f1f8f4 0%, #e8f5e9 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .payment-info-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .payment-info-value {
+            color: #2e7d32;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 12px;
+        }
+
+        .info-section h3 {
+            color: #2e7d32;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 16px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f8f4;
+            transform: translateY(-2px);
+        }
+
+        .decorative-element {
+            text-align: center;
+            margin: 30px 0;
+            opacity: 0.3;
+        }
+
+        .decorative-element svg {
+            width: 60px;
+            height: 30px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .payment-info-value {
+                font-size: 18px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="#4CAF50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h1>¡Pago Aprobado!</h1>
+        <p>Tu transacción se ha procesado exitosamente</p>
+    </div>
+
+    <div class="content">
+        <div class="payment-info">
+            <div class="payment-info-label">ID de Pago</div>
+            <div class="payment-info-value" id="payment-id">Cargando...</div>
+        </div>
+
+        <div class="info-section">
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#4CAF50" stroke-width="2"/>
+                    <path d="M12 6V12L16 14" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Próximos pasos
+            </h3>
+            <p>Ahora necesitas seleccionar tu método de envío para recibir tus productos frescos directamente del campo a tu casa.</p>
+        </div>
+
+        <div class="decorative-element">
+            <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 15 Q 15 5, 30 15 T 55 15" fill="none" stroke="#4CAF50" stroke-width="2"/>
+                <circle cx="30" cy="15" r="3" fill="#4CAF50"/>
+            </svg>
+        </div>
+
+        <div class="buttons">
+            <a href="/Delivery" class="btn btn-primary">
+                Seleccionar Método de Envío
+            </a>
+            <a href="/login" class="btn btn-secondary">
+                Volver al Inicio
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const paymentId = params.get('payment_id');
+
+    if (paymentId) {
+        document.getElementById('payment-id').textContent = paymentId;
+    } else {
+        document.getElementById('payment-id').textContent = 'No disponible';
+    }
+</script>
+</body>
+</html>
