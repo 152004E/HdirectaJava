@@ -1,58 +1,169 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Calculadora de Entregas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodo De Envio</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #faf2dd;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        select, button {
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #3c3;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
             cursor: pointer;
         }
+
+        select:focus {
+            outline: none;
+            border-color: #3c3;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #54cc33 0%, #3c3 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
         button:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
-<h1>🚚 Calculadora de Tiempos de Entrega</h1>
+<div class="container">
+    <div class="header">
+        <div class="logo">🚚</div>
+        <h1>Calculadora de Entregas</h1>
+        <p class="subtitle">Elige tu metodo de Envio</p>
+    </div>
 
-<form action="/delivery/calculate" method="get">
-    <label>Selecciona la región de Colombia:</label>
-    <select name="region" required>
-        <option value="">-- Selecciona --</option>
-        <option value="andina">Región Andina</option>
-        <option value="caribe">Región Caribe</option>
-        <option value="pacifica">Región Pacífica</option>
-        <option value="orinoquia">Región Orinoquía</option>
-        <option value="amazonia">Región Amazonía</option>
-    </select>
+    <!-- IMPORTANTE: method="post" porque tu controller usa @PostMapping -->
+    <form action="/delivery/calculate" method="post">
 
-    <label>Selecciona el método de transporte:</label>
-    <select name="type" required>
-        <option value="">-- Selecciona --</option>
-        <option value="motorcycle">🏍️ Motocicleta</option>
-        <option value="farmer_to_center">🚜 Campesino → Centro</option>
-        <option value="urban_rural">🚗 Urbano-Rural</option>
-        <option value="allied_transport">🚛 Aliado de Transporte</option>
-        <option value="store_pickup">🏪 Recogida en Tienda</option>
-        <option value="scheduled">📅 Entrega Programada</option>
-    </select>
+        <!-- SELECT DE LOCALIDAD -->
+        <div class="form-group">
+            <label for="localidad"><span class="icon">📍</span>Localidad de Destino</label>
+            <select id="localidad" name="localidad" required>
+                <option value="">Seleccione una localidad...</option>
+                <option value="CHAPINERO">Chapinero (Factor: 1.00)</option>
+                <option value="TEUSAQUILLO">Teusaquillo (Factor: 1.05)</option>
+                <option value="BARRIOS_UNIDOS">Barrios Unidos (Factor: 1.10)</option>
+                <option value="USAQUEN">Usaquén (Factor: 1.20)</option>
+                <option value="SUBA">Suba (Factor: 1.30)</option>
+                <option value="ENGATIVA">Engativá (Factor: 1.35)</option>
+                <option value="FONTIBON">Fontibón (Factor: 1.40)</option>
+                <option value="KENNEDY">Kennedy (Factor: 1.50)</option>
+                <option value="BOSA">Bosa (Factor: 1.60)</option>
+                <option value="CIUDAD_BOLIVAR">Ciudad Bolívar (Factor: 1.70)</option>
+                <option value="USME">Usme (Factor: 1.75)</option>
+                <option value="SUMAPAZ">Sumapaz (Factor: 2.50)</option>
+            </select>
+        </div>
 
-    <button type="submit">Calcular Tiempo de Entrega</button>
-</form>
+        <!-- SELECT DE TIPO DE TRANSPORTE -->
+        <div class="form-group">
+            <label for="type"><span class="icon">🚗</span>Método de Transporte</label>
+            <select id="type" name="type" required>
+                <option value="">Seleccione un método...</option>
+                <option value="motorcycle">🏍️ Motocicleta</option>
+                <option value="car">🚗 Carro</option>
+                <option value="truck">🚛 Camión</option>
+                <option value="shared">📦 Delivery Compartido</option>
+            </select>
+        </div>
+
+        <button type="submit">
+            <span class="icon">🔍</span>
+            Calcular Tiempo de Entrega
+        </button>
+    </form>
+
+    <div class="info-box">
+        <strong>ℹ️ Nota:</strong> Los factores se calculan basándose en la distancia y condiciones de tráfico. Chapinero es nuestro punto de despacho.
+    </div>
+</div>
 </body>
 </html>

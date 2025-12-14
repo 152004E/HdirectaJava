@@ -1,4 +1,4 @@
-package com.exe.Huerta_directa.Strategy.strategies;
+/*package com.exe.Huerta_directa.Strategy.strategies;
 
 
 import com.exe.Huerta_directa.Strategy.DeliveryStrategy;
@@ -74,3 +74,5 @@ public class StorePickupStrategy implements DeliveryStrategy {
         };
     }
 }
+
+ */

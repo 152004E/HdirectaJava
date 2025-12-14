@@ -3,8 +3,11 @@ import com.exe.Huerta_directa.Service.DeliveryService;
 import org.springframework.stereotype.Service;
 import com.exe.Huerta_directa.Strategy.DeliveryStrategy;
 import com.exe.Huerta_directa.Service.DeliveryStrategyFactory;
+import com.exe.Huerta_directa.Strategy.Localidad;
+import com.exe.Huerta_directa.Strategy.DeliveryResult;
 
 @Service
+
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryStrategyFactory factory;
@@ -14,13 +17,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public String processDelivery(String type, String region) {
+    public DeliveryResult processDelivery(String type, String localidadStr) {
+
         DeliveryStrategy strategy = factory.getStrategy(type);
 
-        if (strategy == null) {
-            return "<h2>Tipo de entrega no válido</h2>";
-        }
+        Localidad localidad = Localidad.valueOf(localidadStr.toUpperCase());
 
-        return strategy.calculateDelivery(region);
+        return strategy.calculate(localidad);
     }
 }

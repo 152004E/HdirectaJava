@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Entrega</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #faf2dd;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: bounceIn 0.6s;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        h1 {
+            color: #333;
+            margin: 10px 0;
+            font-size: 32px;
+        }
+
+        .vehicle-name {
+            font-size: 24px;
+            color: #3c3;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .time-box {
+            background: linear-gradient(135deg, #54cc33 0%, #3c3 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .time-label {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .time-value {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .info-table {
+            width: 100%;
+            margin: 25px 0;
+            border-collapse: collapse;
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table td {
+            padding: 15px 10px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6b7280;
+            width: 45%;
+        }
+
+        .info-value {
+            color: #1f2937;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .restrictions {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .restrictions-title {
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .restrictions-text {
+            color: #92400e;
+            line-height: 1.6;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+        }
+
+        .error-box strong {
+            color: #991b1b;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .error-box p {
+            color: #991b1b;
+            line-height: 1.6;
+        }
+
+        .message-box {
+            text-align: center;
+            color: #6b7280;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .btn-back {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #54cc33 0%, #3c3 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 30px;
+            transition: transform 0.2s;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="result-header">
+        <!-- Mostrar si PUEDE entregar -->
+        <div th:if="${canDeliver}">
+            <div class="success-icon">✅</div>
+            <h1>¡Entrega Disponible!</h1>
+            <div class="vehicle-name" th:text="${vehicleName}">Motocicleta</div>
+            <span class="badge badge-success">Confirmado</span>
+        </div>
+
+        <!-- Mostrar si NO PUEDE entregar -->
+        <div th:unless="${canDeliver}">
+            <div class="error-icon">❌</div>
+            <h1>Entrega No Disponible</h1>
+            <div class="vehicle-name" th:text="${vehicleName}">Motocicleta</div>
+            <span class="badge badge-warning">Restringido</span>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CONTENIDO CUANDO SÍ PUEDE ENTREGAR -->
+    <!-- ========================================== -->
+    <div th:if="${canDeliver}">
+        <!-- Caja de tiempo -->
+        <div class="time-box">
+            <div class="time-label">⏱️ Tiempo Estimado de Entrega</div>
+            <div class="time-value" th:text="${formattedTime}">33 minutos</div>
+        </div>
+
+        <!-- Tabla de información -->
+        <table class="info-table">
+            <tr>
+                <td class="info-label">📍 Localidad destino:</td>
+                <td class="info-value" th:text="${localidad}">SUBA</td>
+            </tr>
+            <tr>
+                <td class="info-label">🚗 Método de transporte:</td>
+                <td class="info-value" th:text="${vehicleName}">Motocicleta</td>
+            </tr>
+            <tr>
+                <td class="info-label">📊 Factor de tiempo:</td>
+                <td class="info-value">
+                    <span th:text="${#numbers.formatDecimal(percentage, 1, 2)}">110.50</span>%
+                </td>
+            </tr>
+            <tr>
+                <td class="info-label">⏰ Tiempo exacto:</td>
+                <td class="info-value">
+                    <span th:text="${estimatedTime}">33</span> minutos
+                </td>
+            </tr>
+        </table>
+
+        <!-- Restricciones (si existen) -->
+        <div th:if="${restrictions != null}" class="restrictions">
+            <div class="restrictions-title">⚠️ Información Importante</div>
+            <div class="restrictions-text" th:text="${restrictions}">
+                Zona lejana: puede variar por tráfico
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CONTENIDO CUANDO NO PUEDE ENTREGAR -->
+    <!-- ========================================== -->
+    <div th:unless="${canDeliver}">
+        <div class="error-box">
+            <strong>❌ Motivo de la Restricción:</strong>
+            <p th:text="${restrictions}">
+                La motocicleta no puede realizar entregas a localidades muy lejanas.
+            </p>
+        </div>
+        <div class="message-box">
+            <p>
+                Por favor, selecciona otro método de transporte o elige una localidad diferente para calcular la disponibilidad.
+            </p>
+        </div>
+    </div>
+
+    <!-- Botón para volver -->
+    <a href="/index" class="btn-back">← Volver Al Inicio</a>
+</div>
+</body>
+</html>
