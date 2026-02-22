@@ -110,7 +110,7 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-[#f7efd8] font-['Poppins']">
+        <div className="flex items-center justify-center min-h-screen bg-[#FEF5DC] font-['Poppins']">
             {error && (
                 <div className="fixed top-5 right-5 bg-[#dc3545] text-white border border-[#dc3545] rounded-[10px] text-center font-medium w-75 text-[13px] p-[15px_20px] z-1000 shadow-[0_4px_12px_rgba(220,53,69,0.2)] flex items-center justify-between">
                     <span>{error}</span>

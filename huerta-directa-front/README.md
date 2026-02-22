@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# 🌱 Huerta Directa - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📁 Estructura del proyecto (Frontend Architecture)
 
-Currently, two official plugins are available:
+### **Arquitectura por capas del frontend**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+PAGES (Vistas)
+   ↓
+COMPONENTS (UI reutilizable)
+   ↓
+LAYOUTS (Estructura base)
+   ↓
+ASSETS (Recursos estáticos)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📂 Estructura de archivos completa
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+huerta-directa-front/
+├─ public/                              ← Archivos estáticos públicos
+│
+├─ src/
+│  ├─ assets/                           ← Imágenes, logos, íconos
+│  │  └─ logo_huerta.png                ✓ Logo principal
+│  │
+│  ├─ components/                       ← Componentes reutilizables UI
+│  │  ├─ Auth/                          ← Componentes de autenticación
+│  │  │  └─ (vacío - en desarrollo)     ⏳ Componentes auth por implementar
+│  │  │
+│  │  └─ GlobalComponents/              ← Componentes globales
+│  │     ├─ Button.tsx                  ✓ Botón reutilizable
+│  │     ├─ Footer.tsx                  ✓ Pie de página
+│  │     ├─ Loader.tsx                  ✓ Componente de carga
+│  │     ├─ Modal.tsx                   ✓ Modal genérico
+│  │     ├─ Navbar.tsx                  ✓ Barra de navegación
+│  │     └─ ProfileMenu.tsx             ✓ Menú de perfil
+│  │
+│  ├─ layout/                           ← Layouts (estructura base)
+│  │  ├─ AuthLayout.tsx                 ✓ Layout de autenticación
+│  │  └─ MainLayout.tsx                 ✓ Layout principal
+│  │
+│  ├─ pages/                            ← Vistas (rutas)
+│  │  ├─ Auth/                          ← Páginas de autenticación
+│  │  │  ├─ Login.tsx                   ✓ Página de login
+│  │  │  └─ Login.css                   ✓ Estilos de login
+│  │  │
+│  │  └─ Landing/                       ← Páginas públicas
+│  │     └─ Landing.tsx                 ✓ Landing page / Home
+│  │
+│  ├─ App.tsx                           ✓ Componente principal y rutas
+│  ├─ main.tsx                          ✓ Entry point de la aplicación
+│  └─ index.css                         ✓ Tailwind base y estilos globales
+│
+├─ index.html                           ✓ HTML principal
+├─ package.json                         ✓ Dependencias del proyecto
+├─ tsconfig.json                        ✓ Configuración TypeScript
+├─ tsconfig.app.json                    ✓ Config TypeScript - aplicación
+├─ tsconfig.node.json                   ✓ Config TypeScript - node
+├─ vite.config.ts                       ✓ Configuración de Vite
+├─ eslint.config.js                     ✓ Configuración de ESLint
+└─ README.md                            ✓ Este archivo
+```
+
+---
+
+## 📋 Leyenda
+
+- **✓** = Implementado y funcional
+- **⏳** = En desarrollo
+- **❌** = No implementado
+
+---
+
+## 🎯 Próximas mejoras
+
+- [ ] Expandir componentes de Auth
+- [ ] Crear páginas adicionales (Productos, Perfil, etc.)
+- [ ] Implementar Dashboard de usuario
+- [ ] Agregar más páginas de navegación
+- [ ] Mejorar sistema de componentes
+
+---
+
+## 🚀 Inicio rápido
+
+```bash
+# Instalar dependencias
+npm install
+
+# Ejecutar en desarrollo
+npm run dev
+
+# Build para producción
+npm run build
+
+# Preview de producción
+npm run preview
+```
+
+---
+
+**Última actualización:** 2026-02-22
