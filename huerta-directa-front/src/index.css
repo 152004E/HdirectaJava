@@ -1,5 +1,43 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Poppins";
+  src: url("./font/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./font/Poppins/Poppins-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./font/Poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./font/Poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@theme {
+  --font-poppins:
+    "Poppins", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans: var(--font-poppins);
+}
+
+:root {
+  font-family: var(--font-poppins);
+}
 
 /* ===== Scrollbar para Chrome, Edge y Safari ===== */
 ::-webkit-scrollbar {
@@ -7,7 +45,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FEF5DC; /* color fondo */
+  background: #fef5dc; /* color fondo */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -19,9 +57,8 @@
   background: #5aaa37; /* hover */
 }
 
-
 /* ===== Scrollbar para Firefox ===== */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #78d64b #FEF5DC;
+  scrollbar-color: #78d64b #fef5dc;
 }
