@@ -1,48 +1,17 @@
-import { Link } from "react-router-dom";
 import logo from "../../assets/logo_huerta.png";
+import { Button } from "../../components/GlobalComponents/Button";
+import { Background } from "../../components/GlobalComponents/Background";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 export const Landing = () => {
+  usePageTitle("Invitación ");
   return (
-    <main className="bg-[#FEF5DC] min-h-screen font-sans text-[18px]">
-
-      {/* Navbar */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between max-w-300 mx-auto px-6 py-4 bg-[#FEF5DC]">
-        
-        {/* Logo */}
-        <Link
-          to="/"
-          className="text-[#8dc84b] text-[25px] font-semibold uppercase tracking-[1px] transition-all duration-500 ease-in-out hover:text-[#028602] hover:scale-110 no-underline"
-        >
-          Huerta directa
-        </Link>
-
-        {/* Navbar */}
-        <nav>
-          <ul className="flex space-x-2">
-            <li>
-              <Link
-                to="/"
-                className="block text-[#333128] text-[18px] font-semibold py-5 px-5 transition-colors duration-500 hover:text-[#5aaa37] no-underline"
-              >
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/quienes-somos"
-                className="block text-[#333128] text-[18px] font-semibold py-5 px-5 transition-colors duration-500 hover:text-[#5aaa37] no-underline"
-              >
-                Quiénes Somos
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <main className=" h-screen-  font-sans text-[18px] relative">
+      <Background />
 
       {/* Sección Invitación */}
       <section className="text-center w-full flex flex-col items-center justify-center px-6 py-24 mt-20">
         <div className="max-w-200 mx-auto">
-
           <img
             src={logo}
             alt="Logo Huerta Directa"
@@ -58,16 +27,13 @@ export const Landing = () => {
             productos frescos, saludables y sin intermediarios.
           </p>
 
-          <Link
+          <Button
             to="/login"
+            text={"Registrarse"}
             className="inline-block bg-[#78d64b] text-white font-bold py-4 px-10 rounded-full text-[1.1rem] uppercase tracking-[1px] transition-all duration-500 hover:bg-[#5aaa37] hover:scale-105 hover:shadow-lg no-underline"
-          >
-            Registrarse
-          </Link>
-
+          />
         </div>
       </section>
-
     </main>
   );
 };
