@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -66,39 +65,65 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> seveUserView(
-            @Valid @RequestBody UserDTO userDTO,
+    public String seveUserView(
+            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
             BindingResult result,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
+            return "login/login"; // tu vista
         }
+
         try {
-            // Validar edad mínima (18 años)
+
             if (userDTO.getBirthDate() != null) {
                 LocalDate today = LocalDate.now();
                 Period age = Period.between(userDTO.getBirthDate(), today);
+
                 if (age.getYears() < 18) {
-                    return ResponseEntity.badRequest().body("Debes ser mayor de 18 años para registrarte");
+                    redirectAttributes.addFlashAttribute(
+                            "error",
+                            "Debes ser mayor de 18 años para registrarte");
+                    return "redirect:/login";
                 }
             }
 
             UserDTO usuarioCreado = userService.crearUser(userDTO);
-            User userEntity = userRepository.findByEmail(usuarioCreado.getEmail()).orElse(null);
-            if (userEntity != null) {
-                session.setAttribute("user", userEntity);
-            } else {
-                session.setAttribute("user", convertirDTOaEntity(usuarioCreado));
-            }
-            enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
 
-            return ResponseEntity.ok(usuarioCreado);
+            User userEntity = userRepository
+                    .findByEmail(usuarioCreado.getEmail())
+                    .orElse(null);
+
+            session.setAttribute("user", userEntity);
+
+            enviarCorreoConfirmacion(
+                    usuarioCreado.getName(),
+                    usuarioCreado.getEmail());
+
+            redirectAttributes.addFlashAttribute(
+                    "success",
+                    "Cuenta creada correctamente");
+
+            return "redirect:/index";
 
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body("El correo electronico ya esta registrado");
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "El correo electronico ya esta registrado");
+
+            return "redirect:/login";
+
         } catch (Exception e) {
+
             log.error("Error al crear la cuenta", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la cuenta.");
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Error al crear la cuenta");
+
+            return "redirect:/login";
         }
     }
 
@@ -219,43 +244,38 @@ public class LoginController {
     }
 
     @PostMapping("/loginUser")
-    public ResponseEntity<?> loginUser(
-            @RequestBody java.util.Map<String, String> loginRequest,
-            HttpSession session) {
+    public String loginUser(
+            @RequestParam String email,
+            @RequestParam String password,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
-        String email = loginRequest.get("email");
-        String password = loginRequest.get("password");
-
-        // Buscar el usuario por correo
         User user = userRepository.findByEmail(email).orElse(null);
 
-        // ⚠Validar si el usuario existe y si la contraseña coincide
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
+        if (user == null ||
+                !passwordEncoder.matches(password, user.getPassword())) {
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "Correo o contraseña incorrectos");
+
+            return "redirect:/login";
         }
 
-        // Verificar con BCrypt si la contraseña plana coincide con el hash
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
-        }
-
-        // GUARDAR EL USUARIO PRIMERO
         session.setAttribute("user", user);
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
-
-        if (user.getPhone() == null || user.getPhone().isBlank()) {
-            return ResponseEntity.ok(userDTO);
+        // Si necesitas verificación SMS
+        if (user.getPhone() != null && !user.getPhone().isBlank()) {
+            session.setAttribute("pendingUser", user);
+            return "redirect:/verificar-sms";
         }
 
-        session.setAttribute("pendingUser", user);
-        // En una implementación real REST, aquí se manejaría la lógica de 2FA
-        // Por ahora retornamos que se requiere verificación si esa es la lógica
-        return ResponseEntity.ok(java.util.Map.of("status", "verify-sms", "user", userDTO));
+        // Redirección según rol
+        if (user.getRole() != null && user.getRole().getIdRole() == 1) {
+            return "redirect:/DashboardAdmin";
+        }
+
+        return "redirect:/index";
     }
 
     // =========================
@@ -314,9 +334,9 @@ public class LoginController {
      * Metodo para cerrar sesión
      */
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpSession session) {
+    public String logout(HttpSession session) {
         session.invalidate(); // Destruir completamente la sesión
-        return ResponseEntity.ok("Sesión cerrada");
+        return "redirect:/login"; // Redirige al login
     }
 
     // Registro de nuevo administrador desde el dashboard admin

@@ -112,13 +112,13 @@ const Login: React.FC = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-[#f7efd8] font-['Poppins']">
             {error && (
-                <div className="fixed top-5 right-5 bg-[#dc3545] text-white border border-[#dc3545] rounded-[10px] text-center font-medium w-[300px] text-[13px] p-[15px_20px] z-[1000] shadow-[0_4px_12px_rgba(220,53,69,0.2)] flex items-center justify-between">
+                <div className="fixed top-5 right-5 bg-[#dc3545] text-white border border-[#dc3545] rounded-[10px] text-center font-medium w-75 text-[13px] p-[15px_20px] z-1000 shadow-[0_4px_12px_rgba(220,53,69,0.2)] flex items-center justify-between">
                     <span>{error}</span>
                     <button onClick={() => setError(null)} className="ml-2">×</button>
                 </div>
             )}
             {success && (
-                <div className="fixed top-5 right-5 bg-[#52c41a] text-white border border-[#52c41a] rounded-[10px] text-center font-medium w-[300px] text-[13px] p-[15px] z-[1000] shadow-[0_4px_12px_rgba(0,0,0,0.15)] flex items-center justify-between">
+                <div className="fixed top-5 right-5 bg-[#52c41a] text-white border border-[#52c41a] rounded-[10px] text-center font-medium w-75 text-[13px] p-3.75 z-1000 shadow-[0_4px_12px_rgba(0,0,0,0.15)] flex items-center justify-between">
                     <span>{success}</span>
                      <button onClick={() => setSuccess(null)} className="ml-2">×</button>
                 </div>
