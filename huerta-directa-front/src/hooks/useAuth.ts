@@ -35,7 +35,7 @@ export const useAuth = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/login/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registerData),
@@ -63,7 +63,7 @@ export const useAuth = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch("/api/loginUser", {
+      const response = await fetch("/api/login/loginUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),

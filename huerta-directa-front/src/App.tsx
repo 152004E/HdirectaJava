@@ -4,6 +4,7 @@ import AuthLayout from "./layout/AuthLayout";
 import MainLayout from "./layout/MainLayout";
 import { Landing } from "./pages/Landing/Landing";
 import { HomePage } from "./pages/Main/HomePage";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -50,8 +51,7 @@ function App() {
             />
           }
         >
-          {/* aquí irían rutas futuras */}
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
 
         {/* Layout auth */}
