@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faEnvelope,
-  faLock,
+
   faRightToBracket,
   faUser,
   faUserPlus,
@@ -14,9 +14,10 @@ import {
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../../components/GlobalComponents/Button";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { PasswordInput } from "../../components/GlobalComponents/PasswordInput";
 
 const Login: React.FC = () => {
-     usePageTitle("Login  ");
+  usePageTitle("Login  ");
   const {
     isActive,
     setIsActive,
@@ -120,21 +121,14 @@ const Login: React.FC = () => {
               <label className="text-sm font-normal block">
                 Ingrese su contraseña
               </label>
-              <div className="relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faLock}
-                  className="absolute left-3 text-[#888]"
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Contraseña"
-                  value={registerData.password}
-                  onChange={handleRegisterChange}
-                  className="py-2.5 pl-10 pr-4 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all duration-500 focus:border-[#004d00] focus:shadow-[0_0_5px_rgba(0,77,0,0.5)]"
-                  required
-                />
-              </div>
+
+              <PasswordInput
+                name="password"
+                value={registerData.password}
+                onChange={handleRegisterChange}
+                placeholder="Contraseña"
+                required
+              />
             </div>
 
             <Button
@@ -177,27 +171,19 @@ const Login: React.FC = () => {
                 />
               </div>
             </div>
-
             {/* Password */}
             <div className="w-full mb-2">
               <label className="text-sm font-normal block">
                 Ingrese su contraseña
               </label>
-              <div className="relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faLock}
-                  className="absolute left-3 text-[#888]"
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Contraseña"
-                  value={loginData.password}
-                  onChange={handleLoginChange}
-                  className="py-2.5 pl-10 pr-4 w-full my-1.5 border-2 border-[#8dc84b] rounded-[15px] outline-none text-base text-[#333128] transition-all duration-500 focus:border-[#004d00] focus:shadow-[0_0_8px_rgba(0,77,0,0.4)]"
-                  required
-                />
-              </div>
+
+              <PasswordInput
+                name="password"
+                value={registerData.password}
+                onChange={handleRegisterChange}
+                placeholder="Contraseña"
+                required
+              />
             </div>
 
             <a
@@ -209,6 +195,7 @@ const Login: React.FC = () => {
 
             <Button
               iconRight={faArrowRight}
+              to="/HomePage"
               text="Ingresar"
               className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500"
               type="submit"
