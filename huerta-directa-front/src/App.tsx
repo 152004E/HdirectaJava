@@ -3,6 +3,7 @@ import Login from "./pages/Auth/Login";
 import AuthLayout from "./layout/AuthLayout";
 import MainLayout from "./layout/MainLayout";
 import { Landing } from "./pages/Landing/Landing";
+import { HomePage } from "./pages/Main/HomePage";
 
 function App() {
   return (
@@ -22,6 +23,18 @@ function App() {
           }
         >
           <Route path="/" element={<Landing />} />
+        </Route>
+        <Route
+          element={
+            <MainLayout
+              navbarProps={{
+                
+                showQuienesSomos: true,
+              }}
+            />
+          }
+        >
+          <Route path="/HomePage" element={<HomePage />} />
         </Route>
 
         {/* Dashboard Layout */}

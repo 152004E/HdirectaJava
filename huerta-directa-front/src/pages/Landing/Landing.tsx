@@ -32,6 +32,9 @@ export const Landing = () => {
             text={"Registrarse"}
             className="inline-block bg-[#78d64b] text-white font-bold py-4 px-10 rounded-full text-[1.1rem] uppercase tracking-[1px] transition-all duration-500 hover:bg-[#5aaa37] hover:scale-105 hover:shadow-lg no-underline"
           />
+
+ 
+
         </div>
       </section>
     </main>

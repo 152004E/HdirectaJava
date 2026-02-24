@@ -10,6 +10,7 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
     <div className="min-h-screen bg-[#FEF5DC] overflow-x-hidden">
       <div className="w-full max-w-300 mx-auto px-4">
         <Navbar {...navbarProps} />
+        
         <Outlet />
       </div>
     </div>

@@ -38,6 +38,13 @@ huerta-directa-front/
 │  │     ├─ Navbar.tsx                  ✓ Barra de navegación
 │  │     └─ ProfileMenu.tsx             ✓ Menú de perfil
 │  │
+│  ├─ font/                             ← Fuentes personalizadas
+│  │  └─ Poppins/                       ✓ Fuente Poppins
+│  │
+│  ├─ hooks/                            ← Custom React hooks
+│  │  ├─ useAuth.ts                     ✓ Hook de autenticación
+│  │  └─ usePageTitle.ts                ✓ Hook para título de página
+│  │
 │  ├─ layout/                           ← Layouts (estructura base)
 │  │  ├─ AuthLayout.tsx                 ✓ Layout de autenticación
 │  │  └─ MainLayout.tsx                 ✓ Layout principal
@@ -47,8 +54,11 @@ huerta-directa-front/
 │  │  │  ├─ Login.tsx                   ✓ Página de login
 │  │  │  └─ Login.css                   ✓ Estilos de login
 │  │  │
-│  │  └─ Landing/                       ← Páginas públicas
-│  │     └─ Landing.tsx                 ✓ Landing page / Home
+│  │  ├─ Landing/                       ← Páginas públicas
+│  │  │  └─ Landing.tsx                 ✓ Landing page / Home
+│  │  │
+│  │  └─ Main/                          ← Páginas principales (autenticadas)
+│  │     └─ HomePage.tsx                ✓ Home page del usuario
 │  │
 │  ├─ App.tsx                           ✓ Componente principal y rutas
 │  ├─ main.tsx                          ✓ Entry point de la aplicación
@@ -102,4 +112,4 @@ npm run preview
 
 ---
 
-**Última actualización:** 2026-02-22
+**Última actualización:** 2026-02-23

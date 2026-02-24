@@ -13,8 +13,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../../components/GlobalComponents/Button";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 const Login: React.FC = () => {
+     usePageTitle("Login  ");
   const {
     isActive,
     setIsActive,
