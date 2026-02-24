@@ -22,11 +22,14 @@ import {
   faRightFromBracket,
   faHouse,
   faUpload,
-  faCreditCard,
-  faMoneyBillTrendUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import logo from "../../assets/logo_huerta.png";
+
+// Reusable components
+import { Button } from "../../components/GlobalComponents/Button";
+import { Background } from "../../components/GlobalComponents/Background";
+import { Modal } from "../../components/GlobalComponents/Modal";
 
 interface Product {
   idProduct: number;
@@ -44,7 +47,6 @@ interface InsightItem {
   percentage: number;
   footer: string;
   color: string;
-  icon: any;
 }
 
 export const Dashboard: React.FC = () => {
@@ -86,7 +88,6 @@ export const Dashboard: React.FC = () => {
       percentage: 81,
       footer: "Ultimas 24 horas",
       color: "sales",
-      icon: faChartLine,
     },
     {
       title: "Gastos",
@@ -94,7 +95,6 @@ export const Dashboard: React.FC = () => {
       percentage: 62,
       footer: "Ultimas 24 horas",
       color: "expenses",
-      icon: faCreditCard,
     },
     {
       title: "Ingresos",
@@ -102,7 +102,6 @@ export const Dashboard: React.FC = () => {
       percentage: 31,
       footer: "Ultimas 24 horas",
       color: "income",
-      icon: faMoneyBillTrendUp,
     },
   ];
 
@@ -166,6 +165,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <main className="dashboard-main">
+      <Background />
       <h1 className="dashboard-title">Dashboard</h1>
 
       {/* Sidebar Toggle Button */}
@@ -209,10 +209,7 @@ export const Dashboard: React.FC = () => {
             {insights.map((item, idx) => {
               const dashOffset = 226 * (1 - item.percentage / 100);
               return (
-                <div key={idx} className="insight-card">
-                  <span className="icon">
-                    <FontAwesomeIcon icon={item.icon} />
-                  </span>
+                <div key={idx} className={`insight-card ${item.color}`}>
                   <div className="middle">
                     <div className="left">
                       <h3>{item.title}</h3>
@@ -279,10 +276,11 @@ export const Dashboard: React.FC = () => {
                   <option value="plantas-semillas">Plantas y Semillas</option>
                   <option value="cajas-combos">Cajas Mixtas o Combos</option>
                 </select>
-                <button className="btn-consultar">
-                  Consultar
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </button>
+                <Button
+                  text="Consultar"
+                  iconLetf={faMagnifyingGlass}
+                  className="btn-consultar"
+                />
               </div>
             </div>
 
@@ -350,18 +348,24 @@ export const Dashboard: React.FC = () => {
 
             {/* Export Actions */}
             <div className="export-container">
-              <button className="btn-export btn-excel" onClick={handleExportExcel}>
-                <FontAwesomeIcon icon={faFileExcel} />
-                Exportar a Excel
-              </button>
-              <button className="btn-export btn-pdf" onClick={handleExportPdf}>
-                <FontAwesomeIcon icon={faFilePdf} />
-                Exportar a PDF
-              </button>
-              <button className="btn-export btn-upload" onClick={() => setIsUploadModalOpen(true)}>
-                <FontAwesomeIcon icon={faCloudArrowUp} />
-                Carga Masiva de Productos
-              </button>
+              <Button 
+                text="Exportar a Excel" 
+                iconLetf={faFileExcel} 
+                onClick={handleExportExcel} 
+                className="btn-export btn-excel" 
+              />
+              <Button 
+                text="Exportar a PDF" 
+                iconLetf={faFilePdf} 
+                onClick={handleExportPdf} 
+                className="btn-export btn-pdf" 
+              />
+              <Button 
+                text="Carga Masiva de Productos" 
+                iconLetf={faCloudArrowUp} 
+                onClick={() => setIsUploadModalOpen(true)} 
+                className="btn-export btn-upload" 
+              />
             </div>
           </section>
         </section>
@@ -436,40 +440,36 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Mass Upload Modal */}
-      {isUploadModalOpen && (
-        <>
-          <div className="modal-overlay active" onClick={() => setIsUploadModalOpen(false)}></div>
-          <div className="modal-carga active">
-            <div className="modal-header">
-              <h2><FontAwesomeIcon icon={faUpload} /> Carga Masiva de Productos</h2>
-              <button className="btn-close-modal" onClick={() => setIsUploadModalOpen(false)}>&times;</button>
+      <Modal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        title="Carga Masiva de Productos"
+        icon={faUpload}
+      >
+        <form onSubmit={handleUploadSubmit}>
+          <div className="form-group">
+            <label>Seleccionar archivo de productos:</label>
+            <input 
+              type="file" 
+              accept=".csv,.xlsx,.xls" 
+              required 
+              onChange={(e) => setUploadFile(e.target.files ? e.target.files[0] : null)}
+            />
+            <div className="help-text">
+              💡 <strong>Formato esperado:</strong><br />
+              📋 <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen | Stock</em><br />
+              📁 Formatos: CSV, Excel (.xlsx, .xls)<br />
+              ⚠️ <strong>Nota:</strong> El campo Stock es opcional.
             </div>
-            <form onSubmit={handleUploadSubmit}>
-              <div className="form-group">
-                <label>Seleccionar archivo de productos:</label>
-                <input 
-                  type="file" 
-                  accept=".csv,.xlsx,.xls" 
-                  required 
-                  onChange={(e) => setUploadFile(e.target.files ? e.target.files[0] : null)}
-                />
-                <div className="help-text">
-                  💡 <strong>Formato esperado:</strong><br />
-                  📋 <em>Nombre | Precio | Categoría | Unidad | Descripción | Imagen | Stock</em><br />
-                  📁 Formatos: CSV, Excel (.xlsx, .xls)<br />
-                  ⚠️ <strong>Nota:</strong> El campo Stock es opcional.
-                </div>
-              </div>
-              <button type="submit" className="btn-send-email">Cargar Productos</button>
-            </form>
-            {uploadResult && (
-              <div className={`result-message active ${uploadResult.success ? "success" : "error"}`}>
-                {uploadResult.message}
-              </div>
-            )}
           </div>
-        </>
-      )}
+          <Button type="submit" text="Cargar Productos" className="btn-send-email" />
+        </form>
+        {uploadResult && (
+          <div className={`result-message active ${uploadResult.success ? "success" : "error"}`}>
+            {uploadResult.message}
+          </div>
+        )}
+      </Modal>
     </main>
   );
 };

@@ -26,13 +26,34 @@
 
 .insight-card {
   background: #fff;
-  padding: 2.5rem; /* Increased padding for impact */
+  padding: 2.5rem;
   border-radius: 2rem;
   box-shadow: 0 1rem 2rem rgba(132, 139, 200, 0.1);
   transition: all 300ms ease;
   display: flex;
   flex-direction: column;
-  min-height: 220px;
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.insight-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+}
+
+.insight-card.sales::before {
+  background: #8dc84b;
+}
+.insight-card.expenses::before {
+  background: #8dc84b;
+}
+.insight-card.income::before {
+  background: #8dc84b;
 }
 
 .insight-card:hover {
@@ -40,24 +61,11 @@
   transform: translateY(-5px);
 }
 
-.insight-card span.icon {
-  background: #8dc84b;
-  padding: 0.5rem;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 2rem;
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
 .insight-card .middle {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 1rem;
 }
 
 .insight-card h3 {
