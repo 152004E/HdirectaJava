@@ -8,7 +8,7 @@ interface MainLayoutProps {
 const MainLayout = ({ navbarProps }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-[#FEF5DC] overflow-x-hidden">
-      <div className="w-full max-w-7xl mx-auto px-4">
+      <div className="w-full max-w-330 mx-auto px-4">
         <Navbar {...navbarProps} />
         
         <Outlet />

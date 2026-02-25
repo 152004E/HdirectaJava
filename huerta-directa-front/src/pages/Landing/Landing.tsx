@@ -10,7 +10,7 @@ export const Landing = () => {
       <Background />
 
       {/* Sección Invitación */}
-      <section className="text-center w-full flex flex-col items-center justify-center px-6 py-24 mt-20">
+      <section className="text-center w-full flex flex-col items-center justify-center px-6 py-24 ">
         <div className="max-w-200 mx-auto">
           <img
             src={logo}

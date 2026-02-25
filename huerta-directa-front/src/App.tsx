@@ -18,7 +18,6 @@ function App() {
           element={
             <MainLayout
               navbarProps={{
-                
                 showQuienesSomos: true,
               }}
             />
@@ -26,12 +25,16 @@ function App() {
         >
           <Route path="/" element={<Landing />} />
         </Route>
+
+        {/* Home page */}
         <Route
           element={
             <MainLayout
               navbarProps={{
-                
-                showQuienesSomos: true,
+                showCategorias: true,
+                showProductos:true,
+                showAddProduct : true,
+                showProfile: true
               }}
             />
           }

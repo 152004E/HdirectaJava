@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import {
   faUser,
-  faTableColumns,
   faRightFromBracket,
+  faArrowTurnDown,
+  faChartColumn,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo_huerta.png";
 import { Button } from "./Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface ProfileMenuProps {
   userName?: string;
@@ -38,36 +41,39 @@ export const ProfileMenu = ({
       {/* Botón que despliega */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl shadow-md hover:scale-105 transition"
+        className="flex items-center gap-2 bg-[#FEF5DC] px-3 py-2 rounded-xl shadow-md hover:scale-105 transition duration-500"
       >
         <img src={logo} alt="Profile" className="w-9 h-9 rounded-full" />
-        <span className="text-black text-xl">⌄</span>
+        <span className="text-gray-500 text-xl">
+          <FontAwesomeIcon icon={faArrowTurnDown} />
+        </span>
       </button>
 
-      {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-4 w-60 bg-[#ebefe5] p-4 rounded-xl shadow-lg flex flex-col gap-3 animate-fadeIn">
+        <div className="absolute right-0 mt-4 w-60 bg-[#EBEFE5]/70 backdrop-blur-md  border border-white/30 p-4 rounded-xl shadow-lg  flex flex-col gap-3 animate-fadeIn z-50">
           {/* Header */}
-          <div className="flex flex-col items-center border-b border-black pb-3">
-            <img src={logo} alt="Profile" className="w-10 h-10 mb-2" />
-            <b className="text-[15px]">{userName}</b>
-            <small className="text-[13px] text-gray-600">{userRole}</small>
+          <div className="flex flex-col items-center gap-1 border-b border-gray-300 dark:border-gray-600 pb-4">
+            <img src={logo} alt="Profile" className="w-12 h-12" />
+            <b className="text-[15px] text-black">{userName}</b>
+            <small className="text-[13px] text-gray-600 dark:text-gray-400">
+              {userRole}
+            </small>
           </div>
 
           {/* Opciones */}
-          <div className="flex flex-col gap-2 border-b border-black pb-3">
+          <div className="flex flex-col gap-3 border-b border-gray-300 dark:border-gray-600 pb-4">
             <Button
               text="Mi perfil"
               to="/actualizacionUsuario"
               iconRight={faUser}
-              className="w-full bg-[#20571b] hover:bg-[#52a54a] rounded-xl"
+              className="w-full bg-[#20571b] hover:bg-[#52a54a] rounded-xl py-2"
             />
 
             <Button
               text="DashBoard"
               to={userRole === "Administrador" ? "/DashboardAdmin" : "/home"}
-              iconRight={faTableColumns}
-              className="w-full bg-[#20571b] hover:bg-[#52a54a] rounded-xl"
+              iconRight={faChartColumn}
+              className="w-full bg-[#20571b] hover:bg-[#52a54a] rounded-xl py-2"
             />
           </div>
 
@@ -76,8 +82,13 @@ export const ProfileMenu = ({
             text="Cerrar Sesión"
             iconRight={faRightFromBracket}
             onClick={onLogout}
-            className="w-full bg-[#d6031f] hover:bg-[#df707f] rounded-xl"
+            className="w-full bg-[#d6031f] hover:bg-[#df707f] rounded-xl py-2"
           />
+
+          {/* Theme */}
+          <div className="pt-2">
+            <ThemeToggle />
+          </div>
         </div>
       )}
     </div>
