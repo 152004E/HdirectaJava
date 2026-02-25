@@ -35,8 +35,6 @@ interface InsightItem {
   percentage: number;
   footer: string;
   color: string;
-  trendPath: string; // SVG path for the sparkline
-  trendIncreasing: boolean;
 }
 
 export const Dashboard: React.FC = () => {
@@ -75,8 +73,6 @@ export const Dashboard: React.FC = () => {
       percentage: 81,
       footer: "Ultimas 24 horas",
       color: "sales",
-      trendPath: "M 0 40 Q 20 10 40 30 T 80 10",
-      trendIncreasing: true,
     },
     {
       title: "Gastos",
@@ -84,8 +80,6 @@ export const Dashboard: React.FC = () => {
       percentage: 62,
       footer: "Ultimas 24 horas",
       color: "expenses",
-      trendPath: "M 0 10 Q 20 40 40 20 T 80 40",
-      trendIncreasing: false,
     },
     {
       title: "Ingresos",
@@ -93,8 +87,6 @@ export const Dashboard: React.FC = () => {
       percentage: 31,
       footer: "Ultimas 24 horas",
       color: "income",
-      trendPath: "M 0 35 Q 20 30 40 15 T 80 5",
-      trendIncreasing: true,
     },
   ];
 
@@ -167,57 +159,40 @@ export const Dashboard: React.FC = () => {
                       <h1 className="text-3xl font-black mt-2 text-gray-900 tracking-tight">{item.value}</h1>
                     </div>
                     
-                    {/* Premium Charts Container */}
-                    <div className="flex items-center gap-6">
-                      {/* Modern Circular Chart */}
-                      <div className="relative w-16 h-16 rounded-full flex items-center justify-center font-bold text-xs">
-                        <svg className="w-16 h-16 transform -rotate-90">
-                          <circle
-                            cx="32"
-                            cy="32"
-                            r="26"
-                            fill="none"
-                            stroke="#f0f0f0"
-                            strokeWidth="6"
-                          />
-                          <circle
-                            cx="32"
-                            cy="32"
-                            r="26"
-                            fill="none"
-                            stroke={item.trendIncreasing ? "#8dc84b" : "#ff5252"}
-                            strokeWidth="6"
-                            strokeDasharray="163"
-                            strokeLinecap="round"
-                            style={{ 
-                              strokeDashoffset: 163 * (1 - item.percentage / 100),
-                              transition: "stroke-dashoffset 1.5s ease-out"
-                            }}
-                          />
-                        </svg>
-                        <p className="absolute text-gray-700">{item.percentage}%</p>
-                      </div>
-
-                      {/* Premium Sparkline */}
-                      <div className="w-24 h-12 relative opacity-60">
-                        <svg viewBox="0 0 80 50" className="w-full h-full overflow-visible">
-                          <path 
-                            d={item.trendPath} 
-                            fill="none" 
-                            stroke={item.trendIncreasing ? "#8dc84b" : "#ff5252"} 
-                            strokeWidth="4" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
+                    {/* Modern Circular Chart */}
+                    <div className="relative w-16 h-16 rounded-full flex items-center justify-center font-extrabold text-sm">
+                      <svg className="w-16 h-16 transform -rotate-90">
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="26"
+                          fill="none"
+                          stroke="#f3f4f6"
+                          strokeWidth="7"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="26"
+                          fill="none"
+                          stroke={item.color === 'expenses' ? "#ff5252" : "#8dc84b"}
+                          strokeWidth="7"
+                          strokeDasharray="163"
+                          strokeLinecap="round"
+                          style={{ 
+                            strokeDashoffset: 163 * (1 - item.percentage / 100),
+                            transition: "stroke-dashoffset 1.5s ease-out"
+                          }}
+                        />
+                      </svg>
+                      <p className="absolute text-gray-800 tracking-tighter">{item.percentage}%</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 mt-4">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.trendIncreasing ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                      {item.trendIncreasing ? '+12.5%' : '-8.2%'}
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${item.color === 'expenses' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}>
+                      {item.color === 'expenses' ? 'Alto' : 'Estable'}
                     </span>
-                    <small className="text-gray-400 font-medium">{item.footer}</small>
+                    <small className="text-gray-400 font-bold text-[11px]">{item.footer}</small>
                   </div>
                 </div>
               );
