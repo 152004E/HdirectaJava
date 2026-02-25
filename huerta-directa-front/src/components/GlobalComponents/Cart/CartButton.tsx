@@ -31,7 +31,7 @@ return (
       className={`
         relative
         flex items-center justify-center
-        p-2
+        p-4
         rounded-xl
         bg-[#FEF5DC]
         transition-all duration-300
@@ -44,11 +44,11 @@ return (
     >
       <FontAwesomeIcon
         icon={faCartShopping}
-        className="w-7 h-7 pointer-events-none"
+        className="text-[20px] pointer-events-none"
       />
 
       {/* Badge opcional */}
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
+      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2.5 py-1 rounded-full">
         1
       </span>
     </div>

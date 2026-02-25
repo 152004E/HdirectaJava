@@ -1,7 +1,9 @@
 import { FloatingActionButton } from "../../components/GlobalComponents/FloatingButtons/FloatingActionButton";
 import { FloatingChatButton } from "../../components/GlobalComponents/FloatingButtons/FloatingChatButton";
 import { HeaderSection } from "../../components/Home/HeaderSection";
+import { HeroSlider } from "../../components/Home/HeroSlider";
 import { InformationSection } from "../../components/Home/InformationSection";
+import { OffersSection } from "../../components/Home/OffersSection";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 export const HomePage = () => {
@@ -14,7 +16,9 @@ export const HomePage = () => {
 
         <FloatingChatButton />
       </div>
-      <InformationSection/>
+      <InformationSection />
+      <OffersSection />
+      <HeroSlider />
     </main>
   );
 };

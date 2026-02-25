@@ -108,8 +108,15 @@ npm run build
 
 # Preview de producción
 npm run preview
+
+
+# carrusel
+npm install swiper 
 ```
 
 ---
+
+
+
 
 **Última actualización:** 2026-02-23
