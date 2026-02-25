@@ -160,7 +160,7 @@ export const Dashboard: React.FC = () => {
                 item.color === 'expenses' ? 'before:bg-[#8dc84b]' : 'before:bg-[#8dc84b]';
               
               return (
-                <div key={idx} className={`bg-white p-10 rounded-[2rem] shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-[180px] relative overflow-hidden ${colorClass} before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-2`}>
+                <div key={idx} className={`bg-white p-10 rounded-4xl shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-45 relative overflow-hidden ${colorClass} before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-2`}>
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex flex-col">
                       <h3 className="text-base font-semibold text-gray-400 uppercase tracking-widest">{item.title}</h3>
@@ -225,7 +225,7 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Product Management */}
-          <section className="bg-white p-8 rounded-[1.5rem] shadow-sm mb-8">
+          <section className="bg-white p-8 rounded-3xl shadow-sm mb-8">
             <h2 className="text-2xl font-bold mb-6 text-gray-800">Gestión de Productos</h2>
 
             <div className="bg-[#8dc84b] text-white p-6 rounded-2xl flex items-center justify-center gap-3 font-bold text-xl shadow-lg shadow-[#8dc84b]/30 mb-8">
@@ -235,7 +235,7 @@ export const Dashboard: React.FC = () => {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-4 items-center bg-gray-50/50 p-6 rounded-2xl border border-gray-100 mb-6">
-              <div className="flex-1 min-w-[250px]">
+              <div className="flex-1 min-w-62.5">
                 <input
                   type="text"
                   placeholder="Buscar producto..."
@@ -246,7 +246,7 @@ export const Dashboard: React.FC = () => {
               </div>
               <div className="flex gap-3 items-center">
                 <select
-                  className="p-4 bg-[#8dc84b] text-white border-none rounded-xl font-semibold cursor-pointer outline-none min-w-[180px] appearance-none"
+                  className="p-4 bg-[#8dc84b] text-white border-none rounded-xl font-semibold cursor-pointer outline-none min-w-45 appearance-none"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
@@ -361,7 +361,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Right Section Widgets */}
         <aside className="flex flex-col gap-8 self-end xl:self-start">
-          <div className="bg-white p-8 rounded-[1.5rem] shadow-sm">
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
             <h2 className="text-xl font-bold mb-4 text-gray-800 border-b border-gray-50 pb-2">Actualizaciones</h2>
             <div className="flex flex-col gap-4">
               <div className="flex gap-4">
@@ -375,7 +375,7 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-[1.5rem] shadow-sm">
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
             <h2 className="text-xl font-bold mb-4 text-gray-800 border-b border-gray-50 pb-2">Analíticas</h2>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-50 transition-all hover:scale-[1.02]">

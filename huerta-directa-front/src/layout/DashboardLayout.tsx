@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Background } from "../components/GlobalComponents/Background";
 import { Sidebar } from "../components/GlobalComponents/Sidebar";
 import { DashboardHeader } from "../components/GlobalComponents/DashboardHeader";
 
@@ -11,7 +10,7 @@ export const DashboardLayout: React.FC = () => {
 
   return (
     <div className="relative min-h-screen bg-[#FEF5DC] overflow-x-hidden">
-      <Background />
+
 
       {/* Top Header Controls */}
       <DashboardHeader />
@@ -20,7 +19,7 @@ export const DashboardLayout: React.FC = () => {
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
       {/* Main Content Area - Conditional margin on LG screens */}
-      <main className={`transition-all duration-400 ${isSidebarOpen ? "lg:ml-[320px]" : "lg:ml-0"}`}>
+      <main className={`transition-all duration-400 ${isSidebarOpen ? "lg:ml-80" : "lg:ml-0"}`}>
         <div className="p-4 lg:p-8">
           <Outlet />
         </div>
