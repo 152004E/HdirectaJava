@@ -35,6 +35,8 @@ interface InsightItem {
   percentage: number;
   footer: string;
   color: string;
+  trendPath: string; // SVG path for the sparkline
+  trendIncreasing: boolean;
 }
 
 export const Dashboard: React.FC = () => {
@@ -73,6 +75,8 @@ export const Dashboard: React.FC = () => {
       percentage: 81,
       footer: "Ultimas 24 horas",
       color: "sales",
+      trendPath: "M 0 40 Q 20 10 40 30 T 80 10",
+      trendIncreasing: true,
     },
     {
       title: "Gastos",
@@ -80,6 +84,8 @@ export const Dashboard: React.FC = () => {
       percentage: 62,
       footer: "Ultimas 24 horas",
       color: "expenses",
+      trendPath: "M 0 10 Q 20 40 40 20 T 80 40",
+      trendIncreasing: false,
     },
     {
       title: "Ingresos",
@@ -87,6 +93,8 @@ export const Dashboard: React.FC = () => {
       percentage: 31,
       footer: "Ultimas 24 horas",
       color: "income",
+      trendPath: "M 0 35 Q 20 30 40 15 T 80 5",
+      trendIncreasing: true,
     },
   ];
 
@@ -147,7 +155,6 @@ export const Dashboard: React.FC = () => {
           {/* Insights Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {insights.map((item, idx) => {
-              const dashOffset = 226 * (1 - item.percentage / 100);
               const colorClass = 
                 item.color === 'sales' ? 'before:bg-[#8dc84b]' : 
                 item.color === 'expenses' ? 'before:bg-[#8dc84b]' : 'before:bg-[#8dc84b]';
@@ -156,37 +163,62 @@ export const Dashboard: React.FC = () => {
                 <div key={idx} className={`bg-white p-10 rounded-[2rem] shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col min-h-[180px] relative overflow-hidden ${colorClass} before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-2`}>
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex flex-col">
-                      <h3 className="text-base font-semibold text-gray-500 uppercase tracking-wider">{item.title}</h3>
-                      <h1 className="text-3xl font-bold mt-2 text-gray-900">{item.value}</h1>
+                      <h3 className="text-base font-semibold text-gray-400 uppercase tracking-widest">{item.title}</h3>
+                      <h1 className="text-3xl font-black mt-2 text-gray-900 tracking-tight">{item.value}</h1>
                     </div>
-                    <div className="relative w-[92px] h-[92px] rounded-full flex items-center justify-center font-semibold">
-                      <svg className="w-28 h-28 transform -rotate-90">
-                        <circle
-                          cx="56"
-                          cy="56"
-                          r="36"
-                          fill="none"
-                          stroke="#eee"
-                          strokeWidth="12"
-                          className="origin-center"
-                        />
-                        <circle
-                          cx="56"
-                          cy="56"
-                          r="36"
-                          fill="none"
-                          stroke="#004d00"
-                          strokeWidth="12"
-                          strokeDasharray="226"
-                          strokeLinecap="round"
-                          style={{ strokeDashoffset: dashOffset }}
-                          className="transition-all duration-500"
-                        />
-                      </svg>
-                      <p className="absolute text-gray-800">{item.percentage}%</p>
+                    
+                    {/* Premium Charts Container */}
+                    <div className="flex items-center gap-6">
+                      {/* Modern Circular Chart */}
+                      <div className="relative w-16 h-16 rounded-full flex items-center justify-center font-bold text-xs">
+                        <svg className="w-16 h-16 transform -rotate-90">
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="26"
+                            fill="none"
+                            stroke="#f0f0f0"
+                            strokeWidth="6"
+                          />
+                          <circle
+                            cx="32"
+                            cy="32"
+                            r="26"
+                            fill="none"
+                            stroke={item.trendIncreasing ? "#8dc84b" : "#ff5252"}
+                            strokeWidth="6"
+                            strokeDasharray="163"
+                            strokeLinecap="round"
+                            style={{ 
+                              strokeDashoffset: 163 * (1 - item.percentage / 100),
+                              transition: "stroke-dashoffset 1.5s ease-out"
+                            }}
+                          />
+                        </svg>
+                        <p className="absolute text-gray-700">{item.percentage}%</p>
+                      </div>
+
+                      {/* Premium Sparkline */}
+                      <div className="w-24 h-12 relative opacity-60">
+                        <svg viewBox="0 0 80 50" className="w-full h-full overflow-visible">
+                          <path 
+                            d={item.trendPath} 
+                            fill="none" 
+                            stroke={item.trendIncreasing ? "#8dc84b" : "#ff5252"} 
+                            strokeWidth="4" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                  <small className="text-gray-400 mt-4 font-medium">{item.footer}</small>
+                  <div className="flex items-center gap-2 mt-4">
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.trendIncreasing ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                      {item.trendIncreasing ? '+12.5%' : '-8.2%'}
+                    </span>
+                    <small className="text-gray-400 font-medium">{item.footer}</small>
+                  </div>
                 </div>
               );
             })}
