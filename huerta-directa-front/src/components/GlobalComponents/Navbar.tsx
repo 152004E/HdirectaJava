@@ -72,7 +72,7 @@ export const Navbar = ({
 
         {showQuienesSomos && (
           <Link
-            to="/quienes-somos"
+            to="/QuienesSomos"
             className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Quiénes Somos

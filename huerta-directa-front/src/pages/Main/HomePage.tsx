@@ -12,7 +12,7 @@ export const HomePage = () => {
     <main>
       <HeaderSection />
       <div className="fixed bottom-20 right-6 flex flex-col gap-4 z-1000 ">
-        <FloatingActionButton label="Quiénes Somos" to="/quienes-somos" />
+        <FloatingActionButton label="Quiénes Somos" to="/QuienesSomos" />
 
         <FloatingChatButton />
       </div>

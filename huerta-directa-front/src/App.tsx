@@ -6,6 +6,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 import { Landing } from "./pages/Landing/Landing";
 import { HomePage } from "./pages/Main/HomePage";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
+import QuienesSomos from "./pages/QuienesSomos/QuienesSomos";
 
 function App() {
   return (
@@ -24,6 +25,19 @@ function App() {
           }
         >
           <Route path="/" element={<Landing />} />
+        </Route>
+
+        {/* Quienes Somos */}      
+        <Route
+          element={
+            <MainLayout
+              navbarProps={{
+                showQuienesSomos: true,
+              }}
+            />
+          }
+        >
+          <Route path="/QuienesSomos" element={<QuienesSomos />} />
         </Route>
 
         {/* Home page */}
