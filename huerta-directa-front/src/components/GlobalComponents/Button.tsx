@@ -24,7 +24,7 @@ export const Button = ({
   className,
 }: ButtonProps) => {
   const baseClasses =
-    "inline-flex items-center justify-center gap-2  text-white bg-[#8dc84b] rounded-[5px] transition-all duration-500 ease-in-out hover:scale-105 hover:bg-[#5aaa37] disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center cursor-pointer justify-center gap-2  text-white bg-[#8dc84b] rounded-[5px] transition-all duration-500 ease-in-out hover:scale-105 hover:bg-[#5aaa37] disabled:opacity-50 disabled:cursor-not-allowed";
 
   const finalClasses = `${baseClasses} ${className ?? ""}`;
 

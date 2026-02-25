@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { faCarrot } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./Button";
 import { ProfileMenu } from "./ProfileMenu";
+import { CartButton } from "./Cart/CartButton";
 
 interface NavbarProp {
   className?: string;
@@ -11,6 +12,7 @@ interface NavbarProp {
   showQuienesSomos?: boolean;
   showAddProduct?: boolean;
   showProfile?: boolean;
+  showCart?: boolean;  
 }
 
 export const Navbar = ({
@@ -21,14 +23,14 @@ export const Navbar = ({
   showQuienesSomos = false,
   showAddProduct = false,
   showProfile = false,
+  showCart = false, 
 }: NavbarProp) => {
 
   const baseClasses =
     "w-full bg-transparent px-10 py-4 flex items-center justify-between text-[15px]";
 
   return (
-    <header className={`${baseClasses} ${className ?? ""} relative z-50`}>
-      
+    <header className={`${baseClasses} ${className ?? ""} relative z-50 overflow-visible`}>
       
       {/* Logo */}
       <Link
@@ -39,12 +41,12 @@ export const Navbar = ({
       </Link>
 
       {/* Navegación */}
-      <nav className="flex items-center gap-5">
+      <nav className="flex items-center gap-6">
 
         {showInicio && (
           <Link
             to="/"
-            className="text-[#1f1f1f] font-semibold  hover:text-[#5aaa37] transition"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Inicio
           </Link>
@@ -53,7 +55,7 @@ export const Navbar = ({
         {showCategorias && (
           <Link
             to="/categorias"
-            className="text-[#1f1f1f] font-semibold  hover:text-[#5aaa37] transition"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Categorías
           </Link>
@@ -71,7 +73,7 @@ export const Navbar = ({
         {showQuienesSomos && (
           <Link
             to="/quienes-somos"
-            className="text-[#1f1f1f] font-semibold  hover:text-[#5aaa37] transition"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Quiénes Somos
           </Link>
@@ -85,6 +87,9 @@ export const Navbar = ({
             className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2"
           />
         )}
+
+        {/* 🛒 CARRITO (nuevo) */}
+        {showCart && <CartButton />}
 
         {showProfile && (
           <ProfileMenu

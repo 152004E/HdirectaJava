@@ -33,6 +33,7 @@ function App() {
                 showCategorias: true,
                 showProductos:true,
                 showAddProduct : true,
+                showCart: true,
                 showProfile: true
               }}
             />

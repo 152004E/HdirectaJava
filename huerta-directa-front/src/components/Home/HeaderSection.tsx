@@ -1,6 +1,7 @@
 import { Button } from "../GlobalComponents/Button";
 import ImagenHover_modified from "../../assets/image/ImagenHover-modified.png" 
 import rigthImg from "../../assets/image/rigth.png" 
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 export const HeaderSection = () => {
 
@@ -22,6 +23,7 @@ export const HeaderSection = () => {
         <Button
           text="Información"
           to="/quienes-somos"
+          iconRight={faCircleInfo}
           className="py-3.75 px-6.25 bg-[#8dc84b] hover:bg-[#004d00] text-white rounded-[50px] transition-all duration-500"
         />
       </div>
