@@ -65,27 +65,24 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public String seveUserView(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
+    @ResponseBody
+    public ResponseEntity<?> seveUserView(
+            @Valid @RequestBody UserDTO userDTO,
             BindingResult result,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+            HttpSession session) {
 
         if (result.hasErrors()) {
-            return "login/login"; // tu vista
+            return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
         try {
-
             if (userDTO.getBirthDate() != null) {
                 LocalDate today = LocalDate.now();
                 Period age = Period.between(userDTO.getBirthDate(), today);
 
                 if (age.getYears() < 18) {
-                    redirectAttributes.addFlashAttribute(
-                            "error",
-                            "Debes ser mayor de 18 años para registrarte");
-                    return "redirect:/login";
+                    return ResponseEntity.badRequest()
+                            .body(java.util.Map.of("message", "Debes ser mayor de 18 años para registrarte"));
                 }
             }
 
@@ -101,29 +98,17 @@ public class LoginController {
                     usuarioCreado.getName(),
                     usuarioCreado.getEmail());
 
-            redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Cuenta creada correctamente");
-
-            return "redirect:/index";
+            return ResponseEntity.ok(java.util.Map.of(
+                    "message", "Cuenta creada correctamente",
+                    "user", usuarioCreado));
 
         } catch (DataIntegrityViolationException e) {
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "El correo electronico ya esta registrado");
-
-            return "redirect:/login";
-
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", "El correo electronico ya esta registrado"));
         } catch (Exception e) {
-
             log.error("Error al crear la cuenta", e);
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "Error al crear la cuenta");
-
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(java.util.Map.of("message", "Error al crear la cuenta"));
         }
     }
 
@@ -244,22 +229,20 @@ public class LoginController {
     }
 
     @PostMapping("/loginUser")
-    public String loginUser(
-            @RequestParam String email,
-            @RequestParam String password,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> loginUser(
+            @RequestBody java.util.Map<String, String> loginData,
+            HttpSession session) {
+
+        String email = loginData.get("email");
+        String password = loginData.get("password");
 
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null ||
                 !passwordEncoder.matches(password, user.getPassword())) {
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "Correo o contraseña incorrectos");
-
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(java.util.Map.of("message", "Correo o contraseña incorrectos"));
         }
 
         session.setAttribute("user", user);
@@ -267,15 +250,19 @@ public class LoginController {
         // Si necesitas verificación SMS
         if (user.getPhone() != null && !user.getPhone().isBlank()) {
             session.setAttribute("pendingUser", user);
-            return "redirect:/verificar-sms";
+            return ResponseEntity.ok(java.util.Map.of("status", "verify-sms"));
         }
 
         // Redirección según rol
+        String redirectUrl = "/index";
         if (user.getRole() != null && user.getRole().getIdRole() == 1) {
-            return "redirect:/DashboardAdmin";
+            redirectUrl = "/DashboardAdmin";
         }
 
-        return "redirect:/index";
+        return ResponseEntity.ok(java.util.Map.of(
+                "message", "Login exitoso",
+                "redirect", redirectUrl,
+                "idRole", user.getRole() != null ? user.getRole().getIdRole() : 0));
     }
 
     // =========================
