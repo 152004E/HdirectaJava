@@ -12,33 +12,49 @@ const offers = [
 
 export const OffersSection = () => {
   return (
-    <section className="w-full mx-auto pt-20 flex justify-between gap-6 flex-wrap">
-      {offers.map((offer, index) => (
-        <div
-          key={index}
-          className="
-          w-75
-          flex flex-col
-          items-center
-          text-center
-          p-9
-          rounded-2xl
-          shadow-xl
-          transition-transform duration-300
-          hover:-translate-y-3
-          bg-white
-          gap-4
-          "
-        >
-          <img src={offer.img} alt={offer.title} className="w-35 mx-auto" />
-
-          <h3 className="font-bold text-lg text-[#333128]">{offer.title}</h3>
-
-          <p className="text-[#8dc84b] font-semibold text-[15px]">
-            {offer.type}
+    <section className="w-full bg-linear-to-b   from-white via-white to-[#FEF5DC] py-20">
+      <div className="max-w-330 mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-[#8dc84b]">Ofertas del Día</h2>
+          <p className="text-gray-500 mt-2">
+            Aprovecha nuestros descuentos especiales en productos frescos
+            seleccionados para hoy
           </p>
         </div>
-      ))}
+        <div className="flex justify-between gap-8 flex-wrap">
+          {offers.map((offer, index) => (
+            <div
+              key={index}
+              className="
+                w-70
+                flex flex-col
+                items-center
+                text-center
+                border
+                border-gray-400/10
+                p-9
+                rounded-2xl
+                shadow-xl
+                transition-all duration-500 ease-in-out
+                hover:-translate-y-3
+                hover:shadow-2xl
+                bg-white
+                gap-4
+              "
+            >
+              <img src={offer.img} alt={offer.title} className="w-35 mx-auto" />
+
+              <h3 className="font-bold text-lg text-[#333128]">
+                {offer.title}
+              </h3>
+
+              <p className="text-[#8dc84b] font-semibold text-[15px]">
+                {offer.type}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

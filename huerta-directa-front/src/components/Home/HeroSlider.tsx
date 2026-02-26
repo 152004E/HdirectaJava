@@ -40,7 +40,9 @@ const slides = [
 
 export const HeroSlider = () => {
   return (
-    <section className="bg-linear-to-b  py-10 mb-50">
+    <section className="bg-linear-to-b  from-[#FEF5DC] via-white to-[#FEF5DC]   py-10 ">
+      <div className="max-w-330 mx-auto">
+      
       <Swiper
         modules={[Pagination, Autoplay]}
         pagination={{ clickable: true }}
@@ -93,6 +95,7 @@ export const HeroSlider = () => {
           </SwiperSlide>
         ))}
       </Swiper>
+      </div>
     </section>
   );
 };

@@ -24,19 +24,48 @@ huerta-directa-front/
 │
 ├─ src/
 │  ├─ assets/                           ← Imágenes, logos, íconos
-│  │  └─ logo_huerta.png                ✓ Logo principal
+│  │  ├─ logo_huerta.png                ✓ Logo principal
+│  │  └─ image/                         ← Imágenes de productos y UI
+│  │     ├─ 1.png                       ✓ Imagen producto 1
+│  │     ├─ ImagenHover-modified.png    ✓ Imagen hover modificada
+│  │     ├─ pr4.png                     ✓ Imagen producto 4
+│  │     ├─ pr5.png                     ✓ Imagen producto 5
+│  │     ├─ pr6.png                     ✓ Imagen producto 6
+│  │     ├─ rigth.png                   ✓ Imagen decorativa
+│  │     └─ oferts/                     ✓ Carpeta con ofertas
 │  │
 │  ├─ components/                       ← Componentes reutilizables UI
 │  │  ├─ Auth/                          ← Componentes de autenticación
 │  │  │  └─ (vacío - en desarrollo)     ⏳ Componentes auth por implementar
 │  │  │
-│  │  └─ GlobalComponents/              ← Componentes globales
-│  │     ├─ Button.tsx                  ✓ Botón reutilizable
-│  │     ├─ Footer.tsx                  ✓ Pie de página
-│  │     ├─ Loader.tsx                  ✓ Componente de carga
-│  │     ├─ Modal.tsx                   ✓ Modal genérico
-│  │     ├─ Navbar.tsx                  ✓ Barra de navegación
-│  │     └─ ProfileMenu.tsx             ✓ Menú de perfil
+│  │  ├─ GlobalComponents/              ← Componentes globales
+│  │  │  ├─ Background.tsx              ✓ Componente de fondo
+│  │  │  ├─ Button.tsx                  ✓ Botón reutilizable
+│  │  │  ├─ DashboardHeader.tsx         ✓ Encabezado del dashboard
+│  │  │  ├─ Footer.tsx                  ✓ Pie de página
+│  │  │  ├─ Loader.tsx                  ✓ Componente de carga
+│  │  │  ├─ Modal.tsx                   ✓ Modal genérico
+│  │  │  ├─ Navbar.tsx                  ✓ Barra de navegación
+│  │  │  ├─ PasswordInput.tsx           ✓ Input para contraseña
+│  │  │  ├─ ProfileMenu.tsx             ✓ Menú de perfil
+│  │  │  ├─ Sidebar.tsx                 ✓ Barra lateral
+│  │  │  ├─ ThemeToggle.tsx             ✓ Toggle para tema oscuro/claro
+│  │  │  ├─ Cart/                       ← Componentes del carrito
+│  │  │  │  ├─ CartButton.tsx           ✓ Botón del carrito
+│  │  │  │  └─ CartDropdown.tsx         ✓ Desplegable del carrito
+│  │  │  └─ FloatingButtons/            ← Botones flotantes
+│  │  │     ├─ FloatingActionButton.tsx ✓ Botón de acción flotante
+│  │  │     └─ FloatingChatButton.tsx   ✓ Botón de chat flotante
+│  │  │
+│  │  ├─ Home/                          ← Componentes para la página de inicio
+│  │  │  ├─ HeaderSection.tsx           ✓ Sección de encabezado
+│  │  │  ├─ HeroSlider.tsx              ✓ Carrusel principal
+│  │  │  ├─ InformationSection.tsx      ✓ Sección de información
+│  │  │  ├─ OffersSection.tsx           ✓ Sección de ofertas
+│  │  │  └─ ProductCard.tsx             ✓ Tarjeta de producto
+│  │  │
+│  │  └─ Modals/                        ← Componentes modales
+│  │     └─ ChatModal.tsx               ✓ Modal de chat
 │  │
 │  ├─ font/                             ← Fuentes personalizadas
 │  │  └─ Poppins/                       ✓ Fuente Poppins
@@ -47,6 +76,7 @@ huerta-directa-front/
 │  │
 │  ├─ layout/                           ← Layouts (estructura base)
 │  │  ├─ AuthLayout.tsx                 ✓ Layout de autenticación
+│  │  ├─ DashboardLayout.tsx            ✓ Layout del dashboard
 │  │  └─ MainLayout.tsx                 ✓ Layout principal
 │  │
 │  ├─ pages/                            ← Vistas (rutas)
@@ -54,11 +84,20 @@ huerta-directa-front/
 │  │  │  ├─ Login.tsx                   ✓ Página de login
 │  │  │  └─ Login.css                   ✓ Estilos de login
 │  │  │
+│  │  ├─ Dashboard/                     ← Páginas del dashboard
+│  │  │  └─ Dashboard.tsx               ✓ Dashboard principal
+│  │  │
 │  │  ├─ Landing/                       ← Páginas públicas
 │  │  │  └─ Landing.tsx                 ✓ Landing page / Home
 │  │  │
-│  │  └─ Main/                          ← Páginas principales (autenticadas)
-│  │     └─ HomePage.tsx                ✓ Home page del usuario
+│  │  ├─ Main/                          ← Páginas principales (autenticadas)
+│  │  │  └─ HomePage.tsx                ✓ Home page del usuario
+│  │  │
+│  │  └─ QuienesSomos/                  ← Páginas informativas
+│  │     └─ QuienesSomos.tsx            ✓ Página quiénes somos
+│  │
+│  ├─ types/                            ← Definiciones de tipos TypeScript
+│  │  └─ swiper.d.ts                    ✓ Tipos para Swiper
 │  │
 │  ├─ App.tsx                           ✓ Componente principal y rutas
 │  ├─ main.tsx                          ✓ Entry point de la aplicación
@@ -88,9 +127,12 @@ huerta-directa-front/
 
 - [ ] Expandir componentes de Auth
 - [ ] Crear páginas adicionales (Productos, Perfil, etc.)
-- [ ] Implementar Dashboard de usuario
-- [ ] Agregar más páginas de navegación
-- [ ] Mejorar sistema de componentes
+- [x] Implementar Dashboard de usuario
+- [x] Agregar más páginas de navegación (QuienesSomos, Dashboard)
+- [x] Mejorar sistema de componentes (Cart, FloatingButtons, Home, Modals)
+- [ ] Crear más componentes en Auth/
+- [ ] Implementar funcionalidades de búsqueda avanzada
+- [ ] Optimizar imágenes y assets
 
 ---
 

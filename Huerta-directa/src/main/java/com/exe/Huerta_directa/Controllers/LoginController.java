@@ -1,7 +1,6 @@
 package com.exe.Huerta_directa.Controllers;
 
 import com.exe.Huerta_directa.DTO.UserDTO;
-import com.exe.Huerta_directa.Entity.Role;
 import com.exe.Huerta_directa.Entity.User;
 import com.exe.Huerta_directa.Repository.UserRepository;
 import com.exe.Huerta_directa.Service.UserService;
@@ -521,19 +520,19 @@ public class LoginController {
     }
 
     // Convertir de DTO a Entity
-    private User convertirDTOaEntity(UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setCreacionDate(userDTO.getCreacionDate());
-        // Crear un Role básico si es necesario
-        if (userDTO.getIdRole() != null) {
-            Role role = new Role();
-            role.setIdRole(userDTO.getIdRole());
-            user.setRole(role);
-        }
-        return user;
-    }
+    // private User convertirDTOaEntity(UserDTO userDTO) {
+    //     User user = new User();
+    //     user.setId(userDTO.getId());
+    //     user.setName(userDTO.getName());
+    //     user.setEmail(userDTO.getEmail());
+    //     user.setPassword(userDTO.getPassword());
+    //     user.setCreacionDate(userDTO.getCreacionDate());
+    //     // Crear un Role básico si es necesario
+    //     if (userDTO.getIdRole() != null) {
+    //         Role role = new Role();
+    //         role.setIdRole(userDTO.getIdRole());
+    //         user.setRole(role);
+    //     }
+    //     return user;
+    // }
 }
