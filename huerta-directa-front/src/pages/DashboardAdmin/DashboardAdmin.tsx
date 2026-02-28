@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faUsers,
   faPen,
+  faGear,
   faFileExcel,
   faFilePdf,
   faUserSlash,
@@ -116,7 +118,7 @@ export const DashboardAdmin: React.FC = () => {
                 <h1 className="text-3xl font-black mt-2 text-gray-900">{item.value}</h1>
               </div>
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg ${
-                item.color === 'primary' ? 'bg-[#004d00]' : item.color === 'secondary' ? 'bg-[#8dc84b]' : 'bg-[#ffa000]'
+                item.color === 'primary' ? 'bg-[#004d00]' : item.color === 'secondary' ? 'bg-[#8dc84b]' : 'bg-[#004d00]'
               }`}>
                 <FontAwesomeIcon icon={item.icon} size="lg" />
               </div>
@@ -127,6 +129,38 @@ export const DashboardAdmin: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Quick Access Grid */}
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Accesos Rápidos</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <Link to="/DashboardAdmin/Usuarios" className="bg-[#004d00] p-6 rounded-3xl shadow-lg hover:shadow-[#004d00]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-white">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faUsers} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Gestionar Usuarios</h3>
+            <p className="text-white/70 text-sm">Ver y editar información de usuarios</p>
+          </div>
+        </Link>
+        <Link to="/DashboardAdmin/Productos" className="bg-[#8dc84b] p-6 rounded-3xl shadow-lg hover:shadow-[#8dc84b]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-[#004d00]">
+          <div className="w-12 h-12 rounded-2xl bg-white/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faBoxesStacked} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Gestionar Productos</h3>
+            <p className="text-[#004d00]/70 text-sm">Aprobar, editar o eliminar productos</p>
+          </div>
+        </Link>
+        <Link to="/DashboardAdmin/configuracion" className="bg-[#004d00] p-6 rounded-3xl shadow-lg hover:shadow-[#004d00]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-white">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faGear} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Configuración</h3>
+            <p className="text-white/70 text-sm">Configuraciones del sistema</p>
+          </div>
+        </Link>
       </div>
 
       {/* User Management Section */}
