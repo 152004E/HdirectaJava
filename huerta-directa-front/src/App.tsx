@@ -18,7 +18,7 @@ import { AdminProducts } from "./pages/DashboardAdmin/AdminProducts";
 import { AdminReports } from "./pages/DashboardAdmin/AdminReports";
 import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
-import QuienesSomos from "./pages/QuienesSomos/QuienesSomos";
+import QuienesSomos from "./pages/About/QuienesSomos";
 import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
 
 function App() {
@@ -43,7 +43,10 @@ function App() {
           element={
             <MainLayout
               navbarProps={{
-                showQuienesSomos: true,
+                showInicio:true,
+                showProductos:true,
+                showCategorias:true,
+                showProfile:true
               }}
             />
           }
