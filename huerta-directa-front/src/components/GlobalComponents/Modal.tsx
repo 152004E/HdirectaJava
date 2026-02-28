@@ -14,19 +14,34 @@ export const Modal = ({ isOpen, onClose, title, icon, children }: ModalProps) =>
   if (!isOpen) return null;
 
   return (
-    <>
-      <div className="modal-overlay active" onClick={onClose}></div>
-      <div className="modal-carga active">
-        <div className="modal-header">
-          <h2>
-            {icon && <FontAwesomeIcon icon={icon} />} {title}
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      {/* Overlay */}
+      <div 
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn" 
+        onClick={onClose}
+      ></div>
+      
+      {/* Modal Container */}
+      <div className="relative bg-white w-full max-w-2xl rounded-[30px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50">
+          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-3">
+            {icon && <FontAwesomeIcon icon={icon} className="text-[#8dc84b]" />} 
+            {title}
           </h2>
-          <button className="btn-close-modal" onClick={onClose}>
+          <button 
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-500 transition-all text-2xl" 
+            onClick={onClose}
+          >
             &times;
           </button>
         </div>
-        {children}
+        
+        {/* Body */}
+        <div className="max-h-[80vh] overflow-y-auto">
+          {children}
+        </div>
       </div>
-    </>
+    </div>
   );
 };

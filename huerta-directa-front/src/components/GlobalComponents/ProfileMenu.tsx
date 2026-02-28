@@ -70,8 +70,11 @@ export const ProfileMenu = ({
             />
 
             <Button
-              text="DashBoard"
-              to={userRole === "Administrador" ? "/dashboard" : "/dashboard"}
+            //validacion de roles para el dashboard 
+              //text="DashBoard"
+              //to={userRole === "Administrador" || userRole === "Administrador Global" ? "/admin-dashboard" : "/dashboard"}
+              text="DashBoard admin"
+              to="/admin-dashboard"
               iconRight={faChartColumn}
               className="w-full bg-[#20571b] hover:bg-[#52a54a] rounded-xl py-2"
             />

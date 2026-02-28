@@ -6,14 +6,18 @@ import DashboardLayout from "./layout/DashboardLayout";
 import { Landing } from "./pages/Landing/Landing";
 import { HomePage } from "./pages/Main/HomePage";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { DashboardGraficos } from "./pages/Dashboard/DashboardGraficos";
+import { MensajesAreaSocial } from "./pages/Dashboard/MensajesAreaSocial";
+import { DashboardAgregarProducto } from "./pages/Dashboard/DashboardAgregarProducto";
+import { ActualizacionUsuario } from "./pages/Dashboard/ActualizacionUsuario";
+import { DashboardAdmin } from "./pages/DashboardAdmin/DashboardAdmin";
+import { AdminDashboardLayout } from "./layout/AdminDashboardLayout";
 import QuienesSomos from "./pages/QuienesSomos/QuienesSomos";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Layout principal */}
-
         {/* Landing Layout */}
         <Route
           element={
@@ -60,6 +64,15 @@ function App() {
         {/* Dashboard Layout */}
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
+          <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
+          <Route path="/DashBoardAgregarProducto" element={<DashboardAgregarProducto />} />
+          <Route path="/actualizacionUsuario" element={<ActualizacionUsuario />} />
+        </Route>
+
+        {/* Admin Dashboard Layout */}
+        <Route element={<AdminDashboardLayout />}>
+          <Route path="/admin-dashboard" element={<DashboardAdmin />} />
         </Route>
 
         {/* Layout auth */}
