@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faEye, faTrash, faCheck, faBan } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
+import { NotifyProducerModal } from "../../components/Modals/NotifyProducerModal";
 
 interface ProductInfo {
   id: number;
@@ -23,6 +24,13 @@ export const AdminProducts: React.FC = () => {
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [isNotifyModalOpen, setIsNotifyModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductInfo | null>(null);
+
+  const handleNotifyProducer = (product: ProductInfo) => {
+    setSelectedProduct(product);
+    setIsNotifyModalOpen(true);
+  };
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -77,7 +85,11 @@ export const AdminProducts: React.FC = () => {
                   </td>
                   <td className="py-5 px-4">
                     <div className="flex justify-center gap-2">
-                      <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer">
+                      <button 
+                        className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer"
+                        title="Notificar al Autor"
+                        onClick={() => handleNotifyProducer(product)}
+                      >
                         <FontAwesomeIcon icon={faEye} />
                       </button>
                       <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-green-500 hover:text-white transition-all cursor-pointer" title="Aprobar">
@@ -102,6 +114,14 @@ export const AdminProducts: React.FC = () => {
           </table>
         </div>
       </section>
+
+      {/* Modal de Notificación */}
+      <NotifyProducerModal
+        isOpen={isNotifyModalOpen}
+        onClose={() => setIsNotifyModalOpen(false)}
+        product={selectedProduct}
+        onSend={(data) => console.log("Notificación a enviar:", data)}
+      />
     </div>
   );
 };
