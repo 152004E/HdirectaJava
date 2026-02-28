@@ -9,20 +9,20 @@ import {
   faPlateWheat,
   faGlassWater,
   faBoxOpen,
-  faEnvelope,
+
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const categories = [
-  { name: "Frutas", icon: faAppleWhole, link: "/Frutas" },
-  { name: "Verduras y hortalizas", icon: faCarrot, link: "/VerdurasYHortalizas" },
-  { name: "Lácteos", icon: faCow, link: "/Lacteos" },
-  { name: "Carnes y proteínas", icon: faDrumstickBite, link: "/CarnesYl" },
-  { name: "Cereales y granos", icon: faBowlFood, link: "/Cereales" },
-  { name: "Productos orgánicos", icon: faCookie, link: "/Organicos" },
-  { name: "Miel y derivados", icon: faPlateWheat, link: "/MielYDerivados" },
-  { name: "Bebidas naturales", icon: faGlassWater, link: "/BebidasNaturales" },
-  { name: "Cajas mixtas o combos", icon: faBoxOpen, link: "/CajasMixtas" },
+  { name: "Frutas", icon: faAppleWhole, slug: "frutas" },
+  { name: "Verduras y hortalizas", icon: faCarrot, slug: "verduras" },
+  { name: "Lácteos", icon: faCow, slug: "lacteos" },
+  { name: "Carnes y proteínas", icon: faDrumstickBite, slug: "carnes" },
+  { name: "Cereales y granos", icon: faBowlFood, slug: "cereales" },
+  { name: "Productos orgánicos", icon: faCookie, slug: "organicos" },
+  { name: "Miel y derivados", icon: faPlateWheat, slug: "miel" },
+  { name: "Bebidas naturales", icon: faGlassWater, slug: "bebidas" },
+  { name: "Cajas mixtas o combos", icon: faBoxOpen, slug: "combos" },
 ];
 
 const CategoriesSection = () => {
@@ -55,7 +55,7 @@ const CategoriesSection = () => {
         {/* Lado derecho */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
           {categories.map((category, index) => (
-            <Link key={index} to={category.link}>
+            <Link key={index} to={`/categoria/${category.slug}`}>
               <div className="bg-white rounded-3xl shadow-xl p-8 text-center border border-gray-400/10 h-55 w-47 flex flex-col justify-center items-center transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
 
                 <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#8dc84b] mb-3  text-2xl">
@@ -71,18 +71,6 @@ const CategoriesSection = () => {
         </div>
       </div>
 
-      {/* Botón flotante */}
-      <Link
-        to="/QuienesSomos"
-        className="fixed h-13.75 bg-[#8bc34a] p-4 right-6.5 bottom-25 rounded-full hover:w-50 cursor-pointer group transition-all duration-500 ease-in-out"
-      >
-        <div className="flex justify-center gap-3 items-center">
-          <FontAwesomeIcon icon={faEnvelope} className="text-2xl text-white" />
-          <p className="hidden group-hover:block text-white whitespace-nowrap transition-all duration-500 ease-in-out">
-            Conócenos
-          </p>
-        </div>
-      </Link>
     </section>
   );
 };

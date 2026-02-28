@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.http.HttpSession;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -217,6 +216,7 @@ public class PaymentController {
             }
             
             // Formatear monto
+            @SuppressWarnings("deprecation")
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
             String formattedAmount = currencyFormat.format(paymentRequest.getTransactionAmount());
             

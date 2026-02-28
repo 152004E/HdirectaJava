@@ -1,3 +1,4 @@
+import { FiltersBar } from "./FiltersBar";
 import ProductCard from "./ProductCard";
 
 const mockProducts = [
@@ -35,17 +36,10 @@ export const ProductsSection = () => {
   return (
     <section className="py-16 px-10   bg-linear-to-b   from-[#FEF5DC] via-white to-[#FEF5DC]">
       <div className="max-w-330 mx-auto">
+      <FiltersBar title={"Nuestros Productos"} />
 
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-[#8dc84b]">
-          Nuestros Productos
-        </h2>
-        <p className="text-gray-500 mt-2">
-          Productos frescos directamente del campo
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
         {mockProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
