@@ -71,18 +71,6 @@ const CategoriesSection = () => {
         </div>
       </div>
 
-      {/* Botón flotante */}
-      <Link
-        to="/QuienesSomos"
-        className="fixed h-13.75 bg-[#8bc34a] p-4 right-6.5 bottom-25 rounded-full hover:w-50 cursor-pointer group transition-all duration-500 ease-in-out"
-      >
-        <div className="flex justify-center gap-3 items-center">
-          <FontAwesomeIcon icon={faEnvelope} className="text-2xl text-white" />
-          <p className="hidden group-hover:block text-white whitespace-nowrap transition-all duration-500 ease-in-out">
-            Conócenos
-          </p>
-        </div>
-      </Link>
     </section>
   );
 };
