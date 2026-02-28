@@ -50,22 +50,50 @@ export const DashboardAdmin: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Simulating API fetch for users
-    setTimeout(() => {
-      setUsers([
-        { id: 1, fullName: "Juan Pérez", email: "juan@example.com", role: "Cliente", status: "Active", registrationDate: "2024-02-01" },
-        { id: 2, fullName: "María García", email: "maria@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-15" },
-        { id: 3, fullName: "Carlos López", email: "carlos@example.com", role: "Cliente", status: "Inactive", registrationDate: "2024-01-20" },
-        { id: 4, fullName: "Ana Martínez", email: "ana@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-25" },
-      ]);
-      setLoading(false);
-    }, 1000);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/users");
+        if (response.ok) {
+          const data = await response.json();
+          const mappedUsers: UserInfo[] = data.map((u: any) => ({
+            id: u.id,
+            fullName: u.name,
+            email: u.email,
+            role: u.idRole === 1 ? "Administrador" : "Usuario",
+            status: "Active",
+            registrationDate: u.creacionDate || "N/A"
+          }));
+          setUsers(mappedUsers);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    const fetchAllProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        if (response.ok) {
+          const data = await response.json();
+          setProductCount(data.length);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+    fetchAllProducts();
   }, []);
+
+  const [productCount, setProductCount] = useState(0);
 
   const adminInsights: AdminInsightItem[] = [
     {
       title: "Usuarios Totales",
-      value: "1,284",
+      value: users.length.toString(),
       percentage: 12,
       footer: "Más que el mes pasado",
       color: "primary",
@@ -73,7 +101,7 @@ export const DashboardAdmin: React.FC = () => {
     },
     {
       title: "Productos Activos",
-      value: "456",
+      value: productCount.toString(),
       percentage: 5,
       footer: "Nuevos esta semana",
       color: "secondary",
@@ -105,9 +133,27 @@ export const DashboardAdmin: React.FC = () => {
     setIsEditModalOpen(false);
   };
 
+  const handleExportExcel = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportExcel?${params.toString()}`;
+  };
+
+  const handleExportPdf = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportPdf?${params.toString()}`;
+  };
+
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 sticky top-0 md:top-4 z-50">
         <h1 className="text-3xl font-extrabold text-[#004d00]">Panel de Administración</h1>
       </div>
 
@@ -201,8 +247,18 @@ export const DashboardAdmin: React.FC = () => {
                 <FontAwesomeIcon icon={faBorderAll} /> Tarjetas
               </button>
             </div>
-            <Button text="Exportar" iconLetf={faFileExcel} className="bg-[#8dc84b] text-white rounded-xl py-3" />
-            <Button text="Reporte General" iconLetf={faFilePdf} className="bg-[#004d00] text-white rounded-xl py-3" />
+            <Button 
+              text="Exportar" 
+              iconLetf={faFileExcel} 
+              className="bg-[#8dc84b] text-white rounded-xl py-3 px-8 mt-2 mb-2 w-full md:w-auto" 
+              onClick={handleExportExcel}
+            />
+            <Button 
+              text="Reporte General" 
+              iconLetf={faFilePdf} 
+              className="bg-[#004d00] text-white rounded-xl py-3 px-8 mt-2 mb-2 w-full md:w-auto" 
+              onClick={handleExportPdf}
+            />
           </div>
         </div>
 

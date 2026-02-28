@@ -34,16 +34,29 @@ export const AdminUsers: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setUsers([
-        { id: 1, fullName: "Juan Pérez", email: "juan@example.com", role: "Cliente", status: "Active", registrationDate: "2024-02-01" },
-        { id: 2, fullName: "María García", email: "maria@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-15" },
-        { id: 3, fullName: "Carlos López", email: "carlos@example.com", role: "Cliente", status: "Inactive", registrationDate: "2024-01-20" },
-        { id: 4, fullName: "Ana Martínez", email: "ana@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-25" },
-        { id: 5, fullName: "Pedro Gómez", email: "pedro@example.com", role: "Cliente", status: "Active", registrationDate: "2024-02-28" },
-      ]);
-      setLoading(false);
-    }, 800);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/users");
+        if (response.ok) {
+          const data = await response.json();
+          const mappedUsers: UserInfo[] = data.map((u: any) => ({
+            id: u.id,
+            fullName: u.name,
+            email: u.email,
+            role: u.idRole === 1 ? "Administrador" : "Usuario",
+            status: "Active",
+            registrationDate: u.creacionDate || "N/A"
+          }));
+          setUsers(mappedUsers);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const filteredUsers = users.filter(
@@ -60,6 +73,24 @@ export const AdminUsers: React.FC = () => {
   const handleSaveUser = (updatedUser: UserInfo) => {
     setUsers(users.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
     setIsEditModalOpen(false);
+  };
+
+  const handleExportExcel = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportExcel?${params.toString()}`;
+  };
+
+  const handleExportPdf = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportPdf?${params.toString()}`;
   };
 
   return (
@@ -99,8 +130,18 @@ export const AdminUsers: React.FC = () => {
                 <FontAwesomeIcon icon={faBorderAll} /> Tarjetas
               </button>
             </div>
-            <Button text="Exportar Excel" iconLetf={faFileExcel} className="bg-[#8dc84b] text-white rounded-xl py-3" />
-            <Button text="Exportar PDF" iconLetf={faFilePdf} className="bg-[#004d00] text-white rounded-xl py-3" />
+            <Button 
+              text="Exportar Excel" 
+              iconLetf={faFileExcel} 
+              className="bg-[#8dc84b] text-white rounded-xl py-3" 
+              onClick={handleExportExcel}
+            />
+            <Button 
+              text="Exportar PDF" 
+              iconLetf={faFilePdf} 
+              className="bg-[#004d00] text-white rounded-xl py-3" 
+              onClick={handleExportPdf}
+            />
           </div>
         </div>
 
