@@ -19,6 +19,7 @@ import { AdminReports } from "./pages/DashboardAdmin/AdminReports";
 import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/QuienesSomos/QuienesSomos";
+import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
 
 function App() {
   return (
@@ -37,7 +38,7 @@ function App() {
           <Route path="/" element={<Landing />} />
         </Route>
 
-        {/* Quienes Somos */}      
+        {/* Quienes Somos */}
         <Route
           element={
             <MainLayout
@@ -56,15 +57,32 @@ function App() {
             <MainLayout
               navbarProps={{
                 showCategorias: true,
-                showProductos:true,
-                showAddProduct : true,
+                showProductos: true,
+                showAddProduct: true,
                 showCart: true,
-                showProfile: true
+                showProfile: true,
               }}
             />
           }
         >
           <Route path="/HomePage" element={<HomePage />} />
+        </Route>
+        {/* Home page / categorias */}
+        <Route
+          element={
+            <MainLayout
+              navbarProps={{
+                showInicio :true,
+                showCategorias: true,
+                showProductos: true,
+                showQuienesSomos: true,
+                showCart: true,
+                showProfile: true,
+              }}
+            />
+          }
+        >
+          <Route path="/categoria/:categorySlug" element={<CategoryPage />} />
         </Route>
 
         {/* Dashboard Layout */}
@@ -72,8 +90,14 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
           <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
-          <Route path="/DashBoardAgregarProducto" element={<DashboardAgregarProducto />} />
-          <Route path="/actualizacionUsuario" element={<ActualizacionUsuario />} />
+          <Route
+            path="/DashBoardAgregarProducto"
+            element={<DashboardAgregarProducto />}
+          />
+          <Route
+            path="/actualizacionUsuario"
+            element={<ActualizacionUsuario />}
+          />
         </Route>
 
         {/* Admin Dashboard Layout */}
@@ -94,7 +118,7 @@ function App() {
         </Route>
 
         {/* Ruta comodín */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/HomePage" />} />
       </Routes>
     </BrowserRouter>
   );
