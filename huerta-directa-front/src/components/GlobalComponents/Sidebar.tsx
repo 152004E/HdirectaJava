@@ -29,7 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
     { label: "Ordenes", icon: faFileLines, link: "/misOrdenes" },
     { label: "Agregar Producto", icon: faBoxesStacked, link: "/DashBoardAgregarProducto" },
     { label: "Mi Perfil", icon: faGear, link: "/actualizacionUsuario" },
-    { label: "Pagina Principal", icon: faRightFromBracket, link: "/" },
+    { label: "Pagina Principal", icon: faRightFromBracket, link: "/HomePage" },
   ];
 
   return (

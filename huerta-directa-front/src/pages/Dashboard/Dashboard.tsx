@@ -9,8 +9,8 @@ import {
   faFilePdf,
   faCloudArrowUp,
   faCartShopping,
-  //faBagShopping,
-  //faUser,
+  faBagShopping,
+  faUser,
   //faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -295,11 +295,49 @@ export const Dashboard: React.FC = () => {
                 <div className="flex-1">
                   <h3 className="text-xs font-bold text-gray-400">Ordenes Totales</h3>
                   <p className="font-bold text-lg text-gray-800">3,849</p>
+                  
                 </div>
+                
               </div>
             </div>
+            
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Usuarios</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#8dc84b] text-white flex items-center justify-center">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xs font-bold text-gray-400">Usuarios Totales</h3>
+                  <p className="font-bold text-lg text-gray-800">100</p>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Tus Productos</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#8dc84b] text-white flex items-center justify-center">
+                  <FontAwesomeIcon icon={faBagShopping} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xs font-bold text-gray-400">Productos Totales</h3>
+                  <p className="font-bold text-lg text-gray-800">100</p>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
           </div>
         </aside>
+        
       </div>
 
       {/* Mass Upload Modal */}

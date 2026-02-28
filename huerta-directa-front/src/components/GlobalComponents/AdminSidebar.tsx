@@ -11,6 +11,7 @@ import {
   faRightFromBracket,
   faXmark,
   faBars,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo_huerta.png";
 
@@ -29,7 +30,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onToggle }) 
     { label: "Gestión de Productos", icon: faBoxesStacked, link: "/admin/productos" },
     { label: "Reportes de Ventas", icon: faFileContract, link: "/admin/reportes" },
     { label: "Configuración", icon: faGear, link: "/admin/config" },
-    { label: "Pagina Principal", icon: faRightFromBracket, link: "/" },
+    { label: "Registrar Admin", icon: faUserPlus, link: "/admin/registrar" },
+    { label: "Pagina Principal", icon: faRightFromBracket, link: "/HomePage" },
   ];
 
   return (

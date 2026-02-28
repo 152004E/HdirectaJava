@@ -9,7 +9,7 @@ export const AdminDashboardLayout: React.FC = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="relative min-h-screen bg-[#F0F4EF] overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FEF5DC] overflow-x-hidden">
       {/* Top Header Controls */}
       <DashboardHeader userRole="Administrador Global" />
 

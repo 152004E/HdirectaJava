@@ -12,6 +12,12 @@ import { DashboardAgregarProducto } from "./pages/Dashboard/DashboardAgregarProd
 import { ActualizacionUsuario } from "./pages/Dashboard/ActualizacionUsuario";
 import { DashboardAdmin } from "./pages/DashboardAdmin/DashboardAdmin";
 import { AdminDashboardLayout } from "./layout/AdminDashboardLayout";
+import { AdminStats } from "./pages/DashboardAdmin/AdminStats";
+import { AdminUsers } from "./pages/DashboardAdmin/AdminUsers";
+import { AdminProducts } from "./pages/DashboardAdmin/AdminProducts";
+import { AdminReports } from "./pages/DashboardAdmin/AdminReports";
+import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
+import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/QuienesSomos/QuienesSomos";
 
 function App() {
@@ -73,6 +79,12 @@ function App() {
         {/* Admin Dashboard Layout */}
         <Route element={<AdminDashboardLayout />}>
           <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+          <Route path="/admin/stats" element={<AdminStats />} />
+          <Route path="/admin/usuarios" element={<AdminUsers />} />
+          <Route path="/admin/productos" element={<AdminProducts />} />
+          <Route path="/admin/reportes" element={<AdminReports />} />
+          <Route path="/admin/config" element={<AdminConfig />} />
+          <Route path="/admin/registrar" element={<AdminRegister />} />
         </Route>
 
         {/* Layout auth */}

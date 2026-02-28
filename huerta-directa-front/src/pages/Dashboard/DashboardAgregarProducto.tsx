@@ -32,8 +32,14 @@ export const DashboardAgregarProducto: React.FC = () => {
             <label className="font-bold text-gray-700 uppercase tracking-widest text-xs">Categoría</label>
             <select className="p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-[#8dc84b]/30 transition-all appearance-none cursor-pointer">
               <option value="frutas">Frutas</option>
-              <option value="verduras">Verduras</option>
-              <option value="lacteos">Lácteos</option>
+                <option value="verduras-hortalizas">Verduras y Hortalizas</option>
+                <option value="lacteos">Lácteos</option>
+                <option value="carnes-proteinas">Carnes y Proteinas</option>
+                <option value="cereales-granos">Cereales y Granos</option>
+                <option value="productos-organicos">Productos Orgánicos</option>
+                <option value="miel-derivados">Miel y Derivados</option>
+                <option value="bebidas">Bebidas naturales</option>
+                <option value="cajas-mixtas-combos">Cajas mixtas y combos</option>
             </select>
           </div>
 
