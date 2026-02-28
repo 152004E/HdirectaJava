@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { AdminSidebar } from "../components/GlobalComponents/AdminSidebar";
+import { Sidebar } from "../components/GlobalComponents/Sidebar";
 import { DashboardHeader } from "../components/GlobalComponents/DashboardHeader";
 
 export const AdminDashboardLayout: React.FC = () => {
@@ -14,7 +14,7 @@ export const AdminDashboardLayout: React.FC = () => {
       <DashboardHeader userRole="Administrador Global" />
 
       {/* Sidebar logic extracted to component */}
-      <AdminSidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} role="admin" />
 
       {/* Main Content Area - Conditional margin on LG screens */}
       <main className={`transition-all duration-400 ${isSidebarOpen ? "lg:ml-80" : "lg:ml-0"}`}>

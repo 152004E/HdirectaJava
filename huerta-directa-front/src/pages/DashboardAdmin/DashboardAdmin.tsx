@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
   faUsers,
   faPen,
+  faGear,
   faFileExcel,
   faFilePdf,
   faUserSlash,
   faUserCheck,
   faChartPie,
   faBoxesStacked,
+  faListUl,
+  faBorderAll,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
@@ -41,26 +45,55 @@ export const DashboardAdmin: React.FC = () => {
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Simulating API fetch for users
-    setTimeout(() => {
-      setUsers([
-        { id: 1, fullName: "Juan Pérez", email: "juan@example.com", role: "Cliente", status: "Active", registrationDate: "2024-02-01" },
-        { id: 2, fullName: "María García", email: "maria@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-15" },
-        { id: 3, fullName: "Carlos López", email: "carlos@example.com", role: "Cliente", status: "Inactive", registrationDate: "2024-01-20" },
-        { id: 4, fullName: "Ana Martínez", email: "ana@example.com", role: "Productor", status: "Active", registrationDate: "2024-02-25" },
-      ]);
-      setLoading(false);
-    }, 1000);
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/users");
+        if (response.ok) {
+          const data = await response.json();
+          const mappedUsers: UserInfo[] = data.map((u: any) => ({
+            id: u.id,
+            fullName: u.name,
+            email: u.email,
+            role: u.idRole === 1 ? "Administrador" : "Usuario",
+            status: "Active",
+            registrationDate: u.creacionDate || "N/A"
+          }));
+          setUsers(mappedUsers);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    const fetchAllProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        if (response.ok) {
+          const data = await response.json();
+          setProductCount(data.length);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+    fetchAllProducts();
   }, []);
+
+  const [productCount, setProductCount] = useState(0);
 
   const adminInsights: AdminInsightItem[] = [
     {
       title: "Usuarios Totales",
-      value: "1,284",
+      value: users.length.toString(),
       percentage: 12,
       footer: "Más que el mes pasado",
       color: "primary",
@@ -68,7 +101,7 @@ export const DashboardAdmin: React.FC = () => {
     },
     {
       title: "Productos Activos",
-      value: "456",
+      value: productCount.toString(),
       percentage: 5,
       footer: "Nuevos esta semana",
       color: "secondary",
@@ -100,9 +133,27 @@ export const DashboardAdmin: React.FC = () => {
     setIsEditModalOpen(false);
   };
 
+  const handleExportExcel = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportExcel?${params.toString()}`;
+  };
+
+  const handleExportPdf = () => {
+    const params = new URLSearchParams();
+    if (searchTerm) {
+      params.append("dato", "name_user");
+      params.append("valor", searchTerm);
+    }
+    window.location.href = `/api/users/exportPdf?${params.toString()}`;
+  };
+
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 sticky top-0 md:top-4 z-50">
         <h1 className="text-3xl font-extrabold text-[#004d00]">Panel de Administración</h1>
       </div>
 
@@ -116,7 +167,7 @@ export const DashboardAdmin: React.FC = () => {
                 <h1 className="text-3xl font-black mt-2 text-gray-900">{item.value}</h1>
               </div>
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg ${
-                item.color === 'primary' ? 'bg-[#004d00]' : item.color === 'secondary' ? 'bg-[#8dc84b]' : 'bg-[#ffa000]'
+                item.color === 'primary' ? 'bg-[#004d00]' : item.color === 'secondary' ? 'bg-[#8dc84b]' : 'bg-[#004d00]'
               }`}>
                 <FontAwesomeIcon icon={item.icon} size="lg" />
               </div>
@@ -129,44 +180,106 @@ export const DashboardAdmin: React.FC = () => {
         ))}
       </div>
 
+      {/* Quick Access Grid */}
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Accesos Rápidos</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <Link to="/admin/usuarios" className="bg-[#004d00] p-6 rounded-3xl shadow-lg hover:shadow-[#004d00]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-white">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faUsers} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Gestionar Usuarios</h3>
+            <p className="text-white/70 text-sm">Ver y editar información de usuarios</p>
+          </div>
+        </Link>
+        <Link to="/admin/productos" className="bg-[#8dc84b] p-6 rounded-3xl shadow-lg hover:shadow-[#8dc84b]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-[#004d00]">
+          <div className="w-12 h-12 rounded-2xl bg-white/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faBoxesStacked} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Gestionar Productos</h3>
+            <p className="text-[#004d00]/70 text-sm">Aprobar, editar o eliminar productos</p>
+          </div>
+        </Link>
+        <Link to="/admin/registrar" className="bg-[#004d00] p-6 rounded-3xl shadow-lg hover:shadow-[#004d00]/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group cursor-pointer text-white">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <FontAwesomeIcon icon={faGear} size="lg" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Configuración</h3>
+            <p className="text-white/70 text-sm">Configuraciones del sistema</p>
+          </div>
+        </Link>
+      </div>
+
       {/* User Management Section */}
       <section className="bg-white p-8 rounded-3xl shadow-sm mb-8 border border-gray-100">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Gestión de Usuarios</h2>
           
-          <div className="flex gap-4 w-full md:w-auto">
-            <div className="relative flex-1 md:w-80">
-              <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar usuarios..."
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#8dc84b] transition-all"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+          <div className="relative flex-1 max-w-md w-full">
+            <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar usuarios..."
+              className="w-full pl-12 pr-4 py-3 border-2 border-gray-100 rounded-xl outline-none focus:border-[#8dc84b] transition-all bg-gray-50 focus:bg-white"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex gap-4 w-full md:w-auto items-center">
+            <div className="flex bg-gray-100 p-1 rounded-xl mr-2">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+                  viewMode === "list" ? "bg-white text-[#004d00] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <FontAwesomeIcon icon={faListUl} /> Lista
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+                  viewMode === "grid" ? "bg-white text-[#004d00] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <FontAwesomeIcon icon={faBorderAll} /> Tarjetas
+              </button>
             </div>
-            <Button text="Exportar" iconLetf={faFileExcel} className="bg-[#8dc84b] text-white rounded-xl py-" />
-            <Button text="Reporte General" iconLetf={faFilePdf} className="bg-[#004d00] text-white rounded-xl py-3" />
+            <Button 
+              text="Exportar" 
+              iconLetf={faFileExcel} 
+              className="bg-[#8dc84b] text-white rounded-xl py-3 px-8 mt-2 mb-2 w-full md:w-auto" 
+              onClick={handleExportExcel}
+            />
+            <Button 
+              text="Reporte General" 
+              iconLetf={faFilePdf} 
+              className="bg-[#004d00] text-white rounded-xl py-3 px-8 mt-2 mb-2 w-full md:w-auto" 
+              onClick={handleExportPdf}
+            />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          {loading ? (
-            <div className="flex flex-col items-center py-20 gap-4">
-              <div className="w-12 h-12 border-4 border-[#8dc84b] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-gray-500 font-medium font-outfit">Cargando base de usuarios...</p>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-100 text-gray-400 font-bold text-xs uppercase tracking-wider">
-                  <th className="py-4 px-4 text-left font-extrabold pb-6">Usuario</th>
-                  <th className="py-4 px-4 text-left font-extrabold pb-6">Rol</th>
-                  <th className="py-4 px-4 text-left font-extrabold pb-6">Registro</th>
-                  <th className="py-4 px-4 text-left font-extrabold pb-6">Estado</th>
-                  <th className="py-4 px-4 text-center font-extrabold pb-6">Acciones</th>
-                </tr>
-              </thead>
+        {viewMode === "list" ? (
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="flex flex-col items-center py-20 gap-4">
+                <div className="w-12 h-12 border-4 border-[#8dc84b] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-500 font-medium font-outfit">Cargando base de usuarios...</p>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-100 text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    <th className="py-4 px-4 text-left font-extrabold pb-6">Usuario</th>
+                    <th className="py-4 px-4 text-left font-extrabold pb-6">Rol</th>
+                    <th className="py-4 px-4 text-left font-extrabold pb-6">Registro</th>
+                    <th className="py-4 px-4 text-left font-extrabold pb-6">Estado</th>
+                    <th className="py-4 px-4 text-center font-extrabold pb-6">Acciones</th>
+                  </tr>
+                </thead>
               <tbody className="divide-y divide-gray-50">
                 {filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50/50 transition-colors group">
@@ -211,6 +324,60 @@ export const DashboardAdmin: React.FC = () => {
             </table>
           )}
         </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {loading ? (
+              <div className="col-span-full flex flex-col items-center py-20 gap-4">
+                <div className="w-12 h-12 border-4 border-[#8dc84b] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-500 font-medium font-outfit">Cargando base de usuarios...</p>
+              </div>
+            ) : filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => (
+                <div key={user.id} className="bg-white border-2 border-gray-100 rounded-3xl p-6 flex flex-col gap-4 hover:border-[#8dc84b] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <div className="flex justify-between items-start">
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      user.role === 'Productor' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
+                    }`}>
+                      {user.role}
+                    </span>
+                    <span className={`flex items-center gap-1.5 text-xs font-black uppercase ${
+                      user.status === 'Active' ? 'text-green-500' : 'text-red-400'
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full ${user.status === 'Active' ? 'bg-green-500' : 'bg-red-400'}`} />
+                      {user.status === 'Active' ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 line-clamp-1" title={user.fullName}>{user.fullName}</h3>
+                    <p className="text-gray-500 text-sm mt-1">{user.email}</p>
+                  </div>
+                  
+                  <div className="mt-auto pt-4 border-t border-gray-50">
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Registro</p>
+                    <p className="text-sm font-medium text-gray-700">{user.registrationDate}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <button 
+                      onClick={() => handleEditUser(user)}
+                      className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-[#004d00] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1 border-none"
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </button>
+                    <button className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1 border-none">
+                      <FontAwesomeIcon icon={user.status === 'Active' ? faUserSlash : faUserCheck} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center border-2 border-dashed border-gray-200 rounded-3xl">
+                <p className="text-gray-500 font-medium text-lg">No se encontraron usuarios.</p>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Edit User Modal */}
