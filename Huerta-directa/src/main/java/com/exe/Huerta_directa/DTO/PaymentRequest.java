@@ -48,6 +48,7 @@ public class PaymentRequest {
 
     @Data
     public static class Payer {
+        
         private String email;
 
         @JsonProperty("first_name")
