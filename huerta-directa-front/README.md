@@ -39,6 +39,7 @@ huerta-directa-front/
 │  │  │  └─ (vacío - en desarrollo)     ⏳ Componentes auth por implementar
 │  │  │
 │  │  ├─ GlobalComponents/              ← Componentes globales
+│  │  │  ├─ AdminSidebar.tsx            ✓ Barra lateral admin
 │  │  │  ├─ Background.tsx              ✓ Componente de fondo
 │  │  │  ├─ Button.tsx                  ✓ Botón reutilizable
 │  │  │  ├─ DashboardHeader.tsx         ✓ Encabezado del dashboard
@@ -58,25 +59,40 @@ huerta-directa-front/
 │  │  │     └─ FloatingChatButton.tsx   ✓ Botón de chat flotante
 │  │  │
 │  │  ├─ Home/                          ← Componentes para la página de inicio
+│  │  │  ├─ CategoriesSection.tsx       ✓ Sección de categorías
 │  │  │  ├─ HeaderSection.tsx           ✓ Sección de encabezado
 │  │  │  ├─ HeroSlider.tsx              ✓ Carrusel principal
 │  │  │  ├─ InformationSection.tsx      ✓ Sección de información
 │  │  │  ├─ OffersSection.tsx           ✓ Sección de ofertas
-│  │  │  └─ ProductCard.tsx             ✓ Tarjeta de producto
+│  │  │  ├─ ProductCard.tsx             ✓ Tarjeta de producto
+│  │  │  └─ ProductsSection.tsx         ✓ Sección de productos
 │  │  │
 │  │  └─ Modals/                        ← Componentes modales
-│  │     └─ ChatModal.tsx               ✓ Modal de chat
+│  │     ├─ ChatModal.tsx               ✓ Modal de chat
+│  │     ├─ EditProductModal.tsx        ✓ Modal para editar productos
+│  │     ├─ EditUserModal.tsx           ✓ Modal para editar datos del usuario
+│  │     └─ NotifyProducerModal.tsx     ✓ Modal para notificar productores
 │  │
 │  ├─ font/                             ← Fuentes personalizadas
-│  │  └─ Poppins/                       ✓ Fuente Poppins
+│  │  └─ Poppins/                       ✓ Fuentes Poppins (19 variantes)
+│  │     ├─ OFL.txt                     ✓ Licencia Open Font License
+│  │     ├─ Poppins-Black.ttf           ✓ Peso Black
+│  │     ├─ Poppins-Bold.ttf            ✓ Peso Bold
+│  │     ├─ Poppins-ExtraBold.ttf       ✓ Peso ExtraBold
+│  │     ├─ Poppins-Light.ttf           ✓ Peso Light
+│  │     ├─ Poppins-Medium.ttf          ✓ Peso Medium
+│  │     ├─ Poppins-Regular.ttf         ✓ Peso Regular
+│  │     ├─ Poppins-SemiBold.ttf        ✓ Peso SemiBold
+│  │     └─ ... (y más variantes)       ✓ Variantes Italic incluidas
 │  │
 │  ├─ hooks/                            ← Custom React hooks
 │  │  ├─ useAuth.ts                     ✓ Hook de autenticación
 │  │  └─ usePageTitle.ts                ✓ Hook para título de página
 │  │
 │  ├─ layout/                           ← Layouts (estructura base)
+│  │  ├─ AdminDashboardLayout.tsx       ✓ Layout para admin dashboard
 │  │  ├─ AuthLayout.tsx                 ✓ Layout de autenticación
-│  │  ├─ DashboardLayout.tsx            ✓ Layout del dashboard
+│  │  ├─ DashboardLayout.tsx            ✓ Layout del dashboard de usuario
 │  │  └─ MainLayout.tsx                 ✓ Layout principal
 │  │
 │  ├─ pages/                            ← Vistas (rutas)
@@ -84,14 +100,27 @@ huerta-directa-front/
 │  │  │  ├─ Login.tsx                   ✓ Página de login
 │  │  │  └─ Login.css                   ✓ Estilos de login
 │  │  │
-│  │  ├─ Dashboard/                     ← Páginas del dashboard
-│  │  │  └─ Dashboard.tsx               ✓ Dashboard principal
+│  │  ├─ Dashboard/                     ← Páginas del dashboard de usuario
+│  │  │  ├─ Dashboard.tsx               ✓ Dashboard principal
+│  │  │  ├─ ActualizacionUsuario.tsx    ✓ Actualizar perfil de usuario
+│  │  │  ├─ DashboardAgregarProducto.tsx ✓ Agregar nuevo producto
+│  │  │  ├─ DashboardGraficos.tsx       ✓ Gráficos y estadísticas
+│  │  │  └─ MensajesAreaSocial.tsx      ✓ Área de mensajes sociales
+│  │  │
+│  │  ├─ DashboardAdmin/                ← Páginas del dashboard admin
+│  │  │  ├─ DashboardAdmin.tsx          ✓ Dashboard admin principal
+│  │  │  ├─ AdminConfig.tsx             ✓ Configuración general del sistema
+│  │  │  ├─ AdminProducts.tsx           ✓ Gestión de productos
+│  │  │  ├─ AdminRegister.tsx           ✓ Registro de nuevos admins
+│  │  │  ├─ AdminReports.tsx            ✓ Reportes del sistema
+│  │  │  ├─ AdminStats.tsx              ✓ Estadísticas generales
+│  │  │  └─ AdminUsers.tsx              ✓ Gestión de usuarios
 │  │  │
 │  │  ├─ Landing/                       ← Páginas públicas
-│  │  │  └─ Landing.tsx                 ✓ Landing page / Home
+│  │  │  └─ Landing.tsx                 ✓ Landing page / Home público
 │  │  │
 │  │  ├─ Main/                          ← Páginas principales (autenticadas)
-│  │  │  └─ HomePage.tsx                ✓ Home page del usuario
+│  │  │  └─ HomePage.tsx                ✓ Home page del usuario logueado
 │  │  │
 │  │  └─ QuienesSomos/                  ← Páginas informativas
 │  │     └─ QuienesSomos.tsx            ✓ Página quiénes somos
@@ -103,8 +132,10 @@ huerta-directa-front/
 │  ├─ main.tsx                          ✓ Entry point de la aplicación
 │  └─ index.css                         ✓ Tailwind base y estilos globales
 │
+├─ .gitignore                           ✓ Exclusiones de git
 ├─ index.html                           ✓ HTML principal
 ├─ package.json                         ✓ Dependencias del proyecto
+├─ package-lock.json                    ✓ Lock file de dependencias
 ├─ tsconfig.json                        ✓ Configuración TypeScript
 ├─ tsconfig.app.json                    ✓ Config TypeScript - aplicación
 ├─ tsconfig.node.json                   ✓ Config TypeScript - node
