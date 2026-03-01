@@ -14,7 +14,7 @@ interface Product {
   price: number;
   stock: number;
   image: string;
-  etiqueta?: string;
+  category?: string;
   reviewCount?: number;
   averageRating?: number;
 }
@@ -25,115 +25,142 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   const hasStock = product.stock && product.stock > 0;
-  const isOwner = product.etiqueta === "MI PRODUCTO";
-
+  const isOwner = false;
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 w-70 relative transition-all duration-300 hover:-translate-y-1">
-
-      {/* Favorito */}
-      <Button
-        text=""
-        iconLetf={faHeart}
-        className="absolute top-4 right-4 bgtra text-[#8dc84b]! hover:bg-transparent hover:text-red-500! bg-transparent shadow-none p-0"
-      />
-
-      {/* Badge */}
-      {product.etiqueta && (
-        <div className="absolute top-4 left-4 bg-[#8dc84b] text-white text-xs font-semibold px-4 py-1 rounded-full shadow-md">
-          {product.etiqueta}
-        </div>
-      )}
-
+    <div className="max-w-75 w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 group transition-transform hover:scale-[1.02]">
       {/* Imagen */}
-      <div className="flex justify-center mt-6">
+      <div className="relative h-64 overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-42.5 h-37.5 object-cover rounded-lg"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-      </div>
 
-      {/* Línea */}
-      <div className="border-t border-gray-300 my-4"></div>
-
-      {/* Nombre */}
-      <h3 className="text-[#8dc84b] font-semibold text-lg">
-        {product.name}
-      </h3>
-
-      {/* Stock */}
-      <div className="mt-1">
-        {hasStock ? (
-          <span className="text-green-600 text-sm font-bold">
-            {product.stock} disponibles
-          </span>
-        ) : (
-          <span className="text-red-500 text-sm font-bold">
-            Sin stock
-          </span>
-        )}
-      </div>
-
-      {/* Precio + Rating */}
-      <div className="flex justify-between items-center mt-3">
-        <div className="flex items-center">
-          <span className="font-bold text-lg">
-            {product.price.toLocaleString()}
-          </span>
-          <span className="text-gray-400 text-sm ml-1">/ COP</span>
-        </div>
-
-        <div className="flex items-center text-sm gap-1">
+        {/* Favorito */}
+        <div className="absolute top-4 right-4">
           <Button
             text=""
-            iconLetf={faStar}
-            className={`bg-transparent shadow-none p-0 hover:bg-transparent ${
-              product.reviewCount && product.reviewCount > 0
-                ? "text-yellow-400!"
-                : "text-gray-300!"
-            }`}
+            iconLetf={faHeart}
+            className="bg-white/80 backdrop-blur-md px-1 gap-0! py-1.5 rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
           />
+        </div>
 
-          {product.reviewCount && product.reviewCount > 0 ? (
-            <span className="text-gray-700">
-              {product.averageRating?.toFixed(1)} ({product.reviewCount})
-            </span>
+        {/* Stock badge */}
+        <div className="absolute bottom-4 left-4 z-10">
+          {hasStock ? (
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 shadow text-[#8bc34a] text-xs font-semibold">
+              <span className="w-2 h-2 rounded-full bg-[#8bc34a] animate-pulse"></span>
+              {product.stock} disponibles
+            </div>
           ) : (
-            <span className="text-gray-400">Sin reseñas</span>
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow text-red-500 text-xs font-semibold">
+              Sin stock
+            </div>
           )}
         </div>
+
+        {/* Categoria badge */}
+        {product.category && (
+          <div className="absolute bottom-4 right-4 z-10">
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow text-[#8bc34a] text-[10px] font-semibold uppercase tracking-wide">
+              {product.category}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Botones */}
-      <div className="flex gap-2 mt-4">
-        {isOwner ? (
-          <Button
-            text="Tu producto"
-            iconLetf={faUser}
-            disabled
-            className="flex-1 text-xs py-2 bg-gray-400 hover:bg-gray-400 hover:scale-100"
-          />
-        ) : !hasStock ? (
-          <Button
-            text="Sin stock"
-            iconLetf={faBan}
-            disabled
-            className="flex-1 text-xs py-2 bg-gray-500 hover:bg-gray-500 hover:scale-100"
-          />
-        ) : (
-          <Button
-            text="Agregar"
-            iconLetf={faCartShopping}
-            className="flex-1 text-xs py-2"
-          />
-        )}
+      {/* Contenido */}
+      <div className="px-6 py-2 space-y-1">
+        {/* Nombre + Stock */}
+        <div className="">
+          <h2 className="text-2xl font-bold text-black/80">{product.name}</h2>
+        </div>
 
-        <Button
-          to={`/producto/${product.id}`}
-          text="Info"
-          iconRight={faInfoCircle}
-          className="flex-1 text-xs py-2 bg-gray-300 text-gray-800 hover:bg-gray-400"
-        />
+        <hr className="border-stone-100" />
+
+        {/* Precio + Rating */}
+        <div className="flex items-end justify-between">
+          {/* Precio */}
+          <div className="space-y-1">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-stone-400">
+              Precio actual
+            </span>
+
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-bold text-stone-700">
+                {product.price.toLocaleString()}
+              </span>
+              <span className="text-[15px] font-medium text-stone-400">
+                / COP
+              </span>
+            </div>
+          </div>
+
+          {/* Rating */}
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => {
+                const filled =
+                  product.reviewCount &&
+                  product.averageRating &&
+                  star <= Math.round(product.averageRating);
+
+                return (
+                  <Button
+                    key={star}
+                    text=""
+                    iconLetf={faStar}
+                    className={`bg-transparent! shadow-none! p-0! gap-0! ${
+                      filled ? "text-yellow-400!" : "text-gray-300!"
+                    }`}
+                  />
+                );
+              })}
+            </div>
+
+            <span className="text-[12px] text-stone-400/50 font-medium italic">
+              {product.reviewCount && product.reviewCount > 0
+                ? `${product.reviewCount} reseñas`
+                : "Sin reseñas aún"}
+            </span>
+          </div>
+        </div>
+
+
+
+        {/* Botones */}
+        <div className="grid grid-cols-5 gap-3 py-2">
+          {/* Info */}
+          <Button
+            to={`/producto/${product.id}`}
+            text=""
+            iconLetf={faInfoCircle}
+            className="col-span-1 flex items-center justify-center bg-stone-300 text-stone-600 rounded-xl hover:bg-stone-200 py-2! gap-0!"
+          />
+
+          {/* Principal */}
+          {isOwner ? (
+            <Button
+              text="Tu producto"
+              iconLetf={faUser}
+              disabled
+              className="col-span-4 bg-gray-500 py-3! px-6! rounded-xl flex items-center justify-center gap-3"
+            />
+          ) : !hasStock ? (
+            <Button
+              text="Sin stock"
+              iconLetf={faBan}
+              disabled
+              className="col-span-4 bg-gray-500 py-3 px-6 rounded-xl flex items-center justify-center gap-3"
+            />
+          ) : (
+            <Button
+              text="Agregar al Carrito"
+              iconLetf={faCartShopping}
+              className="col-span-4 bg-[#8bc34a] hover:bg-[#7cb342] text-white font-bold py-3! px-2! rounded-xl flex items-center justify-center gap-1 shadow-lg shadow-[#8bc34a]/20 active:scale-95"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

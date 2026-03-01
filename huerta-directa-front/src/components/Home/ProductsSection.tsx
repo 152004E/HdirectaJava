@@ -3,11 +3,14 @@ import { FiltersBar } from "./FiltersBar";
 import ProductCard from "./ProductCard";
 
 interface Product {
-  idProduct: number;
-  nameProduct: string;
+  id: number;
+  name: string;
   price: number;
   stock: number;
-  imageProduct: string;
+  image: string;
+  category?: string;
+  reviewCount?: number;
+  averageRating?: number;
 }
 
 export const ProductsSection = () => {
@@ -16,18 +19,24 @@ export const ProductsSection = () => {
 
   useEffect(() => {
     fetch("http://localhost:8085/api/products")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Error al obtener productos");
-        }
-        return res.json();
-      })
+      .then(res => res.json())
       .then((data) => {
-        setProducts(data);
+        const mappedProducts: Product[] = data.map((p: any) => ({
+          id: p.idProduct,
+          name: p.nameProduct,
+          image: `http://localhost:8085/uploads/productos/${p.imageProduct}`,
+          category: p.category,
+          price: p.price,
+          stock: p.stock,
+          reviewCount: p.reviewCount,
+          averageRating: p.averageRating,
+        }));
+
+        setProducts(mappedProducts);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error:", error);
+      .catch(err => {
+        console.error(err);
         setLoading(false);
       });
   }, []);
@@ -43,14 +52,8 @@ export const ProductsSection = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
             {products.map((product) => (
               <ProductCard
-                key={product.idProduct}
-                product={{
-                  id: product.idProduct,
-                  name: product.nameProduct,
-                  price: product.price,
-                  stock: product.stock,
-                  image: `http://localhost:8085/uploads/productos/${product.imageProduct}`,
-                }}
+                key={product.id}
+                product={product}
               />
             ))}
           </div>
