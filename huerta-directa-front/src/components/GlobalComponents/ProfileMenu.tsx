@@ -50,7 +50,7 @@ export const ProfileMenu = ({
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-4 w-60 bg-[#EBEFE5]/70 backdrop-blur-md  border border-white/30 p-4 rounded-xl shadow-lg  flex flex-col gap-3 animate-fadeIn z-50">
+        <div className="absolute right-0 mt-4 w-60 bg-[#EBEFE5]/70 backdrop-blur-md  border border-white/30 p-4 rounded-xl shadow-lg  flex flex-col gap-3 animate-fadeIn z-[100]">
           {/* Header */}
           <div className="flex flex-col items-center gap-1 border-b border-gray-300 dark:border-gray-600 pb-4">
             <img src={logo} alt="Profile" className="w-12 h-12" />

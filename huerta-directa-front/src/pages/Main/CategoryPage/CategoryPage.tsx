@@ -3,69 +3,42 @@ import { useEffect, useState } from "react";
 import ProductCard from "../../../components/Home/ProductCard";
 import { FiltersBar } from "../../../components/Home/FiltersBar";
 
-interface Product {
-  id: number;
-  name: string;
+interface ProductBackend {
+  idProduct: number;
+  nameProduct: string;
   price: number;
   stock: number;
-  image: string;
+  imageProduct: string;
   category: string;
+  images?: string[];
 }
 
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: "Queso Pera",
-    price: 19000,
-    stock: 38,
-    image: "/src/assets/logo_huerta.png",
-    category: "lacteos",
-  },
-  {
-    id: 2,
-    name: "Leche Fresca",
-    price: 4500,
-    stock: 20,
-    image: "/src/assets/logo_huerta.png",
-    category: "lacteos",
-  },
-  {
-    id: 3,
-    name: "Tomate Orgánico",
-    price: 3000,
-    stock: 15,
-    image: "/src/assets/logo_huerta.png",
-    category: "verduras",
-  },
-  {
-    id: 4,
-    name: "Tomate de campo",
-    price: 1000,
-    stock: 5,
-    image: "/src/assets/logo_huerta.png",
-    category: "Verduras",
-  },
-];
-
 const CategoryPage = () => {
-  {
-    /* useEffect(() => {
-  fetch(`http://localhost:8085/api/products/category/${categorySlug}`)
-    .then((res) => res.json())
-    .then((data) => setProducts(data));
-}, [categorySlug]);*/
-  }
   const { categorySlug } = useParams();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductBackend[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (categorySlug) {
-      const filteredProducts = mockProducts.filter(
-        (product) => product.category === categorySlug,
-      );
+    const fetchProducts = async () => {
+      if (categorySlug) {
+        setLoading(true);
+        try {
+          const response = await fetch(`http://localhost:8085/api/products/category/${categorySlug}`);
+          if (response.ok) {
+            const data = await response.json();
+            setProducts(data);
+          } else {
+            console.error("Error fetching category products");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
 
-      setProducts(filteredProducts);
-    }
+    fetchProducts();
   }, [categorySlug]);
 
   return (
@@ -73,15 +46,30 @@ const CategoryPage = () => {
       <div className="pb-20 pt-10 max-w-7xl mx-auto px-6">
         <FiltersBar title={categorySlug ?? ""} />
 
-
-        {products.length === 0 ? (
+        {loading ? (
+             <div className="flex flex-col items-center justify-center py-20 gap-4">
+               <div className="w-12 h-12 border-4 border-[#8dc84b] border-t-transparent rounded-full animate-spin"></div>
+               <p className="text-gray-500 font-medium font-outfit">Cargando productos...</p>
+             </div>
+        ) : products.length === 0 ? (
           <p className="text-center text-gray-500 mt-10">
             No hay productos en esta categoría
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard 
+                key={product.idProduct} 
+                product={{
+                    id: product.idProduct,
+                    name: product.nameProduct,
+                    price: product.price,
+                    stock: product.stock,
+                    image: `http://localhost:8085/uploads/productos/${product.imageProduct}`,
+                    category: product.category,
+                    images: product.images
+                }} 
+              />
             ))}
           </div>
         )}

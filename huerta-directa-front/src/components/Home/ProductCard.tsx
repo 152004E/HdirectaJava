@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   faUser,
   faInfoCircle,
@@ -5,8 +6,12 @@ import {
   faStar,
   faCartShopping,
   faBan,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "../GlobalComponents/Button";
+import { useCart } from "../../hooks/useCart";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Product {
   id: number;
@@ -17,6 +22,7 @@ interface Product {
   category?: string;
   reviewCount?: number;
   averageRating?: number;
+  images?: string[];
 }
 
 interface Props {
@@ -24,20 +30,76 @@ interface Props {
 }
 
 const ProductCard = ({ product }: Props) => {
+  const { addItem } = useCart();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const hasStock = product.stock && product.stock > 0;
   const isOwner = false;
+
+  const allImages = [product.image, ...(product.images || [])];
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id,
+      nombre: product.name,
+      descripcion: "", 
+      precio: product.price,
+      cantidad: 1,
+      subtotal: product.price,
+      imagen: product.image,
+    });
+  };
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
+
   return (
     <div className="max-w-75 w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 group transition-transform hover:scale-[1.02]">
-      {/* Imagen */}
-      <div className="relative h-64 overflow-hidden">
+      {/* Imagen Slider */}
+      <div className="relative h-64 overflow-hidden group/slider">
         <img
-          src={product.image}
+          src={allImages[currentImageIndex]}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
 
+        {/* Arrows for multi-image */}
+        {allImages.length > 1 && (
+          <>
+            <button 
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faChevronLeft} className="text-xs" />
+            </button>
+            <button 
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faChevronRight} className="text-xs" />
+            </button>
+            
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+              {allImages.map((_, idx) => (
+                <div 
+                  key={idx} 
+                  className={`h-1 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-4 bg-[#8bc34a]' : 'w-1 bg-white/60'}`} 
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         {/* Favorito */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 z-10">
           <Button
             text=""
             iconLetf={faHeart}
@@ -126,8 +188,6 @@ const ProductCard = ({ product }: Props) => {
           </div>
         </div>
 
-
-
         {/* Botones */}
         <div className="grid grid-cols-5 gap-3 py-2">
           {/* Info */}
@@ -157,6 +217,7 @@ const ProductCard = ({ product }: Props) => {
             <Button
               text="Agregar al Carrito"
               iconLetf={faCartShopping}
+              onClick={handleAddToCart}
               className="col-span-4 bg-[#8bc34a] hover:bg-[#7cb342] text-white font-bold py-3! px-2! rounded-xl flex items-center justify-center gap-1 shadow-lg shadow-[#8bc34a]/20 active:scale-95"
             />
           )}
@@ -165,5 +226,6 @@ const ProductCard = ({ product }: Props) => {
     </div>
   );
 };
+
 
 export default ProductCard;
