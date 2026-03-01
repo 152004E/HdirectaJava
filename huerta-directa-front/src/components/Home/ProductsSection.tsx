@@ -1,51 +1,61 @@
+import { useEffect, useState } from "react";
 import { FiltersBar } from "./FiltersBar";
 import ProductCard from "./ProductCard";
 
-const mockProducts = [
-  {
-    id: 1,
-    name: "Queso Pera",
-    price: 19000,
-    stock: 38,
-    image: "/src/assets/logo_huerta.png",
-  },
-  {
-    id: 2,
-    name: "Leche Fresca",
-    price: 4500,
-    stock: 20,
-    image: "/src/assets/logo_huerta.png",
-  },
-  {
-    id: 3,
-    name: "Tomate Orgánico",
-    price: 3000,
-    stock: 15,
-    image: "/src/assets/logo_huerta.png",
-  },
-   {
-    id: 4,
-    name: "Tomate de campo",
-    price: 1000,
-    stock: 5,
-    image: "/src/assets/logo_huerta.png",
-  },
-];
+interface Product {
+  idProduct: number;
+  nameProduct: string;
+  price: number;
+  stock: number;
+  imageProduct: string;
+}
 
 export const ProductsSection = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:8085/api/products")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error al obtener productos");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <section className="py-16 px-10   bg-linear-to-b   from-[#FEF5DC] via-white to-[#FEF5DC]">
+    <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]">
       <div className="max-w-330 mx-auto">
-      <FiltersBar title={"Nuestros Productos"} />
+        <FiltersBar title={"Nuestros Productos"} />
 
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
-        {mockProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {loading ? (
+          <p className="text-center mt-10">Cargando productos...</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
+            {products.map((product) => (
+              <ProductCard
+                key={product.idProduct}
+                product={{
+                  id: product.idProduct,
+                  name: product.nameProduct,
+                  price: product.price,
+                  stock: product.stock,
+                  image: `http://localhost:8085/uploads/productos/${product.imageProduct}`,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
-      </div>
-
     </section>
   );
 };

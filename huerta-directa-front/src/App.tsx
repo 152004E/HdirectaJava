@@ -43,10 +43,10 @@ function App() {
           element={
             <MainLayout
               navbarProps={{
-                showInicio:true,
-                showProductos:true,
-                showCategorias:true,
-                showProfile:true
+                showInicio: true,
+                showProductos: true,
+                showCategorias: true,
+                showProfile: true,
               }}
             />
           }
@@ -75,7 +75,7 @@ function App() {
           element={
             <MainLayout
               navbarProps={{
-                showInicio :true,
+                showInicio: true,
                 showCategorias: true,
                 showProductos: true,
                 showQuienesSomos: true,
