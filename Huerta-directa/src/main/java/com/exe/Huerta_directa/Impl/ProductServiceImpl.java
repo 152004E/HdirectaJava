@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO obtenerProductPorId(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productId));
-        return convertirADTO(product);
+        ProductDTO productDTO = convertirADTO(product);
+        enrichProductsWithRatings(Collections.singletonList(productDTO));
+        return productDTO;
     }
 
     @Override

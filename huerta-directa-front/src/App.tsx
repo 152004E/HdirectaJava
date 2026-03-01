@@ -20,111 +20,88 @@ import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/About/QuienesSomos";
 import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
+import ProductDetailPage from "./pages/AboutProduct/ProductDetailPage";
+import { CartProvider } from "./contexts/CartContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Landing Layout */}
-        <Route
-          element={
-            <MainLayout
-              navbarProps={{
-                showQuienesSomos: true,
-              }}
-            />
-          }
-        >
-          <Route path="/" element={<Landing />} />
-        </Route>
-
-        {/* Quienes Somos */}
-        <Route
-          element={
-            <MainLayout
-              navbarProps={{
-                showInicio: true,
-                showProductos: true,
-                showCategorias: true,
-                showProfile: true,
-              }}
-            />
-          }
-        >
-          <Route path="/QuienesSomos" element={<QuienesSomos />} />
-        </Route>
-
-        {/* Home page */}
-        <Route
-          element={
-            <MainLayout
-              navbarProps={{
-                showCategorias: true,
-                showProductos: true,
-                showAddProduct: true,
-                showCart: true,
-                showProfile: true,
-              }}
-            />
-          }
-        >
-          <Route path="/HomePage" element={<HomePage />} />
-        </Route>
-        {/* Home page / categorias */}
-        <Route
-          element={
-            <MainLayout
-              navbarProps={{
-                showInicio: true,
-                showCategorias: true,
-                showProductos: true,
-                showQuienesSomos: true,
-                showCart: true,
-                showProfile: true,
-              }}
-            />
-          }
-        >
-          <Route path="/categoria/:categorySlug" element={<CategoryPage />} />
-        </Route>
-
-        {/* Dashboard Layout */}
-        <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
-          <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Landing Layout */}
           <Route
-            path="/DashBoardAgregarProducto"
-            element={<DashboardAgregarProducto />}
-          />
+            element={
+              <MainLayout
+                navbarProps={{
+                  showQuienesSomos: true,
+                }}
+              />
+            }
+          >
+            <Route path="/" element={<Landing />} />
+          </Route>
+
+          {/* Home, Quienes Somos, Categorias, Productos */}
           <Route
-            path="/actualizacionUsuario"
-            element={<ActualizacionUsuario />}
-          />
-        </Route>
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showCategorias: true,
+                  showAddProduct: true,
+                  showCart: true,
+                  showProfile: true,
+                  showQuienesSomos: true,
+                }}
+              />
+            }
+          >
+            <Route path="/QuienesSomos" element={<QuienesSomos />} />
+            <Route path="/HomePage" element={<HomePage />} />
+            <Route path="/categoria/:categorySlug" element={<CategoryPage />} />
+            <Route path="/producto/:id" element={<ProductDetailPage />} />
+          </Route>
 
-        {/* Admin Dashboard Layout */}
-        <Route element={<AdminDashboardLayout />}>
-          <Route path="/admin-dashboard" element={<DashboardAdmin />} />
-          <Route path="/admin/stats" element={<AdminStats />} />
-          <Route path="/admin/usuarios" element={<AdminUsers />} />
-          <Route path="/admin/productos" element={<AdminProducts />} />
-          <Route path="/admin/reportes" element={<AdminReports />} />
-          <Route path="/admin/config" element={<AdminConfig />} />
-          <Route path="/admin/registrar" element={<AdminRegister />} />
-        </Route>
+          {/* Dashboard Layout */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
+            <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
+            <Route
+              path="/DashBoardAgregarProducto"
+              element={<DashboardAgregarProducto />}
+            />
+            <Route
+              path="/actualizacionUsuario"
+              element={<ActualizacionUsuario />}
+            />
+          </Route>
 
-        {/* Layout auth */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Login />} />
-        </Route>
+          {/* Admin Dashboard Layout */}
+          <Route element={<AdminDashboardLayout />}>
+            <Route path="/admin-dashboard" element={<DashboardAdmin />} />
+            <Route path="/admin/stats" element={<AdminStats />} />
+            <Route path="/admin/usuarios" element={<AdminUsers />} />
+            <Route path="/admin/productos" element={<AdminProducts />} />
+            <Route path="/admin/reportes" element={<AdminReports />} />
+            <Route path="/admin/config" element={<AdminConfig />} />
+            <Route path="/admin/registrar" element={<AdminRegister />} />
+          </Route>
 
-        {/* Ruta comodín */}
-        <Route path="*" element={<Navigate to="/HomePage" />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Layout auth */}
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Login />} />
+          </Route>
+
+          {/* Ruta comodín */}
+          <Route path="*" element={<Navigate to="/HomePage" />} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   );
 }
+
 
 export default App;

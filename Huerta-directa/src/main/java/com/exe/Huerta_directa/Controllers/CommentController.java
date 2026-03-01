@@ -98,6 +98,12 @@ public class CommentController {
         }
     }
 
+    @GetMapping("/api/comments/product/{productId}")
+    @ResponseBody
+    public List<CommentDTO> listarCommentsPorProducto(@PathVariable Long productId) {
+        return commentService.listarCommentsPorProducto(productId);
+    }
+
     // ✅ GET — Mostrar comentarios tipo SITE (para la página "quienes somos")
     @GetMapping("/Quienes_somos")
     public String mostrarComentariosSitio(Model model) {
