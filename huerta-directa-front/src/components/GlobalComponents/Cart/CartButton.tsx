@@ -53,7 +53,7 @@ return (
       </span>
     </div>
 
-    <CartDropdown open={open} />
+<CartDropdown open={open} onClose={() => setOpen(false)} />
   </div>
 );
 };

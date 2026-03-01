@@ -135,7 +135,7 @@ const ProductCard = ({ product }: Props) => {
             to={`/producto/${product.id}`}
             text=""
             iconLetf={faInfoCircle}
-            className="col-span-1 flex items-center justify-center bg-stone-300 text-stone-600 rounded-xl hover:bg-stone-200 py-2! gap-0!"
+            className="col-span-1 flex items-center justify-center bg-stone-300 text-stone-600 rounded-xl hover:bg-stone-200 py-2! px-2! gap-0!"
           />
 
           {/* Principal */}

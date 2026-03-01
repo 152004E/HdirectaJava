@@ -126,7 +126,7 @@ export const DashboardAgregarProducto: React.FC = () => {
               <label className="font-bold text-gray-700 uppercase tracking-widest text-xs block mb-4">
                 Imágenes del Producto ({images.length}/5)
               </label>
-              <label className={`w-full ${images.length > 0 ? 'min-h-[120px] p-6' : 'h-48'} border-4 border-dashed border-gray-100 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group relative ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : 'hover:border-[#8dc84b] hover:bg-green-50/30'}`}>
+              <label className={`w-full ${images.length > 0 ? 'min-h-30 p-6' : 'h-48'} border-4 border-dashed border-gray-100 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group relative ${images.length >= 5 ? 'opacity-50 cursor-not-allowed' : 'hover:border-[#8dc84b] hover:bg-green-50/30'}`}>
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -179,7 +179,7 @@ export const DashboardAgregarProducto: React.FC = () => {
           <div className="sticky top-8 flex flex-col gap-4">
             <h3 className="text-xl font-bold text-gray-800 px-2 border-l-4 border-[#8dc84b]">Vista Previa</h3>
             
-            <div className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100 group hover:shadow-2xl hover:shadow-[#8dc84b]/20 transition-all duration-300 flex flex-col h-full max-w-sm mx-auto w-full">
+            <div className="bg-white rounded-4xl overflow-hidden shadow-sm border border-gray-100 group hover:shadow-2xl hover:shadow-[#8dc84b]/20 transition-all duration-300 flex flex-col h-full max-w-sm mx-auto w-full">
               <div className="relative h-64 overflow-hidden group/slider">
                 {images.length > 0 ? (
                   <>
@@ -224,7 +224,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-8 flex flex-col flex-grow">
+              <div className="p-8 flex flex-col grow">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex text-[#ffa000] text-sm">
                     <FontAwesomeIcon icon={faStar} />
