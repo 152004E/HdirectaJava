@@ -45,10 +45,18 @@ export const Navbar = ({
 
         {showInicio && (
           <Link
-            to="/"
+            to="/HomePage"
             className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Inicio
+          </Link>
+        )}
+         {showProductos && (
+          <Link
+            to="/productos"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
+          >
+            Productos
           </Link>
         )}
 
@@ -61,14 +69,7 @@ export const Navbar = ({
           </Link>
         )}
 
-        {showProductos && (
-          <Link
-            to="/productos"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
-          >
-            Productos
-          </Link>
-        )}
+       
 
         {showQuienesSomos && (
           <Link

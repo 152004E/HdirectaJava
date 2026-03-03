@@ -1,57 +1,66 @@
+import { useEffect, useState } from "react";
+import { FiltersBar } from "./FiltersBar";
 import ProductCard from "./ProductCard";
+import { faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 
-const mockProducts = [
-  {
-    id: 1,
-    name: "Queso Pera",
-    price: 19000,
-    stock: 38,
-    image: "/src/assets/logo_huerta.png",
-  },
-  {
-    id: 2,
-    name: "Leche Fresca",
-    price: 4500,
-    stock: 20,
-    image: "/src/assets/logo_huerta.png",
-  },
-  {
-    id: 3,
-    name: "Tomate Orgánico",
-    price: 3000,
-    stock: 15,
-    image: "/src/assets/logo_huerta.png",
-  },
-   {
-    id: 4,
-    name: "Tomate de campo",
-    price: 1000,
-    stock: 5,
-    image: "/src/assets/logo_huerta.png",
-  },
-];
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  image: string;
+  category?: string;
+  reviewCount?: number;
+  averageRating?: number;
+}
 
 export const ProductsSection = () => {
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:8085/api/products")
+      .then(res => res.json())
+      .then((data) => {
+        const mappedProducts: Product[] = data.map((p: any) => ({
+          id: p.idProduct,
+          name: p.nameProduct,
+          image: `http://localhost:8085/uploads/productos/${p.imageProduct}`,
+          category: p.category,
+          price: p.price,
+          stock: p.stock,
+          reviewCount: p.reviewCount,
+          averageRating: p.averageRating,
+        }));
+
+        setProducts(mappedProducts);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <section className="py-16 px-10   bg-linear-to-b   from-[#FEF5DC] via-white to-[#FEF5DC]">
+    <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]">
       <div className="max-w-330 mx-auto">
+        <FiltersBar title="Todos Los Productos" icon={faBoxOpen} />
 
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-[#8dc84b]">
-          Nuestros Productos
-        </h2>
-        <p className="text-gray-500 mt-2">
-          Productos frescos directamente del campo
-        </p>
+        {loading ? (
+          <p className="text-center mt-10">Cargando productos...</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center">
-        {mockProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-      </div>
-
     </section>
   );
 };

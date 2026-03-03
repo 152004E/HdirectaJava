@@ -9,8 +9,10 @@ import {
   faFilePdf,
   faCloudArrowUp,
   faCartShopping,
-  //faBagShopping,
-  //faUser,
+  faBagShopping,
+  faUser,
+  faBorderAll,
+  faListUl,
   //faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
@@ -50,6 +52,7 @@ export const Dashboard: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
   useEffect(() => {
     fetchProducts();
@@ -208,10 +211,30 @@ export const Dashboard: React.FC = () => {
           <section className="bg-white p-8 rounded-3xl shadow-sm mb-8 border border-gray-100">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
               <h2 className="text-2xl font-bold text-gray-800">Gestión de Productos</h2>
-              <div className="flex gap-3">
-                <Button text="Exportar Excel" iconLetf={faFileExcel} onClick={handleExportExcel} className="bg-[#8dc84b] text-white px-4 py-2 rounded-xl" />
-                <Button text="Exportar PDF" iconLetf={faFilePdf} onClick={handleExportPdf} className="bg-[#004d00] text-white px-4 py-2 rounded-xl" />
-                <Button text="Carga Masiva" iconLetf={faCloudArrowUp} onClick={() => setIsUploadModalOpen(true)} className="bg-orange-500 text-white px-4 py-2 rounded-xl" />
+              <div className="flex items-center gap-4">
+                <div className="flex bg-gray-100 p-1 rounded-xl">
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+                      viewMode === "list" ? "bg-white text-[#8dc84b] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faListUl} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all ${
+                      viewMode === "grid" ? "bg-white text-[#8dc84b] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faBorderAll} />
+                  </button>
+                </div>
+                <div className="flex gap-3">
+                  <Button text="Excel" iconLetf={faFileExcel} onClick={handleExportExcel} className="bg-[#8dc84b] text-white px-4 py-2 rounded-xl" />
+                  <Button text="PDF" iconLetf={faFilePdf} onClick={handleExportPdf} className="bg-[#004d00] text-white px-4 py-2 rounded-xl" />
+                  <Button text="Carga Masiva" iconLetf={faCloudArrowUp} onClick={() => setIsUploadModalOpen(true)} className="bg-orange-500 text-white px-4 py-2 rounded-xl" />
+                </div>
               </div>
             </div>
 
@@ -244,43 +267,85 @@ export const Dashboard: React.FC = () => {
               </select>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase text-xs tracking-wider">
-                    <th className="py-4 px-4">Producto</th>
-                    <th className="py-4 px-4">Categoría</th>
-                    <th className="py-4 px-4">Precio</th>
-                    <th className="py-4 px-4">Stock</th>
-                    <th className="py-4 px-4 text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {filteredProducts.map((p) => (
-                    <tr key={p.idProduct} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="py-5 px-4 font-semibold text-gray-800">{p.nameProduct}</td>
-                      <td className="py-5 px-4 text-gray-600 text-sm">{p.category}</td>
-                      <td className="py-5 px-4 font-bold text-[#004d00]">${p.price.toLocaleString()}</td>
-                      <td className="py-5 px-4">
+            {viewMode === "list" ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase text-xs tracking-wider">
+                      <th className="py-4 px-4">Producto</th>
+                      <th className="py-4 px-4">Categoría</th>
+                      <th className="py-4 px-4">Precio</th>
+                      <th className="py-4 px-4">Stock</th>
+                      <th className="py-4 px-4 text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {filteredProducts.map((p) => (
+                      <tr key={p.idProduct} className="hover:bg-gray-50/50 transition-colors">
+                        <td className="py-5 px-4 font-semibold text-gray-800">{p.nameProduct}</td>
+                        <td className="py-5 px-4 text-gray-600 text-sm">{p.category}</td>
+                        <td className="py-5 px-4 font-bold text-[#004d00]">${p.price.toLocaleString()}</td>
+                        <td className="py-5 px-4">
+                          <span className={`px-2 py-1 rounded-lg text-xs font-bold ${p.stock > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
+                            {p.stock} {p.unit}
+                          </span>
+                        </td>
+                        <td className="py-5 px-4">
+                          <div className="flex justify-center gap-2">
+                            <button onClick={() => handleEditProduct(p)} className="w-9 h-9 rounded-lg bg-gray-50 text-[#8dc84b] hover:bg-[#8dc84b] hover:text-white transition-all flex items-center justify-center border-none cursor-pointer">
+                              <FontAwesomeIcon icon={faPen} />
+                            </button>
+                            <button className="w-9 h-9 rounded-lg bg-gray-50 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center border-none cursor-pointer">
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((p) => (
+                  <div key={p.idProduct} className="bg-white border-2 border-gray-100 rounded-3xl p-6 flex flex-col gap-4 hover:border-[#8dc84b] hover:shadow-lg transition-all duration-300">
+                    <div className="relative w-full h-40 overflow-hidden rounded-2xl bg-gray-50">
+                       <img 
+                        src={`/uploads/productos/${(p as any).imageProduct}`} 
+                        alt={p.nameProduct} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "https://via.placeholder.com/400x300?text=Sin+Imagen";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800">{p.nameProduct}</h3>
+                      <p className="text-sm text-gray-500">{p.category}</p>
+                    </div>
+                    <div className="flex justify-between items-end mt-4 pt-4 border-t border-gray-50">
+                      <div>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Precio</p>
+                        <p className="text-xl font-bold text-[#004d00]">${p.price.toLocaleString()}</p>
+                      </div>
+                      <div className="text-right">
                         <span className={`px-2 py-1 rounded-lg text-xs font-bold ${p.stock > 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-500'}`}>
                           {p.stock} {p.unit}
                         </span>
-                      </td>
-                      <td className="py-5 px-4">
-                        <div className="flex justify-center gap-2">
-                          <button onClick={() => handleEditProduct(p)} className="w-9 h-9 rounded-lg bg-gray-50 text-[#8dc84b] hover:bg-[#8dc84b] hover:text-white transition-all flex items-center justify-center border-none cursor-pointer">
-                            <FontAwesomeIcon icon={faPen} />
-                          </button>
-                          <button className="w-9 h-9 rounded-lg bg-gray-50 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center border-none cursor-pointer">
-                            <FontAwesomeIcon icon={faTrash} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button onClick={() => handleEditProduct(p)} className="flex-1 py-2 rounded-xl bg-gray-50 text-[#8dc84b] hover:bg-[#8dc84b] hover:text-white transition-all font-bold border-none cursor-pointer">
+                        Editar
+                      </button>
+                      <button className="w-12 rounded-xl bg-gray-50 text-red-400 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center border-none cursor-pointer">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </section>
 
@@ -295,11 +360,49 @@ export const Dashboard: React.FC = () => {
                 <div className="flex-1">
                   <h3 className="text-xs font-bold text-gray-400">Ordenes Totales</h3>
                   <p className="font-bold text-lg text-gray-800">3,849</p>
+                  
                 </div>
+                
               </div>
             </div>
+            
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Usuarios</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#8dc84b] text-white flex items-center justify-center">
+                  <FontAwesomeIcon icon={faUser} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xs font-bold text-gray-400">Usuarios Totales</h3>
+                  <p className="font-bold text-lg text-gray-800">100</p>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-bold mb-4 text-gray-800">Tus Productos</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 p-4 bg-gray-50/50 rounded-2xl hover:bg-gray-100 transition-all cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#8dc84b] text-white flex items-center justify-center">
+                  <FontAwesomeIcon icon={faBagShopping} />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xs font-bold text-gray-400">Productos Totales</h3>
+                  <p className="font-bold text-lg text-gray-800">{products.length}</p>
+                  
+                </div>
+                
+              </div>
+            </div>
+            
           </div>
         </aside>
+        
       </div>
 
       {/* Mass Upload Modal */}
