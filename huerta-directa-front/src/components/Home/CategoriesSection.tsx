@@ -13,16 +13,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const categories = [
+export const categories = [
   { name: "Frutas", icon: faAppleWhole, slug: "frutas" },
-  { name: "Verduras y hortalizas", icon: faCarrot, slug: "verduras" },
+  { name: "Verduras y hortalizas", icon: faCarrot, slug: "verduras-hortalizas" },
   { name: "Lácteos", icon: faCow, slug: "lacteos" },
-  { name: "Carnes y proteínas", icon: faDrumstickBite, slug: "carnes" },
-  { name: "Cereales y granos", icon: faBowlFood, slug: "cereales" },
-  { name: "Productos orgánicos", icon: faCookie, slug: "organicos" },
-  { name: "Miel y derivados", icon: faPlateWheat, slug: "miel" },
-  { name: "Bebidas naturales", icon: faGlassWater, slug: "bebidas" },
-  { name: "Cajas mixtas o combos", icon: faBoxOpen, slug: "combos" },
+  { name: "Carnes y proteínas", icon: faDrumstickBite, slug: "carnes-y-proteinas" },
+  { name: "Cereales y granos", icon: faBowlFood, slug: "cereales-y-granos" },
+  { name: "Productos orgánicos", icon: faCookie, slug: "productos-organicos" },
+  { name: "Miel y derivados", icon: faPlateWheat, slug: "miel-y-derivados" },
+  { name: "Bebidas naturales", icon: faGlassWater, slug: "bebidas-naturales" },
+  { name: "Cajas mixtas o combos", icon: faBoxOpen, slug: "cajas-combos" },
 ];
 
 const CategoriesSection = () => {

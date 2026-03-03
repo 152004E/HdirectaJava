@@ -22,11 +22,13 @@ import QuienesSomos from "./pages/About/QuienesSomos";
 import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
 import ProductDetailPage from "./pages/AboutProduct/ProductDetailPage";
 import { CartProvider } from "./contexts/CartContext";
+import ScrollToTop from "./components/GlobalComponents/ScrollToTop";
 
 function App() {
   return (
     <CartProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           {/* Landing Layout */}
           <Route
@@ -46,6 +48,22 @@ function App() {
             element={
               <MainLayout
                 navbarProps={{
+                  showProductos: true,
+                  showCategorias: true,
+                  showAddProduct: true,
+                  showCart: true,
+                  showProfile: true,
+                  showQuienesSomos: true,
+                }}
+              />
+            }
+          >
+            <Route path="/HomePage" element={<HomePage />} />
+          </Route>
+           <Route
+            element={
+              <MainLayout
+                navbarProps={{
                   showInicio: true,
                   showProductos: true,
                   showCategorias: true,
@@ -57,17 +75,49 @@ function App() {
               />
             }
           >
-            <Route path="/QuienesSomos" element={<QuienesSomos />} />
-            <Route path="/HomePage" element={<HomePage />} />
-            <Route path="/categoria/:categorySlug" element={<CategoryPage />} />
             <Route path="/producto/:id" element={<ProductDetailPage />} />
+          </Route>
+          <Route
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showCategorias: true,
+                  showProfile: true,
+                }}
+              />
+            }
+          >
+            <Route path="/QuienesSomos" element={<QuienesSomos />} />
+            
+          </Route>
+          <Route
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showCategorias: true,
+                  showCart : true,
+                  showProfile: true,
+                }}
+              />
+            }
+          >
+            
+           <Route path="/categoria/:slug" element={<CategoryPage />} />
+            
           </Route>
 
           {/* Dashboard Layout */}
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
-            <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
+            <Route
+              path="/MensajesAreaSocial"
+              element={<MensajesAreaSocial />}
+            />
             <Route
               path="/DashBoardAgregarProducto"
               element={<DashboardAgregarProducto />}
@@ -102,6 +152,5 @@ function App() {
     </CartProvider>
   );
 }
-
 
 export default App;

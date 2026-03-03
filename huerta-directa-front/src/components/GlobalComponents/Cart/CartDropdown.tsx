@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { Button } from "../Button";
+import { useEffect, useState } from "react";
 import logo from "../../../assets/logo_huerta.png";
 import {
   faCartShopping,
@@ -15,6 +15,8 @@ interface Props {
 }
 
 export const CartDropdown = ({ open, onClose }: Props) => {
+  const [quantity, setQuantity] = useState(1);
+  const stock = 10;
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -104,7 +106,35 @@ export const CartDropdown = ({ open, onClose }: Props) => {
                   </div>
                 </div>
 
-                <div className="w-20 text-center">1</div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <button
+                      onClick={() =>
+                        setQuantity((prev) => Math.max(1, prev - 1))
+                      }
+                      className="px-4 py-2 hover:bg-gray-50 transition-colors text-gray-600"
+                    >
+                      -
+                    </button>
+
+                    <span className="px-4 py-2 font-bold w-12 text-center text-gray-800">
+                      {quantity}
+                    </span>
+
+                    <button
+                      onClick={() =>
+                        setQuantity((prev) => Math.min(stock, prev + 1))
+                      }
+                      className="px-4 py-2 hover:bg-gray-50 transition-colors text-gray-600"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <span className="text-xs text-gray-400">
+                    ({stock} disp.)
+                  </span>
+                </div>
                 <div className="w-26 text-center">$1.000</div>
               </div>
             </div>

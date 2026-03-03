@@ -35,6 +35,9 @@ public class Product {
     @Size(max = 100)
     private String category;
 
+    @Column(name = "category_slug", length = 120)
+    private String categorySlug;
+
     @Column(name = "image_product", nullable = false, length = 250)
     @NotBlank
     @Size(max = 250)
@@ -65,4 +68,15 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("product")
     private java.util.List<ProductImage> images = new java.util.ArrayList<>();
+
+    @PrePersist
+    @PreUpdate
+    private void generateCategorySlug() {
+        if (this.category != null) {
+            this.categorySlug = this.category
+                    .toLowerCase()
+                    .trim()
+                    .replace(" ", "-");
+        }
+    }
 }

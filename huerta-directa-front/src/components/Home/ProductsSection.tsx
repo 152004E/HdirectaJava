@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiltersBar } from "./FiltersBar";
 import ProductCard from "./ProductCard";
+import { faBoxOpen } from "@fortawesome/free-solid-svg-icons";
 
 interface Product {
   id: number;
@@ -14,6 +15,7 @@ interface Product {
 }
 
 export const ProductsSection = () => {
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +46,7 @@ export const ProductsSection = () => {
   return (
     <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]">
       <div className="max-w-330 mx-auto">
-        <FiltersBar title={"Nuestros Productos"} />
+        <FiltersBar title="Todos Los Productos" icon={faBoxOpen} />
 
         {loading ? (
           <p className="text-center mt-10">Cargando productos...</p>

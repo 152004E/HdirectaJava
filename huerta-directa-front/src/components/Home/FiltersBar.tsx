@@ -3,13 +3,14 @@ import { Button } from "../GlobalComponents/Button";
 import { faFilter, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FiltersPanel } from "./FiltersPanel";
-
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface FiltersBarProps {
   title: string;
+  icon?: IconDefinition;
 }
 
-export const FiltersBar = ({ title }: FiltersBarProps) => {
+export const FiltersBar = ({ title, icon }: FiltersBarProps) => {
   const [showPanel, setShowPanel] = useState(false);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
@@ -19,9 +20,7 @@ export const FiltersBar = ({ title }: FiltersBarProps) => {
   };
 
   const removeFilter = (filterToRemove: string) => {
-    setActiveFilters((prev) =>
-      prev.filter((f) => f !== filterToRemove)
-    );
+    setActiveFilters((prev) => prev.filter((f) => f !== filterToRemove));
   };
 
   const clearAll = () => {
@@ -31,10 +30,11 @@ export const FiltersBar = ({ title }: FiltersBarProps) => {
   return (
     <div className="relative">
       <div className="flex items-center justify-between border border-gray-300/60 p-4 shadow-lg rounded-2xl bg-white">
-
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4 flex-wrap flex-1">
-
+          <span className="text-2xl text-[#8dc84b]"> 
+            {icon && <FontAwesomeIcon icon={icon} />}
+          </span>
           <h1 className="text-3xl font-bold text-[#8dc84b] whitespace-nowrap">
             {title}
           </h1>
@@ -73,9 +73,7 @@ export const FiltersBar = ({ title }: FiltersBarProps) => {
       </div>
 
       {/* PANEL */}
-      {showPanel && (
-        <FiltersPanel onApply={applyFilters} />
-      )}
+      {showPanel && <FiltersPanel onApply={applyFilters} />}
     </div>
   );
 };

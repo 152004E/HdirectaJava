@@ -131,8 +131,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductDTO> listarProductsPorCategoria(String categoria) {
-        return productRepository.findByCategoryIgnoreCase(categoria)
+    public List<ProductDTO> listarProductsPorCategoria(String slug) {
+        return productRepository.findByCategorySlug(slug)
                 .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());

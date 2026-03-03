@@ -62,13 +62,13 @@ const ProductCard = ({ product }: Props) => {
   };
 
   return (
-    <div className="max-w-75 w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 group transition-transform hover:scale-[1.02]">
+    <div className="max-w-75 w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 group transition-transform duration-500 hover:scale-[1.007]">
       {/* Imagen Slider */}
       <div className="relative h-64 overflow-hidden group/slider">
         <img
           src={allImages[currentImageIndex]}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
         {/* Arrows for multi-image */}
@@ -103,19 +103,19 @@ const ProductCard = ({ product }: Props) => {
           <Button
             text=""
             iconLetf={faHeart}
-            className="bg-white/80 backdrop-blur-md px-1 gap-0! py-1.5 rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
+            className="bg-white/80 backdrop-blur-md px-1 gap-0! py-1.5! rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
           />
         </div>
 
         {/* Stock badge */}
         <div className="absolute bottom-4 left-4 z-10">
           {hasStock ? (
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 shadow text-[#8bc34a] text-xs font-semibold">
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full flex items-center gap-2 shadow text-[#8bc34a] text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-[#8bc34a] animate-pulse"></span>
               {product.stock} disponibles
             </div>
           ) : (
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow text-red-500 text-xs font-semibold">
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-red-500 text-xs font-semibold">
               Sin stock
             </div>
           )}
@@ -124,7 +124,7 @@ const ProductCard = ({ product }: Props) => {
         {/* Categoria badge */}
         {product.category && (
           <div className="absolute bottom-4 right-4 z-10">
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1 rounded-full shadow text-[#8bc34a] text-[10px] font-semibold uppercase tracking-wide">
+            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-[#8bc34a] text-[10px] font-semibold uppercase tracking-wide">
               {product.category}
             </div>
           </div>
