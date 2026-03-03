@@ -1,6 +1,5 @@
 import { Button } from "../Button";
-import { useEffect, useState } from "react";
-import logo from "../../../assets/logo_huerta.png";
+import { useEffect } from "react";
 import {
   faCartShopping,
   faCircleXmark,
@@ -8,6 +7,7 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCart } from "../../../contexts/CartContext";
 
 interface Props {
   open: boolean;
@@ -15,8 +15,8 @@ interface Props {
 }
 
 export const CartDropdown = ({ open, onClose }: Props) => {
-  const [quantity, setQuantity] = useState(1);
-  const stock = 10;
+  const { items, totals, updateQuantity, removeItem, clearCart } = useCart();
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -49,122 +49,151 @@ export const CartDropdown = ({ open, onClose }: Props) => {
           fixed top-0 right-0
           h-full w-150
           bg-white
-          
-          p-6 shadow-2xl
-          transition-transform duration-500
-          z-50
-          ${open ? "translate-x-0" : "translate-x-full"}
-        `}
-      >
-        {/* PANEL LATERAL */}
-        <div
-          className={`
-          fixed top-0 right-0
-          h-full
-          w-150
-          bg-white
-          backdrop-blur-md
-          
           shadow-2xl
           transition-transform duration-500
           z-50
           ${open ? "translate-x-0" : "translate-x-full"}
         `}
-        >
-          <div className="p-6 flex items-center justify-between bg-linear-to-r bg-black">
-            <h2 className="text-white text-lg font-semibold uppercase tracking-wide flex gap-2 justify-center items-center">
-              <FontAwesomeIcon
-                icon={faCartShopping}
-                className="text-[#8dc84b]"
-              />
-              <p>tu carrito</p>{" "}
-              <span className="bg-[#8dc84b] text-white ml-4 text-xs font-semibold px-3 py-1 rounded-full shadow">
-                3 items
-              </span>
-            </h2>
-            <Button
-              text={""}
-              className="gap-0! bg-transparent! text-xl "
-              onClick={onClose}
-              iconLetf={faCircleXmark}
+      >
+        {/* HEADER */}
+        <div className="p-6 flex items-center justify-between bg-black">
+          <h2 className="text-white text-lg font-semibold uppercase tracking-wide flex gap-2 items-center">
+            <FontAwesomeIcon
+              icon={faCartShopping}
+              className="text-[#8dc84b]"
             />
+            <span>Tu carrito</span>
+            <span className="bg-[#8dc84b] text-white ml-4 text-xs font-semibold px-3 py-1 rounded-full shadow">
+              {items.length} items
+            </span>
+          </h2>
+
+          <Button
+            text=""
+            className="gap-0! bg-transparent! text-xl text-white"
+            onClick={onClose}
+            iconLetf={faCircleXmark}
+          />
+        </div>
+
+        {/* CONTENIDO */}
+        <div className="overflow-y-auto h-[70%]">
+          <div className="flex justify-between px-20 py-2 border-b border-gray-400 items-center my-1 uppercase text-gray-700 font-bold">
+            <p>Producto</p>
+            <p>Cant.</p>
+            <p>Total</p>
           </div>
 
-          <div className="overflow-y-auto h-[70%] ">
-            <div className="flex justify-between  px-20 py-2 border-b border-gray-400 items-center my-1 uppercase text-gray-700 font-bold">
-              <p>producto</p>
-              <p>Cant.</p>
-              <p>Total</p>
-            </div>
-            <div className="p-6 flex flex-col gap-3">
-              <div className="flex justify-between items-center border border-gray-400/50 shadow rounded-xl h-20 px-3 duration-500 transition hover:bg-gray-100/70">
+          <div className="p-6 flex flex-col gap-3">
+            {items.length === 0 && (
+              <p className="text-center text-gray-400">
+                Tu carrito está vacío
+              </p>
+            )}
+
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="flex justify-between items-center border border-gray-400/50 shadow rounded-xl h-20 px-3 duration-500 transition hover:bg-gray-100/70"
+              >
+                {/* INFO */}
                 <div className="w-45 flex items-center gap-2">
-                  <img src={logo} className="rounded-md w-16" />
+                  {item.imagen && (
+                    <img
+                      src={item.imagen}
+                      className="rounded-md w-16"
+                      alt={item.nombre}
+                    />
+                  )}
                   <div>
-                    <p className="font-bold tracking-wide">Manzana</p>
-                    <p className="text-gray-500">$1.000 / U</p>
+                    <p className="font-bold tracking-wide">
+                      {item.nombre}
+                    </p>
+                    <p className="text-gray-500">
+                      ${item.precio.toLocaleString()} / U
+                    </p>
                   </div>
                 </div>
 
+                {/* CANTIDAD */}
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
                     <button
                       onClick={() =>
-                        setQuantity((prev) => Math.max(1, prev - 1))
+                        updateQuantity(item.id, item.cantidad - 1)
                       }
-                      className="px-4 py-2 hover:bg-gray-50 transition-colors text-gray-600"
+                      className="px-4 py-2"
                     >
                       -
                     </button>
 
-                    <span className="px-4 py-2 font-bold w-12 text-center text-gray-800">
-                      {quantity}
+                    <span className="px-4 py-2 font-bold w-12 text-center">
+                      {item.cantidad}
                     </span>
 
                     <button
                       onClick={() =>
-                        setQuantity((prev) => Math.min(stock, prev + 1))
+                        updateQuantity(item.id, item.cantidad + 1)
                       }
-                      className="px-4 py-2 hover:bg-gray-50 transition-colors text-gray-600"
+                      className="px-4 py-2"
                     >
                       +
                     </button>
                   </div>
-
-                  <span className="text-xs text-gray-400">
-                    ({stock} disp.)
-                  </span>
                 </div>
-                <div className="w-26 text-center">$1.000</div>
+
+                {/* SUBTOTAL */}
+                <div className="w-26 text-center font-semibold">
+                  ${item.subtotal.toLocaleString()}
+                </div>
+
+                {/* ELIMINAR */}
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="text-red-500 text-lg"
+                >
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </button>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        {/* FOOTER */}
+        <div className="absolute p-6 bottom-0 w-full border-t border-gray-400/50 bg-white">
+          <div className="flex justify-between items-center mb-2">
+            <span>Subtotal:</span>
+            <span className="font-semibold">
+              ${totals.subtotal.toLocaleString()}
+            </span>
           </div>
 
-          {/* FOOTER FIJO */}
-          <div className="absolute p-6 bottom-0 w-full border-t border-gray-400/50 bg-white">
-            <div className="flex justify-between items-center mb-4 text-black">
-              <span className="text-lg">Subtotal:</span>
-              <span className="font-semibold text-[22px]">$1.000</span>
-            </div>
+          <div className="flex justify-between items-center mb-4">
+            <span>Total:</span>
+            <span className="font-bold text-[20px]">
+              ${totals.total.toLocaleString()}
+            </span>
+          </div>
 
-            <div className="flex justify-between">
-              <Button
-                text="Vaciar"
-                iconLetf={faTrashCan}
-                className="bg-gray-500/40 text-xl hover:bg-gray-500/60 px-4 py-2 rounded-md flex items-center gap-2"
-              />
+          <div className="flex justify-between">
+            <Button
+              text="Vaciar"
+              iconLetf={faTrashCan}
+              onClick={clearCart}
+              className="bg-gray-500/40 hover:bg-gray-500/60 px-4 py-2 rounded-md"
+            />
 
-              <Button
-                text="Proceder al Pago"
-                iconLetf={faCreditCard}
-                className="bg-[#8cc63f] text-xl  hover:bg-[#6da82f] px-7 py-3 rounded-md text-white flex items-center gap-2"
-              />
-            </div>
-            <div className="flex justify-center items-center mt-4">
-              <p className="text-gray-400">
-                Impuestos y envio calculados al final de la compra.
-              </p>
-            </div>
+            <Button
+              text="Proceder al Pago"
+              iconLetf={faCreditCard}
+              className="bg-[#8cc63f] hover:bg-[#6da82f] px-7 py-3 rounded-md text-white"
+            />
+          </div>
+
+          <div className="flex justify-center mt-4">
+            <p className="text-gray-400 text-sm">
+              Impuestos y envío calculados al final de la compra.
+            </p>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 // TIPOS
 export interface CartItem {
@@ -54,11 +54,21 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (existing) {
         return prev.map((p) =>
           p.id === item.id
-            ? { ...p, cantidad: p.cantidad + item.cantidad, subtotal: p.precio * (p.cantidad + item.cantidad) }
-            : p
+            ? {
+                ...p,
+                cantidad: p.cantidad + item.cantidad,
+                subtotal: p.precio * (p.cantidad + item.cantidad),
+              }
+            : p,
         );
       }
-      return [...prev, item];
+      return [
+        ...prev,
+        {
+          ...item,
+          subtotal: item.precio * item.cantidad,
+        },
+      ];
     });
   }, []);
 
@@ -68,19 +78,20 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   // Actualizar cantidad
-  const updateQuantity = useCallback((id: number, cantidad: number) => {
-    if (cantidad <= 0) {
-      removeItem(id);
-      return;
-    }
-    setItems((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? { ...p, cantidad, subtotal: p.precio * cantidad }
-          : p
-      )
-    );
-  }, [removeItem]);
+  const updateQuantity = useCallback(
+    (id: number, cantidad: number) => {
+      if (cantidad <= 0) {
+        removeItem(id);
+        return;
+      }
+      setItems((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, cantidad, subtotal: p.precio * cantidad } : p,
+        ),
+      );
+    },
+    [removeItem],
+  );
 
   // Vaciar carrito
   const clearCart = useCallback(() => {
@@ -90,7 +101,17 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const totals = calculateTotals();
 
   return (
-    <CartContext.Provider value={{ items, totals, addItem, removeItem, updateQuantity, clearCart, calculateTotals }}>
+    <CartContext.Provider
+      value={{
+        items,
+        totals,
+        addItem,
+        removeItem,
+        updateQuantity,
+        clearCart,
+        calculateTotals,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
@@ -100,8 +121,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart debe usarse dentro de CartProvider');
+    throw new Error("useCart debe usarse dentro de CartProvider");
   }
   return context;
 };
-
