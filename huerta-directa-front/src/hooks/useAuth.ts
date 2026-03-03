@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 export const useAuth = () => {
   const [isActive, setIsActive] = useState(false);
@@ -35,25 +36,22 @@ export const useAuth = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch("/api/login/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerData),
-      });
+      const response = await authService.register(
+        registerData.name,
+        registerData.email,
+        registerData.password
+      );
 
-      const data = await response.json();
+      setSuccess(response.message || "¡Registro exitoso! Redirigiendo...");
+      setRegisterData({ name: "", email: "", password: "" });
 
-      if (response.ok) {
-        setSuccess("¡Registro exitoso! Por favor revisa tu correo.");
-        setIsActive(false);
-      } else {
-        const errorMsg = Array.isArray(data)
-          ? data.map((err: any) => err.defaultMessage).join(", ")
-          : data.message || "Error en el registro";
-        setError(errorMsg);
-      }
-    } catch (err) {
-      setError("Error de conexión con el servidor");
+      // Redirigir después de un breve delay
+      setTimeout(() => {
+        navigate("/HomePage");
+      }, 1500);
+    } catch (err: any) {
+      console.error("Error en registro:", err);
+      setError(err.message || "Error de conexión con el servidor");
     }
   };
 
@@ -63,42 +61,33 @@ export const useAuth = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch("/api/login/loginUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
-      });
+      const response = await authService.login(
+        loginData.email,
+        loginData.password
+      );
 
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        setError("Error: El servidor no devolvió JSON.");
+      // Verificar si necesita SMS
+      if (response.status === "verify-sms") {
+        setSuccess("Se requiere verificación SMS");
         return;
       }
 
-      const data = await response.json();
+      // Login exitoso
+      setSuccess(response.message || "¡Login exitoso!");
 
-      if (response.ok) {
-        if (data.status === "verify-sms") {
-          setSuccess("Se requiere verificación SMS");
-        } else if (data.redirect) {
-          window.location.href = data.redirect;
+      // Redirigir según rol
+      setTimeout(() => {
+        if (response.redirect) {
+          navigate(response.redirect);
+        } else if (response.idRole === 1) {
+          navigate("/admin-dashboard");
         } else {
-          if (data.idRole === 1) {
-            window.location.href =
-              "http://localhost:8085/DashboardAdmin";
-          } else {
-            navigate("/");
-          }
+          navigate("/HomePage");
         }
-      } else {
-        setError(
-          typeof data === "string"
-            ? data
-            : data.message || "Error al iniciar sesión"
-        );
-      }
-    } catch (err) {
-      setError("Error de conexión al iniciar sesión");
+      }, 1000);
+    } catch (err: any) {
+      console.error("Error en login:", err);
+      setError(err.message || "Error al iniciar sesión");
     }
   };
 
