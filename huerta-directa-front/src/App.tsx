@@ -19,10 +19,11 @@ import { AdminReports } from "./pages/DashboardAdmin/AdminReports";
 import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/About/QuienesSomos";
-import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
+import CategoryPage from "./pages/Main/CategoryPage/Category";
 import ProductDetailPage from "./pages/AboutProduct/ProductDetailPage";
 import { CartProvider } from "./contexts/CartContext";
 import ScrollToTop from "./components/GlobalComponents/ScrollToTop";
+import { ProductosPage } from "./pages/Main/ProductosPage/ProductosPage";
 
 function App() {
   return (
@@ -107,6 +108,24 @@ function App() {
           >
             
            <Route path="/categoria/:slug" element={<CategoryPage />} />
+            
+          </Route>
+          {/* Productos pages */}
+          <Route
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showCategorias: true,
+                  showCart : true,
+                  showProfile: true,
+                }}
+              />
+            }
+          >
+            
+           <Route path="/Productos" element={<ProductosPage />} />
             
           </Route>
 

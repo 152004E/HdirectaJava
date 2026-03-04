@@ -117,12 +117,12 @@ export const CartDropdown = ({ open, onClose }: Props) => {
 
                 {/* CANTIDAD */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white cursor-pointer">
                     <button
                       onClick={() =>
                         updateQuantity(item.id, item.cantidad - 1)
                       }
-                      className="px-4 py-2"
+                      className="px-4 py-2 cursor-pointer"
                     >
                       -
                     </button>
@@ -135,7 +135,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
                       onClick={() =>
                         updateQuantity(item.id, item.cantidad + 1)
                       }
-                      className="px-4 py-2"
+                      className="px-4 py-2 cursor-pointer"
                     >
                       +
                     </button>
@@ -150,7 +150,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
                 {/* ELIMINAR */}
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-500 text-lg"
+                  className="text-red-500 text-lg cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faTrashCan} />
                 </button>
@@ -180,7 +180,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
               text="Vaciar"
               iconLetf={faTrashCan}
               onClick={clearCart}
-              className="bg-gray-500/40 hover:bg-gray-500/60 px-4 py-2 rounded-md"
+              className="bg-gray-500/40 hover:bg-gray-500/60 px-4 py-2 rounded-md cursor-pointer"
             />
 
             <Button

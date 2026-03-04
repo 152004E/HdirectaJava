@@ -53,7 +53,7 @@ export const Navbar = ({
         )}
          {showProductos && (
           <Link
-            to="/productos"
+            to="/Productos"
             className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Productos
