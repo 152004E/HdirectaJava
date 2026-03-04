@@ -15,7 +15,7 @@ interface ProductBackend {
   images?: string[];
 }
 
-const CategoryPage = () => {
+const ProductsByCategoryPage = () => {
   const { slug } = useParams();
   const categoryData = categories.find(cat => cat.slug === slug);
   const [products, setProducts] = useState<ProductBackend[]>([]);
@@ -85,4 +85,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default ProductsByCategoryPage;

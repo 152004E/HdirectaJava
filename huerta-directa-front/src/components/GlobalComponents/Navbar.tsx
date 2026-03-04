@@ -62,7 +62,7 @@ export const Navbar = ({
 
         {showCategorias && (
           <Link
-            to="/categorias"
+            to="/CategoryPage"
             className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
           >
             Categorías

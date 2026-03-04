@@ -29,7 +29,7 @@ const CategoriesSection = () => {
   return (
     <section 
       id="categorias"
-      className=" py-20  bg-linear-to-b  from-[#FEF5DC] via-white to-[#FEF5DC]"
+      className=" py-10  bg-linear-to-b  from-[#FEF5DC] via-white to-[#FEF5DC]"
     >
       <div className="max-w-300 mx-auto grid md:grid-cols-2 gap-5 px-6">
 
