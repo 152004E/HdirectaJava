@@ -50,6 +50,7 @@ huerta-directa-front/
 │  │  │  ├─ PasswordInput.tsx           ✓ Input para contraseña
 │  │  │  ├─ ProfileMenu.tsx             ✓ Menú de perfil
 │  │  │  ├─ Sidebar.tsx                 ✓ Barra lateral
+│  │  │  ├─ ScrollToTop.tsx             ✓ Scroll hacia arriba
 │  │  │  ├─ ThemeToggle.tsx             ✓ Toggle para tema oscuro/claro
 │  │  │  ├─ Cart/                       ← Componentes del carrito
 │  │  │  │  ├─ CartButton.tsx           ✓ Botón del carrito
@@ -60,12 +61,27 @@ huerta-directa-front/
 │  │  │
 │  │  ├─ Home/                          ← Componentes para la página de inicio
 │  │  │  ├─ CategoriesSection.tsx       ✓ Sección de categorías
+│  │  │  ├─ FiltersBar.tsx              ✓ Barra de filtros
+│  │  │  ├─ FiltersPanel.tsx            ✓ Panel de filtros avanzados
 │  │  │  ├─ HeaderSection.tsx           ✓ Sección de encabezado
 │  │  │  ├─ HeroSlider.tsx              ✓ Carrusel principal
 │  │  │  ├─ InformationSection.tsx      ✓ Sección de información
 │  │  │  ├─ OffersSection.tsx           ✓ Sección de ofertas
 │  │  │  ├─ ProductCard.tsx             ✓ Tarjeta de producto
 │  │  │  └─ ProductsSection.tsx         ✓ Sección de productos
+│  │  │
+│  │  ├─ Checkout/                      ← Componentes del checkout
+│  │  │  ├─ CheckoutHeader.tsx          ✓ Encabezado del checkout
+│  │  │  ├─ OrderItem.tsx               ✓ Item del pedido
+│  │  │  ├─ OrderList.tsx               ✓ Lista de pedidos
+│  │  │  ├─ OrderSummaryCard.tsx        ✓ Resumen del pedido
+│  │  │  ├─ PaymentMethodCard.tsx       ✓ Tarjeta de método de pago
+│  │  │  ├─ SecureFooter.tsx            ✓ Pie de seguridad
+│  │  │  └─ ShippingCard.tsx            ✓ Tarjeta de envío
+│  │  │
+│  │  ├─ AboutComponents/               ← Componentes para About/Quiénes somos
+│  │  │  ├─ AboutSection.tsx            ✓ Sección de información
+│  │  │  └─ ForumSection.tsx            ✓ Sección de foro
 │  │  │
 │  │  └─ Modals/                        ← Componentes modales
 │  │     ├─ ChatModal.tsx               ✓ Modal de chat
@@ -87,13 +103,20 @@ huerta-directa-front/
 │  │
 │  ├─ hooks/                            ← Custom React hooks
 │  │  ├─ useAuth.ts                     ✓ Hook de autenticación
-│  │  └─ usePageTitle.ts                ✓ Hook para título de página
+│  │  ├─ useCart.ts                     ✓ Hook para gestión del carrito
+│  │  ├─ usePageTitle.ts                ✓ Hook para título de página
+│  │  └─ usePayment.ts                  ✓ Hook para gestión de pagos
+│  │
+│  ├─ contexts/                         ← Context API para estado global
+│  │  ├─ CartContext.tsx                ✓ Context del carrito
+│  │  └─ PaymentContext.tsx             ✓ Context de pagos
 │  │
 │  ├─ layout/                           ← Layouts (estructura base)
 │  │  ├─ AdminDashboardLayout.tsx       ✓ Layout para admin dashboard
 │  │  ├─ AuthLayout.tsx                 ✓ Layout de autenticación
 │  │  ├─ DashboardLayout.tsx            ✓ Layout del dashboard de usuario
-│  │  └─ MainLayout.tsx                 ✓ Layout principal
+│  │  ├─ MainLayout.tsx                 ✓ Layout principal
+│  │  └─ PaymentLayaout.tsx             ✓ Layout para checkout/pago
 │  │
 │  ├─ pages/                            ← Vistas (rutas)
 │  │  ├─ Auth/                          ← Páginas de autenticación
@@ -120,10 +143,19 @@ huerta-directa-front/
 │  │  │  └─ Landing.tsx                 ✓ Landing page / Home público
 │  │  │
 │  │  ├─ Main/                          ← Páginas principales (autenticadas)
-│  │  │  └─ HomePage.tsx                ✓ Home page del usuario logueado
+│  │  │  ├─ HomePage.tsx                ✓ Home page del usuario logueado
+│  │  │  └─ CategoryPage/               ← Categorías de productos
+│  │  │     └─ CategoryPage.tsx         ✓ Página de categoría de productos
 │  │  │
-│  │  └─ QuienesSomos/                  ← Páginas informativas
-│  │     └─ QuienesSomos.tsx            ✓ Página quiénes somos
+│  │  ├─ About/                         ← Páginas informativas
+│  │  │  └─ QuienesSomos.tsx            ✓ Página quiénes somos
+│  │  │
+│  │  ├─ AboutProduct/                  ← Detalles de productos
+│  │  │  └─ ProductDetailPage.tsx       ✓ Página detalle del producto
+│  │  │
+│  │  └─ Payment/                       ← Páginas de pago/checkout
+│  │     ├─ CheckoutSummaryPage.tsx     ✓ Resumen de checkout
+│  │     └─ MercadoPagoPayment.tsx      ✓ Página de pago Mercado Pago
 │  │
 │  ├─ types/                            ← Definiciones de tipos TypeScript
 │  │  └─ swiper.d.ts                    ✓ Tipos para Swiper
@@ -182,14 +214,10 @@ npm run build
 # Preview de producción
 npm run preview
 
-
-# carrusel
+# Instalar Swiper (carrusel)
 npm install swiper 
 ```
 
 ---
 
-
-
-
-**Última actualización:** 2026-02-23
+**Última actualización:** 2026-03-02

@@ -30,31 +30,31 @@ export const Navbar = ({
     "w-full bg-transparent px-10 py-4 flex items-center justify-between text-[15px]";
 
   return (
-    <header className={`${baseClasses} ${className ?? ""} relative z-50 overflow-visible`}>
+    <header className={`${baseClasses} ${className ?? ""} relative z-50 overflow-visible `}>
       
       {/* Logo */}
       <Link
         to="/"
-        className="text-[#8dc84b] text-[23px] font-bold tracking-wide hover:scale-105 transition"
+        className="text-[#8dc84b] text-[23px] font-bold tracking-wide hover:scale-105 transition  duration-500"
       >
         HUERTA DIRECTA
       </Link>
 
       {/* Navegación */}
-      <nav className="flex items-center gap-6">
+      <nav className="flex items-center gap-6 ">
 
         {showInicio && (
           <Link
             to="/HomePage"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
           >
             Inicio
           </Link>
         )}
          {showProductos && (
           <Link
-            to="/productos"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
+            to="/Productos"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white" 
           >
             Productos
           </Link>
@@ -62,8 +62,8 @@ export const Navbar = ({
 
         {showCategorias && (
           <Link
-            to="/categorias"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
+            to="/CategoryPage"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
           >
             Categorías
           </Link>
@@ -74,7 +74,7 @@ export const Navbar = ({
         {showQuienesSomos && (
           <Link
             to="/QuienesSomos"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition"
+            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
           >
             Quiénes Somos
           </Link>
@@ -85,7 +85,7 @@ export const Navbar = ({
             text="Agrega productos"
             to="/crear-producto"
             iconRight={faCarrot}
-            className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2"
+            className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2 "
           />
         )}
 

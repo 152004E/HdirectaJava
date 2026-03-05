@@ -19,10 +19,16 @@ import { AdminReports } from "./pages/DashboardAdmin/AdminReports";
 import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/About/QuienesSomos";
-import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
 import ProductDetailPage from "./pages/AboutProduct/ProductDetailPage";
 import { CartProvider } from "./contexts/CartContext";
 import ScrollToTop from "./components/GlobalComponents/ScrollToTop";
+import { ProductosPage } from "./pages/Main/ProductosPage/ProductosPage";
+import ProductsByCategoryPage from "./pages/Main/CategoryPage/ProductsByCategoryPage";
+import { CategoryPage } from "./pages/Main/CategoryPage/CategoryPage";
+import PaymentLayout from "./layout/PaymentLayaout.tsx";
+import CheckoutSummaryPage from "./pages/Payment/CheckoutSummaryPage.tsx";
+import MercadoPagoPayment from "./pages/Payment/MercadoPagoPayment.tsx";
+import StatusSucesfull from "./pages/Payment/StatusSucesfull.tsx";
 
 function App() {
   return (
@@ -90,7 +96,7 @@ function App() {
             }
           >
             <Route path="/QuienesSomos" element={<QuienesSomos />} />
-            
+
           </Route>
           <Route
             element={
@@ -105,9 +111,44 @@ function App() {
               />
             }
           >
-            
-           <Route path="/categoria/:slug" element={<CategoryPage />} />
-            
+
+           <Route path="/categoria/:slug" element={<ProductsByCategoryPage />} />
+
+          </Route>
+          {/* Categories pages */}
+          <Route
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showProfile: true,
+                  showQuienesSomos: true
+                }}
+              />
+            }
+          >
+
+           <Route path="/CategoryPage" element={<CategoryPage />} />
+
+          </Route>
+          {/* Productos pages */}
+          <Route
+            element={
+              <MainLayout
+                navbarProps={{
+                  showInicio: true,
+                  showProductos: true,
+                  showCategorias: true,
+                  showCart : true,
+                  showProfile: true,
+                }}
+              />
+            }
+          >
+
+           <Route path="/Productos" element={<ProductosPage />} />
+
           </Route>
 
           {/* Dashboard Layout */}
@@ -144,6 +185,20 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Login />} />
           </Route>
+
+          {/* Payment Layout */}
+          <Route element={<PaymentLayout />}>
+              <Route path="/payment/checkout" element={<CheckoutSummaryPage />} />
+              <Route path="/payment/MercadoPayment" element={<MercadoPagoPayment />} />
+              <Route path="/payment/status" element={<StatusSucesfull/>} />
+          </Route>
+
+
+          {/* Layout auth */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Login />} />
+        </Route>
 
           {/* Ruta comodín */}
           <Route path="*" element={<Navigate to="/HomePage" />} />
