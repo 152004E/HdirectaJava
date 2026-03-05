@@ -63,66 +63,92 @@ public class LoginController {
         });
     }
 
+    /**
+     * Endpoint para registro de usuarios
+     * Acepta JSON desde React y retorna respuesta JSON
+     */
     @PostMapping("/register")
-    public String seveUserView(
-            @Valid @ModelAttribute("userDTO") UserDTO userDTO,
-            BindingResult result,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-
-        if (result.hasErrors()) {
-            return "login/login"; // tu vista
-        }
-
+    @ResponseBody
+    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, HttpSession session) {
+        log.info("Intento de registro para el email: {}", userDTO.getEmail());
+        
         try {
+            // Validar datos básicos
+            if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ErrorResponse("El correo electrónico es requerido"));
+            }
 
+            if (userDTO.getName() == null || userDTO.getName().isBlank()) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ErrorResponse("El nombre es requerido"));
+            }
+
+            if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ErrorResponse("La contraseña es requerida"));
+            }
+
+            // Validar edad
             if (userDTO.getBirthDate() != null) {
                 LocalDate today = LocalDate.now();
                 Period age = Period.between(userDTO.getBirthDate(), today);
 
                 if (age.getYears() < 18) {
-                    redirectAttributes.addFlashAttribute(
-                            "error",
-                            "Debes ser mayor de 18 años para registrarte");
-                    return "redirect:/login";
+                    log.warn("Intento de registro de menor de edad: {}", userDTO.getEmail());
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new ErrorResponse("Debes ser mayor de 18 años para registrarte"));
                 }
             }
 
+            // Crear usuario
             UserDTO usuarioCreado = userService.crearUser(userDTO);
+            log.info("Usuario creado exitosamente: {}", usuarioCreado.getEmail());
 
+            // Buscar el usuario creado
             User userEntity = userRepository
                     .findByEmail(usuarioCreado.getEmail())
                     .orElse(null);
 
-            session.setAttribute("user", userEntity);
+            if (userEntity != null) {
+                session.setAttribute("user", userEntity);
+                session.setAttribute("userId", userEntity.getId());
+                session.setAttribute("userRole", userEntity.getRole() != null ? userEntity.getRole().getIdRole() : null);
+            }
 
-            enviarCorreoConfirmacion(
-                    usuarioCreado.getName(),
-                    usuarioCreado.getEmail());
+            // Enviar correo de confirmación (asíncrono para no bloquear)
+            try {
+                enviarCorreoConfirmacion(usuarioCreado.getName(), usuarioCreado.getEmail());
+                log.info("Correo de confirmación enviado a: {}", usuarioCreado.getEmail());
+            } catch (Exception e) {
+                log.warn("No se pudo enviar el correo de confirmación a: {}", usuarioCreado.getEmail(), e);
+            }
 
-            redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Cuenta creada correctamente");
+            // Preparar respuesta
+            UserResponse response = new UserResponse();
+            response.setId(usuarioCreado.getId());
+            response.setName(usuarioCreado.getName());
+            response.setEmail(usuarioCreado.getEmail());
+            response.setIdRole(usuarioCreado.getIdRole());
+            response.setMessage("Registro exitoso");
 
-            return "redirect:/index";
+            return ResponseEntity.ok(response);
 
         } catch (DataIntegrityViolationException e) {
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "El correo electronico ya esta registrado");
-
-            return "redirect:/login";
+            log.warn("Intento de registro con correo duplicado: {}", userDTO.getEmail());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse("El correo electrónico ya está registrado"));
 
         } catch (Exception e) {
-
-            log.error("Error al crear la cuenta", e);
-
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "Error al crear la cuenta");
-
-            return "redirect:/login";
+            log.error("Error al crear la cuenta para: {}", userDTO.getEmail(), e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error al crear la cuenta: " + e.getMessage()));
         }
     }
 
@@ -242,60 +268,177 @@ public class LoginController {
                 .formatted(nombre);
     }
 
+    /**
+     * Endpoint para login de usuarios
+     * Acepta JSON desde React y retorna respuesta JSON
+     */
     @PostMapping("/loginUser")
-    public String loginUser(
-            @RequestParam String email,
-            @RequestParam String password,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        log.info("Intento de login para el email: {}", loginRequest.getEmail());
+        
+        try {
+            // Validar que los datos no estén vacíos
+            if (loginRequest.getEmail() == null || loginRequest.getEmail().isBlank()) {
+                log.warn("Email vacío en el intento de login");
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ErrorResponse("El correo electrónico es requerido"));
+            }
 
-        User user = userRepository.findByEmail(email).orElse(null);
+            if (loginRequest.getPassword() == null || loginRequest.getPassword().isBlank()) {
+                log.warn("Contraseña vacía en el intento de login");
+                return ResponseEntity
+                        .badRequest()
+                        .body(new ErrorResponse("La contraseña es requerida"));
+            }
 
-        if (user == null ||
-                !passwordEncoder.matches(password, user.getPassword())) {
+            // Buscar usuario por email
+            User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
 
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    "Correo o contraseña incorrectos");
+            if (user == null) {
+                log.warn("Usuario no encontrado con email: {}", loginRequest.getEmail());
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(new ErrorResponse("Correo o contraseña incorrectos"));
+            }
 
-            return "redirect:/login";
+            // Validar contraseña
+            if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                log.warn("Contraseña incorrecta para el usuario: {}", loginRequest.getEmail());
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(new ErrorResponse("Correo o contraseña incorrectos"));
+            }
+
+            log.info("Login exitoso para el usuario: {} con rol: {}", 
+                    user.getEmail(), 
+                    user.getRole() != null ? user.getRole().getIdRole() : "sin rol");
+
+            // Guardar en sesión
+            session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("userRole", user.getRole() != null ? user.getRole().getIdRole() : null);
+
+            // Si necesita verificación SMS
+            if (user.getPhone() != null && !user.getPhone().isBlank()) {
+                session.setAttribute("pendingUser", user);
+                LoginResponse response = new LoginResponse();
+                response.setStatus("verify-sms");
+                response.setMessage("Se requiere verificación SMS");
+                return ResponseEntity.ok(response);
+            }
+
+            // Preparar respuesta exitosa
+            LoginResponse response = new LoginResponse();
+            response.setId(user.getId());
+            response.setName(user.getName());
+            response.setEmail(user.getEmail());
+            response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+            response.setStatus("success");
+            response.setMessage("Login exitoso");
+
+            // Determinar redirect según rol (1 = Admin, otros = Usuario normal)
+            if (user.getRole() != null && user.getRole().getIdRole() == 1) {
+                log.info("Redirigiendo a dashboard de administrador");
+                response.setRedirect("/admin-dashboard");
+            } else {
+                log.info("Redirigiendo a página principal");
+                response.setRedirect("/HomePage");
+            }
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Error inesperado en login para usuario: {}", loginRequest.getEmail(), e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error al iniciar sesión: " + e.getMessage()));
         }
-
-        session.setAttribute("user", user);
-
-        // Si necesitas verificación SMS
-        if (user.getPhone() != null && !user.getPhone().isBlank()) {
-            session.setAttribute("pendingUser", user);
-            return "redirect:/verificar-sms";
-        }
-
-        // Redirección según rol
-        if (user.getRole() != null && user.getRole().getIdRole() == 1) {
-            return "redirect:/DashboardAdmin";
-        }
-
-        return "redirect:/index";
     }
 
     // =========================
-    // CONFIRMAR SMS
+    // GESTIÓN DE SESIÓN
     // =========================
+    
+    /**
+     * Verificar sesión actual del usuario
+     */
+    @GetMapping("/session")
+    @ResponseBody
+    public ResponseEntity<?> checkSession(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        
+        if (user == null) {
+            log.debug("No hay sesión activa");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        log.info("Sesión activa para el usuario: {} con rol: {}", 
+                user.getEmail(), 
+                user.getRole() != null ? user.getRole().getIdRole() : "sin rol");
+
+        LoginResponse response = new LoginResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        response.setStatus("active");
+        response.setMessage("Sesión activa");
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Cerrar sesión
+     */
+    @PostMapping("/logout")
+    @ResponseBody
+    public ResponseEntity<?> logout(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        
+        if (user != null) {
+            log.info("Cerrando sesión para el usuario: {}", user.getEmail());
+        }
+        
+        session.invalidate();
+        
+        return ResponseEntity.ok(new MessageResponse("Sesión cerrada correctamente"));
+    }
+
+    /**
+     * Confirmar login después de verificación SMS
+     */
     @PostMapping("/complete-login")
+    @ResponseBody
     public ResponseEntity<?> completeLogin(HttpSession session) {
         User user = (User) session.getAttribute("pendingUser");
-        if (user == null)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No hay usuario pendiente de verificación");
+        
+        if (user == null) {
+            log.warn("Intento de completar login sin usuario pendiente");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay usuario pendiente de verificación"));
+        }
 
         session.setAttribute("user", user);
+        session.setAttribute("userId", user.getId());
+        session.setAttribute("userRole", user.getRole() != null ? user.getRole().getIdRole() : null);
         session.removeAttribute("pendingUser");
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        log.info("Login completado para usuario: {}", user.getEmail());
 
-        return ResponseEntity.ok(userDTO);
+        LoginResponse response = new LoginResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        response.setStatus("success");
+        response.setMessage("Login completado");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/redirigirPorRol")
@@ -327,15 +470,6 @@ public class LoginController {
         userDTO.setBirthDate(user.getBirthDate());
         userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
-
-    /**
-     * Metodo para cerrar sesión
-     */
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate(); // Destruir completamente la sesión
-        return "redirect:/login"; // Redirige al login
     }
 
     // Registro de nuevo administrador desde el dashboard admin
@@ -519,20 +653,191 @@ public class LoginController {
                 .formatted(nombre, nuevaContrasena);
     }
 
-    // Convertir de DTO a Entity
-    // private User convertirDTOaEntity(UserDTO userDTO) {
-    //     User user = new User();
-    //     user.setId(userDTO.getId());
-    //     user.setName(userDTO.getName());
-    //     user.setEmail(userDTO.getEmail());
-    //     user.setPassword(userDTO.getPassword());
-    //     user.setCreacionDate(userDTO.getCreacionDate());
-    //     // Crear un Role básico si es necesario
-    //     if (userDTO.getIdRole() != null) {
-    //         Role role = new Role();
-    //         role.setIdRole(userDTO.getIdRole());
-    //         user.setRole(role);
-    //     }
-    //     return user;
-    // }
+    // =========================
+    // CLASES HELPER PARA RESPUESTAS JSON
+    // =========================
+
+    /**
+     * Clase para respuestas de error
+     */
+    public static class ErrorResponse {
+        private String message;
+
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
+    /**
+     * Clase para request de login
+     */
+    public static class LoginRequest {
+        private String email;
+        private String password;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    /**
+     * Clase para respuesta de login
+     */
+    public static class LoginResponse {
+        private Long id;
+        private String name;
+        private String email;
+        private Long idRole;
+        private String status;
+        private String message;
+        private String redirect;
+
+        // Getters y Setters
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public Long getIdRole() {
+            return idRole;
+        }
+
+        public void setIdRole(Long idRole) {
+            this.idRole = idRole;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getRedirect() {
+            return redirect;
+        }
+
+        public void setRedirect(String redirect) {
+            this.redirect = redirect;
+        }
+    }
+
+    /**
+     * Clase para respuesta de registro
+     */
+    public static class UserResponse {
+        private Long id;
+        private String name;
+        private String email;
+        private Long idRole;
+        private String message;
+
+        // Getters y Setters
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public Long getIdRole() {
+            return idRole;
+        }
+
+        public void setIdRole(Long idRole) {
+            this.idRole = idRole;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
+    /**
+     * Clase para mensajes simples de respuesta
+     */
+    public static class MessageResponse {
+        private String message;
+
+        public MessageResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 }
