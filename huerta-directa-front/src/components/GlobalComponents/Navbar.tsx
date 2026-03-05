@@ -12,7 +12,7 @@ interface NavbarProp {
   showQuienesSomos?: boolean;
   showAddProduct?: boolean;
   showProfile?: boolean;
-  showCart?: boolean;  
+  showCart?: boolean;
 }
 
 export const Navbar = ({
@@ -23,84 +23,82 @@ export const Navbar = ({
   showQuienesSomos = false,
   showAddProduct = false,
   showProfile = false,
-  showCart = false, 
+  showCart = false,
 }: NavbarProp) => {
-
   const baseClasses =
-    "w-full bg-transparent px-10 py-4 flex items-center justify-between text-[15px]";
+    "max-w-330 mx-auto bg-transparent px-10 py-4 flex items-center justify-between text-[15px] dark:bg-[#1A221C] dark:from-[#1A221C] dark:via-white/20 dark:to-[#1A221C]";
 
   return (
-    <header className={`${baseClasses} ${className ?? ""} relative z-50 overflow-visible `}>
-      
-      {/* Logo */}
-      <Link
-        to="/"
-        className="text-[#8dc84b] text-[23px] font-bold tracking-wide hover:scale-105 transition  duration-500"
+    <section className="max-w-full dark:bg-[#1A221C] dark:from-[#1A221C] dark:via-white/20 dark:to-[#1A221C] ">
+      <header
+        className={`${baseClasses} ${className ?? ""} relative z-50 overflow-visible `}
       >
-        HUERTA DIRECTA
-      </Link>
+        {/* Logo */}
+        <Link
+          to="/"
+          className="text-[#8dc84b] text-[23px] font-bold tracking-wide hover:scale-105 transition  duration-500"
+        >
+          HUERTA DIRECTA
+        </Link>
 
-      {/* Navegación */}
-      <nav className="flex items-center gap-6 ">
+        {/* Navegación */}
+        <nav className="flex items-center gap-6 ">
+          {showInicio && (
+            <Link
+              to="/HomePage"
+              className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
+            >
+              Inicio
+            </Link>
+          )}
+          {showProductos && (
+            <Link
+              to="/Productos"
+              className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
+            >
+              Productos
+            </Link>
+          )}
 
-        {showInicio && (
-          <Link
-            to="/HomePage"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
-          >
-            Inicio
-          </Link>
-        )}
-         {showProductos && (
-          <Link
-            to="/Productos"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white" 
-          >
-            Productos
-          </Link>
-        )}
+          {showCategorias && (
+            <Link
+              to="/CategoryPage"
+              className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
+            >
+              Categorías
+            </Link>
+          )}
 
-        {showCategorias && (
-          <Link
-            to="/CategoryPage"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
-          >
-            Categorías
-          </Link>
-        )}
+          {showQuienesSomos && (
+            <Link
+              to="/QuienesSomos"
+              className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
+            >
+              Quiénes Somos
+            </Link>
+          )}
 
-       
+          {showAddProduct && (
+            <Button
+              text="Agrega productos"
+              to="/crear-producto"
+              iconRight={faCarrot}
+              className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2 "
+            />
+          )}
 
-        {showQuienesSomos && (
-          <Link
-            to="/QuienesSomos"
-            className="text-[#1f1f1f] font-semibold hover:text-[#5aaa37] transition duration-500 dark:text-white"
-          >
-            Quiénes Somos
-          </Link>
-        )}
+          {/* 🛒 CARRITO (nuevo) */}
+          {showCart && <CartButton />}
 
-        {showAddProduct && (
-          <Button
-            text="Agrega productos"
-            to="/crear-producto"
-            iconRight={faCarrot}
-            className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2 "
-          />
-        )}
-
-        {/* 🛒 CARRITO (nuevo) */}
-        {showCart && <CartButton />}
-
-        {showProfile && (
-          <ProfileMenu
-            userName="Productos"
-            userRole="Cliente"
-            onLogout={() => console.log("Cerrar sesión")}
-          />
-        )}
-
-      </nav>
-    </header>
+          {showProfile && (
+            <ProfileMenu
+              userName="Productos"
+              userRole="Cliente"
+              onLogout={() => console.log("Cerrar sesión")}
+            />
+          )}
+        </nav>
+      </header>
+    </section>
   );
 };

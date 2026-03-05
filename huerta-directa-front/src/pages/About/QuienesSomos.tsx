@@ -3,7 +3,7 @@ import { ForumSection } from "../../components/AboutComponents/ForumSection"
 
 const QuienesSomos = () => {
   return (
-    <div>
+    <div className="">
       <AboutSection/>
       <ForumSection comments={[]} userRole={""} />
     </div>

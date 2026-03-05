@@ -28,10 +28,10 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden transition-colors! duration-500! 
-    bg-[#FEF5DC] dark:bg-[#1A221C]"> 
+    bg-[#FEF5DC] "> 
 
       {/* Navbar centrado */}
-      <div className="w-full max-w-330 mx-auto px-4">
+      <div className="w-full max-w-full mx-auto">
         <Navbar {...navbarProps} />
       </div>
 
