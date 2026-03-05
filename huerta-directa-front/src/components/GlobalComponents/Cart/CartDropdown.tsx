@@ -56,12 +56,9 @@ export const CartDropdown = ({ open, onClose }: Props) => {
         `}
       >
         {/* HEADER */}
-        <div className="p-6 flex items-center justify-between bg-black">
-          <h2 className="text-white text-lg font-semibold uppercase tracking-wide flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faCartShopping}
-              className="text-[#8dc84b]"
-            />
+        <div className="p-6 flex items-center justify-between bg-black ">
+          <h2 className="text-white text-lg font-semibold uppercase tracking-wide flex gap-2 items-center ">
+            <FontAwesomeIcon icon={faCartShopping} className="text-[#8dc84b]" />
             <span>Tu carrito</span>
             <span className="bg-[#8dc84b] text-white ml-4 text-xs font-semibold px-3 py-1 rounded-full shadow">
               {items.length} items
@@ -77,24 +74,22 @@ export const CartDropdown = ({ open, onClose }: Props) => {
         </div>
 
         {/* CONTENIDO */}
-        <div className="overflow-y-auto h-[70%]">
-          <div className="flex justify-between px-20 py-2 border-b border-gray-400 items-center my-1 uppercase text-gray-700 font-bold">
+        <div className="overflow-y-auto h-[70%] dark:bg-[#1A221C] dark:text-white">
+          <div className="flex justify-between px-20 py-2 border-b border-gray-400 items-center my-1 uppercase text-gray-700 font-bold dark:text-white ">
             <p>Producto</p>
             <p>Cant.</p>
             <p>Total</p>
           </div>
 
-          <div className="p-6 flex flex-col gap-3">
+          <div className="p-6 flex flex-col gap-3 ">
             {items.length === 0 && (
-              <p className="text-center text-gray-400">
-                Tu carrito está vacío
-              </p>
+              <p className="text-center text-gray-400">Tu carrito está vacío</p>
             )}
 
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex justify-between items-center border border-gray-400/50 shadow rounded-xl h-20 px-3 duration-500 transition hover:bg-gray-100/70"
+                className="flex justify-between items-center border border-gray-400/50 shadow rounded-xl h-20 px-3 duration-500 transition  hover:bg-gray-100/70 dark:hover:bg-[#1A22]"
               >
                 {/* INFO */}
                 <div className="w-45 flex items-center gap-2">
@@ -106,9 +101,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
                     />
                   )}
                   <div>
-                    <p className="font-bold tracking-wide">
-                      {item.nombre}
-                    </p>
+                    <p className="font-bold tracking-wide">{item.nombre}</p>
                     <p className="text-gray-500">
                       ${item.precio.toLocaleString()} / U
                     </p>
@@ -117,11 +110,9 @@ export const CartDropdown = ({ open, onClose }: Props) => {
 
                 {/* CANTIDAD */}
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden bg-white cursor-pointer">
+                  <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden dark:text-white dark:bg-black  bg-white cursor-pointer ">
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.cantidad - 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.cantidad - 1)}
                       className="px-4 py-2 cursor-pointer"
                     >
                       -
@@ -132,9 +123,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
                     </span>
 
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.cantidad + 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.cantidad + 1)}
                       className="px-4 py-2 cursor-pointer"
                     >
                       +
@@ -160,7 +149,7 @@ export const CartDropdown = ({ open, onClose }: Props) => {
         </div>
 
         {/* FOOTER */}
-        <div className="absolute p-6 bottom-0 w-full border-t border-gray-400/50 bg-white">
+        <div className="absolute p-6 bottom-0 w-full border-t border-gray-400/50  bg-white dark:bg-[#1A221C] dark:text-white">
           <div className="flex justify-between items-center mb-2">
             <span>Subtotal:</span>
             <span className="font-semibold">

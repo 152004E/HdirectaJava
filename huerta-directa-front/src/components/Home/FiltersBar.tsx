@@ -29,34 +29,64 @@ export const FiltersBar = ({ title, icon }: FiltersBarProps) => {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-between border border-gray-300/60 p-4 shadow-lg rounded-2xl bg-white">
+      <div
+        className="
+        flex items-center justify-between
+        border border-gray-300/60 dark:border-slate-700
+        p-4
+        shadow-lg
+        rounded-2xl
+        bg-white dark:bg-[#1A221C]
+        transition-colors
+        "
+      >
         {/* LEFT SIDE */}
         <div className="flex items-center gap-4 flex-wrap flex-1">
-          <span className="text-2xl text-[#8dc84b]"> 
+          <span className="text-2xl text-[#8dc84b]">
             {icon && <FontAwesomeIcon icon={icon} />}
           </span>
+
           <h1 className="text-3xl font-bold text-[#8dc84b] whitespace-nowrap">
             {title}
           </h1>
 
+          {/* Active Filters */}
           {activeFilters.map((filter, index) => (
             <span
               key={index}
-              className="flex items-center gap-2 bg-gray-200 px-3 py-1 rounded-full text-sm"
+              className="
+              flex items-center gap-2
+              bg-gray-200 dark:bg-slate-700
+              text-gray-800 dark:text-gray-200
+              px-3 py-1
+              rounded-full
+              text-sm
+              "
             >
               {filter}
+
               <FontAwesomeIcon
                 icon={faXmark}
                 onClick={() => removeFilter(filter)}
-                className="cursor-pointer text-gray-600 hover:text-red-500"
+                className="
+                cursor-pointer
+                text-gray-600 dark:text-gray-300
+                hover:text-red-500
+                "
               />
             </span>
           ))}
 
+          {/* Clear All */}
           {activeFilters.length > 0 && (
             <button
               onClick={clearAll}
-              className="text-green-600 text-sm font-semibold hover:underline"
+              className="
+              text-green-600 dark:text-green-400
+              text-sm
+              font-semibold
+              hover:underline
+              "
             >
               Limpiar todos
             </button>
