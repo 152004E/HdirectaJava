@@ -147,6 +147,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.listarProducts(), HttpStatus.OK);
     }
 
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<ProductDTO>> listarProductsPorCategoria(@PathVariable String category) {
+        return new ResponseEntity<>(productService.listarProductsPorCategoria(category), HttpStatus.OK);
+    }
+
+    @GetMapping("/category/test")
+public String testCategory() {
+    return "FUNCIONA CATEGORY";
+}
     // Metodo para obtener un producto por su id
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> obtenerProductPorId(@PathVariable Long productId) {

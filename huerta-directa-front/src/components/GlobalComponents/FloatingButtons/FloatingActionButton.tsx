@@ -25,7 +25,7 @@ export const FloatingActionButton = ({  label, to }: Props) => {
       transition-all duration-500!
       hover:w-50
       overflow-hidden 
-      z-1000"
+      z-30"
     >
       {/* Icono */}
       <span className="absolute  transition-all duration-300 group-hover:-translate-x-15">

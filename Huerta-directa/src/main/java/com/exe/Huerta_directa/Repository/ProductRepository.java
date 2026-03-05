@@ -18,6 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameProductContainingIgnoreCase(String nameProduct);
 
     List<Product> findByCategoryIgnoreCase(String category);
+    // este es de prueba de react
+    List<Product> findByCategorySlug(String categorySlug);
 
     // Método para verificar duplicados exactos
     boolean existsByNameProductIgnoreCaseAndCategoryIgnoreCase(String nameProduct, String category);

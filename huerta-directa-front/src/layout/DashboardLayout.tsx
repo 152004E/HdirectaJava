@@ -18,9 +18,9 @@ export const DashboardLayout: React.FC = () => {
       {/* Sidebar logic extracted to component */}
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
-      {/* Main Content Area - Conditional margin on LG screens */}
-      <main className={`transition-all duration-400 ${isSidebarOpen ? "lg:ml-80" : "lg:ml-0"}`}>
-        <div className="p-4 lg:p-8">
+      {/* Main Content Area - Variable margin on MD screens following Gmail style */}
+      <main className={`transition-all duration-300 ${isSidebarOpen ? "md:ml-70" : "md:ml-0"}`}>
+        <div className="p-4 md:p-8">
           <Outlet />
         </div>
       </main>

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { FiltersBar } from "./FiltersBar";
-import ProductCard from "./ProductCard";
 import { faBoxOpen } from "@fortawesome/free-solid-svg-icons";
+import { FiltersBar } from "../../../components/Home/FiltersBar";
+import { useEffect, useState } from "react";
+import ProductCard from "../../../components/Home/ProductCard";
 
 interface Product {
   id: number;
@@ -14,7 +14,7 @@ interface Product {
   averageRating?: number;
 }
 
-export const ProductsSection = () => {
+export const ProductosPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,34 +41,26 @@ export const ProductsSection = () => {
         setLoading(false);
       });
   }, []);
-
   return (
-    <section
-      className="
-      py-16 px-10
-      bg-linear-to-b
-      from-[#FEF5DC] via-white to-[#FEF5DC]
-       dark:bg-[#1A221C]
+    <main>
+      <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]  dark:bg-[#1A221C]
       dark:from-[#1A221C]
       dark:via-white/20
-      dark:to-[#1A221C]
-    "
-    >
-      <div className="max-w-330 mx-auto">
-        <FiltersBar title="Todos Los Productos" icon={faBoxOpen} />
+      dark:to-[#1A221C]">
+        <div className="max-w-330 mx-auto">
+          <FiltersBar title="Todos Los Productos" icon={faBoxOpen} />
 
-        {loading ? (
-          <p className="text-center mt-10 text-gray-600 dark:text-gray-300">
-            Cargando productos...
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+          {loading ? (
+            <p className="text-center mt-10">Cargando productos...</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 };
