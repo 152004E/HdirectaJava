@@ -9,7 +9,6 @@ import {
   faPlateWheat,
   faGlassWater,
   faBoxOpen,
-
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -27,17 +26,28 @@ export const categories = [
 
 const CategoriesSection = () => {
   return (
-    <section 
+    <section
       id="categorias"
-      className=" py-10  bg-linear-to-b  from-[#FEF5DC] via-white to-[#FEF5DC]"
+      className="
+      py-10
+      bg-linear-to-b
+      from-[#FEF5DC] via-white to-[#FEF5DC]
+       dark:bg-[#1A221C]
+      dark:from-[#1A221C]
+      dark:via-white/20
+      dark:to-[#1A221C]
+      transition-colors
+      "
     >
       <div className="max-w-300 mx-auto grid md:grid-cols-2 gap-5 px-6">
 
         {/* Lado izquierdo */}
         <div>
-          <h1 className="text-4xl font-bold mb-6">Categorías</h1>
+          <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
+            Categorías
+          </h1>
 
-          <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+          <p className="text-gray-700 dark:text-gray-300 text-lg mb-8 leading-relaxed">
             Los productos de mejor calidad y más frescos del mercado, de la
             granja a tu mesa. Explora tu producto favorito en la categoría
             indicada y descubre los maravillosos precios que maneja el campo
@@ -46,7 +56,20 @@ const CategoriesSection = () => {
 
           <Link
             to="/QuienesSomos"
-            className="inline-block bg-[#8dc84b] text-white font-semibold px-6 py-3 rounded-lg transition-all duration-500 ease-in-out hover:bg-green-800"
+            className="
+            inline-block
+            bg-[#8dc84b]
+            text-white
+            font-semibold
+            px-6
+            py-3
+            rounded-lg
+            transition-all
+            duration-500
+            ease-in-out
+            hover:bg-green-800
+            dark:hover:bg-green-600
+            "
           >
             Saber más
           </Link>
@@ -56,13 +79,27 @@ const CategoriesSection = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
           {categories.map((category, index) => (
             <Link key={index} to={`/categoria/${category.slug}`}>
-              <div className="bg-white rounded-3xl shadow-xl p-8 text-center border border-gray-400/10 h-55 w-47 flex flex-col justify-center items-center transition-all duration-500 ease-in-out hover:-translate-y-2 hover:shadow-2xl">
-
-                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#8dc84b] mb-3  text-2xl">
+              <div
+                className="
+                bg-white dark:bg-[#1A221C]
+                rounded-3xl
+                shadow-xl
+                p-8
+                text-center
+                border border-gray-400/10 dark:border-slate-700
+                h-55 w-47
+                flex flex-col justify-center items-center
+                transition-all duration-500 ease-in-out
+                hover:-translate-y-2
+                hover:shadow-2xl
+                dark:hover:bg-[#1A22]
+                "
+              >
+                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#8dc84b] mb-3 text-2xl text-white">
                   <FontAwesomeIcon icon={category.icon} />
                 </div>
 
-                <h5 className="font-semibold text-lg">
+                <h5 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
                   {category.name}
                 </h5>
               </div>
@@ -70,7 +107,6 @@ const CategoriesSection = () => {
           ))}
         </div>
       </div>
-
     </section>
   );
 };

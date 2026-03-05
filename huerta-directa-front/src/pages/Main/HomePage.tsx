@@ -1,5 +1,3 @@
-
-
 import CategoriesSection from "../../components/Home/CategoriesSection";
 import { HeaderSection } from "../../components/Home/HeaderSection";
 import { HeroSlider } from "../../components/Home/HeroSlider";
@@ -11,14 +9,9 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 export const HomePage = () => {
   usePageTitle("Pagina Principal");
 
-
-
   return (
     <main>
       <HeaderSection />
-
-     
-
       <InformationSection />
       <OffersSection />
       <HeroSlider />

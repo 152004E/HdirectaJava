@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/logo_huerta.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>huerta-directa-front</title>
+    <script>
+      const savedTheme = localStorage.getItem("theme");
+      // Solo aplicar dark si el usuario LO ELIGIÓ explícitamente
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+      // Si no hay nada guardado, arranca en light siempre
+    </script>
   </head>
   <body>
     <div id="root"></div>

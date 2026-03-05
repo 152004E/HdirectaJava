@@ -43,6 +43,9 @@ export const CartButton = () => {
           hover:bg-[#496826]
           hover:text-white
           ${open ? "bg-[#496826] text-white scale-105" : ""}
+          dark:text-white
+          dark:bg-black
+          dark:border dark:border-white/40
         `}
       >
         <FontAwesomeIcon

@@ -41,7 +41,7 @@ const ProductCard = ({ product }: Props) => {
     addItem({
       id: product.id,
       nombre: product.name,
-      descripcion: "", 
+      descripcion: "",
       precio: product.price,
       cantidad: 1,
       subtotal: product.price,
@@ -58,11 +58,14 @@ const ProductCard = ({ product }: Props) => {
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + allImages.length) % allImages.length
+    );
   };
 
   return (
-    <div className="max-w-75 w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 group transition-transform duration-500 hover:scale-[1.007]">
+    <div className="max-w-75 w-full bg-white dark:bg-zinc-900 rounded-3xl shadow-xl overflow-hidden border border-stone-200/60 dark:border-zinc-700 group transition-transform duration-500 hover:scale-[1.007]">
+      
       {/* Imagen Slider */}
       <div className="relative h-64 overflow-hidden group/slider">
         <img
@@ -71,27 +74,31 @@ const ProductCard = ({ product }: Props) => {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* Arrows for multi-image */}
         {allImages.length > 1 && (
           <>
-            <button 
+            <button
               onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="text-xs" />
             </button>
-            <button 
+
+            <button
               onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm text-[#8bc34a] flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[#8bc34a] hover:text-white shadow-md z-10 cursor-pointer"
             >
               <FontAwesomeIcon icon={faChevronRight} className="text-xs" />
             </button>
-            
+
             <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-1 z-10">
               {allImages.map((_, idx) => (
-                <div 
-                  key={idx} 
-                  className={`h-1 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-4 bg-[#8bc34a]' : 'w-1 bg-white/60'}`} 
+                <div
+                  key={idx}
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    idx === currentImageIndex
+                      ? "w-4 bg-[#8bc34a]"
+                      : "w-1 bg-white/60 dark:bg-zinc-500"
+                  }`}
                 />
               ))}
             </div>
@@ -103,28 +110,28 @@ const ProductCard = ({ product }: Props) => {
           <Button
             text=""
             iconLetf={faHeart}
-            className="bg-white/80 backdrop-blur-md px-1 gap-0! py-1.5! rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
+            className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md px-1 gap-0! py-1.5! rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
           />
         </div>
 
         {/* Stock badge */}
         <div className="absolute bottom-4 left-4 z-10">
           {hasStock ? (
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full flex items-center gap-2 shadow text-[#8bc34a] text-xs font-semibold">
+            <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md px-3 py-1! rounded-full flex items-center gap-2 shadow text-[#8bc34a] text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-[#8bc34a] animate-pulse"></span>
               {product.stock} disponibles
             </div>
           ) : (
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-red-500 text-xs font-semibold">
+            <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-red-500 text-xs font-semibold">
               Sin stock
             </div>
           )}
         </div>
 
-        {/* Categoria badge */}
+        {/* Categoria */}
         {product.category && (
           <div className="absolute bottom-4 right-4 z-10">
-            <div className="bg-white/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-[#8bc34a] text-[10px] font-semibold uppercase tracking-wide">
+            <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md px-3 py-1! rounded-full shadow text-[#8bc34a] text-[10px] font-semibold uppercase tracking-wide">
               {product.category}
             </div>
           </div>
@@ -133,26 +140,28 @@ const ProductCard = ({ product }: Props) => {
 
       {/* Contenido */}
       <div className="px-6 py-2 space-y-1">
-        {/* Nombre + Stock */}
-        <div className="">
-          <h2 className="text-2xl font-bold text-black/80">{product.name}</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-black/80 dark:text-white">
+            {product.name}
+          </h2>
         </div>
 
-        <hr className="border-stone-100" />
+        <hr className="border-stone-100 dark:border-zinc-700" />
 
         {/* Precio + Rating */}
         <div className="flex items-end justify-between">
+          
           {/* Precio */}
           <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-stone-400">
+            <span className="text-[10px] uppercase font-bold tracking-widest text-stone-400 dark:text-zinc-400">
               Precio actual
             </span>
 
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-stone-700">
+              <span className="text-2xl font-bold text-stone-700 dark:text-white">
                 {product.price.toLocaleString()}
               </span>
-              <span className="text-[15px] font-medium text-stone-400">
+              <span className="text-[15px] font-medium text-stone-400 dark:text-zinc-400">
                 / COP
               </span>
             </div>
@@ -173,14 +182,16 @@ const ProductCard = ({ product }: Props) => {
                     text=""
                     iconLetf={faStar}
                     className={`bg-transparent! shadow-none! p-0! gap-0! ${
-                      filled ? "text-yellow-400!" : "text-gray-300!"
+                      filled
+                        ? "text-yellow-400!"
+                        : "text-gray-300! dark:text-zinc-600!"
                     }`}
                   />
                 );
               })}
             </div>
 
-            <span className="text-[12px] text-stone-400/50 font-medium italic">
+            <span className="text-[12px] text-stone-400/50 dark:text-zinc-500 font-medium italic">
               {product.reviewCount && product.reviewCount > 0
                 ? `${product.reviewCount} reseñas`
                 : "Sin reseñas aún"}
@@ -190,15 +201,16 @@ const ProductCard = ({ product }: Props) => {
 
         {/* Botones */}
         <div className="grid grid-cols-5 gap-3 py-2">
+          
           {/* Info */}
           <Button
             to={`/producto/${product.id}`}
             text=""
             iconLetf={faInfoCircle}
-            className="col-span-1 flex items-center justify-center bg-stone-300 text-stone-600 rounded-xl hover:bg-stone-200 py-2! px-2! gap-0!"
+            className="col-span-1 flex items-center justify-center bg-stone-300 dark:bg-zinc-700 text-stone-600 dark:text-zinc-200 rounded-xl hover:bg-stone-200 dark:hover:bg-zinc-600 py-2! px-2! gap-0!"
           />
 
-          {/* Principal */}
+          {/* Botón principal */}
           {isOwner ? (
             <Button
               text="Tu producto"
@@ -226,6 +238,5 @@ const ProductCard = ({ product }: Props) => {
     </div>
   );
 };
-
 
 export default ProductCard;

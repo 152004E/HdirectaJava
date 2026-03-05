@@ -6,14 +6,14 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 export const HeaderSection = () => {
 
   return (
-    <section className="max-w-300 mx-auto flex items-center py-4">
+    <section className="max-w-300 mx-auto flex items-center py-4 transition-colors! duration-500! ">
       {/* Texto */}
       <div className="flex-1">
-        <h1 className="text-[#333128] text-[55px] mb-6 leading-none">
+        <h1 className="text-[#333128] text-[55px] mb-6 leading-none dark:text-white">
           Frutas y verduras
         </h1>
 
-        <p className="text-[#333128] mb-11 text-lg">
+        <p className="text-[#333128] mb-11 text-lg dark:text-white/70">
           En Huerta Directa, te conectamos con productos campesinos frescos y de
           calidad, cosechados directamente por manos locales. Disfruta de
           alimentos 100% naturales, sin intermediarios y al mejor precio. ¡Comer

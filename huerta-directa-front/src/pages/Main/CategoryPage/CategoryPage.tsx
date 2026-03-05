@@ -1,10 +1,9 @@
-import CategoriesSection from "../../../components/Home/CategoriesSection"
+import CategoriesSection from "../../../components/Home/CategoriesSection";
 
- export const CategoryPage = () => {
+export const CategoryPage = () => {
   return (
-<main>
-    <CategoriesSection/>
-</main>
-  )
-}
-
+    <main className=""> 
+      <CategoriesSection />
+    </main>
+  );
+};

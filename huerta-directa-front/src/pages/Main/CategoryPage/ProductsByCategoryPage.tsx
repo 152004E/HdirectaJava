@@ -47,7 +47,10 @@ const ProductsByCategoryPage = () => {
   }, [slug]);
 
   return (
-    <section className="bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC] ">
+    <section className="bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]   dark:bg-[#1A221C]
+      dark:from-[#1A221C]
+      dark:via-white/20
+      dark:to-[#1A221C]" >
       <div className="pb-20 pt-10 max-w-323.75 mx-auto px-6">
        <FiltersBar title={categoryData?.name ?? ""} icon={categoryData?.icon} />
 

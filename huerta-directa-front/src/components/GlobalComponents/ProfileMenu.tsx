@@ -41,21 +41,22 @@ export const ProfileMenu = ({
       {/* Botón que despliega */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 bg-[#FEF5DC] px-3 py-2 rounded-xl shadow-md hover:scale-105 transition duration-500"
+        className="flex items-center gap-2 bg-[#FEF5DC] px-3 py-2 rounded-xl shadow-md hover:scale-105 transition duration-500 dark:text-white cursor-pointer
+          dark:bg-black dark:border dark:border-white/40"
       >
         <img src={logo} alt="Profile" className="w-9 h-9 rounded-full" />
-        <span className="text-gray-500 text-xl">
+        <span className="text-gray-500 text-xl dark:text-white">
           <FontAwesomeIcon icon={faArrowTurnDown} />
         </span>
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-4 w-60 bg-[#EBEFE5]/70 backdrop-blur-md  border border-white/30 p-4 rounded-xl shadow-lg  flex flex-col gap-3 animate-fadeIn z-[100]">
+        <div className="absolute right-0 mt-4 w-60 bg-[#EBEFE5]/70 dark:bg-[#1A221C]/60 backdrop-blur-md  border border-white/30 p-4 rounded-xl shadow-lg  flex flex-col gap-3 animate-fadeIn z-100">
           {/* Header */}
           <div className="flex flex-col items-center gap-1 border-b border-gray-300 dark:border-gray-600 pb-4">
             <img src={logo} alt="Profile" className="w-12 h-12" />
-            <b className="text-[15px] text-black">{userName}</b>
-            <small className="text-[13px] text-gray-600 dark:text-gray-400">
+            <b className="text-[15px] text-black dark:text-white uppercase">{userName}</b>
+            <small className="text-[15px] text-gray-800 dark:dark:text-white ">
               {userRole}
             </small>
           </div>

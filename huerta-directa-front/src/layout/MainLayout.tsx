@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 interface MainLayoutProps {
   navbarProps?: React.ComponentProps<typeof Navbar>;
 }
+
 const MainLayout = ({ navbarProps }: MainLayoutProps) => {
   const [showFloatingCart, setShowFloatingCart] = useState(false);
 
@@ -24,16 +25,20 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
-    <div className="min-h-screen bg-[#FEF5DC] flex flex-col overflow-x-hidden">
+    <div className="min-h-screen flex flex-col overflow-x-hidden transition-colors! duration-500! 
+    bg-[#FEF5DC] dark:bg-[#1A221C]"> 
+
       {/* Navbar centrado */}
       <div className="w-full max-w-330 mx-auto px-4">
         <Navbar {...navbarProps} />
       </div>
 
-      {/* IMPORTANTE: quitamos el max-w */}
+      {/* CONTENIDO */}
       <main className="flex-1 w-full">
         <Outlet />
+
         {/* BOTONES FLOTANTES */}
         <div className="fixed bottom-20 right-6 flex flex-col gap-4 z-30">
           <FloatingActionButton label="Quiénes Somos" to="/QuienesSomos" />
@@ -44,9 +49,10 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
         </div>
       </main>
 
-      {/* Footer FULL WIDTH */}
+      {/* Footer */}
       <Footer />
     </div>
   );
 };
+
 export default MainLayout;

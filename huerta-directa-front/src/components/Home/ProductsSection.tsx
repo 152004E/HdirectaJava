@@ -15,13 +15,12 @@ interface Product {
 }
 
 export const ProductsSection = () => {
-
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("http://localhost:8085/api/products")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data) => {
         const mappedProducts: Product[] = data.map((p: any) => ({
           id: p.idProduct,
@@ -37,26 +36,35 @@ export const ProductsSection = () => {
         setProducts(mappedProducts);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setLoading(false);
       });
   }, []);
 
   return (
-    <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]">
+    <section
+      className="
+      py-16 px-10
+      bg-linear-to-b
+      from-[#FEF5DC] via-white to-[#FEF5DC]
+       dark:bg-[#1A221C]
+      dark:from-[#1A221C]
+      dark:via-white/20
+      dark:to-[#1A221C]
+    "
+    >
       <div className="max-w-330 mx-auto">
         <FiltersBar title="Todos Los Productos" icon={faBoxOpen} />
 
         {loading ? (
-          <p className="text-center mt-10">Cargando productos...</p>
+          <p className="text-center mt-10 text-gray-600 dark:text-gray-300">
+            Cargando productos...
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 justify-items-center mt-10">
             {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
