@@ -20,6 +20,10 @@ import { AdminConfig } from "./pages/DashboardAdmin/AdminConfig";
 import { AdminRegister } from "./pages/DashboardAdmin/AdminRegister";
 import QuienesSomos from "./pages/About/QuienesSomos";
 import CategoryPage from "./pages/Main/CategoryPage/CategoryPage";
+import PaymentLayout from "./layout/PaymentLayaout.tsx";
+import CheckoutSummaryPage from "./pages/Payment/CheckoutSummaryPage.tsx";
+import MercadoPagoPayment from "./pages/Payment/MercadoPagoPayment.tsx";
+import StatusSucesfull from "./pages/Payment/StatusSucesfull.tsx";
 
 function App() {
   return (
@@ -114,7 +118,16 @@ function App() {
           <Route path="/admin/registrar" element={<AdminRegister />} />
         </Route>
 
-        {/* Layout auth */}
+
+          {/* Payment Layout */}
+          <Route element={<PaymentLayout />}>
+              <Route path="/payment/checkout" element={<CheckoutSummaryPage />} />
+              <Route path="/payment/MercadoPayment" element={<MercadoPagoPayment />} />
+              <Route path="/payment/status" element={<StatusSucesfull/>} />
+          </Route>
+
+
+          {/* Layout auth */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Login />} />

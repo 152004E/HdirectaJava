@@ -10,8 +10,9 @@ import { SecureFooter } from '../../components/Checkout/SecureFooter';
 import { useCart } from '../../hooks/useCart';
 import { usePageTitle } from '../../hooks/usePageTitle';
 
+
 export const CheckoutSummaryPage = () => {
-  usePageTitle("Checkout");
+  usePageTitle("checkout");
   const { items } = useCart();
   const navigate = useNavigate();
 
