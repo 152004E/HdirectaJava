@@ -4,7 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  envPrefix: 'VITE_', // 👈 Variable de entrno expuesta en el repositorio para cominicacion con el backend
+  envPrefix: 'VITE_',
+  preview: {
+    allowedHosts: ['upbeat-abundance-production-ff52.up.railway.app'], // 👈 agrega esto
+    host: '0.0.0.0',
+    port: 4173,
+  },
   server: {
     proxy: {
       '/api': {
