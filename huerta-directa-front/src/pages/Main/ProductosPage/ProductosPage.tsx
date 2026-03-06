@@ -43,7 +43,7 @@ export const ProductosPage = () => {
   }, []);
   return (
     <main>
-      <section className="py-16 px-10 bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]  dark:bg-[#1A221C]
+      <section className="py-16 px-10 min-h-screen bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]  dark:bg-[#1A221C]
       dark:from-[#1A221C]
       dark:via-white/20
       dark:to-[#1A221C]">
