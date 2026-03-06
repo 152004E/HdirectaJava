@@ -26,7 +26,7 @@ export const Navbar = ({
   showCart = false,
 }: NavbarProp) => {
   const baseClasses =
-    "max-w-330 mx-auto bg-transparent px-10 py-4 flex items-center justify-between text-[15px] dark:bg-[#1A221C] dark:from-[#1A221C] dark:via-white/20 dark:to-[#1A221C]";
+    "max-w-330 mx-auto bg-transparent px-10 py-4 flex items-center justify-between text-[15px] ";
 
   return (
     <section className="max-w-full dark:bg-[#1A221C] dark:from-[#1A221C] dark:via-white/20 dark:to-[#1A221C] ">
