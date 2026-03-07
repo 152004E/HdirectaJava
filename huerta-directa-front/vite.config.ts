@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   envPrefix: 'VITE_',
   preview: {
-    allowedHosts: ['upbeat-abundance-production-ff52.up.railway.app'], // 👈 agrega esto
+    allowedHosts: ['upbeat-abundance-production-ff52.up.railway.app'],
     host: '0.0.0.0',
     port: 4173,
   },
