@@ -17,7 +17,7 @@ export const AdminDashboardLayout: React.FC = () => {
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} role="admin" />
 
       {/* Main Content Area - Variable margin on MD screens following Gmail style */}
-      <main className={`transition-all duration-300 ${isSidebarOpen ? "md:ml-[280px]" : "md:ml-0 md:ml-[80px]"}`}>
+      <main className={`transition-all duration-300 ${isSidebarOpen ? "md:ml-[280px]" : "md:ml-[80px]"}`}>
         <div className="p-4 md:p-8">
           <Outlet />
         </div>

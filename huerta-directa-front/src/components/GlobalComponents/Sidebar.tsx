@@ -69,10 +69,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, role = "prod
 
       {/* Dynamic Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen bg-white z-[1040] shadow-xl transition-all duration-300 ease-in-out flex flex-col group/sidebar ${
+        className={`fixed top-0 left-0 h-screen bg-white z-[1040] shadow-xl transition-all duration-300 ease-in-out flex flex-col group/sidebar overflow-hidden ${
           isOpen 
-            ? "w-[280px]" 
-            : "w-0 md:w-[80px] md:hover:w-[280px] -translate-x-full md:translate-x-0"
+            ? "w-[280px] translate-x-0" 
+            : "w-[280px] -translate-x-full md:w-[80px] md:translate-x-0 md:hover:w-[280px]"
         }`}
       >
         {/* Toggle & Logo Section */}
