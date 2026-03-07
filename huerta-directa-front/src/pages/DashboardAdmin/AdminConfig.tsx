@@ -33,12 +33,8 @@ export const AdminConfig: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-10">
         <h1 className="text-3xl font-extrabold text-[#004d00]">Configuración Global</h1>
-        <div className="flex gap-4">
-          <Button text="Restaurar" iconLetf={faRotateLeft} className="bg-gray-200 text-gray-600 rounded-xl py-2 px-4 shadow-none hover:bg-gray-300" />
-          <Button text="Guardar Cambios" iconLetf={faSave} className="bg-[#8dc84b] text-white rounded-xl py-2 px-4" onClick={handleSave} />
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -162,6 +158,21 @@ export const AdminConfig: React.FC = () => {
             </div>
           </div>
         </section>
+      </div>
+
+      {/* Action Buttons Relocated to Bottom */}
+      <div className="flex flex-col md:flex-row justify-end gap-4 mt-12 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 shadow-sm sticky bottom-8">
+        <Button 
+          text="Restaurar Valores" 
+          iconLetf={faRotateLeft} 
+          className="bg-gray-200 text-gray-600 rounded-2xl py-4 px-8 shadow-none hover:bg-gray-300 transition-all font-bold" 
+        />
+        <Button 
+          text="Guardar Todas las Configuraciones" 
+          iconLetf={faSave} 
+          className="bg-[#8dc84b] text-white rounded-2xl py-4 px-10 shadow-xl shadow-[#8dc84b]/20 font-black" 
+          onClick={handleSave} 
+        />
       </div>
     </div>
   );
