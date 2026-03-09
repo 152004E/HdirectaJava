@@ -1,4 +1,6 @@
 // Servicio de autenticación para gestionar sesiones
+
+
 export interface User {
   id: number;
   name: string;
@@ -30,12 +32,13 @@ export interface ErrorResponse {
 
 class AuthService {
   private readonly STORAGE_KEY = 'user';
+  private readonly BASE_URL = import.meta.env.VITE_API_URL ?? ''; // Vite comuniccion con backend
 
   /**
    * Registrar nuevo usuario
    */
   async register(name: string, email: string, password: string): Promise<RegisterResponse> {
-    const response = await fetch('/api/login/register', {
+    const response = await fetch(`${this.BASE_URL}/api/login/register`, { // 👈 cambia
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -63,7 +66,7 @@ class AuthService {
    * Iniciar sesión
    */
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await fetch('/api/login/loginUser', {
+    const response = await fetch(`${this.BASE_URL}/api/login/loginUser`, { // 👈 cambia
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -94,7 +97,7 @@ class AuthService {
    */
   async logout(): Promise<void> {
     try {
-      await fetch('/api/login/logout', {
+      await fetch(`${this.BASE_URL}/api/login/logout`, { // 👈 cambia
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -110,7 +113,7 @@ class AuthService {
    */
   async checkSession(): Promise<LoginResponse | null> {
     try {
-      const response = await fetch('/api/login/session', {
+      const response = await fetch(`${this.BASE_URL}/api/login/session`, { // 👈 cambia
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
