@@ -11,7 +11,9 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ navbarProps }: MainLayoutProps) => {
-  const [showFloatingCart, setShowFloatingCart] = useState(false);
+const [showFloatingCart, setShowFloatingCart] = useState(false);
+
+  const allowCart = navbarProps?.showCart; // ← validación del carrito
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,12 +30,12 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden transition-colors! duration-500! 
-    bg-[#FEF5DC] dark:bg-[#1A221C]"> 
+    bg-[#FEF5DC] "> 
 
       {/* Navbar centrado */}
-      <div className="w-full max-w-330 mx-auto px-4">
+      <div className="w-full max-w-full mx-auto">
         <Navbar {...navbarProps} />
-      </div>
+      </div> 
 
       {/* CONTENIDO */}
       <main className="flex-1 w-full">
@@ -43,7 +45,7 @@ const MainLayout = ({ navbarProps }: MainLayoutProps) => {
         <div className="fixed bottom-20 right-6 flex flex-col gap-4 z-30">
           <FloatingActionButton label="Quiénes Somos" to="/QuienesSomos" />
 
-          {showFloatingCart && <CartButton />}
+         {allowCart && showFloatingCart && <CartButton />}
 
           <FloatingChatButton />
         </div>

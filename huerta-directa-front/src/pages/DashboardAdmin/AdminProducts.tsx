@@ -166,19 +166,19 @@ export const AdminProducts: React.FC = () => {
                     <td className="py-5 px-4">
                       <div className="flex justify-center gap-2">
                         <button 
-                          className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer"
+                          className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center"
                           title="Notificar al Autor"
                           onClick={() => handleNotifyProducer(product)}
                         >
                           <FontAwesomeIcon icon={faEye} />
                         </button>
-                        <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-green-500 hover:text-white transition-all cursor-pointer" title="Aprobar">
+                        <button className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-green-500 hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center" title="Aprobar">
                           <FontAwesomeIcon icon={faCheck} />
                         </button>
-                        <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-yellow-500 hover:text-white transition-all cursor-pointer" title="Rechazar">
+                        <button className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-yellow-500 hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center" title="Rechazar">
                           <FontAwesomeIcon icon={faBan} />
                         </button>
-                        <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer" title="Eliminar">
+                        <button className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer shadow-sm flex items-center justify-center" title="Eliminar">
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>
@@ -237,19 +237,19 @@ export const AdminProducts: React.FC = () => {
 
                 <div className="grid grid-cols-4 gap-2 mt-4">
                   <button 
-                    className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1"
+                    className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-blue-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1 shadow-sm"
                     title="Notificar al Autor"
                     onClick={() => handleNotifyProducer(product)}
                   >
                     <FontAwesomeIcon icon={faEye} />
                   </button>
-                  <button className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-green-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1" title="Aprobar">
+                  <button className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-green-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1 shadow-sm" title="Aprobar">
                     <FontAwesomeIcon icon={faCheck} />
                   </button>
-                  <button className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-yellow-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1" title="Rechazar">
+                  <button className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-yellow-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1 shadow-sm" title="Rechazar">
                     <FontAwesomeIcon icon={faBan} />
                   </button>
-                  <button className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1" title="Eliminar">
+                  <button className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all cursor-pointer flex items-center justify-center col-span-1 shadow-sm" title="Eliminar">
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </div>

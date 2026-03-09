@@ -133,13 +133,13 @@ export const AdminUsers: React.FC = () => {
             <Button 
               text="Exportar Excel" 
               iconLetf={faFileExcel} 
-              className="bg-[#8dc84b] text-white rounded-xl py-3" 
+              className="bg-[#8dc84b] text-white rounded-xl py-3 px-6 h-[46px]" 
               onClick={handleExportExcel}
             />
             <Button 
               text="Exportar PDF" 
               iconLetf={faFilePdf} 
-              className="bg-[#004d00] text-white rounded-xl py-3" 
+              className="bg-[#004d00] text-white rounded-xl py-3 px-6 h-[46px]" 
               onClick={handleExportPdf}
             />
           </div>
@@ -192,11 +192,11 @@ export const AdminUsers: React.FC = () => {
                       <div className="flex justify-center gap-2">
                         <button 
                           onClick={() => handleEditUser(user)}
-                          className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-[#004d00] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer"
+                          className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-[#004d00] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer shadow-sm"
                         >
                           <FontAwesomeIcon icon={faPen} />
                         </button>
-                        <button className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer">
+                        <button className="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer shadow-sm">
                           <FontAwesomeIcon icon={user.status === 'Active' ? faUserSlash : faUserCheck} />
                         </button>
                       </div>
@@ -251,11 +251,11 @@ export const AdminUsers: React.FC = () => {
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     <button 
                       onClick={() => handleEditUser(user)}
-                      className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-[#004d00] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1"
+                      className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-[#004d00] hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1 shadow-sm"
                     >
                       <FontAwesomeIcon icon={faPen} />
                     </button>
-                    <button className="h-10 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1">
+                    <button className="h-11 rounded-xl bg-gray-50 text-gray-400 hover:bg-red-500 hover:text-white transition-all duration-300 flex items-center justify-center cursor-pointer col-span-1 shadow-sm">
                       <FontAwesomeIcon icon={user.status === 'Active' ? faUserSlash : faUserCheck} />
                     </button>
                   </div>

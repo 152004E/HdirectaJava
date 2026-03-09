@@ -47,7 +47,7 @@ const ProductsByCategoryPage = () => {
   }, [slug]);
 
   return (
-    <section className="bg-linear-to-b from-[#FEF5DC] via-white to-[#FEF5DC]   dark:bg-[#1A221C]
+    <section className="bg-linear-to-b min-h-screen from-[#FEF5DC] via-white to-[#FEF5DC]   dark:bg-[#1A221C]
       dark:from-[#1A221C]
       dark:via-white/20
       dark:to-[#1A221C]" >

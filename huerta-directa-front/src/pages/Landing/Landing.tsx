@@ -6,11 +6,11 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 export const Landing = () => {
   usePageTitle("Invitación ");
   return (
-    <main className=" h-screen-  font-sans text-[18px] relative">
+    <main className="  m-h-screen  font-sans text-[18px] relative dark:bg-[#1A221C]">
       <Background />
 
       {/* Sección Invitación */}
-      <section className="text-center w-full flex flex-col items-center justify-center px-6 py-24 ">
+      <section className="text-center w-full flex flex-col items-center justify-center  py-24  ">
         <div className="max-w-200 mx-auto">
           <img
             src={logo}
@@ -32,9 +32,6 @@ export const Landing = () => {
             text={"Registrarse"}
             className="inline-block bg-[#78d64b] text-white font-bold py-4 px-10 rounded-full text-[1.1rem] uppercase tracking-[1px] transition-all duration-500 hover:bg-[#5aaa37] hover:scale-105 hover:shadow-lg no-underline"
           />
-
- 
-
         </div>
       </section>
     </main>
