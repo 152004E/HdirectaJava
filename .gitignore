@@ -5,6 +5,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Vite cache
+huerta-directa-front/.vite/
+
+# Frontend dependencies
+huerta-directa-front/node_modules/
+
+# Frontend build
+huerta-directa-front/dist/
+
 # Logs
 logs/
 *.log
