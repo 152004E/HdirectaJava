@@ -181,8 +181,8 @@ const Login: React.FC = () => {
 
               <PasswordInput
                 name="password"
-                value={registerData.password}
-                onChange={handleRegisterChange}
+                value={loginData.password}
+                onChange={handleLoginChange}
                 placeholder="Contraseña"
                 required
               />
@@ -195,13 +195,7 @@ const Login: React.FC = () => {
               ¿Olvidaste tu contraseña?
             </a>
 
-            <Button
-              iconRight={faArrowRight}
-              to="/HomePage"
-              text="Ingresar"
-              className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500"
-              type="submit"
-            />
+            <Button iconRight={faArrowRight} text="Ingresar" type="submit" />
           </form>
         </div>
 
