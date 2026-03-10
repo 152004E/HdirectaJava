@@ -67,8 +67,15 @@ target/
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
 
-# Spring Boot application config (ruta exacta)
-Huerta-directa/src/main/resources/application.ymlHuerta-directa/src/main/resources/application.properties
+# Spring Boot application config
+# ===== SPRING BOOT CONFIG =====
+Huerta-directa/src/main/resources/application.yml
+
+# Configuración local (contiene contraseñas de desarrollo)
+Huerta-directa/src/main/resources/application-dev.properties
+
+# Credenciales privadas de Firebase
+Huerta-directa/src/main/resources/firebase-service-account.json
 
 
 # Tailwind CSS - archivo generado
