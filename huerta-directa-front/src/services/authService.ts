@@ -41,6 +41,7 @@ class AuthService {
     const response = await fetch(`${this.BASE_URL}/api/login/register`, { // 👈 cambia
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+       credentials: "include",
       body: JSON.stringify({ name, email, password }),
     });
 
@@ -69,6 +70,7 @@ class AuthService {
     const response = await fetch(`${this.BASE_URL}/api/login/loginUser`, { // 👈 cambia
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+       credentials: "include",
       body: JSON.stringify({ email, password }),
     });
 
@@ -100,6 +102,7 @@ class AuthService {
       await fetch(`${this.BASE_URL}/api/login/logout`, { // 👈 cambia
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+         credentials: "include",
       });
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
@@ -116,6 +119,7 @@ class AuthService {
       const response = await fetch(`${this.BASE_URL}/api/login/session`, { // 👈 cambia
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
+         credentials: "include",
       });
 
       if (!response.ok) {

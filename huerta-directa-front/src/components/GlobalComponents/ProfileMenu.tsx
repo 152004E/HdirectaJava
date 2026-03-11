@@ -10,17 +10,39 @@ import { Button } from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ThemeToggle } from "./ThemeToggle";
 
-interface ProfileMenuProps {
-  userName?: string;
-  userRole?: string;
-  onLogout?: () => void;
-}
 
-export const ProfileMenu = ({
-  userName = "Usuario",
-  userRole = "Cliente",
-  onLogout,
-}: ProfileMenuProps) => {
+export const ProfileMenu = () => {
+  {
+    /* para que se vea la sesion  */
+  }
+  const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:8085/api/login/current", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("No session");
+        return res.json();
+      })
+      .then((data) => {
+        setUserName(data.name);
+
+        if (data.idRole === 1) {
+          setUserRole("Administrador");
+        } else {
+          setUserRole("Cliente");
+        }
+      })
+      .catch(() => {
+        console.log("No hay sesión");
+      });
+  }, []);
+  {
+    /* para que se vea la sesion  */
+  }
+
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +57,18 @@ export const ProfileMenu = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  const handleLogout = async () => {
+  try {
+    await fetch("http://localhost:8085/api/login/logout", {
+      method: "POST",
+      credentials: "include"
+    });
+
+    window.location.href = "/login";
+  } catch (error) {
+    console.error("Error cerrando sesión");
+  }
+};
 
   return (
     <div className="relative" ref={menuRef}>
@@ -55,7 +89,9 @@ export const ProfileMenu = ({
           {/* Header */}
           <div className="flex flex-col items-center gap-1 border-b border-gray-300 dark:border-gray-600 pb-4">
             <img src={logo} alt="Profile" className="w-12 h-12" />
-            <b className="text-[15px] text-black dark:text-white uppercase">{userName}</b>
+            <b className="text-[15px] text-black dark:text-white uppercase">
+              {userName}
+            </b>
             <small className="text-[15px] text-gray-800 dark:dark:text-white ">
               {userRole}
             </small>
@@ -71,7 +107,7 @@ export const ProfileMenu = ({
             />
 
             <Button
-            //validacion de roles para el dashboard 
+              //validacion de roles para el dashboard
               //text="DashBoard"
               //to={userRole === "Administrador" || userRole === "Administrador Global" ? "/admin-dashboard" : "/dashboard"}
               text="DashBoard"
@@ -85,7 +121,7 @@ export const ProfileMenu = ({
           <Button
             text="Cerrar Sesión"
             iconRight={faRightFromBracket}
-            onClick={onLogout}
+            onClick={handleLogout}
             className="w-full bg-[#d6031f] hover:bg-[#df707f] rounded-xl py-2"
           />
 

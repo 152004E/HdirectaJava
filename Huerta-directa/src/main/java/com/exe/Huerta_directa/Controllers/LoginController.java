@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("/api/login")
-@CrossOrigin("*")
+
 public class LoginController {
 
     private final UserService userService;
