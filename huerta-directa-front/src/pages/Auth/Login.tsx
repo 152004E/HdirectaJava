@@ -195,7 +195,7 @@ const Login: React.FC = () => {
               ¿Olvidaste tu contraseña?
             </a>
 
-            <Button iconRight={faArrowRight} text="Ingresar" type="submit" />
+            <Button iconRight={faArrowRight} text="Ingresar" type="submit"   className="bg-transparent border border-white text-white py-3 px-8 rounded-[15px] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500 hover:bg-white hover:text-[#8dc84b]" />
           </form>
         </div>
 
@@ -211,7 +211,7 @@ const Login: React.FC = () => {
                 text="Iniciar Sesión"
                 iconRight={faRightToBracket}
                 onClick={() => setIsActive(false)}
-                className="bg-transparent border border-white text-white py-3 px-8 rounded-[15px] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500 hover:bg-white hover:text-[#8dc84b]"
+                className="bg-transparent border border-white text-white py-3! px-8! rounded-[15px] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500 hover:bg-white hover:text-[#8dc84b]"
               />
             </div>
 
