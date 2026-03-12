@@ -32,7 +32,7 @@ export const ProfileMenu = () => {
         if (data.idRole === 1) {
           setUserRole("Administrador");
         } else {
-          setUserRole("Cliente");
+          setUserRole("Usuario");
         }
       })
       .catch(() => {

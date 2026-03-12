@@ -90,13 +90,7 @@ export const Navbar = ({
           {/* 🛒 CARRITO (nuevo) */}
           {showCart && <CartButton />}
 
-          {showProfile && (
-            <ProfileMenu
-              userName="Productos"
-              userRole="Cliente"
-              onLogout={() => console.log("Cerrar sesión")}
-            />
-          )}
+          {showProfile && <ProfileMenu />}
         </nav>
       </header>
     </section>
