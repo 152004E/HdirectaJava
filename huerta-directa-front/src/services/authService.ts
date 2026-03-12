@@ -146,6 +146,7 @@ class AuthService {
       });
 
       if (!response.ok) {
+        this.clearUser();
         return null;
       }
 
@@ -162,6 +163,7 @@ class AuthService {
       return data;
     } catch (error) {
       console.error('Error al verificar sesión:', error);
+      this.clearUser();
       return null;
     }
   }
