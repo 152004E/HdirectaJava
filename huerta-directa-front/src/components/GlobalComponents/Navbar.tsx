@@ -81,7 +81,7 @@ export const Navbar = ({
           {showAddProduct && (
             <Button 
               text="Agrega productos"
-              to="/crear-producto"
+              to="/DashBoardAgregarProducto"
               iconRight={faCarrot}
               className="bg-[#78d64b] hover:bg-[#5aaa37] rounded-lg px-5 py-2 "
             />
