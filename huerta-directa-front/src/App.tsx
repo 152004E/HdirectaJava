@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Auth/Login";
+import ForgotPassword from "./pages/Auth/ForgotPassword";
 import AuthLayout from "./layout/AuthLayout";
 import MainLayout from "./layout/MainLayout";
 import DashboardLayout from "./layout/DashboardLayout";
@@ -184,6 +185,7 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
 
           {/* Payment Layout */}
@@ -192,13 +194,6 @@ function App() {
               <Route path="/payment/MercadoPayment" element={<MercadoPagoPayment />} />
               <Route path="/payment/status" element={<StatusSucesfull/>} />
           </Route>
-
-
-          {/* Layout auth */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Login />} />
-        </Route>
 
           {/* Ruta comodín */}
           <Route path="*" element={<Navigate to="/HomePage" />} />

@@ -56,6 +56,7 @@ public class LoginController {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", EMAIL_HOST);
         props.put("mail.smtp.port", EMAIL_PORT);
+        props.put("mail.smtp.ssl.trust", EMAIL_HOST);
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
@@ -488,30 +489,36 @@ public class LoginController {
     }
 
     @PostMapping("/forgot-password")
-    public String solicitarRecuperacionContrasena(@RequestParam String email, RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> solicitarRecuperacionContrasena(@RequestBody ForgotPasswordRequest request) {
         try {
+            if (request.getEmail() == null || request.getEmail().isBlank()) {
+                return ResponseEntity.badRequest().body(new ErrorResponse("El correo electrónico es requerido"));
+            }
+
+            String email = request.getEmail().trim();
             User user = userRepository.findByEmail(email).orElse(null);
             if (user == null) {
-                // Por seguridad, no revelamos si el email existe o no, pero mostramos el mismo
-                // mensaje
-                redirectAttributes.addFlashAttribute("success",
-                        "Si el correo existe, recibiras tu nueva contraseña en unos minutos");
-                return "redirect:/forgot-password";
+                return ResponseEntity.ok(
+                        new MessageResponse("Si el correo existe, recibiras tu nueva contraseña en unos minutos"));
             }
-            // Generar nueva contraseña aleatoria
+
             String nuevaContrasena = generarContrasenaAleatoria();
-            // Se hashea la nueva contraseña antes de guardarla
+            enviarCorreoNuevaContrasena(user.getName(), email, nuevaContrasena);
+
             user.setPassword(passwordEncoder.encode(nuevaContrasena));
             userRepository.save(user);
-            // Enviar correo con la nueva contraseÃ±a
-            enviarCorreoNuevaContrasena(user.getName(), email, nuevaContrasena);
-            redirectAttributes.addFlashAttribute("success",
-                    "Si el correo existe, recibiras tu nueva contraseña en unos minutos");
-            return "redirect:/forgot-password";
+
+            return ResponseEntity.ok(
+                    new MessageResponse("Si el correo existe, recibiras tu nueva contraseña en unos minutos"));
+        } catch (MessagingException e) {
+            log.error("No se pudo enviar el correo de recuperación para: {}", request.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new ErrorResponse("No pudimos enviar el correo de recuperación en este momento. Intenta de nuevo más tarde."));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Error al procesar la solicitud. Por favor, intenta nuevamente");
-            return "redirect:/forgot-password";
+            log.error("Error al procesar recuperación de contraseña para: {}", request.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error al procesar la solicitud. Por favor, intenta nuevamente"));
         }
     }
 
@@ -673,6 +680,18 @@ public class LoginController {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+    }
+
+    public static class ForgotPasswordRequest {
+        private String email;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
     }
 
