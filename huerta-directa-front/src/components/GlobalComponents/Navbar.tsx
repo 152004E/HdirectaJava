@@ -79,7 +79,7 @@ export const Navbar = ({
           )}
 
           {showAddProduct && (
-            <Button
+            <Button 
               text="Agrega productos"
               to="/crear-producto"
               iconRight={faCarrot}

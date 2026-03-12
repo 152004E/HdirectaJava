@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { API_URL } from "../../config/api";
 import {
   faUser,
   faRightFromBracket,
@@ -10,7 +11,6 @@ import { Button } from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ThemeToggle } from "./ThemeToggle";
 
-
 export const ProfileMenu = () => {
   {
     /* para que se vea la sesion  */
@@ -19,7 +19,7 @@ export const ProfileMenu = () => {
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8085/api/login/current", {
+    fetch(`${API_URL}/api/login/current`, {
       credentials: "include",
     })
       .then((res) => {
@@ -58,17 +58,17 @@ export const ProfileMenu = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   const handleLogout = async () => {
-  try {
-    await fetch("http://localhost:8085/api/login/logout", {
-      method: "POST",
-      credentials: "include"
-    });
+    try {
+      await fetch(`${API_URL}/api/login/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
 
-    window.location.href = "/login";
-  } catch (error) {
-    console.error("Error cerrando sesión");
-  }
-};
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Error cerrando sesión");
+    }
+  };
 
   return (
     <div className="relative" ref={menuRef}>
