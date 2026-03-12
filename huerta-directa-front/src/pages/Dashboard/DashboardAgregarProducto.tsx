@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createProduct } from "../../services/productService";
 import {
   faBoxOpen,
   faCloudArrowUp,
@@ -11,6 +12,50 @@ import { Button } from "../../components/GlobalComponents/Button";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 export const DashboardAgregarProducto: React.FC = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const form = new FormData();
+
+      form.append("nombre", formData.name);
+      form.append("precio", formData.price);
+      form.append("unidad", "unidad");
+      form.append("categoria-producto", formData.category);
+      form.append("descripcion", formData.description);
+      form.append("stock", formData.stock);
+
+      // imagen principal
+      if (images.length > 0) {
+        form.append("image_product", images[0].file);
+      }
+
+      // imágenes adicionales
+      images.slice(1).forEach((img) => {
+        form.append("additional_images", img.file);
+      });
+
+      const result = await createProduct(form);
+
+      console.log("Producto creado:", result);
+
+      alert("Producto publicado correctamente");
+
+      // limpiar formulario
+      setFormData({
+        name: "",
+        price: "",
+        category: "Frutas",
+        description: "",
+        stock: "",
+      });
+
+      setImages([]);
+      setCurrentImageIndex(0);
+    } catch (error: any) {
+      alert(error.message || "Error al crear el producto");
+    }
+  };
   usePageTitle("Agregar Producto");
 
   const [formData, setFormData] = useState({
@@ -100,7 +145,7 @@ export const DashboardAgregarProducto: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* FORMULARIO */}
         <div className="xl:col-span-2 bg-white dark:bg-[#1A221C] p-8 md:p-10 rounded-4xl shadow-sm border border-gray-100 dark:border-slate-700">
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex flex-col gap-2">
               <label className="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-widest text-xs">
                 Nombre del Producto
@@ -110,7 +155,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all dark:text-white"
+                className="p-4 bg-gray-50 transition-all duration-500 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b]  dark:text-white"
                 placeholder="Ej: Tomate Orgánico"
               />
             </div>
@@ -124,7 +169,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all dark:text-white"
+                className="p-4 bg-gray-50 duration-500  dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all dark:text-white"
                 placeholder="0"
               />
             </div>
@@ -137,7 +182,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all appearance-none cursor-pointer dark:text-white"
+                className="p-4 bg-gray-50 duration-500 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all appearance-none cursor-pointer dark:text-white"
               >
                 <option value="Frutas">Frutas</option>
                 <option value="Verduras y Hortalizas">
@@ -164,7 +209,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 name="stock"
                 value={formData.stock}
                 onChange={handleChange}
-                className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all dark:text-white"
+                className="p-4 bg-gray-50 duration-500 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all dark:text-white"
                 placeholder="0"
               />
             </div>
@@ -178,7 +223,7 @@ export const DashboardAgregarProducto: React.FC = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all resize-none dark:text-white"
+                className="p-4 bg-gray-50 duration-500 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] transition-all resize-none dark:text-white"
                 placeholder="Describe tu producto..."
               ></textarea>
             </div>
@@ -189,7 +234,7 @@ export const DashboardAgregarProducto: React.FC = () => {
               </label>
 
               <label
-                className={`w-full ${images.length > 0 ? "min-h-30 p-6" : "h-48"} border-4 border-dashed border-gray-100 dark:border-slate-700 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group relative ${images.length >= 5 ? "opacity-50 cursor-not-allowed" : "hover:border-[#8dc84b] hover:bg-green-50/30 dark:hover:bg-[#111712]"}`}
+                className={`w-full ${images.length > 0 ? "min-h-30 p-6" : "h-48"} border-4 border-dashed border-gray-100 dark:border-slate-700 rounded-3xl flex flex-col items-center justify-center gap-4 transition-all duration-500 cursor-pointer group relative ${images.length >= 5 ? "opacity-50 cursor-not-allowed" : "hover:border-[#8dc84b] hover:bg-green-50/30 dark:hover:bg-[#111712]"}`}
               >
                 <input
                   type="file"
@@ -234,6 +279,7 @@ export const DashboardAgregarProducto: React.FC = () => {
             <div className="md:col-span-2 pt-4">
               <Button
                 text="Publicar Producto"
+                  type="submit"
                 iconLetf={faCloudArrowUp}
                 className="w-full py-5 rounded-2xl shadow-xl shadow-[#8dc84b]/20 bg-[#8dc84b] text-white font-black text-lg"
               />
