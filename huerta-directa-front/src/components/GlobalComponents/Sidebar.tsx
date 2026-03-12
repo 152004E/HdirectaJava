@@ -102,6 +102,7 @@ const AdminSidebarContent: React.FC<{ isOpen: boolean; onToggle: () => void }> =
     { label: "Estadísticas Globales", icon: faChartPie, link: "/admin/stats" },
     { label: "Gestión de Usuarios", icon: faUsers, link: "/admin/usuarios" },
     { label: "Gestión de Productos", icon: faBoxesStacked, link: "/admin/productos" },
+    { label: "Agregar Producto", icon: faBoxesStacked, link: "/DashBoardAgregarProducto" },
     { label: "Reportes de Ventas", icon: faFileContract, link: "/admin/reportes" },
     { label: "Configuración", icon: faGear, link: "/admin/config" },
     { label: "Registrar Admin", icon: faUserPlus, link: "/admin/registrar" },
