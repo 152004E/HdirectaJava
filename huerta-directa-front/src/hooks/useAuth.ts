@@ -82,7 +82,7 @@ export const useAuth = () => {
         } else if (response.idRole === 1) {
           navigate("/admin-dashboard");
         } else {
-          navigate("/HomePage");
+          navigate("/dashboard");
         }
       }, 1000);
     } catch (err: any) {
