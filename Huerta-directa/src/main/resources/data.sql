@@ -5,7 +5,7 @@ INSERT INTO roles (rol_name)
 SELECT 'VENDEDOR' WHERE NOT EXISTS (SELECT 1 FROM roles WHERE rol_name = 'VENDEDOR');
 
 INSERT INTO users (email, name, password, role_id, creacion_date)
-SELECT 'admin@huertadirecta.com', 'Administrador Principal',
+SELECT 'jjpp142007@gmail.com', 'Administrador Principal',
        '$2a$10$N.zmdr9zkMmazpVn3SE5muBRrTRCPmVQJFuiaCvTECGT2NqUo6pBC',
        (SELECT id_rol FROM roles WHERE rol_name = 'ADMIN'),
        CURRENT_DATE
