@@ -6,7 +6,7 @@ export const useProductForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    category: "Frutas",
+    category: "",
     description: "",
     stock: "",
   });

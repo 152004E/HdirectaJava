@@ -49,7 +49,7 @@ export const DashboardAgregarProducto: React.FC = () => {
       setFormData({
         name: "",
         price: "",
-        category: "Frutas",
+        category: "",
         description: "",
         stock: "",
       });
