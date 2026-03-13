@@ -92,9 +92,7 @@ export const Navbar = ({
 
           {showProfile && (
             <ProfileMenu
-              userName="Productos"
-              userRole="Cliente"
-              onLogout={() => console.log("Cerrar sesión")}
+              // props conflict to DashboardHeader
             />
           )}
         </nav>

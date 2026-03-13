@@ -22,7 +22,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:5173","https://hdirectajava-production.up.railway.app") // aca debe ir la url del fornt (jesus)
+                .allowedOriginPatterns(
+                        "http://localhost:5173",
+                        "https://upbeat-abundance-production-ff52.up.railway.app"
+                )
+                // aca debe ir la url del fornt (jesus)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
