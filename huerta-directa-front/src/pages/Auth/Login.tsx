@@ -195,7 +195,7 @@ const Login: React.FC = () => {
               ¿Olvidaste tu contraseña?
             </a>
 
-            <Button iconRight={faArrowRight} text="Ingresar" type="submit"   className="bg-transparent border border-white text-white py-3 px-8 rounded-[15px] font-semibold uppercase text-xs tracking-wider cursor-pointer transition-all duration-500 hover:bg-white hover:text-[#8dc84b]" />
+            <Button iconRight={faArrowRight} text="Ingresar" type="submit"  className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] transition-all duration-500 mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer" />
           </form>
         </div>
 

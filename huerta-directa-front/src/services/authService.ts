@@ -26,6 +26,10 @@ export interface RegisterResponse {
   message: string;
 }
 
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
 export interface ErrorResponse {
   message: string;
 }
@@ -67,7 +71,7 @@ class AuthService {
    * Iniciar sesión
    */
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await fetch(`${this.BASE_URL}/api/login/loginUser`, { // 👈 cambia
+    const response = await fetch(`${this.BASE_URL}/api/login/loginUser`, { 
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
        credentials: "include",
@@ -92,6 +96,25 @@ class AuthService {
     }
 
     return data;
+  }
+
+  /**
+   * Solicitar recuperación de contraseña
+   */
+  async forgotPassword(email: string): Promise<ForgotPasswordResponse> {
+    const response = await fetch(`${this.BASE_URL}/api/login/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const error: ErrorResponse = await response.json();
+      throw new Error(error.message || 'Error al procesar la recuperación');
+    }
+
+    return (await response.json()) as ForgotPasswordResponse;
   }
 
   /**
@@ -123,6 +146,7 @@ class AuthService {
       });
 
       if (!response.ok) {
+        this.clearUser();
         return null;
       }
 
@@ -139,6 +163,7 @@ class AuthService {
       return data;
     } catch (error) {
       console.error('Error al verificar sesión:', error);
+      this.clearUser();
       return null;
     }
   }
