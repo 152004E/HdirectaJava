@@ -15,7 +15,7 @@ interface ProductFormProps {
   handleChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => void;
 
   handleSubmit: (e: React.FormEvent) => void;
@@ -49,6 +49,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           Nombre del Producto
         </label>
         <input
+          required
           type="text"
           name="name"
           value={formData.name}
@@ -64,6 +65,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           Precio (COP)
         </label>
         <input
+          required
           type="number"
           name="price"
           value={formData.price}
@@ -79,6 +81,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           Categoría
         </label>
         <select
+          required
           name="category"
           value={formData.category}
           onChange={handleChange}
@@ -117,6 +120,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           Descripción
         </label>
         <textarea
+          required
           rows={4}
           name="description"
           value={formData.description}
@@ -131,8 +135,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           Imágenes del Producto ({images.length}/5)
         </label>
 
-        <label className="w-full h-48 border-4 border-dashed border-gray-100 dark:border-slate-700 rounded-3xl flex flex-col items-center justify-center gap-4 cursor-pointer group">
+        <label className="w-full h-48 border-4 border-dashed border-gray-100 dark:border-slate-700 rounded-3xl flex flex-col items-center justify-center gap-4 cursor-pointer group relative transition-all duration-500 hover:border-[#8dc84b] hover:bg-green-50/30 dark:hover:bg-[#111712]">
           <input
+            required
             type="file"
             accept="image/*"
             multiple
@@ -145,7 +150,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             className="text-4xl text-gray-300 group-hover:text-[#8dc84b]"
           />
 
-          <p className="text-gray-400 font-bold">
+          <p className="text-gray-400 dark:text-white font-bold">
             Cargar imágenes (Máx 5)
           </p>
         </label>
@@ -155,13 +160,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             {images.map((img, index) => (
               <li
                 key={index}
-                className="flex justify-between items-center bg-white dark:bg-[#222b24] p-3 rounded-xl"
+                className="flex justify-between items-center dark:text-white bg-white dark:bg-[#222b24] p-3 rounded-xl"
               >
                 <span className="text-sm truncate">{img.file.name}</span>
 
                 <button
                   onClick={() => removeImage(index)}
-                  className="text-red-400 text-xs font-bold"
+                  className="text-red-400 text-xs font-bold cursor-pointer"
                 >
                   Eliminar
                 </button>
