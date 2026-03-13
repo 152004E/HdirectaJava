@@ -87,15 +87,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           onChange={handleChange}
           className="p-4 bg-gray-50 dark:bg-[#222b24] border-2 border-gray-100 dark:border-slate-700 rounded-2xl outline-none focus:border-[#8dc84b] dark:text-white"
         >
-          <option value="Frutas">Frutas</option>
-          <option value="Verduras y Hortalizas">Verduras y Hortalizas</option>
-          <option value="Lácteos">Lácteos</option>
-          <option value="Carnes y Proteinas">Carnes y Proteinas</option>
-          <option value="Cereales y Granos">Cereales y Granos</option>
-          <option value="Productos Orgánicos">Productos Orgánicos</option>
-          <option value="Miel y Derivados">Miel y Derivados</option>
-          <option value="Bebidas naturales">Bebidas naturales</option>
-          <option value="Cajas mixtas y combos">Cajas mixtas y combos</option>
+          <option value="" disabled>Escoge una categoría</option>
+          <option value="frutas">Frutas</option>
+          <option value="verduras-hortalizas">Verduras y hortalizas</option>
+          <option value="lacteos">Lácteos</option>
+          <option value="carnes-y-proteinas">Carnes y proteínas</option>
+          <option value="cereales-y-granos">Cereales y granos</option>
+          <option value="productos-organicos">Productos orgánicos</option>
+          <option value="miel-y-derivados">Miel y derivados</option>
+          <option value="bebidas-naturales">Bebidas naturales</option>
+          <option value="cajas-combos">Cajas mixtas o combos</option>
         </select>
       </div>
 
