@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Properties;
 import java.util.Random;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,8 @@ public class LoginController {
     private static final String EMAIL_HOST = "smtp.gmail.com";
     private static final String EMAIL_PORT = "587";
     private static final String SENDER_EMAIL = "hdirecta@gmail.com";
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^\\d{10}$");
+    private static final Pattern ADDRESS_PATTERN = Pattern.compile("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s#.,\\-_/()]+$");
     // Nota: la contraseña de aplicación idealmente debe guardarse en
     // properties/secret manager
     private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
@@ -467,10 +470,141 @@ public class LoginController {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setPhone(user.getPhone());
+        userDTO.setAddress(user.getAddress());
         userDTO.setGender(user.getGender());
         userDTO.setBirthDate(user.getBirthDate());
         userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
+    /**
+     * Obtener perfil del usuario autenticado según su sesión actual
+     */
+    @GetMapping("/profile")
+    @ResponseBody
+    public ResponseEntity<?> getProfile(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        ProfileResponse response = new ProfileResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        response.setPhone(user.getPhone());
+        response.setAddress(user.getAddress());
+        response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Actualizar datos del perfil del usuario autenticado
+     */
+    @PutMapping("/profile")
+    @ResponseBody
+    public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileRequest request, HttpSession session) {
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        if (request.getName() == null || request.getName().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El nombre es obligatorio"));
+        }
+
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El correo electrónico es obligatorio"));
+        }
+
+        if (request.getPhone() == null || request.getPhone().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El número de teléfono es obligatorio"));
+        }
+
+        String normalizedPhone = request.getPhone().trim();
+        if (!PHONE_PATTERN.matcher(normalizedPhone).matches()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El teléfono debe tener exactamente 10 dígitos numéricos"));
+        }
+
+        if (request.getAddress() == null || request.getAddress().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("La dirección es obligatoria"));
+        }
+
+        String normalizedAddress = request.getAddress().trim();
+        if (!ADDRESS_PATTERN.matcher(normalizedAddress).matches()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(
+                    "La dirección contiene caracteres no permitidos. Usa letras, números y símbolos como # . , - /"));
+        }
+
+        String normalizedEmail = request.getEmail().trim().toLowerCase();
+        User existingByEmail = userRepository.findByEmail(normalizedEmail).orElse(null);
+        if (existingByEmail != null && !existingByEmail.getId().equals(sessionUser.getId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse("Ese correo electrónico ya está en uso"));
+        }
+
+        sessionUser.setName(request.getName().trim());
+        sessionUser.setEmail(normalizedEmail);
+        sessionUser.setPhone(normalizedPhone);
+        sessionUser.setAddress(normalizedAddress);
+
+        User savedUser = userRepository.save(sessionUser);
+        session.setAttribute("user", savedUser);
+
+        ProfileResponse response = new ProfileResponse();
+        response.setId(savedUser.getId());
+        response.setName(savedUser.getName());
+        response.setEmail(savedUser.getEmail());
+        response.setPhone(savedUser.getPhone());
+        response.setAddress(savedUser.getAddress());
+        response.setIdRole(savedUser.getRole() != null ? savedUser.getRole().getIdRole() : null);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Cambiar contraseña del usuario autenticado
+     */
+    @PostMapping("/change-password")
+    @ResponseBody
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, HttpSession session) {
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("La contraseña actual es obligatoria"));
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().isBlank()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("La nueva contraseña es obligatoria"));
+        }
+
+        if (request.getNewPassword().trim().length() < 6) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("La nueva contraseña debe tener mínimo 6 caracteres"));
+        }
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), sessionUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("La contraseña actual no es correcta"));
+        }
+
+        sessionUser.setPassword(passwordEncoder.encode(request.getNewPassword().trim()));
+        userRepository.save(sessionUser);
+
+        return ResponseEntity.ok(new MessageResponse("Contraseña actualizada correctamente"));
     }
 
     // Registro de nuevo administrador desde el dashboard admin
@@ -695,6 +829,66 @@ public class LoginController {
         }
     }
 
+    public static class UpdateProfileRequest {
+        private String name;
+        private String email;
+        private String phone;
+        private String address;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
+
+    public static class ChangePasswordRequest {
+        private String currentPassword;
+        private String newPassword;
+
+        public String getCurrentPassword() {
+            return currentPassword;
+        }
+
+        public void setCurrentPassword(String currentPassword) {
+            this.currentPassword = currentPassword;
+        }
+
+        public String getNewPassword() {
+            return newPassword;
+        }
+
+        public void setNewPassword(String newPassword) {
+            this.newPassword = newPassword;
+        }
+    }
+
     /**
      * Clase para request de login
      */
@@ -838,6 +1032,63 @@ public class LoginController {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+    }
+
+    public static class ProfileResponse {
+        private Long id;
+        private String name;
+        private String email;
+        private String phone;
+        private String address;
+        private Long idRole;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public Long getIdRole() {
+            return idRole;
+        }
+
+        public void setIdRole(Long idRole) {
+            this.idRole = idRole;
         }
     }
 
