@@ -63,6 +63,16 @@ public class User {
     @lombok.EqualsAndHashCode.Exclude
     private Set<Product> products;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_favorites",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    @lombok.ToString.Exclude
+    @lombok.EqualsAndHashCode.Exclude
+    private Set<Product> favoriteProducts = new java.util.HashSet<>();
+
     // Metodo para calcular la edad
     public Integer getAge() {
         if (birthDate == null) {

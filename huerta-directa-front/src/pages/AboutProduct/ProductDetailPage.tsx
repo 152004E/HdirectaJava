@@ -15,6 +15,8 @@ import { Button } from "../../components/GlobalComponents/Button";
 import { useCart } from "../../hooks/useCart";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import ProductCard from "../../components/Home/ProductCard";
+import { favoriteService } from "../../services/favoriteService";
+import Swal from "sweetalert2";
 
 interface Product {
   idProduct: number;
@@ -53,6 +55,8 @@ export const ProductDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
   const fetchComments = async () => {
     try {
@@ -122,6 +126,52 @@ export const ProductDetailPage = () => {
         subtotal: product.price * quantity,
         imagen: `http://localhost:8085/uploads/productos/${product.imageProduct}`,
       });
+    }
+  };
+
+  const handleFavoriteToggle = async () => {
+    if (isFavoriteLoading || !product) return;
+    setIsFavoriteLoading(true);
+
+    try {
+      if (isFavorite) {
+        await favoriteService.removeFavorite(product.idProduct);
+        setIsFavorite(false);
+        Swal.fire({
+          title: "Eliminado",
+          text: "Producto eliminado de favoritos",
+          icon: "info",
+          timer: 1500,
+          showConfirmButton: false,
+          toast: true,
+          position: "top-end"
+        });
+      } else {
+        await favoriteService.addFavorite(product.idProduct);
+        setIsFavorite(true);
+        Swal.fire({
+          title: "¡Agregado!",
+          text: "Producto agregado a favoritos",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+          toast: true,
+          position: "top-end"
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error (¿Iniciaste sesión?)",
+        icon: "error",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setIsFavoriteLoading(false);
     }
   };
 
@@ -255,7 +305,10 @@ export const ProductDetailPage = () => {
                     className="max-h-125 w-auto object-contain transition-transform duration-500 hover:scale-105"
                   />
                   <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors">
+                    <button 
+                      onClick={handleFavoriteToggle} 
+                      disabled={isFavoriteLoading}
+                      className={`w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center transition-colors ${isFavorite ? "text-red-500" : "text-gray-400 hover:text-[#8dc84b]"} ${isFavoriteLoading ? "opacity-50 cursor-not-allowed" : ""}`}>
                       <FontAwesomeIcon icon={faHeart} />
                     </button>
                     <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center text-gray-400 hover:text-[#8dc84b] transition-colors">

@@ -13,6 +13,9 @@ import { EditProductModal } from "../../components/Modals/EditProductModal";
 import { InsightsGrid } from "../../components/Dashboard/PanelDeControl/InsightsGrid";
 import { DashboardAside } from "../../components/Dashboard/PanelDeControl/DashboardAside";
 import { ProductManager } from "../../components/Dashboard/PanelDeControl/ProductManager";
+import ProductCard from "../../components/Home/ProductCard";
+import { favoriteService } from "../../services/favoriteService";
+import { API_URL } from "../../config/api";
 
 import type { Product } from "../../types/Product";
 
@@ -41,9 +44,39 @@ export const Dashboard: React.FC = () => {
   } | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
+  interface FavoriteProduct {
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+    image: string;
+    category: string;
+    isFavorite: boolean;
+  }
+  const [favoriteProducts, setFavoriteProducts] = useState<FavoriteProduct[]>([]);
+
   useEffect(() => {
     fetchProducts();
+    fetchFavorites();
   }, []);
+
+  const fetchFavorites = async () => {
+    try {
+      const data = await favoriteService.getFavorites();
+      const mapped = data.map((p: { idProduct: number; nameProduct: string; price: number; stock: number; imageProduct: string; category: string }) => ({
+        id: p.idProduct,
+        name: p.nameProduct,
+        price: p.price,
+        stock: p.stock,
+        image: `${API_URL}/uploads/productos/${p.imageProduct}`,
+        category: p.category,
+        isFavorite: true,
+      }));
+      setFavoriteProducts(mapped);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -177,6 +210,20 @@ export const Dashboard: React.FC = () => {
             handleExportPdf={handleExportPdf}
             setIsUploadModalOpen={setIsUploadModalOpen}
           />
+
+          {/* Favorite Products Section */}
+          <div className="mt-10 bg-white dark:bg-zinc-900 rounded-3xl p-8 shadow-xl border border-stone-200/60 dark:border-zinc-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mis productos favoritos</h2>
+            {favoriteProducts.length === 0 ? (
+              <p className="text-gray-500 italic">No tienes productos en favoritos aún.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                {favoriteProducts.map((fp) => (
+                  <ProductCard key={fp.id} product={fp} />
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
         <DashboardAside productsCount={products.length} />
