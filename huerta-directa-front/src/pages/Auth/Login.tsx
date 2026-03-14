@@ -4,7 +4,9 @@ import { Background } from "../../components/GlobalComponents/Background";
 import logo from "../../assets/logo_huerta.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowLeft,
   faArrowRight,
+  faArrowRotateLeft,
   faEnvelope,
   faMobile,
   faMobileScreenButton,
@@ -195,6 +197,7 @@ const Login: React.FC = () => {
               <Button
                 text="Cancelar"
                 onClick={cancelEmailVerification}
+                iconLetf={faArrowLeft}
                 className="text-xs px-4 py-2 rounded-xl border border-[#c9c9c9] bg-transparent! hover:bg-gray-400! hover:text-white! text-[#444]! mt-4 dark:text-white! dark:hover:bg-[#444]! dark:hover:text-white!"
               />
             </form>
@@ -254,11 +257,13 @@ const Login: React.FC = () => {
                   text={resendCooldown > 0 ? `Reenviar (${resendCooldown}s)` : "Reenviar"}
                   onClick={handleResendEmailCode}
                   disabled={resendCooldown > 0}
+                  iconLetf={faArrowRotateLeft}
                   className="text-xs px-4 py-2 rounded-xl border border-[#8dc84b] text-[#2e7d32]! bg-transparent! hover:bg-[#8dc84b]! hover:text-white! dark:text-gray-300!"
                 />
                 <Button
                   text="Cancelar"
                   onClick={cancelEmailVerification}
+                  iconLetf={faArrowLeft}
                   className="text-xs px-4 py-2 rounded-xl border border-[#c9c9c9] text-[#444]! bg-transparent! hover:bg-gray-400! hover:text-white! dark:text-gray-300!"
                 />
               </div>
