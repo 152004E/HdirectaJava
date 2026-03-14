@@ -6,8 +6,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { useImageUpload } from "../../hooks/Productos/useImageUpload";
-import { ProductPreview } from "../../components/Productos/ProductPreview";
-import { ProductForm } from "../../components/Productos/ProductForm";
+import { ProductPreview } from "../../components/Dashboard/Productos/ProductPreview";
+import { ProductForm } from "../../components/Dashboard/Productos/ProductForm";
 
 export const DashboardAgregarProducto: React.FC = () => {
   usePageTitle("Agregar Producto");
