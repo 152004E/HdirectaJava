@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faUser, faEnvelope, faCamera, faLocationDot, faPhone, faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faUser, faEnvelope, faCamera, faLocationDot, faPhone, faCloudArrowUp, faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "../../components/GlobalComponents/Button";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { PasswordInput } from "../../components/GlobalComponents/PasswordInput";
@@ -264,7 +264,7 @@ export const ActualizacionUsuario: React.FC = () => {
                 <div className="w-12 h-12 rounded-2xl bg-gray-800 text-white flex items-center justify-center shadow-lg">
                     <FontAwesomeIcon icon={faGear} size="lg" />
                 </div>
-                <h1 className="text-3xl font-black text-white tracking-tight">Mi Perfil</h1>
+                <h1 className="text-3xl font-black text-gray-800 dark:text-white  tracking-tight">Mi Perfil</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8">
@@ -301,7 +301,7 @@ export const ActualizacionUsuario: React.FC = () => {
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-gray-800">{formData.fullName || "Usuario"}</h3>
-                            <p className="text-sm text-[#8dc84b] font-bold uppercase tracking-tight">Activo</p>
+                            <p className="text-sm text-[#8dc84b] font-bold  tracking-tight">Activo</p>
                         </div>
                         <div className="w-full pt-4 border-t border-gray-50 text-left flex flex-col gap-3">
                             <div className="flex items-center gap-3 text-gray-500">
@@ -317,7 +317,7 @@ export const ActualizacionUsuario: React.FC = () => {
                 </div>
 
                 {/* Update Form */}
-                <div className="bg-white p-10 rounded-4xl shadow-sm border border-gray-100 flex flex-col gap-8">
+                <div className="bg-white p-10 rounded-4xl  shadow-sm border border-gray-100 flex flex-col gap-8">
                     <h2 className="text-xl font-black text-gray-800 border-b border-gray-50 pb-4">Actualizar Información</h2>
                     
                     <form className="flex flex-col gap-6" onSubmit={handleProfileSubmit}>
@@ -389,6 +389,7 @@ export const ActualizacionUsuario: React.FC = () => {
                                 type="submit"
                                 text={savingProfile ? "Guardando..." : "Guardar Cambios"}
                                 disabled={savingProfile}
+                                iconLetf={faCloudArrowUp}
                                 className="mt-4 bg-[#8dc84b] text-white py-5 rounded-2xl font-black shadow-xl shadow-[#8dc84b]/20"
                         />
                     </form>
@@ -411,7 +412,7 @@ export const ActualizacionUsuario: React.FC = () => {
                                 type="submit"
                                 text={savingPassword ? "Cambiando..." : "Actualizar Contraseña"}
                                 disabled={savingPassword}
-                                iconLetf={faCloudArrowUp}
+                                iconLetf={faArrowsRotate}
                                 className="mt-4 bg-[#8dc84b] text-white py-4 rounded-2xl font-black"
                             />
                             </form>
