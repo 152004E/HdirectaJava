@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/users")
-@CrossOrigin("*")
 public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
