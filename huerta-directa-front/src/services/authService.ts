@@ -18,6 +18,8 @@ export interface LoginResponse {
   status: string;
   message: string;
   redirect?: string;
+  maskedEmail?: string;
+  hasPhone?: boolean;
 }
 
 export interface RegisterResponse {
@@ -118,6 +120,74 @@ class AuthService {
     }
 
     return data;
+  }
+
+  /**
+   * Verificar código OTP enviado por correo
+   */
+  async verifyEmailCode(code: string): Promise<LoginResponse> {
+    const response = await fetch(`${this.BASE_URL}/api/login/verify-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ code }),
+    });
+
+    if (!response.ok) {
+      const error: ErrorResponse = await response.json();
+      throw new Error(error.message || 'Código inválido');
+    }
+
+    const data: LoginResponse = await response.json();
+
+    if (data.status === 'success') {
+      this.saveUser({
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        idRole: data.idRole,
+        profileImageUrl: data.profileImageUrl,
+      });
+    }
+
+    return data;
+  }
+
+  /**
+   * Iniciar verificación según canal seleccionado
+   */
+  async startVerificationChannel(channel: "email" | "sms"): Promise<LoginResponse> {
+    const response = await fetch(`${this.BASE_URL}/api/login/start-verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ channel }),
+    });
+
+    if (!response.ok) {
+      const error: ErrorResponse = await response.json();
+      throw new Error(error.message || 'No se pudo iniciar la verificación');
+    }
+
+    return (await response.json()) as LoginResponse;
+  }
+
+  /**
+   * Reenviar código OTP por correo
+   */
+  async resendEmailCode(): Promise<LoginResponse> {
+    const response = await fetch(`${this.BASE_URL}/api/login/resend-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const error: ErrorResponse = await response.json();
+      throw new Error(error.message || 'No se pudo reenviar el código');
+    }
+
+    return (await response.json()) as LoginResponse;
   }
 
   /**
