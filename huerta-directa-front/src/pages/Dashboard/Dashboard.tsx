@@ -14,9 +14,6 @@ import { EditProductModal } from "../../components/Modals/EditProductModal";
 import { InsightsGrid } from "../../components/Dashboard/PanelDeControl/InsightsGrid";
 import { DashboardAside } from "../../components/Dashboard/PanelDeControl/DashboardAside";
 import { ProductManager } from "../../components/Dashboard/PanelDeControl/ProductManager";
-import ProductCard from "../../components/Home/ProductCard";
-import { favoriteService } from "../../services/favoriteService";
-import { API_URL } from "../../config/api";
 
 import type { Product } from "../../types/Product";
 import { useProducts } from "../../hooks/Productos/useProducts";
@@ -44,24 +41,6 @@ export const Dashboard: React.FC = () => {
     message: string;
   } | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("/api/products/mis-Productos");
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const insights: InsightItem[] = [
     {
@@ -133,7 +112,7 @@ export const Dashboard: React.FC = () => {
           message: result.message || "Error al cargar productos",
         });
       }
-    } catch (error) {
+    } catch {
       setUploadResult({
         success: false,
         message: "Error de conexión con el servidor",
@@ -182,20 +161,6 @@ export const Dashboard: React.FC = () => {
             handleExportPdf={handleExportPdf}
             setIsUploadModalOpen={setIsUploadModalOpen}
           />
-
-          {/* Favorite Products Section */}
-          <div className="mt-10 bg-white dark:bg-zinc-900 rounded-3xl p-8 shadow-xl border border-stone-200/60 dark:border-zinc-700">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Mis productos favoritos</h2>
-            {favoriteProducts.length === 0 ? (
-              <p className="text-gray-500 italic">No tienes productos en favoritos aún.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-                {favoriteProducts.map((fp) => (
-                  <ProductCard key={fp.id} product={fp} />
-                ))}
-              </div>
-            )}
-          </div>
         </section>
 
         <DashboardAside productsCount={products.length} />

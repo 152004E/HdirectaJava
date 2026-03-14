@@ -11,6 +11,7 @@ import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { DashboardGraficos } from "./pages/Dashboard/DashboardGraficos";
 import { MensajesAreaSocial } from "./pages/Dashboard/MensajesAreaSocial";
 import { DashboardAgregarProducto } from "./pages/Dashboard/DashboardAgregarProducto";
+import { DashboardFavorites } from "./pages/Dashboard/DashboardFavorites";
 import { ActualizacionUsuario } from "./pages/Dashboard/ActualizacionUsuario";
 import { DashboardAdmin } from "./pages/DashboardAdmin/DashboardAdmin";
 import { AdminDashboardLayout } from "./layout/AdminDashboardLayout";
@@ -153,6 +154,7 @@ function App() {
 
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/misFavoritos" element={<DashboardFavorites />} />
               <Route path="/DashBoardGraficos" element={<DashboardGraficos />} />
               <Route path="/MensajesAreaSocial" element={<MensajesAreaSocial />} />
               <Route path="/DashBoardAgregarProducto" element={<DashboardAgregarProducto />} />
