@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faEnvelope,
+  faMobile,
+  faMobileScreenButton,
   faRightToBracket,
   faUser,
   faUserPlus,
@@ -26,11 +28,28 @@ const Login: React.FC = () => {
     setSuccess,
     registerData,
     loginData,
+    requiresChannelSelection,
+    hasPhoneChannel,
+    requiresEmailVerification,
+    emailCode,
+    setEmailCode,
+    maskedEmail,
+    resendCooldown,
+    otpSecondsLeft,
     handleRegisterChange,
     handleLoginChange,
     handleRegisterSubmit,
     handleLoginSubmit,
+    handleSelectVerificationChannel,
+    handleVerifyEmailSubmit,
+    handleResendEmailCode,
+    cancelEmailVerification,
   } = useAuth();
+
+  const otpMinutes = Math.floor(otpSecondsLeft / 60)
+    .toString()
+    .padStart(2, "0");
+  const otpSeconds = (otpSecondsLeft % 60).toString().padStart(2, "0");
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-[#FEF5DC] dark:bg-[#1A221C]! font-['Poppins'] relative">
@@ -141,62 +160,173 @@ const Login: React.FC = () => {
 
         {/* ================= SIGN IN ================= */}
         <div className="form-container sign-in dark:bg-[#1f2a22]">
-          <form
-            onSubmit={handleLoginSubmit}
-            className="bg-white dark:bg-[#1f2a22] w-100 flex items-center justify-center flex-col px-10 h-full "
-          >
-            <h1 className="text-3xl font-bold mb-4 dark:text-white">
-              Iniciar Sesión
-            </h1>
+          {requiresChannelSelection ? (
+            <form className="bg-white dark:bg-[#1f2a22] w-100 flex items-center justify-center flex-col px-10 h-full">
+              <h1 className="text-3xl font-bold mb-2 dark:text-white text-center">
+                Elige canal de verificación
+              </h1>
 
-            <img src={logo} alt="Logo huerta directa" className="w-20 mb-4" />
+              <img src={logo} alt="Logo huerta directa" className="w-20 mb-3" />
 
-            {/* Email */}
-            <div className="w-full mb-2">
-              <label className="text-sm font-normal block dark:text-gray-300">
-                Ingrese su correo electrónico
-              </label>
-              <div className="relative flex items-center">
-                <FontAwesomeIcon
-                  icon={faEnvelope}
-                  className="absolute left-3 text-[#888] dark:text-gray-400"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Correo electrónico"
-                  value={loginData.email}
+              <p className="text-sm text-center text-[#333] dark:text-gray-300 mb-6">
+                Selecciona cómo deseas recibir tu código de acceso
+              </p>
+
+              <div className="w-full flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleSelectVerificationChannel("email")}
+                  className="w-full py-3 px-4 rounded-[15px] border-2 border-[#8dc84b] text-[#2e7d32] font-semibold flex items-center justify-center gap-2 hover:bg-[#eef8e1] transition-all"
+                >
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  Recibir por correo 
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSelectVerificationChannel("sms")}
+                  className="w-full py-3 px-4 rounded-[15px] border-2 border-[#d9d9d9] text-[#666] font-semibold flex items-center justify-center gap-2 hover:bg-red-300 transition-all cursor-not-allowed"
+                >
+                  <FontAwesomeIcon icon={faMobile} />
+                  Recibir por sms {hasPhoneChannel ? "(Próximamente)" : "(No registrado)"}
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={cancelEmailVerification}
+                className="text-xs px-4 py-2 rounded-xl border border-[#c9c9c9] text-[#444] mt-4"
+              >
+                Cancelar
+              </button>
+            </form>
+          ) : requiresEmailVerification ? (
+            <form
+              onSubmit={handleVerifyEmailSubmit}
+              className="bg-white dark:bg-[#1f2a22] w-100 flex items-center justify-center flex-col px-10 h-full"
+            >
+              <h1 className="text-3xl font-bold mb-2 dark:text-white text-center">
+                Verifica tu correo
+              </h1>
+
+              <img src={logo} alt="Logo huerta directa" className="w-20 mb-3" />
+
+              <p className="text-sm text-center text-[#333] dark:text-gray-300 mb-3">
+                Ingresa el código enviado a
+                <span className="font-semibold ml-1">{maskedEmail ?? "tu correo"}</span>
+              </p>
+
+              <p className="text-xs text-[#666] dark:text-gray-400 mb-4">
+                El código vence en {otpMinutes}:{otpSeconds}
+              </p>
+
+              <div className="w-full mb-2">
+                <label className="text-sm font-normal block dark:text-gray-300">
+                  Código de verificación
+                </label>
+                <div className="relative flex items-center">
+                  <FontAwesomeIcon
+                    icon={faMobileScreenButton}
+                    className="absolute left-3 text-[#888] dark:text-gray-400"
+                  />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="000000"
+                    value={emailCode}
+                    onChange={(e) =>
+                      setEmailCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    }
+                    className="py-2.5 pl-10 pr-4 w-full my-1.5 border-2 border-[#8dc84b] dark:border-[#6fa33b] rounded-[15px] outline-none text-base tracking-[0.35em] text-[#333128] dark:text-white dark:bg-[#26322a] transition-all duration-500 focus:border-[#004d00] focus:shadow-[0_0_8px_rgba(0,77,0,0.4)]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <Button
+                iconRight={faArrowRight}
+                text="Validar código"
+                type="submit"
+                className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] transition-all duration-500 mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer"
+              />
+
+              <div className="flex gap-3 mt-3">
+                <button
+                  type="button"
+                  onClick={handleResendEmailCode}
+                  disabled={resendCooldown > 0}
+                  className="text-xs px-4 py-2 rounded-xl border border-[#8dc84b] text-[#2e7d32] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {resendCooldown > 0 ? `Reenviar (${resendCooldown}s)` : "Reenviar"}
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelEmailVerification}
+                  className="text-xs px-4 py-2 rounded-xl border border-[#c9c9c9] text-[#444]"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form
+              onSubmit={handleLoginSubmit}
+              className="bg-white dark:bg-[#1f2a22] w-100 flex items-center justify-center flex-col px-10 h-full "
+            >
+              <h1 className="text-3xl font-bold mb-4 dark:text-white">
+                Iniciar Sesión
+              </h1>
+
+              <img src={logo} alt="Logo huerta directa" className="w-20 mb-4" />
+
+              {/* Email */}
+              <div className="w-full mb-2">
+                <label className="text-sm font-normal block dark:text-gray-300">
+                  Ingrese su correo electrónico
+                </label>
+                <div className="relative flex items-center">
+                  <FontAwesomeIcon
+                    icon={faEnvelope}
+                    className="absolute left-3 text-[#888] dark:text-gray-400"
+                  />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Correo electrónico"
+                    value={loginData.email}
+                    onChange={handleLoginChange}
+                    className="py-2.5 pl-10 pr-4 w-full my-1.5 border-2 border-[#8dc84b] dark:border-[#6fa33b] rounded-[15px] outline-none text-base text-[#333128] dark:text-white dark:bg-[#26322a] transition-all duration-500 focus:border-[#004d00] focus:shadow-[0_0_8px_rgba(0,77,0,0.4)]"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="w-full mb-2">
+                <label className="text-sm font-normal block dark:text-gray-300">
+                  Ingrese su contraseña
+                </label>
+
+                <PasswordInput
+                  name="password"
+                  value={loginData.password}
                   onChange={handleLoginChange}
-                  className="py-2.5 pl-10 pr-4 w-full my-1.5 border-2 border-[#8dc84b] dark:border-[#6fa33b] rounded-[15px] outline-none text-base text-[#333128] dark:text-white dark:bg-[#26322a] transition-all duration-500 focus:border-[#004d00] focus:shadow-[0_0_8px_rgba(0,77,0,0.4)]"
+                  placeholder="Contraseña"
                   required
                 />
               </div>
-            </div>
 
-            {/* Password */}
-            <div className="w-full mb-2">
-              <label className="text-sm font-normal block dark:text-gray-300">
-                Ingrese su contraseña
-              </label>
+              <a
+                href="/forgot-password"
+                className="text-[#333] dark:text-gray-300 text-[13px] no-underline mb-5 hover:text-[#8dc84b] transition-colors duration-500"
+              >
+                ¿Olvidaste tu contraseña?
+              </a>
 
-              <PasswordInput
-                name="password"
-                value={loginData.password}
-                onChange={handleLoginChange}
-                placeholder="Contraseña"
-                required
-              />
-            </div>
-
-            <a
-              href="/forgot-password"
-              className="text-[#333] dark:text-gray-300 text-[13px] no-underline mb-5 hover:text-[#8dc84b] transition-colors duration-500"
-            >
-              ¿Olvidaste tu contraseña?
-            </a>
-
-            <Button iconRight={faArrowRight} text="Ingresar" type="submit"  className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] transition-all duration-500 mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer" />
-          </form>
+              <Button iconRight={faArrowRight} text="Ingresar" type="submit"  className="text-[17px] inline-block py-3 px-8 text-white bg-[#8dc84b] rounded-[15px] transition-all duration-500 mt-2.5 hover:bg-[#004d00] font-semibold uppercase text-xs tracking-wider cursor-pointer" />
+            </form>
+          )}
         </div>
 
         {/* ================= TOGGLE ================= */}
