@@ -10,19 +10,19 @@ export const Landing = () => {
       <Background />
 
       {/* Sección Invitación */}
-      <section className="text-center w-full flex flex-col items-center justify-center  py-14 sm:py-24  ">
+      <section className="text-center w-full flex flex-col items-center justify-center  py-5 sm:py-24  ">
         <div className="max-w-200 mx-auto">
           <img
             src={logo}
             alt="Logo Huerta Directa"
-            className="max-w-50 w-full mx-auto my-12 transition-transform duration-300 ease-in-out hover:scale-110"
+            className="max-w-40 sm:max-w-0-50 w-full mx-auto my-12 transition-transform duration-300 ease-in-out hover:scale-110"
           />
 
-          <h2 className="text-[2.8rem] text-[#4caf50] font-bold mb-4">
+          <h2 className="text-3xl sm:text-[2.8rem] text-[#4caf50] font-bold mb-4">
             ¡Únete a Huerta Directa!
           </h2>
 
-          <p className="text-[1.3rem] text-[#5a4e3c] dark:text-[#b3b3b3] mb-8">
+          <p className="text-lg p-4 sm:p-0 sm:text-[1.3rem] text-[#5a4e3c] dark:text-[#b3b3b3] mb-8">
             Forma parte de nuestra comunidad que apoya al campo y disfruta de
             productos frescos, saludables y sin intermediarios.
           </p>
