@@ -51,6 +51,9 @@ public class User {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(name = "profile_image_url", length = 500)
+    private String profileImageUrl;
+
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
