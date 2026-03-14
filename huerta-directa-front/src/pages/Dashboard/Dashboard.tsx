@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
 import {
   faCloudArrowUp,
 
@@ -18,6 +19,7 @@ import { favoriteService } from "../../services/favoriteService";
 import { API_URL } from "../../config/api";
 
 import type { Product } from "../../types/Product";
+import { useProducts } from "../../hooks/Productos/useProducts";
 
 interface InsightItem {
   title: string;
@@ -30,8 +32,7 @@ interface InsightItem {
 export const Dashboard: React.FC = () => {
   usePageTitle("Dashboard");
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [_, setLoading] = useState(true);
+  const { products, setProducts, removeProduct, fetchProducts } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -44,39 +45,9 @@ export const Dashboard: React.FC = () => {
   } | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
-  interface FavoriteProduct {
-    id: number;
-    name: string;
-    price: number;
-    stock: number;
-    image: string;
-    category: string;
-    isFavorite: boolean;
-  }
-  const [favoriteProducts, setFavoriteProducts] = useState<FavoriteProduct[]>([]);
-
   useEffect(() => {
     fetchProducts();
-    fetchFavorites();
   }, []);
-
-  const fetchFavorites = async () => {
-    try {
-      const data = await favoriteService.getFavorites();
-      const mapped = data.map((p: { idProduct: number; nameProduct: string; price: number; stock: number; imageProduct: string; category: string }) => ({
-        id: p.idProduct,
-        name: p.nameProduct,
-        price: p.price,
-        stock: p.stock,
-        image: `${API_URL}/uploads/productos/${p.imageProduct}`,
-        category: p.category,
-        isFavorite: true,
-      }));
-      setFavoriteProducts(mapped);
-    } catch (error) {
-      console.error("Error fetching favorites:", error);
-    }
-  };
 
   const fetchProducts = async () => {
     try {
@@ -206,6 +177,7 @@ export const Dashboard: React.FC = () => {
             viewMode={viewMode}
             setViewMode={setViewMode}
             handleEditProduct={handleEditProduct}
+            handleDeleteProduct={removeProduct}
             handleExportExcel={handleExportExcel}
             handleExportPdf={handleExportPdf}
             setIsUploadModalOpen={setIsUploadModalOpen}
