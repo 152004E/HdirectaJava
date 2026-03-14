@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+
 import {
   faCloudArrowUp,
 
@@ -15,6 +16,7 @@ import { DashboardAside } from "../../components/Dashboard/PanelDeControl/Dashbo
 import { ProductManager } from "../../components/Dashboard/PanelDeControl/ProductManager";
 
 import type { Product } from "../../types/Product";
+import { useProducts } from "../../hooks/Productos/useProducts";
 
 interface InsightItem {
   title: string;
@@ -27,8 +29,7 @@ interface InsightItem {
 export const Dashboard: React.FC = () => {
   usePageTitle("Dashboard");
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [_, setLoading] = useState(true);
+  const { products, setProducts, removeProduct, fetchProducts } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -40,24 +41,6 @@ export const Dashboard: React.FC = () => {
     message: string;
   } | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("/api/products/mis-Productos");
-      if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const insights: InsightItem[] = [
     {
@@ -93,14 +76,14 @@ export const Dashboard: React.FC = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.append("buscar", searchTerm);
     if (category) params.append("categoria", category);
-    window.location.href = `/exportar_productos_excel?${params.toString()}`;
+    window.location.href = `/api/products/exportExcel?${params.toString()}`;
   };
 
   const handleExportPdf = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.append("buscar", searchTerm);
     if (category) params.append("categoria", category);
-    window.location.href = `/exportar_productos_pdf?${params.toString()}`;
+    window.location.href = `/api/products/exportPdf?${params.toString()}`;
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
@@ -129,7 +112,7 @@ export const Dashboard: React.FC = () => {
           message: result.message || "Error al cargar productos",
         });
       }
-    } catch (error) {
+    } catch {
       setUploadResult({
         success: false,
         message: "Error de conexión con el servidor",
@@ -173,6 +156,7 @@ export const Dashboard: React.FC = () => {
             viewMode={viewMode}
             setViewMode={setViewMode}
             handleEditProduct={handleEditProduct}
+            handleDeleteProduct={removeProduct}
             handleExportExcel={handleExportExcel}
             handleExportPdf={handleExportPdf}
             setIsUploadModalOpen={setIsUploadModalOpen}

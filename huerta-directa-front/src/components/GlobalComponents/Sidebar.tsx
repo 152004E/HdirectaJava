@@ -14,6 +14,7 @@ import {
   faUserPlus,
   faRightFromBracket,
   faBars,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/logo_huerta.png";
 
@@ -28,6 +29,7 @@ const ProducerSidebarContent: React.FC<{ isOpen: boolean; onToggle: () => void }
 
   const options = [
     { label: "Dashboard", icon: faHouse, link: "/dashboard" },
+    { label: "Mis Favoritos", icon: faHeart, link: "/misFavoritos" },
     { label: "Gráficos", icon: faChartLine, link: "/DashBoardGraficos" },
     { label: "Área Social", icon: faEnvelope, link: "/MensajesAreaSocial" },
     { label: "Ordenes", icon: faFileLines, link: "/misOrdenes" },

@@ -12,6 +12,8 @@ import {
 import { Button } from "../GlobalComponents/Button";
 import { useCart } from "../../hooks/useCart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { favoriteService } from "../../services/favoriteService";
+import Swal from "sweetalert2";
 
 interface Product {
   id: number;
@@ -23,6 +25,7 @@ interface Product {
   reviewCount?: number;
   averageRating?: number;
   images?: string[];
+  isFavorite?: boolean;
 }
 
 interface Props {
@@ -32,10 +35,58 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
   const { addItem } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(product.isFavorite || false);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const hasStock = product.stock && product.stock > 0;
   const isOwner = false;
 
   const allImages = [product.image, ...(product.images || [])];
+
+  const handleFavoriteToggle = async () => {
+    if (isFavoriteLoading) return;
+    setIsFavoriteLoading(true);
+
+    try {
+      if (isFavorite) {
+        await favoriteService.removeFavorite(product.id);
+        setIsFavorite(false);
+        Swal.fire({
+          title: "Eliminado",
+          text: "Producto eliminado de favoritos",
+          icon: "info",
+          timer: 1500,
+          showConfirmButton: false,
+          toast: true,
+          position: "top-end"
+        });
+      } else {
+        await favoriteService.addFavorite(product.id);
+        setIsFavorite(true);
+        Swal.fire({
+          title: "¡Agregado!",
+          text: "Producto agregado a favoritos",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+          toast: true,
+          position: "top-end"
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error (¿Iniciaste sesión?)",
+        icon: "error",
+        toast: true,
+        position: "top-end",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setIsFavoriteLoading(false);
+    }
+  };
 
   const handleAddToCart = () => {
     addItem({
@@ -110,7 +161,9 @@ const ProductCard = ({ product }: Props) => {
           <Button
             text=""
             iconLetf={faHeart}
-            className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md px-1 gap-0! py-1.5! rounded-full shadow-none text-[#8bc34a]! hover:text-white!"
+            onClick={handleFavoriteToggle}
+            className={`backdrop-blur-md px-1 gap-0! py-1.5! rounded-full shadow-none hover:bg-white! hover:text-[#8bc34a]! ${isFavorite ? "bg-white text-red-500!" : "bg-white/80 dark:bg-zinc-800/80 text-[#8bc34a]!"} ${isFavoriteLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={isFavoriteLoading}
           />
         </div>
 
