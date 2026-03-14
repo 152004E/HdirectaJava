@@ -185,7 +185,7 @@ const Login: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleSelectVerificationChannel("sms")}
-                  className="w-full py-3 px-4 rounded-[15px] border-2 border-[#d9d9d9] text-[#666] font-semibold flex items-center justify-center gap-2 hover:bg-red-300 transition-all cursor-not-allowed"
+                  className="w-full py-3 px-4 rounded-[15px] border-2 border-[#d9d9d9] text-[#666] dark:text-amber-50 font-semibold flex items-center justify-center gap-2 hover:bg-red-300 transition-all cursor-not-allowed"
                 >
                   <FontAwesomeIcon icon={faMobile} />
                   Recibir por sms {hasPhoneChannel ? "(Próximamente)" : "(No registrado)"}
