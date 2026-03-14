@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faUser, faEnvelope, faCamera, faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faUser, faEnvelope, faCamera, faLocationDot, faPhone, faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "../../components/GlobalComponents/Button";
 import { usePageTitle } from "../../hooks/usePageTitle";
 import { PasswordInput } from "../../components/GlobalComponents/PasswordInput";
@@ -264,7 +264,7 @@ export const ActualizacionUsuario: React.FC = () => {
                 <div className="w-12 h-12 rounded-2xl bg-gray-800 text-white flex items-center justify-center shadow-lg">
                     <FontAwesomeIcon icon={faGear} size="lg" />
                 </div>
-                <h1 className="text-3xl font-black text-gray-800 tracking-tight">Mi Perfil</h1>
+                <h1 className="text-3xl font-black text-white tracking-tight">Mi Perfil</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8">
@@ -394,7 +394,7 @@ export const ActualizacionUsuario: React.FC = () => {
                     </form>
 
                     <form className="flex flex-col gap-2 pt-4 border-t border-gray-50 profile-password-inputs" onSubmit={handlePasswordSubmit}>
-                            <h3 className="font-bold text-gray-400 uppercase tracking-widest text-[10px] mb-2">Cambiar Contraseña</h3>
+                            <h3 className="font-bold text-gray-800 uppercase tracking-widest text-[10px] mb-2">Cambiar Contraseña</h3>
                             <PasswordInput 
                                 name="currentPassword"
                                 value={formData.currentPassword}
@@ -411,7 +411,8 @@ export const ActualizacionUsuario: React.FC = () => {
                                 type="submit"
                                 text={savingPassword ? "Cambiando..." : "Actualizar Contraseña"}
                                 disabled={savingPassword}
-                                className="mt-4 bg-[#334155] text-white py-4 rounded-2xl font-black"
+                                iconLetf={faCloudArrowUp}
+                                className="mt-4 bg-[#8dc84b] text-white py-4 rounded-2xl font-black"
                             />
                             </form>
         </div>
