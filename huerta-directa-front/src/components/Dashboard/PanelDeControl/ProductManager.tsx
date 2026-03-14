@@ -18,6 +18,7 @@ import { Button } from "../../GlobalComponents/Button";
 
 interface Props {
   products: Product[];
+  handleDeleteProduct: (id: number) => void;
   filteredProducts: Product[];
   searchTerm: string;
   setSearchTerm: (value: string) => void;
@@ -44,6 +45,7 @@ export const ProductManager: React.FC<Props> = ({
   handleExportExcel,
   handleExportPdf,
   setIsUploadModalOpen,
+  handleDeleteProduct,
 }) => {
   return (
     <section className="bg-white pb-42 dark:bg-[#1A221C] p-8 rounded-3xl shadow-sm mb-8 border border-gray-100 dark:border-[#24302A]">
@@ -189,9 +191,12 @@ export const ProductManager: React.FC<Props> = ({
                         <FontAwesomeIcon icon={faPen} />
                       </button>
 
-                      <button className="w-9 h-9 rounded-lg cursor-pointer bg-gray-50 dark:bg-[#101922] text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
+                      <Button
+                        text=""
+                        iconLetf={faTrash}
+                        onClick={() => handleDeleteProduct(p.idProduct)}
+                        className="w-9 h-9 gap-0! rounded-lg bg-gray-50 dark:bg-[#101922] text-red-400 hover:bg-red-500 hover:text-white"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -258,12 +263,12 @@ export const ProductManager: React.FC<Props> = ({
                   Editar
                 </button>
 
-                <button
-                  className="w-12 rounded-xl bg-gray-50 dark:bg-[#101922] cursor-pointer!
-            text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
+                <Button
+                  text=""
+                  iconLetf={faTrash}
+                  onClick={() => handleDeleteProduct(p.idProduct)}
+                  className="w-9 h-9 gap-0! rounded-lg bg-gray-50 dark:bg-[#101922] text-red-400 hover:bg-red-500 hover:text-white"
+                />
               </div>
             </div>
           ))}
