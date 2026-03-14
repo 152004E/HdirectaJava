@@ -116,3 +116,6 @@ CREATE TABLE IF NOT EXISTS chat_social (
                              CONSTRAINT fk_chat_user
                                  FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS profile_image_url VARCHAR(500);

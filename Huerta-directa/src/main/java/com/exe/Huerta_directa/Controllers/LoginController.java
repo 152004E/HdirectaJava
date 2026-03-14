@@ -11,17 +11,25 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Properties;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +42,8 @@ public class LoginController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    @Value("${upload.path:C:/HuertaUploads}")
+    private String uploadPath;
     // logger
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
@@ -138,6 +148,7 @@ public class LoginController {
             response.setName(usuarioCreado.getName());
             response.setEmail(usuarioCreado.getEmail());
             response.setIdRole(usuarioCreado.getIdRole());
+            response.setProfileImageUrl(usuarioCreado.getProfileImageUrl());
             response.setMessage("Registro exitoso");
 
             return ResponseEntity.ok(response);
@@ -339,6 +350,7 @@ public class LoginController {
             response.setName(user.getName());
             response.setEmail(user.getEmail());
             response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+            response.setProfileImageUrl(user.getProfileImageUrl());
             response.setStatus("success");
             response.setMessage("Login exitoso");
 
@@ -389,6 +401,7 @@ public class LoginController {
         response.setName(user.getName());
         response.setEmail(user.getEmail());
         response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        response.setProfileImageUrl(user.getProfileImageUrl());
         response.setStatus("active");
         response.setMessage("Sesión activa");
 
@@ -439,6 +452,7 @@ public class LoginController {
         response.setName(user.getName());
         response.setEmail(user.getEmail());
         response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        response.setProfileImageUrl(user.getProfileImageUrl());
         response.setStatus("success");
         response.setMessage("Login completado");
 
@@ -475,6 +489,7 @@ public class LoginController {
         userDTO.setGender(user.getGender());
         userDTO.setBirthDate(user.getBirthDate());
         userDTO.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        userDTO.setProfileImageUrl(user.getProfileImageUrl());
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
@@ -499,8 +514,80 @@ public class LoginController {
         response.setPhone(user.getPhone());
         response.setAddress(user.getAddress());
         response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+        response.setProfileImageUrl(user.getProfileImageUrl());
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Subir foto de perfil del usuario autenticado
+     */
+    @PostMapping(value = "/profile/photo", consumes = "multipart/form-data")
+    @ResponseBody
+    public ResponseEntity<?> uploadProfilePhoto(@RequestParam("photo") MultipartFile photo, HttpSession session) {
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        if (photo == null || photo.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Debes seleccionar una imagen"));
+        }
+
+        String contentType = photo.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El archivo debe ser una imagen válida"));
+        }
+
+        if (photo.getSize() > (5 * 1024 * 1024)) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("La imagen no puede superar 5MB"));
+        }
+
+        try {
+            User dbUser = userRepository.findById(sessionUser.getId()).orElse(null);
+            if (dbUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorResponse("Usuario no encontrado"));
+            }
+
+            Path profileDir = Paths.get(uploadPath, "profiles");
+            Files.createDirectories(profileDir);
+
+            String originalName = photo.getOriginalFilename() != null ? photo.getOriginalFilename() : "image.jpg";
+            String extension = ".jpg";
+            int extensionIndex = originalName.lastIndexOf('.');
+            if (extensionIndex >= 0 && extensionIndex < originalName.length() - 1) {
+                extension = originalName.substring(extensionIndex);
+            }
+
+            String safeFileName = "user_" + sessionUser.getId() + "_" + UUID.randomUUID() + extension;
+            Path destination = profileDir.resolve(safeFileName);
+            Files.copy(photo.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+            String profileImageUrl = "/uploads/profiles/" + safeFileName;
+            dbUser.setProfileImageUrl(profileImageUrl);
+
+            User savedUser = userRepository.save(dbUser);
+            session.setAttribute("user", savedUser);
+
+            ProfileResponse response = new ProfileResponse();
+            response.setId(savedUser.getId());
+            response.setName(savedUser.getName());
+            response.setEmail(savedUser.getEmail());
+            response.setPhone(savedUser.getPhone());
+            response.setAddress(savedUser.getAddress());
+            response.setIdRole(savedUser.getRole() != null ? savedUser.getRole().getIdRole() : null);
+            response.setProfileImageUrl(savedUser.getProfileImageUrl());
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            log.error("Error subiendo foto de perfil para usuario {}", sessionUser.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("No se pudo guardar la foto de perfil"));
+        }
     }
 
     /**
@@ -515,6 +602,12 @@ public class LoginController {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new ErrorResponse("No hay sesión activa"));
+        }
+
+        User dbUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (dbUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("Usuario no encontrado"));
         }
 
         if (request.getName() == null || request.getName().isBlank()) {
@@ -545,18 +638,17 @@ public class LoginController {
         }
 
         String normalizedEmail = request.getEmail().trim().toLowerCase();
-        User existingByEmail = userRepository.findByEmail(normalizedEmail).orElse(null);
-        if (existingByEmail != null && !existingByEmail.getId().equals(sessionUser.getId())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponse("Ese correo electrónico ya está en uso"));
+        String currentEmail = dbUser.getEmail() != null ? dbUser.getEmail().trim().toLowerCase() : "";
+        if (!normalizedEmail.equals(currentEmail)) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("El correo electrónico no se puede editar"));
         }
 
-        sessionUser.setName(request.getName().trim());
-        sessionUser.setEmail(normalizedEmail);
-        sessionUser.setPhone(normalizedPhone);
-        sessionUser.setAddress(normalizedAddress);
+        dbUser.setName(request.getName().trim());
+        dbUser.setEmail(currentEmail);
+        dbUser.setPhone(normalizedPhone);
+        dbUser.setAddress(normalizedAddress);
 
-        User savedUser = userRepository.save(sessionUser);
+        User savedUser = userRepository.save(dbUser);
         session.setAttribute("user", savedUser);
 
         ProfileResponse response = new ProfileResponse();
@@ -566,6 +658,7 @@ public class LoginController {
         response.setPhone(savedUser.getPhone());
         response.setAddress(savedUser.getAddress());
         response.setIdRole(savedUser.getRole() != null ? savedUser.getRole().getIdRole() : null);
+        response.setProfileImageUrl(savedUser.getProfileImageUrl());
 
         return ResponseEntity.ok(response);
     }
@@ -584,6 +677,12 @@ public class LoginController {
                     .body(new ErrorResponse("No hay sesión activa"));
         }
 
+        User dbUser = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (dbUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse("Usuario no encontrado"));
+        }
+
         if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
             return ResponseEntity.badRequest().body(new ErrorResponse("La contraseña actual es obligatoria"));
         }
@@ -596,13 +695,14 @@ public class LoginController {
             return ResponseEntity.badRequest().body(new ErrorResponse("La nueva contraseña debe tener mínimo 6 caracteres"));
         }
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), sessionUser.getPassword())) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), dbUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ErrorResponse("La contraseña actual no es correcta"));
         }
 
-        sessionUser.setPassword(passwordEncoder.encode(request.getNewPassword().trim()));
-        userRepository.save(sessionUser);
+        dbUser.setPassword(passwordEncoder.encode(request.getNewPassword().trim()));
+        User savedUser = userRepository.save(dbUser);
+        session.setAttribute("user", savedUser);
 
         return ResponseEntity.ok(new MessageResponse("Contraseña actualizada correctamente"));
     }
@@ -924,6 +1024,7 @@ public class LoginController {
         private String status;
         private String message;
         private String redirect;
+        private String profileImageUrl;
 
         // Getters y Setters
         public Long getId() {
@@ -981,6 +1082,14 @@ public class LoginController {
         public void setRedirect(String redirect) {
             this.redirect = redirect;
         }
+
+        public String getProfileImageUrl() {
+            return profileImageUrl;
+        }
+
+        public void setProfileImageUrl(String profileImageUrl) {
+            this.profileImageUrl = profileImageUrl;
+        }
     }
 
     /**
@@ -992,6 +1101,7 @@ public class LoginController {
         private String email;
         private Long idRole;
         private String message;
+        private String profileImageUrl;
 
         // Getters y Setters
         public Long getId() {
@@ -1033,6 +1143,14 @@ public class LoginController {
         public void setMessage(String message) {
             this.message = message;
         }
+
+        public String getProfileImageUrl() {
+            return profileImageUrl;
+        }
+
+        public void setProfileImageUrl(String profileImageUrl) {
+            this.profileImageUrl = profileImageUrl;
+        }
     }
 
     public static class ProfileResponse {
@@ -1042,6 +1160,7 @@ public class LoginController {
         private String phone;
         private String address;
         private Long idRole;
+        private String profileImageUrl;
 
         public Long getId() {
             return id;
@@ -1089,6 +1208,14 @@ public class LoginController {
 
         public void setIdRole(Long idRole) {
             this.idRole = idRole;
+        }
+
+        public String getProfileImageUrl() {
+            return profileImageUrl;
+        }
+
+        public void setProfileImageUrl(String profileImageUrl) {
+            this.profileImageUrl = profileImageUrl;
         }
     }
 

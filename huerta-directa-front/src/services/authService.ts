@@ -6,6 +6,7 @@ export interface User {
   name: string;
   email: string;
   idRole: number | null;
+  profileImageUrl?: string;
 }
 
 export interface LoginResponse {
@@ -13,6 +14,7 @@ export interface LoginResponse {
   name: string;
   email: string;
   idRole: number | null;
+  profileImageUrl?: string;
   status: string;
   message: string;
   redirect?: string;
@@ -23,6 +25,7 @@ export interface RegisterResponse {
   name: string;
   email: string;
   idRole: number | null;
+  profileImageUrl?: string;
   message: string;
 }
 
@@ -37,6 +40,7 @@ export interface ProfileResponse {
   phone: string;
   address: string;
   idRole: number | null;
+  profileImageUrl?: string;
 }
 
 export interface UpdateProfilePayload {
@@ -78,6 +82,7 @@ class AuthService {
       name: data.name,
       email: data.email,
       idRole: data.idRole,
+      profileImageUrl: data.profileImageUrl,
     });
 
     return data;
@@ -108,6 +113,7 @@ class AuthService {
         name: data.name,
         email: data.email,
         idRole: data.idRole,
+        profileImageUrl: data.profileImageUrl,
       });
     }
 
@@ -158,6 +164,7 @@ class AuthService {
           phone: '',
           address: '',
           idRole: sessionUser.idRole,
+          profileImageUrl: sessionUser.profileImageUrl,
         };
       }
 
@@ -192,6 +199,7 @@ class AuthService {
         name: data.name,
         email: data.email,
         idRole: data.idRole,
+        profileImageUrl: data.profileImageUrl,
       });
 
       return data;
@@ -226,6 +234,41 @@ class AuthService {
 
     const message = await this.extractErrorMessage(response, 'No se pudo cambiar la contraseña');
     throw new Error(message);
+  }
+
+  /**
+   * Subir foto de perfil del usuario autenticado
+   */
+  async uploadProfilePhoto(photo: File): Promise<ProfileResponse> {
+    const formData = new FormData();
+    formData.append('photo', photo);
+
+    const response = await this.safeFetch(`${this.BASE_URL}/api/login/profile/photo`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('El backend local que está corriendo no tiene el endpoint para subir foto de perfil. Reinicia la aplicación Spring Boot local.');
+      }
+      const message = await this.extractErrorMessage(response, 'No se pudo subir la foto de perfil');
+      throw new Error(message);
+    }
+
+    const data = (await response.json()) as ProfileResponse;
+    const currentUser = this.getCurrentUser();
+
+    this.saveUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      idRole: data.idRole,
+      profileImageUrl: data.profileImageUrl ?? currentUser?.profileImageUrl,
+    });
+
+    return data;
   }
 
   private async extractErrorMessage(response: Response, fallback: string): Promise<string> {
@@ -294,6 +337,7 @@ class AuthService {
         name: data.name,
         email: data.email,
         idRole: data.idRole,
+        profileImageUrl: data.profileImageUrl,
       });
 
       return data;
