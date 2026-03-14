@@ -26,6 +26,7 @@ interface Product {
   averageRating?: number;
   images?: string[];
   isFavorite?: boolean;
+  discountOffer?: number;
 }
 
 interface Props {
@@ -39,6 +40,11 @@ const ProductCard = ({ product }: Props) => {
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const hasStock = product.stock && product.stock > 0;
   const isOwner = false;
+
+  const hasDiscount = product.discountOffer && product.discountOffer > 0;
+  const discountedPrice = hasDiscount
+    ? product.price * (1 - product.discountOffer! / 100)
+    : product.price;
 
   const allImages = [product.image, ...(product.images || [])];
 
@@ -93,9 +99,9 @@ const ProductCard = ({ product }: Props) => {
       id: product.id,
       nombre: product.name,
       descripcion: "",
-      precio: product.price,
+      precio: discountedPrice,
       cantidad: 1,
-      subtotal: product.price,
+      subtotal: discountedPrice,
       imagen: product.image,
     });
   };
@@ -167,6 +173,15 @@ const ProductCard = ({ product }: Props) => {
           />
         </div>
 
+        {/* Badge de Descuento */}
+        {hasDiscount && (
+          <div className="absolute top-4 left-4 z-10">
+            <div className="bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-lg">
+              -{product.discountOffer}% OFF
+            </div>
+          </div>
+        )}
+
         {/* Stock badge */}
         <div className="absolute bottom-4 left-4 z-10">
           {hasStock ? (
@@ -206,17 +221,20 @@ const ProductCard = ({ product }: Props) => {
           
           {/* Precio */}
           <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-stone-400 dark:text-zinc-400">
-              Precio actual
-            </span>
-
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-stone-700 dark:text-white">
-                {product.price.toLocaleString()}
-              </span>
-              <span className="text-[15px] font-medium text-stone-400 dark:text-zinc-400">
-                / COP
-              </span>
+            <div className="flex flex-col gap-0.5">
+              {hasDiscount && (
+                <span className="text-sm font-bold text-stone-300 dark:text-zinc-500 line-through leading-none">
+                  ${product.price.toLocaleString()}
+                </span>
+              )}
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-bold text-[#8bc34a] dark:text-[#a2d16c]">
+                  ${discountedPrice.toLocaleString()}
+                </span>
+                <span className="text-[15px] font-medium text-stone-400 dark:text-zinc-400">
+                  / COP
+                </span>
+              </div>
             </div>
           </div>
 

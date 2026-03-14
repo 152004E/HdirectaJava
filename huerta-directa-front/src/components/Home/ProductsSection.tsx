@@ -13,6 +13,7 @@ interface Product {
   category?: string;
   reviewCount?: number;
   averageRating?: number;
+  discountOffer?: number;
 }
 
 export const ProductsSection = () => {
@@ -32,6 +33,7 @@ export const ProductsSection = () => {
           stock: p.stock,
           reviewCount: p.reviewCount,
           averageRating: p.averageRating,
+          discountOffer: p.discountOffer,
         }));
 
         setProducts(mappedProducts);
