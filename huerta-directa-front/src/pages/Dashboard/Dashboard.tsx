@@ -5,17 +5,20 @@ import {
 
   //faUpload,
 } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 import { usePageTitle } from "../../hooks/usePageTitle";
 
 // Reusable components
 import { Button } from "../../components/GlobalComponents/Button";
 import { Modal } from "../../components/GlobalComponents/Modal";
 import { EditProductModal } from "../../components/Modals/EditProductModal";
+import { OfferProductModal } from "../../components/Modals/OfferProductModal";
 import { InsightsGrid } from "../../components/Dashboard/PanelDeControl/InsightsGrid";
 import { DashboardAside } from "../../components/Dashboard/PanelDeControl/DashboardAside";
 import { ProductManager } from "../../components/Dashboard/PanelDeControl/ProductManager";
 
 import type { Product } from "../../types/Product";
+import { updateProduct } from "../../services/productService";
 import { useProducts } from "../../hooks/Productos/useProducts";
 
 interface InsightItem {
@@ -34,6 +37,7 @@ export const Dashboard: React.FC = () => {
   const [category, setCategory] = useState("");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] = useState<{
@@ -125,13 +129,51 @@ export const Dashboard: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveProduct = (updatedProduct: Product) => {
-    setProducts(
-      products.map((p) =>
-        p.idProduct === updatedProduct.idProduct ? updatedProduct : p,
-      ),
-    );
-    setIsEditModalOpen(false);
+  const handleSaveProduct = async (updatedProduct: Product) => {
+    try {
+      await updateProduct(updatedProduct.idProduct, updatedProduct);
+      setProducts(
+        products.map((p) =>
+          p.idProduct === updatedProduct.idProduct ? updatedProduct : p,
+        ),
+      );
+      setIsEditModalOpen(false);
+      Swal.fire({
+        icon: "success",
+        title: "Producto actualizado",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo actualizar el producto", "error");
+    }
+  };
+
+  const handleOpenOfferModal = (product: Product) => {
+    setSelectedProduct(product);
+    setIsOfferModalOpen(true);
+  };
+
+  const handleApplyOffer = async (updatedProduct: Product) => {
+    try {
+      await updateProduct(updatedProduct.idProduct, updatedProduct);
+      setProducts(
+        products.map((p) =>
+          p.idProduct === updatedProduct.idProduct ? updatedProduct : p,
+        ),
+      );
+      setIsOfferModalOpen(false);
+      Swal.fire({
+        icon: "success",
+        title: "Oferta aplicada",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "No se pudo aplicar la oferta", "error");
+    }
   };
 
   return (
@@ -156,6 +198,7 @@ export const Dashboard: React.FC = () => {
             viewMode={viewMode}
             setViewMode={setViewMode}
             handleEditProduct={handleEditProduct}
+            handleOpenOfferModal={handleOpenOfferModal}
             handleDeleteProduct={removeProduct}
             handleExportExcel={handleExportExcel}
             handleExportPdf={handleExportPdf}
@@ -209,6 +252,14 @@ export const Dashboard: React.FC = () => {
         onClose={() => setIsEditModalOpen(false)}
         product={selectedProduct}
         onSave={handleSaveProduct}
+      />
+
+      {/* Offer Product Modal */}
+      <OfferProductModal
+        isOpen={isOfferModalOpen}
+        onClose={() => setIsOfferModalOpen(false)}
+        product={selectedProduct}
+        onSave={handleApplyOffer}
       />
     </div>
   );
