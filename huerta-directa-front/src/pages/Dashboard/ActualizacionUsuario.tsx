@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faUser, faEnvelope, faCamera, faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "../../components/GlobalComponents/Button";
@@ -6,6 +6,7 @@ import { usePageTitle } from "../../hooks/usePageTitle";
 import { PasswordInput } from "../../components/GlobalComponents/PasswordInput";
 import authService from "../../services/authService";
 import Swal from "sweetalert2";
+import { API_URL } from "../../config/api";
 
 export const ActualizacionUsuario: React.FC = () => {
     usePageTitle("Mi Perfil");
@@ -21,6 +22,9 @@ export const ActualizacionUsuario: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [savingProfile, setSavingProfile] = useState(false);
     const [savingPassword, setSavingPassword] = useState(false);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
+    const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const phoneRegex = /^\d{10}$/;
     const addressRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s#.,\-_/()]+$/;
@@ -35,6 +39,7 @@ export const ActualizacionUsuario: React.FC = () => {
                     fullName: localSessionUser.name ?? prev.fullName,
                     email: localSessionUser.email ?? prev.email
                 }));
+                setProfileImageUrl(localSessionUser.profileImageUrl ?? "");
             }
 
             try {
@@ -46,6 +51,7 @@ export const ActualizacionUsuario: React.FC = () => {
                     phone: profile.phone ?? "",
                     address: profile.address ?? ""
                 }));
+                setProfileImageUrl(profile.profileImageUrl ?? localSessionUser?.profileImageUrl ?? "");
             } catch (error: any) {
                 if (!localSessionUser) {
                     await Swal.fire({
@@ -72,6 +78,59 @@ export const ActualizacionUsuario: React.FC = () => {
         }
 
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const getProfileImageSrc = (imageUrl: string) => {
+        if (!imageUrl) return "";
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+            return imageUrl;
+        }
+        return `${API_URL}${imageUrl}`;
+    };
+
+    const handleProfilePhotoSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            await Swal.fire({
+                icon: "warning",
+                title: "Archivo inválido",
+                text: "Selecciona una imagen válida."
+            });
+            return;
+        }
+
+        setUploadingPhoto(true);
+
+        try {
+            const updatedProfile = await authService.uploadProfilePhoto(file);
+            const nextImageUrl = updatedProfile.profileImageUrl ?? "";
+            setProfileImageUrl(nextImageUrl);
+
+            window.dispatchEvent(new CustomEvent("profile-photo-updated", {
+                detail: { profileImageUrl: nextImageUrl }
+            }));
+
+            await Swal.fire({
+                icon: "success",
+                title: "Foto actualizada",
+                text: "Tu foto de perfil se guardó correctamente."
+            });
+        } catch (error: any) {
+            await Swal.fire({
+                icon: "error",
+                title: "No se pudo subir la foto",
+                text: error?.message ?? "Intenta de nuevo"
+            });
+        } finally {
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
+            setUploadingPhoto(false);
+        }
     };
 
     const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -214,9 +273,29 @@ export const ActualizacionUsuario: React.FC = () => {
                     <div className="bg-white p-8 rounded-4xl shadow-sm border border-gray-100 flex flex-col items-center text-center gap-4">
                         <div className="relative group">
                             <div className="w-32 h-32 rounded-3xl bg-gray-100 flex items-center justify-center text-gray-300 relative overflow-hidden">
-                                <FontAwesomeIcon icon={faUser} size="4x" />
+                                {profileImageUrl ? (
+                                    <img
+                                        src={getProfileImageSrc(profileImageUrl)}
+                                        alt="Foto de perfil"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <FontAwesomeIcon icon={faUser} size="4x" />
+                                )}
                             </div>
-                            <button className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#8dc84b] text-white rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transition-all">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleProfilePhotoSelected}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={uploadingPhoto}
+                                className="absolute -bottom-2 -right-2 w-10 h-10 bg-[#8dc84b] text-white rounded-xl flex items-center justify-center shadow-lg hover:scale-110 transition-all disabled:opacity-60"
+                            >
                                 <FontAwesomeIcon icon={faCamera} size="sm" />
                             </button>
                         </div>
@@ -265,7 +344,9 @@ export const ActualizacionUsuario: React.FC = () => {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-[#8dc84b]/30 transition-all" 
+                                        readOnly
+                                        title="El correo electrónico no se puede editar"
+                                        className="w-full pl-12 pr-4 py-4 bg-gray-100 border-none rounded-2xl outline-none cursor-not-allowed" 
                                     />
                                 </div>
                             </div>
