@@ -11,6 +11,7 @@ import {
   faCloudArrowUp,
   faPen,
   faTrash,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { API_URL } from "../../../config/api";
 
@@ -28,6 +29,7 @@ interface Props {
   setViewMode: (mode: "list" | "grid") => void;
 
   handleEditProduct: (product: Product) => void;
+  handleOpenOfferModal: (product: Product) => void;
   handleExportExcel: () => void;
   handleExportPdf: () => void;
   setIsUploadModalOpen: (value: boolean) => void;
@@ -42,6 +44,7 @@ export const ProductManager: React.FC<Props> = ({
   viewMode,
   setViewMode,
   handleEditProduct,
+  handleOpenOfferModal,
   handleExportExcel,
   handleExportPdf,
   setIsUploadModalOpen,
@@ -184,6 +187,15 @@ export const ProductManager: React.FC<Props> = ({
                   <td className="py-5 px-4">
                     <div className="flex justify-center gap-2">
                       <button
+                        onClick={() => handleOpenOfferModal(p)}
+                        className="w-9 h-9 rounded-lg bg-orange-50 dark:bg-[#101922] text-orange-500
+                    hover:bg-orange-500 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
+                        title="Aplicar Oferta"
+                      >
+                        <FontAwesomeIcon icon={faTag} />
+                      </button>
+
+                      <button
                         onClick={() => handleEditProduct(p)}
                         className="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#101922] text-[#8dc84b]
                     hover:bg-[#8dc84b] hover:text-white flex items-center justify-center cursor-pointer"
@@ -255,6 +267,15 @@ export const ProductManager: React.FC<Props> = ({
               </div>
 
               <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => handleOpenOfferModal(p)}
+                  className="w-10 h-9 rounded-lg bg-orange-50 dark:bg-[#101922] cursor-pointer
+              text-orange-500 hover:bg-orange-500 hover:text-white transition-all font-bold flex items-center justify-center"
+                  title="Aplicar Oferta"
+                >
+                  <FontAwesomeIcon icon={faTag} />
+                </button>
+
                 <button
                   onClick={() => handleEditProduct(p)}
                   className="flex-1 py-2 rounded-xl bg-gray-50 dark:bg-[#101922] cursor-pointer
