@@ -195,7 +195,7 @@ export const ProductManager: React.FC<Props> = ({
                         text=""
                         iconLetf={faTrash}
                         onClick={() => handleDeleteProduct(p.idProduct)}
-                        className="w-9 h-9 gap-0! rounded-lg bg-red-50 dark:bg-red-50 text-red-800 dark:text-red-400 hover:bg-red-600 hover:text-white transition-colors"
+                        className="w-9 h-9 gap-0! rounded-lg bg-red-50 dark:bg-[#101922] text-black! dark:text-white! hover:bg-red-600 hover:text-white transition-colors"
                       />
                     </div>
                   </td>
@@ -263,12 +263,12 @@ export const ProductManager: React.FC<Props> = ({
                   Editar
                 </button>
 
-                <Button
-                  text=""
-                  iconLetf={faTrash}
-                  onClick={() => handleDeleteProduct(p.idProduct)}
-                  className="w-9 h-9 gap-0! rounded-lg bg-red-50 dark:bg-[#101922] text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-colors"
-                />
+                 <Button
+                        text=""
+                        iconLetf={faTrash}
+                        onClick={() => handleDeleteProduct(p.idProduct)}
+                        className="w-9 h-9 gap-0! rounded-lg bg-red-50 dark:bg-[#101922] text-black! dark:text-white! hover:bg-red-600 hover:text-white transition-colors"
+                      />
               </div>
             </div>
           ))}
