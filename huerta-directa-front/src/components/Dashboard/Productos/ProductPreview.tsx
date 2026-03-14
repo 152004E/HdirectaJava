@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SinImagenHuerta from "../../../assets/SinImagenHuerta.png";
 import {
   faChevronLeft,
   faChevronRight,
-  faBoxOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface ProductPreviewProps {
@@ -57,12 +57,13 @@ export const ProductPreview: React.FC<ProductPreviewProps> = ({
             )}
           </>
         ) : (
-          <div className="w-full h-full bg-gray-50 dark:bg-[#111712] border-b border-gray-100 dark:border-slate-700 flex items-center justify-center">
-            <FontAwesomeIcon
-              icon={faBoxOpen}
-              className="text-6xl text-gray-200 dark:text-gray-500"
-            />
-          </div>
+          <div className="w-full h-full bg-gray-50 dark:bg-[#111712] border-b border-gray-100 dark:border-slate-700">
+  <img
+    src={SinImagenHuerta}
+    alt="Sin imagen"
+    className="w-full h-full object-cover opacity-80"
+  />
+</div>
         )}
       </div>
 

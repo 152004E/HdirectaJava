@@ -1,6 +1,7 @@
 import React from "react";
 import type { Product } from "../../../types/Product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SinImagenHuerta from "../../../assets/SinImagenHuerta.png";
 import {
   faMagnifyingGlass,
   faBorderAll,
@@ -11,6 +12,7 @@ import {
   faPen,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { API_URL } from "../../../config/api";
 
 import { Button } from "../../GlobalComponents/Button";
 
@@ -44,7 +46,7 @@ export const ProductManager: React.FC<Props> = ({
   setIsUploadModalOpen,
 }) => {
   return (
-    <section className="bg-white dark:bg-[#1A221C] p-8 rounded-3xl shadow-sm mb-8 border border-gray-100 dark:border-[#24302A]">
+    <section className="bg-white pb-42 dark:bg-[#1A221C] p-8 rounded-3xl shadow-sm mb-8 border border-gray-100 dark:border-[#24302A]">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -198,22 +200,21 @@ export const ProductManager: React.FC<Props> = ({
           </table>
         </div>
       ) : (
-        /* GRID */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        /* GRID  SQUARE*/
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {filteredProducts.map((p) => (
             <div
               key={p.idProduct}
-              className="bg-white dark:bg-[#1A221C] border-2 border-gray-100 dark:border-[#24302A]
+              className="bg-white dark:bg-[#1c2c21] border-2 border-gray-100 dark:border-[#24302A]
           rounded-3xl p-6 flex flex-col gap-4 hover:border-[#8dc84b] hover:shadow-lg transition-all duration-300"
             >
               <div className="relative w-full h-40 overflow-hidden rounded-2xl bg-gray-50 dark:bg-[#101922]">
                 <img
-                  src={`/uploads/productos/${(p as any).imageProduct}`}
+                  src={`${API_URL}/uploads/productos/${p.imageProduct}`}
                   alt={p.nameProduct}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://via.placeholder.com/400x300?text=Sin+Imagen";
+                    e.currentTarget.src = SinImagenHuerta;
                   }}
                 />
               </div>
