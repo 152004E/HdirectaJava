@@ -6,7 +6,7 @@ export const useProductForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    category: "Frutas",
+    category: "",
     description: "",
     stock: "",
   });
@@ -21,17 +21,45 @@ export const useProductForm = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Producto publicado correctamente",
+        title: "Producto publicado",
+        text: "Tu producto ya está disponible en la plataforma",
+        timer: 2000,
         showConfirmButton: false,
-        timer: 1800,
+
+        background: "#24302A",
+        color: "#ffffff",
+
+        customClass: {
+          popup: "rounded-3xl shadow-2xl",
+          title: "text-2xl font-black",
+        },
+
+        iconColor: "#8dc84b",
       });
 
       return result;
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Error",
+        title: "Perfil incompleto",
         text: error.message,
+        showCancelButton: true,
+        confirmButtonText: "Ir a mi perfil",
+        cancelButtonText: "Entendido",
+
+        confirmButtonColor: "#8dc84b",
+        cancelButtonColor: "#6b7280",
+
+        customClass: {
+          popup: "rounded-3xl",
+          title: "text-xl font-bold",
+          confirmButton: "px-6 py-3 rounded-xl font-bold",
+          cancelButton: "px-6 py-3 rounded-xl font-bold",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/actualizacionUsuario";
+        }
       });
 
       throw error;
