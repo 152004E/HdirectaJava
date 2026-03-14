@@ -76,14 +76,14 @@ export const Dashboard: React.FC = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.append("buscar", searchTerm);
     if (category) params.append("categoria", category);
-    window.location.href = `/exportar_productos_excel?${params.toString()}`;
+    window.location.href = `/api/products/exportExcel?${params.toString()}`;
   };
 
   const handleExportPdf = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.append("buscar", searchTerm);
     if (category) params.append("categoria", category);
-    window.location.href = `/exportar_productos_pdf?${params.toString()}`;
+    window.location.href = `/api/products/exportPdf?${params.toString()}`;
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
