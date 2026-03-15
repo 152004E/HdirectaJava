@@ -100,4 +100,4 @@ Ahora los usuarios pueden hacer login **directamente** sin necesidad de códigos
 ---
 
 **Última actualización:** 2026-03-15
-**Estado actual:** 2FA DESACTIVADO para presentación
+**Estado actual:** ✅ 2FA ACTIVADO - Verificación por correo/teléfono funcionando
