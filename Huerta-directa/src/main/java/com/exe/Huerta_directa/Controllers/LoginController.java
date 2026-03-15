@@ -45,20 +45,6 @@ public class LoginController {
     private final UserRepository userRepository;
     @Value("${upload.path:C:/HuertaUploads}")
     private String uploadPath;
-
-    // Configuración de email desde properties
-    @Value("${mail.smtp.host}")
-    private String emailHost;
-
-    @Value("${mail.smtp.port}")
-    private String emailPort;
-
-    @Value("${mail.smtp.username}")
-    private String senderEmail;
-
-    @Value("${mail.smtp.password}")
-    private String senderPassword;
-
     // logger
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
@@ -68,24 +54,30 @@ public class LoginController {
         this.userService = userService;
     }
 
+    private static final String EMAIL_HOST = "smtp.gmail.com";
+    private static final String EMAIL_PORT = "587";
+    private static final String SENDER_EMAIL = "hdirecta@gmail.com";
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\d{10}$");
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s#.,\\-_/()]+$");
     private static final int EMAIL_CODE_LENGTH = 6;
     private static final long EMAIL_CODE_TTL_SECONDS = 300L;
     private static final int EMAIL_MAX_ATTEMPTS = 5;
     private static final SecureRandom OTP_RANDOM = new SecureRandom();
+    // Nota: la contraseña de aplicación idealmente debe guardarse en
+    // properties/secret manager
+    private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
 
     // Metodo para crear la sesion de correo
     private Session crearSesionCorreo() {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", emailHost);
-        props.put("mail.smtp.port", emailPort);
-        props.put("mail.smtp.ssl.trust", emailHost);
+        props.put("mail.smtp.host", EMAIL_HOST);
+        props.put("mail.smtp.port", EMAIL_PORT);
+        props.put("mail.smtp.ssl.trust", EMAIL_HOST);
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderEmail, senderPassword);
+                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
             }
         });
     }
@@ -184,7 +176,7 @@ public class LoginController {
     private void enviarCorreoConfirmacion(String nombre, String email) throws MessagingException {
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderEmail));
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
         message.setSubject("Registro exitoso en Huerta Directa");
         // Crear el contenido HTML del correo
@@ -869,7 +861,7 @@ public class LoginController {
             throws MessagingException {
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderEmail));
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
         message.setSubject("Tu nueva contraseña - Huerta Directa");
         String htmlContent = crearContenidoHTMLNuevaContrasena(nombre, nuevaContrasena);
@@ -1318,7 +1310,7 @@ public class LoginController {
     private void enviarCorreoIndividual(String destinatario, String asunto, String cuerpo) throws MessagingException {
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderEmail));
+        message.setFrom(new InternetAddress(SENDER_EMAIL));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
         message.setSubject(asunto);
         message.setContent(cuerpo, "text/html; charset=utf-8");
