@@ -3,6 +3,7 @@ package com.exe.Huerta_directa.Controllers;
 import com.exe.Huerta_directa.DTO.PaymentRequest;
 import com.exe.Huerta_directa.Impl.MercadoPagoServicePaymentRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import com.exe.Huerta_directa.DTO.CarritoItem;
 import com.exe.Huerta_directa.Service.ProductService;
@@ -29,12 +30,19 @@ public class PaymentController {
     private final MercadoPagoServicePaymentRequest mercadoPagoService;
     private final ProductService productService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    
-    // Constantes para email (igual que en UserController)
-    private static final String EMAIL_HOST = "smtp.gmail.com";
-    private static final String EMAIL_PORT = "587";
-    private static final String SENDER_EMAIL = "hdirecta@gmail.com";
-    private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
+
+    // Configuración de email desde properties
+    @Value("${mail.smtp.host}")
+    private String emailHost;
+
+    @Value("${mail.smtp.port}")
+    private String emailPort;
+
+    @Value("${mail.smtp.username}")
+    private String senderEmail;
+
+    @Value("${mail.smtp.password}")
+    private String senderPassword;
 
 
     @PostMapping("/process")
@@ -165,11 +173,11 @@ public class PaymentController {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", EMAIL_HOST);
-        props.put("mail.smtp.port", EMAIL_PORT);
+        props.put("mail.smtp.host", emailHost);
+        props.put("mail.smtp.port", emailPort);
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+                return new PasswordAuthentication(senderEmail, senderPassword);
             }
         });
     }
@@ -180,7 +188,7 @@ public class PaymentController {
     private void enviarCorreoIndividual(String destinatario, String asunto, String cuerpo) throws MessagingException {
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setFrom(new InternetAddress(senderEmail));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
         message.setSubject(asunto);
 

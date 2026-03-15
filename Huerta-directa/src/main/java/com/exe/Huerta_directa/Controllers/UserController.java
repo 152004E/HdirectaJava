@@ -26,6 +26,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,13 +56,19 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final ProductService productService;
-    // Constantes para email centralizadas para evitar duplicación
-    private static final String EMAIL_HOST = "smtp.gmail.com";
-    private static final String EMAIL_PORT = "587";
-    private static final String SENDER_EMAIL = "hdirecta@gmail.com";
-    // Nota: la contraseña de aplicación idealmente debe guardarse en
-    // properties/secret manager
-    private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
+
+    // Configuración de email desde properties
+    @Value("${mail.smtp.host}")
+    private String emailHost;
+
+    @Value("${mail.smtp.port}")
+    private String emailPort;
+
+    @Value("${mail.smtp.username}")
+    private String senderEmail;
+
+    @Value("${mail.smtp.password}")
+    private String senderPassword;
 
     public UserController(UserService userService, UserRepository userRepository, ProductService productService) {
         this.userRepository = userRepository;
@@ -564,11 +571,11 @@ public class UserController {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", EMAIL_HOST);
-        props.put("mail.smtp.port", EMAIL_PORT);
+        props.put("mail.smtp.host", emailHost);
+        props.put("mail.smtp.port", emailPort);
         return Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+                return new PasswordAuthentication(senderEmail, senderPassword);
             }
         });
     }
@@ -807,8 +814,8 @@ public class UserController {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", EMAIL_HOST);
-        props.put("mail.smtp.port", EMAIL_PORT);
+        props.put("mail.smtp.host", emailHost);
+        props.put("mail.smtp.port", emailPort);
         // Optimizaciones de rendimiento
         props.put("mail.smtp.connectionpoolsize", "10");
         props.put("mail.smtp.connectionpooltimeout", "30000");
@@ -817,12 +824,12 @@ public class UserController {
         
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+                return new PasswordAuthentication(senderEmail, senderPassword);
             }
         });
         
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setFrom(new InternetAddress(senderEmail));
         
         // Agregar todos los destinatarios usando BCC
         InternetAddress[] destinatarios = new InternetAddress[users.size()];
@@ -846,7 +853,7 @@ public class UserController {
     private void enviarCorreoIndividual(String destinatario, String asunto, String cuerpo) throws MessagingException {
         Session session = crearSesionCorreo();
         MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(SENDER_EMAIL));
+        message.setFrom(new InternetAddress(senderEmail));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
         message.setSubject(asunto);
 
