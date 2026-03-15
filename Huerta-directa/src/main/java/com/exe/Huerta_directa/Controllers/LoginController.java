@@ -337,41 +337,39 @@ public class LoginController {
                     user.getRole() != null ? user.getRole().getIdRole() : "sin rol");
 
             // ============================================================================
-            // TEMPORAL PRESENTACIÓN - VERIFICACIÓN 2FA DESACTIVADA
+            // VERIFICACIÓN 2FA ACTIVADA
             // ============================================================================
-            // Para reactivar después de la presentación:
-            // 1. Comenta las líneas 339-362 (login directo)
-            // 2. Descomenta las líneas 364-372 (flujo 2FA original)
+            // Flujo de verificación en 2 pasos: el usuario elige el canal (correo/teléfono)
+            // y recibe un código de verificación antes de completar el login
             // ============================================================================
 
-            // LOGIN DIRECTO (SIN VERIFICACIÓN) - TEMPORAL PARA PRESENTACIÓN
-            session.setAttribute("user", user);
-            session.setAttribute("userId", user.getId());
-            session.setAttribute("userRole", user.getRole() != null ? user.getRole().getIdRole() : null);
+            session.setAttribute("pendingUser", user);
+            clearPendingEmailCode(session);
 
-            LoginResponse response = new LoginResponse();
-            response.setStatus("success");
-            response.setMessage("Login exitoso");
-            response.setId(user.getId());
-            response.setName(user.getName());
-            response.setEmail(user.getEmail());
-            response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
-            response.setRedirect(getRedirectUrlByRole(user.getRole() != null ? user.getRole().getIdRole() : null));
-
-            return ResponseEntity.ok(response);
+            LoginResponse verifyResponse = new LoginResponse();
+            verifyResponse.setStatus("choose-channel");
+            verifyResponse.setMessage("Selecciona cómo deseas recibir el código");
+            verifyResponse.setMaskedEmail(maskEmail(user.getEmail()));
+            verifyResponse.setHasPhone(user.getPhone() != null && !user.getPhone().isBlank());
+            return ResponseEntity.ok(verifyResponse);
 
             // ============================================================================
-            // FLUJO 2FA ORIGINAL (DESACTIVADO TEMPORALMENTE)
+            // LOGIN DIRECTO (DESACTIVADO - Solo usar para presentaciones sin 2FA)
             // ============================================================================
-            // session.setAttribute("pendingUser", user);
-            // clearPendingEmailCode(session);
+            // session.setAttribute("user", user);
+            // session.setAttribute("userId", user.getId());
+            // session.setAttribute("userRole", user.getRole() != null ? user.getRole().getIdRole() : null);
             //
-            // LoginResponse verifyResponse = new LoginResponse();
-            // verifyResponse.setStatus("choose-channel");
-            // verifyResponse.setMessage("Selecciona cómo deseas recibir el código");
-            // verifyResponse.setMaskedEmail(maskEmail(user.getEmail()));
-            // verifyResponse.setHasPhone(user.getPhone() != null && !user.getPhone().isBlank());
-            // return ResponseEntity.ok(verifyResponse);
+            // LoginResponse response = new LoginResponse();
+            // response.setStatus("success");
+            // response.setMessage("Login exitoso");
+            // response.setId(user.getId());
+            // response.setName(user.getName());
+            // response.setEmail(user.getEmail());
+            // response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+            // response.setRedirect(getRedirectUrlByRole(user.getRole() != null ? user.getRole().getIdRole() : null));
+            //
+            // return ResponseEntity.ok(response);
             // ============================================================================
 
         } catch (Exception e) {
