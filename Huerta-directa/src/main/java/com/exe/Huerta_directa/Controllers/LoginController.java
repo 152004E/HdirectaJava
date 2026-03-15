@@ -331,20 +331,47 @@ public class LoginController {
                         .body(new ErrorResponse("Correo o contraseña incorrectos"));
             }
 
-            log.info("Login exitoso para el usuario: {} con rol: {}", 
-                    user.getEmail(), 
+            log.info("Login exitoso para el usuario: {} con rol: {}",
+                    user.getEmail(),
                     user.getRole() != null ? user.getRole().getIdRole() : "sin rol");
 
-            // Flujo 2FA: primer paso, elegir canal de verificación
-            session.setAttribute("pendingUser", user);
-            clearPendingEmailCode(session);
+            // ============================================================================
+            // TEMPORAL PRESENTACIÓN - VERIFICACIÓN 2FA DESACTIVADA
+            // ============================================================================
+            // Para reactivar después de la presentación:
+            // 1. Comenta las líneas 339-362 (login directo)
+            // 2. Descomenta las líneas 364-372 (flujo 2FA original)
+            // ============================================================================
 
-            LoginResponse verifyResponse = new LoginResponse();
-            verifyResponse.setStatus("choose-channel");
-            verifyResponse.setMessage("Selecciona cómo deseas recibir el código");
-            verifyResponse.setMaskedEmail(maskEmail(user.getEmail()));
-            verifyResponse.setHasPhone(user.getPhone() != null && !user.getPhone().isBlank());
-            return ResponseEntity.ok(verifyResponse);
+            // LOGIN DIRECTO (SIN VERIFICACIÓN) - TEMPORAL PARA PRESENTACIÓN
+            session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("userRole", user.getRole() != null ? user.getRole().getIdRole() : null);
+
+            LoginResponse response = new LoginResponse();
+            response.setStatus("success");
+            response.setMessage("Login exitoso");
+            response.setId(user.getId());
+            response.setName(user.getName());
+            response.setEmail(user.getEmail());
+            response.setIdRole(user.getRole() != null ? user.getRole().getIdRole() : null);
+            response.setRedirect(getRedirectUrlByRole(user.getRole() != null ? user.getRole().getIdRole() : null));
+
+            return ResponseEntity.ok(response);
+
+            // ============================================================================
+            // FLUJO 2FA ORIGINAL (DESACTIVADO TEMPORALMENTE)
+            // ============================================================================
+            // session.setAttribute("pendingUser", user);
+            // clearPendingEmailCode(session);
+            //
+            // LoginResponse verifyResponse = new LoginResponse();
+            // verifyResponse.setStatus("choose-channel");
+            // verifyResponse.setMessage("Selecciona cómo deseas recibir el código");
+            // verifyResponse.setMaskedEmail(maskEmail(user.getEmail()));
+            // verifyResponse.setHasPhone(user.getPhone() != null && !user.getPhone().isBlank());
+            // return ResponseEntity.ok(verifyResponse);
+            // ============================================================================
 
         } catch (Exception e) {
             log.error("Error inesperado en login para usuario: {}", loginRequest.getEmail(), e);
@@ -1050,6 +1077,16 @@ public class LoginController {
         public void setAddress(String address) {
             this.address = address;
         }
+    }
+
+    /**
+     * Método helper para obtener URL de redirección según el rol
+     */
+    private String getRedirectUrlByRole(Long roleId) {
+        if (roleId != null && roleId == 1) {
+            return "/admin-dashboard";
+        }
+        return "/HomePage";
     }
 
     public static class ChangePasswordRequest {
