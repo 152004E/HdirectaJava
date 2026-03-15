@@ -65,7 +65,8 @@ public class LoginController {
     private static final SecureRandom OTP_RANDOM = new SecureRandom();
     // Nota: la contraseña de aplicación idealmente debe guardarse en
     // properties/secret manager
-    private static final String SENDER_PASSWORD = "agst ebgg yakk lohu";
+    @Value("${mail.sender.password}")
+    private String SENDER_PASSWORD;
 
     // Metodo para crear la sesion de correo
     private Session crearSesionCorreo() {
